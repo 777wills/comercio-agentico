@@ -3,7 +3,7 @@
 Cada decisión tiene su porqué. Para cambiar una, se debate con Wills y se agrega una entrada nueva que la reemplace
 (no se borra la anterior; se marca como reemplazada).
 
-Estado al 9-nov-2026 (sesión de planeación). Base previa: `contexto_claude/CONTEXTO_SESION.md` (sep-2026).
+Estado al 9-nov-2026 (planeación y S00). Base previa: `contexto_claude/CONTEXTO_SESION.md` (sep-2026).
 
 ## Alcance y calendario
 
@@ -46,6 +46,9 @@ Estado al 9-nov-2026 (sesión de planeación). Base previa: `contexto_claude/CON
 | D31 | Modelos (6), en orden de costo: **DeepSeek V4.1 Flash → Claude Haiku 5.5 → DeepSeek V4 Pro → Kimi K3.1 Pro ≈ Claude Sonnet 5.5 → Claude Opus 5.5**. | Pareo por nivel entre Anthropic y modelos chinos de pesos abiertos (económico, medio, tope). |
 | D32 | En OpenRouter se **fija el proveedor** de cada modelo para la reproducibilidad, y se registra el costo real devuelto por llamada. | El precio del catálogo es el del proveedor más barato; el enrutamiento puede cambiarlo. |
 | D33 | Desarrollo con el modelo más barato que funcione (DeepSeek V4.1 Flash o Haiku 5.5). | Proteger los créditos (presupuesto total US$300). |
+| D34 | (S00, 9-nov) Proveedor fijado en OpenRouter: **DeepInfra para los tres modelos** — DeepSeek V4.1 Flash `deepinfra/fp8` (0,14 / 0,42), DeepSeek V4 Pro `deepinfra/fp8` (1,30 / 2,60), Kimi K3.1 Pro `deepinfra/bf16` (1,90 / 9,50); `allow_fallbacks: false`. Concreta D32. | Mismo proveedor y cuantización FP8 o superior: la diferencia entre modelos en E3 no se confunde con la infraestructura ni con la cuantización (los endpoints más baratos son FP4). Sobrecosto pequeño. Verificado con la API de generaciones de OpenRouter (`provider_name: DeepInfra`). |
+| D35 | (S00) Salida estructurada con **`method="json_schema"` en los seis modelos** (`obtener_extractor`). | Mismo mecanismo para todos en E3. El método por herramienta forzada (`tool_choice`) no lo admite DeepSeek V4 Pro en DeepInfra (OpenRouter filtra todos los endpoints). |
+| D36 | (S00) **Temperatura 0 solo en OpenRouter**; los modelos Claude 5.5 rechazan el parámetro `temperature` (HTTP 400). | La variabilidad de Anthropic se mide con corridas repetidas, como ya prevé D42. |
 
 Precios consultados el 9-nov-2026 (US$ por millón de tokens, entrada / salida). Re-verificar antes de citarlos en el
 informe.
@@ -82,6 +85,9 @@ together.ai/pricing, fireworks.ai/pricing, siliconflow.com/pricing, novita.ai/pr
 |---|---|---|
 | D50 | Git en esta carpeta; **GitHub público**; un commit por sesión. | Trazabilidad, respaldo y entregable (Cr8). Wills no requiere repo privado. |
 | D51 | Fuera de git: `.env`, `contexto_claude/`, `.docx/.pptx/.pdf/.xlsx/.csv`, HTML del aula virtual y copias del corpus A. | Repo público: claves, material institucional, documentos personales y obra de terceros. |
+| D52 | (S00, 9-nov) Se adopta parcialmente el estándar de proyectos del profesor Jan Polanco (skill `jan-project-standard`): **Ruff, pre-commit, Makefile (`make check`), CI en GitHub Actions, LICENSE MIT, README con badges, `uv.lock` versionado, Conventional Commits** y un `CONSTITUTION.md` breve que remite a DECISIONES, PLAN y ESTADO. Se descartan CODE_OF_CONDUCT, CONTRIBUTING, plantillas de issue, labels, Dependabot, `main` protegida por PR, identidad `includeIf`, tgrep/.opencode y Slidev. | Profesionaliza el repositorio (R.7.2, Cr8) a bajo costo y adelanta la CI de D17. Lo descartado es gobernanza de proyectos colaborativos o choca con un commit por sesión y con la plantilla institucional de presentación. CONSTITUTION no duplica contenido para no crear una segunda fuente de verdad. |
+| D53 | (S00) **Python 3.13** (`.python-version`, `requires-python >=3.13`), instalado por `uv`. | Lo exige el estándar (D52); todas las dependencias funcionan en 3.13.16. |
+| D54 | (S00) Repositorio público **`777wills/comercio-agentico`**. | Coincide con el paquete `comercio_agentico`. |
 
 ## Aportes de otros cursos de la maestría (revisados en Moodle el 9-nov)
 

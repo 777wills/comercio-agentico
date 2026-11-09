@@ -1,0 +1,49 @@
+[project]
+name = "comercio-agentico"
+version = "0.1.0"
+description = "Agente de compras verificable sobre proveedores heterogéneos, con defensa medida frente a inyección indirecta de instrucciones."
+authors = [
+    { name = "William Suaza Losada", email = "wills777@hotmail.com" }
+]
+requires-python = ">=3.13"
+license = "MIT"
+dependencies = [
+    "crawl4ai>=0.9.5",
+    "langchain>=1.4.9",
+    "langchain-anthropic>=1.7.10",
+    "langchain-openrouter>=0.2.9",
+    "langgraph>=1.2.20",
+    "pydantic>=2.12.5",
+    "python-dotenv>=1.2.4",
+    "pyyaml>=6.0.3",
+    "streamlit>=1.67.0",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.24,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.7.0",
+    "pytest>=9.2.0",
+    "ruff>=0.17.4",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF", "C4"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["comercio_agentico"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

@@ -83,10 +83,11 @@ E2 ni E3.
 ## 5. Prerrequisitos que dependen de Wills
 
 - [ ] Comprar créditos (estimación inicial, se recalibra en S00 midiendo tokens reales): Anthropic ~US$60,
-      OpenRouter ~US$40. Presupuesto total máximo: US$300.
-- [ ] Crear `.env` con `ANTHROPIC_API_KEY` y `OPENROUTER_API_KEY` (S00).
+      OpenRouter ~US$40. Presupuesto total máximo: US$300. Comprados US$50 el 9-nov; recarga de Anthropic
+      antes de Sonnet/Opus en S05 (ver `docs/ESTADO.md`).
+- [x] Crear `.env` con `ANTHROPIC_API_KEY` y `OPENROUTER_API_KEY` (S00).
 - [ ] Descargar la plantilla institucional de trabajo escrito (IEEE) del aula y ponerla en la carpeta (antes de S10).
-- [ ] Confirmar la creación del repositorio público en GitHub (S00).
+- [x] Confirmar la creación del repositorio público en GitHub (S00): `777wills/comercio-agentico`.
 
 ---
 
@@ -94,23 +95,26 @@ E2 ni E3.
 
 **Objetivo:** entorno reproducible, los 6 modelos respondiendo y el esquema canónico definido.
 
-- [ ] `uv init` con Python 3.12 (o 3.13 si todas las dependencias lo soportan; 3.14 del sistema puede no tener
+- [x] `uv init` con Python 3.12 (o 3.13 si todas las dependencias lo soportan; 3.14 del sistema puede no tener
       ruedas para todo). Dependencias: langgraph, langchain, langchain-anthropic, langchain-openai (OpenRouter vía
       base_url) o la integración oficial de OpenRouter si Context7 la confirma, pydantic, crawl4ai, streamlit,
       pytest, python-dotenv.
-- [ ] Verificar con Context7: API vigente de LangGraph (agente ReAct prebuilt vs. `create_agent` de LangChain 1.x),
+- [x] Verificar con Context7: API vigente de LangGraph (agente ReAct prebuilt vs. `create_agent` de LangChain 1.x),
       salida estructurada en LangChain, integración de OpenRouter y cómo obtener el costo por llamada.
-- [ ] `src/comercio_agentico/modelos.py`: `obtener_modelo(nombre)` para los 6 modelos de D31; registro de tokens y
+- [x] `src/comercio_agentico/modelos.py`: `obtener_modelo(nombre)` para los 6 modelos de D31; registro de tokens y
       costo por llamada; proveedor fijado en OpenRouter (D32).
-- [ ] Script `python -m comercio_agentico.ping`: una llamada con tool-calling a cada modelo; imprime latencia y costo.
-- [ ] `esquema.py`: `Oferta` (inspirada en schema.org Product + Offer: gtin, mpn, marca, modelo, título, precio,
+- [x] Script `python -m comercio_agentico.ping`: una llamada con tool-calling a cada modelo; imprime latencia y costo.
+- [x] `esquema.py`: `Oferta` (inspirada en schema.org Product + Offer: gtin, mpn, marca, modelo, título, precio,
       moneda, disponibilidad, condiciones de entrega), `Procedencia` (fuente, consulta, marca de tiempo, fragmento
       original, ruta de extracción, suma de verificación), `PerfilCategoria`, `PropuestaCompra`.
-- [ ] `perfiles/electronica.yaml`: atributos comparables, restricciones duras, normalización de unidades,
+- [x] `perfiles/electronica.yaml`: atributos comparables, restricciones duras, normalización de unidades,
       identificador de emparejamiento.
-- [ ] Pruebas unitarias del esquema y del perfil.
-- [ ] `.gitignore` verificado, `.env.example`, README mínimo; repo público en GitHub con confirmación de Wills.
-- [ ] Estimar el costo por tarea con una llamada típica y recalibrar el presupuesto en `docs/ESTADO.md`.
+- [x] Pruebas unitarias del esquema y del perfil.
+- [x] `.gitignore` verificado, `.env.example`, README mínimo; repo público en GitHub con confirmación de Wills.
+- [x] Estimar el costo por tarea con una llamada típica y recalibrar el presupuesto en `docs/ESTADO.md`.
+
+Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35), estándar del profesor
+(D52). Costo por tarea en `docs/ESTADO.md`.
 
 **Terminado cuando:** `ping` responde en los 6 modelos con tool-calling y `pytest` pasa.
 **Informe:** `docs/informe/03_metodologia_stack.md` (stack y justificación de la simplicidad).

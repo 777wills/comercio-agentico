@@ -2,11 +2,12 @@
 
 ## Siguiente sesión
 
-**S00 — Arranque técnico** (ver `docs/PLAN.md`, sección S00).
+**S01 — Corpus B sintético y tareas** (mar 10-nov; ver `docs/PLAN.md`, sección S01).
 
-Antes de empezar, confirmar con Wills:
-- ¿Ya compró créditos y creó el `.env` con `ANTHROPIC_API_KEY` y `OPENROUTER_API_KEY`?
-- ¿Autoriza crear el repositorio **público** en GitHub (`gh` está autenticado como `777wills`)?
+Siguiente paso exacto: generar el catálogo de referencia (~40 productos: portátiles, monitores, celulares,
+audífonos, almacenamiento) con `obtener_extractor("deepseek-flash", ...)` o Haiku, validarlo con `OfertaExtraida`
+y `gtin_valido`, y ampliar `perfiles/electronica.yaml` con los atributos que falten para esas categorías (p. ej.
+procesador, frecuencia de refresco, cancelación de ruido). Antes de escribir FastMCP, consultar Context7.
 
 ## Presupuesto de modelos
 
@@ -14,18 +15,50 @@ Antes de empezar, confirmar con Wills:
 |---|---|
 | Presupuesto total | 300,00 |
 | Créditos comprados | 50,00 (Anthropic 30 + OpenRouter 20), 9-nov |
-| Gastado acumulado | ~0,00 (prueba de claves: Haiku 5.5 + modelo gratuito de OpenRouter) |
+| Gastado acumulado | ~0,26 (S00: ping de los 6 modelos, diagnóstico y dos mediciones de extracción en los 6) |
 
-Claves verificadas el 9-nov: `.env` creado por Wills; Anthropic y OpenRouter responden HTTP 200. Recomendado: límite
-de gasto de US$20 en la clave de OpenRouter. Con US$30 en Anthropic el saldo es justo para desarrollo + E3 si la
-regla de parada llega a Opus (~US$27 estimado): revisar saldo antes de correr Sonnet y Opus en S05 y recargar si
-hace falta. El `.env` nunca se lee ni se muestra en las sesiones: las claves se
-cargan en un subproceso.
+Costo medido el 9-nov (S00) de una extracción estructurada típica (página con 12 ofertas, 1500–3500 tokens de
+entrada, `json_schema`): Flash 0,0015 · Haiku 0,0016 · DeepSeek Pro 0,006 · Sonnet 0,025 · Kimi 0,032 ·
+Opus 0,053. Supuesto de tarea: 5 extracciones + ~8 llamadas del planificador (~4000 tokens de entrada y ~300 de
+salida cada una).
 
-Estimación inicial (recalibrar en S00 con tokens reales): ~US$0,03–0,18 por tarea según el modelo; total de
-experimentos y desarrollo por debajo de US$120.
+| Modelo | US$ por tarea (estimado) | 80 tareas (B + A) |
+|---|---|---|
+| DeepSeek V4.1 Flash | ~0,013 | ~1 |
+| Claude Haiku 5.5 | ~0,013 | ~1 |
+| DeepSeek V4 Pro | ~0,08 | ~6 |
+| Claude Sonnet 5.5 | ~0,21 | ~17 |
+| Kimi K3.1 Pro | ~0,24 | ~19 |
+| Claude Opus 5.5 | ~0,44 | ~35 |
+
+Recalibración: la estimación anterior (0,03–0,18 por tarea) se queda corta en el tope. Si la regla de parada de
+E3 llega a Opus con todas las tareas, Anthropic necesita ~US$55 (Haiku + Sonnet + Opus) más desarrollo, E2 y E1:
+**recargar ~US$40 en Anthropic antes de correr Sonnet en S05**. OpenRouter (US$20) alcanza para los tres modelos
+chinos. El total sigue muy por debajo de US$300. Riesgos: las páginas reales del corpus A pueden ser mucho más
+largas que la de prueba (recalibrar en S03 con el arnés), y Opus queda cerca del tope `COSTO_MAXIMO_POR_TAREA_USD`
+= 0,50: subirlo a 1,00 solo para las corridas de Opus en E3.
+
+El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un subproceso.
 
 ## Bitácora
+
+### 9-nov-2026 — S00 Arranque técnico
+- Proyecto `uv` en Python 3.13.16 (D53) con LangGraph 1.2.20, LangChain 1.4.9, langchain-anthropic 1.7.10,
+  langchain-openrouter 0.2.9, crawl4ai 0.9.5, Streamlit 1.67.0, Pydantic 2.12.5; `uv.lock` versionado.
+- `modelos.py`: fábrica de los 6 modelos, proveedor DeepInfra fijado sin respaldo (D34, verificado con la API de
+  generaciones), `RegistroCosto` (tokens, costo de la API o de la tabla, proveedor, tope por tarea) y
+  `obtener_extractor` con `json_schema` (D35). Claude 5.5 no acepta `temperature` (D36).
+- `make ping`: los 6 modelos responden con tool-calling (latencia 1,5–3,6 s).
+- `esquema.py`: `OfertaExtraida` (lo que produce el LLM), `Procedencia` (la escribe el código; SHA-256 del
+  fragmento), `Oferta`, `PerfilCategoria` con normalización de unidades y categorías, `PropuestaCompra` con
+  abstención coherente; GTIN validado por dígito de control. `perfiles/electronica.yaml`.
+- 34 pruebas sin red, Ruff y pre-commit en verde.
+- Revisión de la skill `jan-project-standard` del profesor Jan Polanco: adopción parcial (D52): Ruff,
+  pre-commit, Makefile, CI, LICENSE MIT, README con badges, CONSTITUTION breve.
+- Observación útil para E3: con `json_schema`, DeepSeek Flash extrajo 13 ofertas en vez de 12 y no marcó las
+  agotadas; los otros cinco acertaron 12/12.
+- Repositorio público `777wills/comercio-agentico` (D54).
+- Informe: `docs/informe/03_metodologia_stack.md`.
 
 ### 9-nov-2026 — Sesión de planeación
 - Entrevista completa con Wills; todas las decisiones registradas en `docs/DECISIONES.md` (D01–D51).
@@ -42,3 +75,5 @@ experimentos y desarrollo por debajo de US$120.
 - Verificar en S06 si la taxonomía MITRE pertinente es ATLAS.
 - Informe primario de la CCCE (primer trimestre de 2026), si se cita en el informe.
 - Verificación exhaustiva de las referencias del plan de trabajo antes de reutilizarlas (S10).
+- Recargar ~US$40 en Anthropic antes de Sonnet en S05 (Wills).
+- Archify (diagrama de arquitectura del estándar del profesor) como opción en S09 para el informe.

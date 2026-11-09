@@ -1,0 +1,82 @@
+# Perfil de categoría declarativo: electrónica de consumo (D20).
+# Cambiar de dominio es escribir otro YAML como este; el código no cambia (E4, propuesto).
+nombre: electronica
+descripcion: Televisores, portátiles, celulares y monitores vendidos en Colombia.
+
+# Orden de preferencia para decidir que dos ofertas son el mismo producto (D15).
+# Sin GTIN ni MPN se recurre a marca + modelo, con embeddings del catálogo y confirmación del LLM.
+identificador_emparejamiento: [gtin, mpn, marca_modelo]
+
+atributos:
+  - nombre: tamano_pantalla
+    tipo: numero
+    unidad: pulgadas
+    conversiones: {"in": 1.0, '"': 1.0, pulg: 1.0, cm: 0.393701}
+    sinonimos: [pantalla, tamaño de pantalla, diagonal]
+    mayor_es_mejor: true
+
+  - nombre: resolucion
+    tipo: categoria
+    sinonimos: [resolución]
+    valores:
+      HD: ["720p", "1366x768", "1280x720"]
+      FHD: ["full hd", "1080p", "1920x1080"]
+      QHD: ["2k", "1440p", "2560x1440"]
+      4K: ["uhd", "ultra hd", "2160p", "3840x2160", "4k uhd"]
+      8K: ["8k uhd", "4320p", "7680x4320"]
+
+  - nombre: tipo_panel
+    tipo: categoria
+    sinonimos: [panel, tecnología de pantalla]
+    valores:
+      LED: ["lcd led", "lcd"]
+      QLED: ["neo qled"]
+      OLED: ["amoled", "super amoled"]
+      MiniLED: ["mini led", "mini-led"]
+      IPS: ["ips lcd"]
+
+  - nombre: memoria_ram
+    tipo: numero
+    unidad: gb
+    conversiones: {mb: 0.0009765625, tb: 1024.0}
+    sinonimos: [ram, memoria]
+    mayor_es_mejor: true
+
+  - nombre: almacenamiento
+    tipo: numero
+    unidad: gb
+    conversiones: {mb: 0.0009765625, tb: 1024.0}
+    sinonimos: [disco, capacidad, ssd, memoria interna]
+    mayor_es_mejor: true
+
+  - nombre: bateria
+    tipo: numero
+    unidad: mah
+    sinonimos: [batería, capacidad de batería]
+    mayor_es_mejor: true
+
+  - nombre: peso
+    tipo: numero
+    unidad: kg
+    conversiones: {g: 0.001, lb: 0.453592}
+    mayor_es_mejor: false
+
+  - nombre: garantia
+    tipo: numero
+    unidad: meses
+    conversiones: {mes: 1.0, año: 12.0, años: 12.0, anos: 12.0}
+    sinonimos: [garantía]
+    mayor_es_mejor: true
+
+  - nombre: smart_tv
+    tipo: booleano
+    sinonimos: [smart, televisor inteligente]
+
+  - nombre: color
+    tipo: texto
+
+# Restricciones que ninguna recomendación puede violar, sea cual sea la consulta.
+# Las de cada consulta (presupuesto, tamaño mínimo...) se suman en tiempo de ejecución.
+restricciones_duras:
+  - {atributo: moneda, operador: "==", valor: COP}
+  - {atributo: disponibilidad, operador: en, valor: [en_stock, bajo_pedido]}
