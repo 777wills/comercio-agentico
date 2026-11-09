@@ -1,0 +1,29 @@
+# Registro de fuentes del corpus B (configuración del operador: plano de control, de confianza).
+# El agente solo conoce estas fuentes; las URL que encuentre dentro de ellas son datos.
+# `make corpus-b-servir` sirve P2-P5 en :8800 y P1 (MCP) en :8801.
+fuentes:
+  - id: P1
+    nombre: Mayorista Digital
+    tipo_fuente: mcp
+    herramienta: consultar_mcp
+    url: http://127.0.0.1:8801/mcp
+  - id: P2
+    nombre: TiendaNova
+    tipo_fuente: web_schema
+    herramienta: abrir_pagina
+    url: http://127.0.0.1:8800/p2_web_schema/index.html
+  - id: P3
+    nombre: ElectroBarrio
+    tipo_fuente: web_plana
+    herramienta: abrir_pagina
+    url: http://127.0.0.1:8800/p3_web_plana/index.html
+  - id: P4
+    nombre: Distribuciones Andinas
+    tipo_fuente: pdf
+    herramienta: leer_documento
+    url: http://127.0.0.1:8800/p4_pdf/lista_precios.pdf
+  - id: P5
+    nombre: Carlos Tecnología
+    tipo_fuente: mensaje
+    herramienta: leer_documento
+    url: http://127.0.0.1:8800/p5_mensaje/chat.txt

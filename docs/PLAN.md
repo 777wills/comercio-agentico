@@ -149,19 +149,19 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
 
 **Objetivo:** una consulta en lenguaje natural produce una propuesta de compra trazable sobre el corpus B.
 
-- [ ] Herramientas: `abrir_pagina` (crawl4ai → Markdown), `leer_documento` (PDF y texto), cliente MCP
+- [x] Herramientas: `abrir_pagina` (crawl4ai → Markdown), `leer_documento` (PDF y texto), cliente MCP
       (langchain-mcp-adapters o equivalente que confirme Context7), `extraer_ofertas` (LLM con salida estructurada
       → `[Oferta]` + `Procedencia`).
-- [ ] Grafo LangGraph: planificar → recolectar por fuente → extraer → emparejar → filtrar restricciones duras del
+- [x] Grafo LangGraph: planificar → recolectar por fuente → extraer → emparejar → filtrar restricciones duras del
       perfil → proponer. Estado explícito; límite de pasos y de costo por tarea.
-- [ ] **Desde el inicio**, el contenido de terceros entra solo por `extraer_ofertas` y vuelve al planificador como
+- [x] **Desde el inicio**, el contenido de terceros entra solo por `extraer_ofertas` y vuelve al planificador como
       datos estructurados (deja lista la separación de planos de C1 sin costo extra; C0 se obtiene pasando el texto
       crudo al planificador).
-- [ ] Emparejamiento (D15): GTIN exacto si existe; si no, embeddings del catálogo (modelo multilingüe local,
+- [x] Emparejamiento (D15): GTIN exacto si existe; si no, embeddings del catálogo (modelo multilingüe local,
       verificar con Context7 / Hugging Face), los 3–5 más parecidos y confirmación del LLM; si no hay certeza,
       abstención.
-- [ ] Ejecución por línea de comandos: `python -m comercio_agentico.preguntar "..."`.
-- [ ] Prueba de humo sobre 5 tareas del corpus B con el modelo más barato.
+- [x] Ejecución por línea de comandos: `python -m comercio_agentico.preguntar "..."`.
+- [x] Prueba de humo sobre 5 tareas del corpus B con el modelo más barato.
 
 **Terminado cuando:** las 5 tareas de humo producen propuestas con procedencia completa por oferta.
 **Informe:** `docs/informe/03_metodologia_agente.md` (diagrama del grafo).

@@ -74,6 +74,9 @@ class OfertaExtraida(BaseModel):
         default_factory=dict,
         description="Atributos técnicos con su valor y unidad tal como aparecen en la fuente.",
     )
+    url_detalle: str | None = Field(
+        default=None, description="Enlace a la ficha del producto, si aparece en el fragmento."
+    )
 
     @field_validator("gtin", mode="before")
     @classmethod
@@ -124,6 +127,14 @@ class Procedencia(BaseModel):
 
 class Oferta(OfertaExtraida):
     procedencia: Procedencia
+    producto_catalogo: str | None = Field(
+        default=None,
+        description="ID del catálogo de referencia; lo escribe el emparejamiento, nunca el LLM.",
+    )
+
+    @property
+    def proveedor(self) -> str:
+        return self.procedencia.fuente
 
     @property
     def costo_total(self) -> float:

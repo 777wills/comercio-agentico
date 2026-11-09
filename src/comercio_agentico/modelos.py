@@ -76,10 +76,23 @@ MODELOS: dict[str, ConfigModelo] = {
 }
 
 
-def obtener_modelo(nombre: str, *, temperatura: float | None = 0.0, **kwargs: Any) -> BaseChatModel:
+ESFUERZO_RAZONAMIENTO = "low"  # D60: condición uniforme del agente en los seis modelos
+MAX_TOKENS_SALIDA = 8000  # corta generaciones desbocadas (un modelo barato puede repetir sin fin)
+TIEMPO_MAXIMO_S = 120
+
+
+def obtener_modelo(
+    nombre: str,
+    *,
+    temperatura: float | None = 0.0,
+    razonamiento: str | None = ESFUERZO_RAZONAMIENTO,
+    **kwargs: Any,
+) -> BaseChatModel:
     """Devuelve el modelo de chat de LangChain para el nombre corto dado (p. ej. ``"haiku"``).
 
-    La temperatura solo se aplica a los modelos de OpenRouter.
+    La temperatura y el esfuerzo de razonamiento solo se aplican a los modelos de OpenRouter; a
+    Claude 5.5 no se le activa el pensamiento extendido (D60). ``razonamiento=None`` deja el valor
+    por defecto del modelo.
     """
     load_dotenv()
     if nombre not in MODELOS:
@@ -90,12 +103,18 @@ def obtener_modelo(nombre: str, *, temperatura: float | None = 0.0, **kwargs: An
         # Claude 5.5 rechaza `temperature`; la variabilidad se mide con corridas repetidas (D42).
         from langchain_anthropic import ChatAnthropic
 
+        kwargs.setdefault("max_tokens", MAX_TOKENS_SALIDA)
+        kwargs.setdefault("timeout", TIEMPO_MAXIMO_S)
         return ChatAnthropic(model=cfg.id_modelo, **kwargs)
 
     from langchain_openrouter import ChatOpenRouter
 
     if temperatura is not None:
         kwargs.setdefault("temperature", temperatura)
+    if razonamiento is not None:
+        kwargs.setdefault("reasoning", {"effort": razonamiento})
+    kwargs.setdefault("max_tokens", MAX_TOKENS_SALIDA)
+    kwargs.setdefault("timeout", TIEMPO_MAXIMO_S * 1000)  # milisegundos en el SDK de OpenRouter
     return ChatOpenRouter(
         model=cfg.id_modelo,
         openrouter_provider={
@@ -213,10 +232,13 @@ class RegistroCosto(BaseCallbackHandler):
         return [asdict(llamada) for llamada in self.llamadas]
 
 
-def obtener_extractor(nombre: str, esquema: type, **kwargs: Any):
+def obtener_extractor(nombre: str, esquema: type, *, include_raw: bool = False, **kwargs: Any):
     """Modelo con salida estructurada por JSON Schema nativo.
 
     Se usa el mismo método en los seis modelos para que E3 compare en igualdad de condiciones;
     el método por herramienta forzada (``tool_choice``) no lo admite DeepSeek V4 Pro en OpenRouter.
+    Con ``include_raw=True`` devuelve también el mensaje crudo, para validar elemento por elemento.
     """
-    return obtener_modelo(nombre, **kwargs).with_structured_output(esquema, method="json_schema")
+    return obtener_modelo(nombre, **kwargs).with_structured_output(
+        esquema, method="json_schema", include_raw=include_raw
+    )

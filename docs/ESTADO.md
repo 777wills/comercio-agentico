@@ -2,14 +2,15 @@
 
 ## Siguiente sesión
 
-**S02 — Agente N2 y emparejamiento: MVP de punta a punta** (mié 11-nov; ver `docs/PLAN.md`, sección S02).
-S01 se cerró el 9-nov, con un día de adelanto.
+**S03 — Arnés de evaluación y Streamlit mínimo** (jue 12-nov; ver `docs/PLAN.md`, sección S03).
+S02 se cerró el 9-nov, con dos días de adelanto.
 
-Siguiente paso exacto: consultar Context7 para langchain-mcp-adapters (cliente del MCP de P1 en
-`http://127.0.0.1:8801/mcp`), crawl4ai (`abrir_pagina` → Markdown) y el modelo de embeddings multilingüe local
-(D15). Después, escribir las herramientas `abrir_pagina`, `leer_documento` (pypdf, ya instalado, y texto),
-`consultar_mcp` y `extraer_ofertas`, y luego el grafo LangGraph. La prueba de humo usa 5 tareas de
-`tareas/tareas_b.jsonl` (una por categoría) con `deepseek-flash`, con el corpus servido por `make corpus-b-servir`.
+Siguiente paso exacto: escribir `arnes/correr.py` reutilizando `comercio_agentico.agente.grafo.preguntar` y
+`preguntar.evaluar`/`registro_jsonl` (ya producen el JSONL por tarea). **Tareas en paralelo** (p. ej. 4 a la vez,
+con un semáforo global de llamadas al LLM compartido entre tareas): una tarea tarda ~195 s con DeepSeek Flash, así
+que 60 tareas en serie tomarían ~3 h. Después, M1 campo a campo contra `verdad.json` (las ofertas emparejadas
+están en `Resultado.ofertas`), M2–M4 y M6, y la corrida de calibración de 60 tareas (~US$0,90). Consultar
+Context7 para Streamlit antes de la app mínima.
 
 ## Presupuesto de modelos
 
@@ -17,7 +18,7 @@ Siguiente paso exacto: consultar Context7 para langchain-mcp-adapters (cliente d
 |---|---|
 | Presupuesto total | 300,00 |
 | Créditos comprados | 50,00 (Anthropic 30 + OpenRouter 20), 9-nov |
-| Gastado acumulado | ~0,28 (S00: ~0,26 en ping, diagnóstico y mediciones de extracción; S01: 0,024 en el catálogo del corpus B con DeepSeek Flash) |
+| Gastado acumulado | ~0,46 (S00: ~0,26 en ping, diagnóstico y mediciones de extracción; S01: 0,024 en el catálogo del corpus B; S02: ~0,18 en DeepSeek Flash, de ellos 0,076 la prueba de humo). OpenRouter informa 0,267 de uso total sobre US$20 al cierre de S02 |
 
 Costo medido el 9-nov (S00) de una extracción estructurada típica (página con 12 ofertas, 1500–3500 tokens de
 entrada, `json_schema`): Flash 0,0015 · Haiku 0,0016 · DeepSeek Pro 0,006 · Sonnet 0,025 · Kimi 0,032 ·
@@ -43,6 +44,27 @@ largas que la de prueba (recalibrar en S03 con el arnés), y Opus queda cerca de
 El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un subproceso.
 
 ## Bitácora
+
+### 9-nov-2026 — S02 Agente N2 y emparejamiento
+- Herramientas: `abrir_pagina` (crawl4ai → Markdown + enlaces del mismo sitio), `leer_documento` (pypdf/texto),
+  `consultar_mcp` (cliente de FastMCP: busca y trae la ficha completa). `langchain-mcp-adapters` 0.3.x se descartó
+  por exigir `mcp<2` (D63). Registro de fuentes autorizadas en `fuentes/corpus_b.yaml`.
+- `extraer_ofertas` con JSON Schema y validación por oferta (un GTIN inválido se descarta sin perder la oferta).
+- Grafo LangGraph interpretar → planificar ⇄ herramientas → emparejar → proponer (D59): ReAct con datos
+  estructurados en C1 y texto crudo en C0 (`--c0`); selección determinista del menor costo total (D61).
+- Emparejamiento (D62): GTIN/MPN → `multilingual-e5-small` (CPU; PyTorch solo-CPU) top-5 → confirmación del LLM
+  por lote. La interpretación resuelve el producto pedido con los mismos candidatos.
+- Razonamiento con esfuerzo bajo en todos los modelos (D60); máximo 8000 tokens de salida y 120 s por llamada;
+  3 llamadas simultáneas al LLM y reintento ante 429 en 5/15/30 s (DeepInfra limitó la tasa de Flash y de Kimi
+  durante la sesión).
+- `python -m comercio_agentico.preguntar` (consulta libre o `--tareas`), `make humo`, `make candidatos`.
+- **Prueba de humo: 5/5 aciertos** (B001, B013, B025, B037, B054), procedencia completa en todas las ofertas,
+  US$0,076 en total (~0,015 por tarea, ~195 s por tarea). Resultados en `resultados/humo_s02.jsonl`.
+- Hallazgos: DeepSeek Flash con razonamiento por defecto gastó ~3000 tokens ocultos en una interpretación y, en una
+  ocasión, entró en un bucle de generación (414 KB repitiendo el prompt en un campo de texto libre). Se eliminó el
+  campo y se acotaron los tokens. Las variantes quedan casi empatadas en coseno (0,931 frente a 0,929).
+- 18 pruebas nuevas (70 en total), incluida la de separación de planos; Ruff limpio.
+- Informe: `docs/informe/03_metodologia_agente.md` (diagrama del grafo y tabla de la prueba de humo).
 
 ### 9-nov-2026 — S01 Corpus B sintético y tareas
 - Catálogo de 40 productos (8 por categoría) generado con DeepSeek Flash en 5 llamadas (US$0,024). El LLM dejó
@@ -99,4 +121,7 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 - Informe primario de la CCCE (primer trimestre de 2026), si se cita en el informe.
 - Verificación exhaustiva de las referencias del plan de trabajo antes de reutilizarlas (S10).
 - Recargar ~US$40 en Anthropic antes de Sonnet en S05 (Wills).
+- Latencia: ~195 s por tarea con DeepSeek Flash. E3 necesita tareas en paralelo (S03) y reintentos ante el límite de
+  tasa de DeepInfra (Kimi devolvió 429 durante S02).
+- Año de la conferencia de ReAct (versión de ICLR, arXiv:2210.03629) por confirmar en S10.
 - Archify (diagrama de arquitectura del estándar del profesor) como opción en S09 para el informe.

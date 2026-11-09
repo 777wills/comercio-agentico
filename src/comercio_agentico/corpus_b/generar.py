@@ -149,7 +149,7 @@ def repartir(catalogo: list[ProductoCatalogo], azar: random.Random) -> list[dict
                     "nombre_proveedor": proveedor.nombre,
                     "tipo_fuente": proveedor.tipo_fuente,
                     "producto_id": producto.id,
-                    "oferta": oferta.model_dump(),
+                    "oferta": oferta.model_dump(exclude={"url_detalle"}),
                 }
             )
     return verdad
