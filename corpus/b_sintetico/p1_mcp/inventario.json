@@ -1,0 +1,421 @@
+{
+  "proveedor": "Mayorista Digital",
+  "condiciones": "Precios con IVA. Flete gratis desde $1.000.000. Despacho en 2 días hábiles; artículos a pedido, 9 días.",
+  "articulos": [
+    {
+      "referencia": "MD-0001",
+      "descripcion": "Lenovo IdeaPad Slim 3 15IAN8 Intel Core i3-1315U 8GB 256GB SSD 15.6\"",
+      "ean": "2000000000015",
+      "pn": "82XQ00L3CO",
+      "fabricante": "Lenovo",
+      "modelo": "IdeaPad Slim 3 15IAN8",
+      "familia": "portatil",
+      "valor_unitario_cop": 1919900,
+      "existencias": 14,
+      "a_pedido": false,
+      "flete_cop": 0,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "procesador": "Intel Core i3-1315U",
+        "memoria_ram": 8,
+        "almacenamiento": 256,
+        "tamano_pantalla": 15.6,
+        "peso": 1.62
+      }
+    },
+    {
+      "referencia": "MD-0002",
+      "descripcion": "HP Pavilion Plus 14-ew1053dx Intel Core Ultra 5 125H 16GB 512GB SSD 14\" OLED",
+      "ean": "2000000000022",
+      "pn": "9Y7F3LA",
+      "fabricante": "HP",
+      "modelo": "Pavilion Plus 14-ew1053dx",
+      "familia": "portatil",
+      "valor_unitario_cop": 4876900,
+      "existencias": 20,
+      "a_pedido": false,
+      "flete_cop": 0,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "procesador": "Intel Core Ultra 5 125H",
+        "memoria_ram": 16,
+        "almacenamiento": 512,
+        "tamano_pantalla": 14,
+        "peso": 1.4
+      }
+    },
+    {
+      "referencia": "MD-0003",
+      "descripcion": "MSI Katana 15 HX B14VGK Intel Core i7-14650HX 16GB 1TB SSD RTX 4060 15.6\"",
+      "ean": "2000000000060",
+      "pn": "9S7-158571-021",
+      "fabricante": "MSI",
+      "modelo": "Katana 15 HX B14VGK",
+      "familia": "portatil",
+      "valor_unitario_cop": 7272900,
+      "existencias": 25,
+      "a_pedido": false,
+      "flete_cop": 0,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "procesador": "Intel Core i7-14650HX",
+        "memoria_ram": 16,
+        "almacenamiento": 1024,
+        "tamano_pantalla": 15.6,
+        "peso": 2.3
+      }
+    },
+    {
+      "referencia": "MD-0004",
+      "descripcion": "ASUS Vivobook 15 X1504VA-NJ123 Intel Core i5-1335U 8GB 512GB SSD 15.6\"",
+      "ean": "2000000000077",
+      "pn": "X1504VA-NJ123",
+      "fabricante": "ASUS",
+      "modelo": "Vivobook 15 X1504VA-NJ123",
+      "familia": "portatil",
+      "valor_unitario_cop": 2610900,
+      "existencias": 34,
+      "a_pedido": false,
+      "flete_cop": 0,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "procesador": "Intel Core i5-1335U",
+        "memoria_ram": 8,
+        "almacenamiento": 512,
+        "tamano_pantalla": 15.6,
+        "peso": 1.7
+      }
+    },
+    {
+      "referencia": "MD-0005",
+      "descripcion": "Monitor LG 24MR400-B 24\" FHD IPS 100Hz",
+      "ean": "2000000000091",
+      "pn": "24MR400-B.AWSP",
+      "fabricante": "LG",
+      "modelo": "24MR400-B",
+      "familia": "monitor",
+      "valor_unitario_cop": 474900,
+      "existencias": 12,
+      "a_pedido": false,
+      "flete_cop": 14900,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "tamano_pantalla": 24,
+        "resolucion": "FHD",
+        "tipo_panel": "IPS",
+        "frecuencia_refresco": 100
+      }
+    },
+    {
+      "referencia": "MD-0006",
+      "descripcion": "Monitor Samsung Smart Monitor M8 M80D 32\" 4K QLED 64GB",
+      "ean": "2000000000114",
+      "pn": "LS32DM801UNXZA-64G",
+      "fabricante": "Samsung",
+      "modelo": "Smart Monitor M8 M80D",
+      "familia": "monitor",
+      "valor_unitario_cop": 2843900,
+      "existencias": 22,
+      "a_pedido": false,
+      "flete_cop": 0,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "tamano_pantalla": 32,
+        "resolucion": "4K",
+        "tipo_panel": "QLED",
+        "frecuencia_refresco": 60
+      }
+    },
+    {
+      "referencia": "MD-0007",
+      "descripcion": "Monitor Dell UltraSharp U2723QE 27\" 4K IPS 60Hz",
+      "ean": "2000000000145",
+      "pn": "U2723QE",
+      "fabricante": "Dell",
+      "modelo": "UltraSharp U2723QE",
+      "familia": "monitor",
+      "valor_unitario_cop": 2863900,
+      "existencias": 0,
+      "a_pedido": false,
+      "flete_cop": 0,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "tamano_pantalla": 27,
+        "resolucion": "4K",
+        "tipo_panel": "IPS",
+        "frecuencia_refresco": 60
+      }
+    },
+    {
+      "referencia": "MD-0008",
+      "descripcion": "Xiaomi Redmi Note 15 8/128 GB",
+      "ean": "2000000000190",
+      "pn": "XIA-RN15-8-128",
+      "fabricante": "Xiaomi",
+      "modelo": "Redmi Note 15 8/128",
+      "familia": "celular",
+      "valor_unitario_cop": 828900,
+      "existencias": 35,
+      "a_pedido": false,
+      "flete_cop": 14900,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "memoria_ram": 8,
+        "almacenamiento": 128,
+        "tamano_pantalla": 6.67,
+        "bateria": 5500
+      }
+    },
+    {
+      "referencia": "MD-0009",
+      "descripcion": "Samsung Galaxy A56 5G 8/256 GB",
+      "ean": "2000000000213",
+      "pn": "SAM-A56-5G-8-256",
+      "fabricante": "Samsung",
+      "modelo": "Galaxy A56 5G",
+      "familia": "celular",
+      "valor_unitario_cop": 1733900,
+      "existencias": 14,
+      "a_pedido": false,
+      "flete_cop": 0,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "memoria_ram": 8,
+        "almacenamiento": 256,
+        "tamano_pantalla": 6.7,
+        "bateria": 5000
+      }
+    },
+    {
+      "referencia": "MD-0010",
+      "descripcion": "Honor X7d 5G 8/256 GB",
+      "ean": "2000000000220",
+      "pn": "HON-X7D-5G-8-256",
+      "fabricante": "Honor",
+      "modelo": "X7d 5G",
+      "familia": "celular",
+      "valor_unitario_cop": 973900,
+      "existencias": 30,
+      "a_pedido": false,
+      "flete_cop": 14900,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "memoria_ram": 8,
+        "almacenamiento": 256,
+        "tamano_pantalla": 6.77,
+        "bateria": 6000
+      }
+    },
+    {
+      "referencia": "MD-0011",
+      "descripcion": "Apple iPhone 17 Pro Max 12/256 GB",
+      "ean": "2000000000237",
+      "pn": "APL-IP17PM-12-256",
+      "fabricante": "Apple",
+      "modelo": "iPhone 17 Pro Max",
+      "familia": "celular",
+      "valor_unitario_cop": 8299900,
+      "existencias": 0,
+      "a_pedido": false,
+      "flete_cop": 0,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "memoria_ram": 12,
+        "almacenamiento": 256,
+        "tamano_pantalla": 6.9,
+        "bateria": 5000
+      }
+    },
+    {
+      "referencia": "MD-0012",
+      "descripcion": "Samsung Galaxy S26 Ultra 12/512 GB",
+      "ean": "2000000000244",
+      "pn": "SAM-S26U-12-512",
+      "fabricante": "Samsung",
+      "modelo": "Galaxy S26 Ultra",
+      "familia": "celular",
+      "valor_unitario_cop": 7087900,
+      "existencias": 11,
+      "a_pedido": false,
+      "flete_cop": 0,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "memoria_ram": 12,
+        "almacenamiento": 512,
+        "tamano_pantalla": 6.9,
+        "bateria": 5400
+      }
+    },
+    {
+      "referencia": "MD-0013",
+      "descripcion": "JBL Tune 520BT",
+      "ean": "2000000000275",
+      "pn": "JBLT520BTBLK",
+      "fabricante": "JBL",
+      "modelo": "Tune 520BT",
+      "familia": "audifonos",
+      "valor_unitario_cop": 195900,
+      "existencias": 12,
+      "a_pedido": false,
+      "flete_cop": 14900,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "cancelacion_ruido": false,
+        "inalambrico": true,
+        "autonomia": 57
+      }
+    },
+    {
+      "referencia": "MD-0014",
+      "descripcion": "Samsung Galaxy Buds2 Pro",
+      "ean": "2000000000299",
+      "pn": "SM-R510NZKALTA",
+      "fabricante": "Samsung",
+      "modelo": "Galaxy Buds2 Pro",
+      "familia": "audifonos",
+      "valor_unitario_cop": 658900,
+      "existencias": 0,
+      "a_pedido": true,
+      "flete_cop": 14900,
+      "dias_despacho": 9,
+      "especificaciones": {
+        "cancelacion_ruido": true,
+        "inalambrico": true,
+        "autonomia": 5
+      }
+    },
+    {
+      "referencia": "MD-0015",
+      "descripcion": "Logitech G435 Lightspeed",
+      "ean": "2000000000305",
+      "pn": "981-000995",
+      "fabricante": "Logitech",
+      "modelo": "G435 Lightspeed",
+      "familia": "audifonos",
+      "valor_unitario_cop": 277900,
+      "existencias": 0,
+      "a_pedido": false,
+      "flete_cop": 14900,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "cancelacion_ruido": false,
+        "inalambrico": true,
+        "autonomia": 18
+      }
+    },
+    {
+      "referencia": "MD-0016",
+      "descripcion": "Sony NW-WS623 8GB",
+      "ean": "2000000000329",
+      "pn": "NWWS623/8GB",
+      "fabricante": "Sony",
+      "modelo": "NW-WS623",
+      "familia": "audifonos",
+      "valor_unitario_cop": 449900,
+      "existencias": 37,
+      "a_pedido": false,
+      "flete_cop": 14900,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "cancelacion_ruido": false,
+        "inalambrico": true,
+        "autonomia": 12
+      }
+    },
+    {
+      "referencia": "MD-0017",
+      "descripcion": "Kingston DataTraveler Exodia 128 GB",
+      "ean": "2000000000336",
+      "pn": "DTX/128GB",
+      "fabricante": "Kingston",
+      "modelo": "DataTraveler Exodia",
+      "familia": "almacenamiento",
+      "valor_unitario_cop": 44900,
+      "existencias": 0,
+      "a_pedido": false,
+      "flete_cop": 14900,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "tipo_almacenamiento": "USB",
+        "almacenamiento": 128,
+        "velocidad_lectura": 100
+      }
+    },
+    {
+      "referencia": "MD-0018",
+      "descripcion": "SanDisk Ultra microSDXC 256 GB",
+      "ean": "2000000000343",
+      "pn": "SDSQUA4-256G-GN6MN",
+      "fabricante": "SanDisk",
+      "modelo": "Ultra microSDXC",
+      "familia": "almacenamiento",
+      "valor_unitario_cop": 93900,
+      "existencias": 35,
+      "a_pedido": false,
+      "flete_cop": 14900,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "tipo_almacenamiento": "microSD",
+        "almacenamiento": 256,
+        "velocidad_lectura": 150
+      }
+    },
+    {
+      "referencia": "MD-0019",
+      "descripcion": "ADATA SU650 SSD 512 GB",
+      "ean": "2000000000350",
+      "pn": "ASU650SS-512GT-C",
+      "fabricante": "ADATA",
+      "modelo": "SU650",
+      "familia": "almacenamiento",
+      "valor_unitario_cop": 181900,
+      "existencias": 32,
+      "a_pedido": false,
+      "flete_cop": 14900,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "tipo_almacenamiento": "SSD",
+        "almacenamiento": 512,
+        "velocidad_lectura": 520
+      }
+    },
+    {
+      "referencia": "MD-0020",
+      "descripcion": "Samsung T7 Shield 2 TB",
+      "ean": "2000000000381",
+      "pn": "MU-PE2T0S/AM",
+      "fabricante": "Samsung",
+      "modelo": "T7 Shield 2 TB",
+      "familia": "almacenamiento",
+      "valor_unitario_cop": 1002900,
+      "existencias": 0,
+      "a_pedido": false,
+      "flete_cop": 0,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "tipo_almacenamiento": "SSD",
+        "almacenamiento": 2048,
+        "velocidad_lectura": 1050
+      }
+    },
+    {
+      "referencia": "MD-0021",
+      "descripcion": "Crucial X9 Pro 4 TB",
+      "ean": "2000000000404",
+      "pn": "CT4000X9PROSSD9",
+      "fabricante": "Crucial",
+      "modelo": "X9 Pro",
+      "familia": "almacenamiento",
+      "valor_unitario_cop": 1841900,
+      "existencias": 9,
+      "a_pedido": false,
+      "flete_cop": 0,
+      "dias_despacho": 2,
+      "especificaciones": {
+        "tipo_almacenamiento": "SSD",
+        "almacenamiento": 4096,
+        "velocidad_lectura": 1050
+      }
+    }
+  ]
+}

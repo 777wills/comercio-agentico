@@ -124,23 +124,23 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
 
 **Objetivo:** cinco proveedores heterogéneos servidos en local, con verdad de referencia por construcción.
 
-- [ ] Catálogo de referencia: ~40 productos de electrónica (portátiles, monitores, celulares, audífonos,
+- [x] Catálogo de referencia: ~40 productos de electrónica (portátiles, monitores, celulares, audífonos,
       almacenamiento) con atributos completos y GTIN-13 con dígito de control válido. Generado con LLM y validado
       por programa (Pydantic + dígito de control).
-- [ ] Generador (LLM barato + plantillas) que reparte el catálogo entre 5 proveedores, con precios, existencias y
+- [x] Generador (LLM barato + plantillas) que reparte el catálogo entre 5 proveedores, con precios, existencias y
       condiciones distintos, solapamiento parcial y nomenclatura propia de cada uno:
-  - [ ] P1 MCP: servidor FastMCP con `buscar_productos` y `detalle_producto`.
-  - [ ] P2 web con schema.org (JSON-LD Product/Offer), HTML estático.
-  - [ ] P3 web plana sin marcado, nombres comerciales, sin GTIN.
-  - [ ] P4 lista de precios en PDF (tabla; sin GTIN; abreviaturas).
-  - [ ] P5 mensajes tipo WhatsApp (texto informal, precios en el cuerpo, "8/512", "ryzen5").
-- [ ] Servidor local de los sitios (http.server o equivalente) y script de arranque único.
-- [ ] `verdad.json`: para cada proveedor y producto, la oferta exacta (lo que debería extraerse).
-- [ ] ~60 tareas en `tareas/tareas_b.jsonl` generadas por programa desde la verdad, en categorías (inspiradas en la
+  - [x] P1 MCP: servidor FastMCP con `buscar_productos` y `detalle_producto`.
+  - [x] P2 web con schema.org (JSON-LD Product/Offer), HTML estático.
+  - [x] P3 web plana sin marcado, nombres comerciales, sin GTIN.
+  - [x] P4 lista de precios en PDF (tabla; sin GTIN; abreviaturas).
+  - [x] P5 mensajes tipo WhatsApp (texto informal, precios en el cuerpo, "8/512", "ryzen5").
+- [x] Servidor local de los sitios (http.server o equivalente) y script de arranque único.
+- [x] `verdad.json`: para cada proveedor y producto, la oferta exacta (lo que debería extraerse).
+- [x] ~60 tareas en `tareas/tareas_b.jsonl` generadas por programa desde la verdad, en categorías (inspiradas en la
       taxonomía de WebMall): búsqueda específica por modelo, más barato entre proveedores, búsqueda con restricciones
       (presupuesto, especificación mínima, entrega), búsqueda vaga, caso sin respuesta (debe abstenerse). Respuesta de
       referencia calculada, no manual.
-- [ ] Pruebas: cada tarea tiene respuesta derivable de `verdad.json`.
+- [x] Pruebas: cada tarea tiene respuesta derivable de `verdad.json`.
 
 **Terminado cuando:** los 5 proveedores sirven contenido y las 60 tareas tienen respuesta de referencia validada.
 **Informe:** `docs/informe/03_metodologia_corpus.md`.

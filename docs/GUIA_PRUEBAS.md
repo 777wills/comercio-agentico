@@ -79,3 +79,85 @@ Si funciona: una línea `OK` por modelo con latencia, tokens, costo en US$, prov
 Evita `make ping` sin argumentos: llama también a Sonnet, Kimi y Opus (unos centavos; innecesario para probar).
 
 ---
+
+## S01 — Corpus B sintético y tareas (9-nov)
+
+### Qué se construyó y por qué
+
+| Componente | Qué hace | Concepto de IA / decisión |
+|---|---|---|
+| `corpus_b/catalogo.py` → `corpus/b_sintetico/catalogo.json` | DeepSeek Flash propone 40 productos (8 por categoría) con atributos, precio y tres alias: comercial, de PDF y de WhatsApp. El **código** asigna el GTIN-13 y valida cada atributo contra el perfil. | **Generación sintética con LLM + validación por programa:** el LLM aporta verosimilitud; lo que hace mal (dígitos de control, unidades) lo hace o lo corrige el código. El catálogo se congela en git: el resto no vuelve a gastar. |
+| `perfiles/electronica.yaml` | Ahora cubre las 5 categorías: `tipo_producto`, `procesador`, `frecuencia_refresco`, `cancelacion_ruido`, `inalambrico`, `autonomia`, `tipo_almacenamiento`, `velocidad_lectura`. | Configuración declarativa: ampliar el dominio no tocó código. |
+| `corpus_b/generar.py` + `render.py` | Con semilla fija, reparte el catálogo entre 5 proveedores con precios, envío, plazo y existencias propios. **Primero escribe `verdad.json`** y después renderiza cada formato desde ella. | **Verdad de referencia por construcción:** como el contenido sale de la verdad, se sabe exactamente qué debería extraerse de cada página, PDF o mensaje. |
+| P1 `servidor_mcp.py` | Mayorista por **MCP** (FastMCP) con `buscar_productos` y `detalle_producto`, con nombres de campo propios. | Herramienta externa real para el agente (MCP). Traducir `valor_unitario_cop` a `precio` es trabajo del agente. |
+| P2 a P5 | P2: HTML con **JSON-LD** schema.org. P3: HTML plano con nombres comerciales y sin GTIN. P4: **PDF** mayorista con abreviaturas. P5: **chat tipo WhatsApp** con precios como "2'350.000" o "2350 mil". | **Heterogeneidad de fuentes:** del dato estructurado al texto informal. Cuanto menos madura la fuente, más depende el sistema del LLM y del emparejamiento por embeddings (S02). |
+| `corpus_b/servir.py` | Un solo comando sirve P2 a P5 en `:8800` y P1 en `:8801/mcp`. | El agente accede a cada fuente como lo haría en la realidad. |
+| `corpus_b/tareas.py` → `tareas/tareas_b.jsonl` | 60 tareas: específica 12, más barato 12, restricciones 15, vaga 12, sin respuesta 9. Cada una trae consulta, criterios y respuesta, calculada por `calcular_respuesta`. | **Evaluación con verdad derivada:** ninguna respuesta se escribe a mano. Las 9 sin respuesta miden la **abstención**. |
+| `tests/test_corpus_b.py` | 18 pruebas nuevas: cada formato coincide con la verdad, la regeneración es idéntica byte a byte y cada tarea tiene la respuesta que se deriva de la verdad. | Validez del instrumento de medición antes de medir nada. |
+
+### Cómo probarlo
+
+**1. Pruebas completas — costo US$0 (sin red)**
+
+```bash
+make check          # lint + formato + 52 pruebas (34 de S00 + 18 de S01)
+```
+
+Si funciona: `52 passed`. Las de S01 levantan el servidor MCP en memoria y leen el PDF.
+
+**2. Regenerar el corpus y las tareas — costo US$0 (sin red)**
+
+```bash
+make corpus-b
+git status --short corpus tareas    # debe quedar vacío: la generación es determinista
+```
+
+Si funciona: el resumen por proveedor (21/20/19/22/13 ofertas, 95 en total), los productos sin oferta y los que
+solo están agotados, y luego `60 tareas ... {'especifica': 12, ...}`. Si `git status` muestra cambios, se rompió
+el determinismo.
+
+**3. Ver los cinco proveedores en el navegador — costo US$0 (solo local)**
+
+```bash
+make corpus-b-servir                # deja la terminal ocupada; Ctrl+C para detener
+```
+
+Abre <http://127.0.0.1:8800/p2_web_schema/index.html>, `/p3_web_plana/index.html`, `/p4_pdf/lista_precios.pdf` y
+`/p5_mensaje/chat.txt`. En P2, "Ver código fuente" muestra el bloque `application/ld+json`. En P3 el mismo producto
+aparece con otro nombre y sin EAN. Para P1 (MCP), en otra terminal:
+
+```bash
+uv run python -c "
+import asyncio
+from fastmcp import Client
+async def m():
+    async with Client('http://127.0.0.1:8801/mcp') as c:
+        r = await c.call_tool('buscar_productos', {'texto': 'vivobook'})
+        print(r.data)
+asyncio.run(m())"
+```
+
+Qué observar: solo aparece una de las dos variantes del Vivobook (8 GB). La otra (16 GB) la venden P2, P3 y P4.
+En P3 las dos variantes solo se distinguen por "8GB/512GB" frente a "16GB/512GB": es el caso difícil del
+emparejamiento.
+
+**4. Inspeccionar una tarea y su respuesta — costo US$0**
+
+```bash
+uv run python -c "
+from comercio_agentico.corpus_b.tareas import cargar_tareas
+for t in cargar_tareas()[::12]:
+    print(t.id, t.categoria, '|', t.consulta); print('   →', t.respuesta.model_dump())"
+```
+
+Interpretación: `ofertas_validas` es la lista (proveedor, producto) ordenada por costo total. La primera es la
+respuesta exacta. En las tareas vagas vale cualquiera de la lista, y en las de `sin_respuesta` la respuesta es
+`abstencion: True`.
+
+**5. (Opcional) Regenerar el catálogo con el LLM — costo ~US$0,03**
+
+No hace falta: el catálogo está congelado en git. Si lo regeneras, cambian los productos y, con ellos, todo el
+corpus. Para ver la validación sin gastar, usa `uv run python -m comercio_agentico.corpus_b.catalogo --reparar`
+(US$0).
+
+---

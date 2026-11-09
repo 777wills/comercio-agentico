@@ -37,6 +37,8 @@ make dev                      # uv sync + hooks de pre-commit
 cp .env.example .env          # y completar las claves
 make check                    # lint + formato + pruebas (sin red)
 make ping                     # una llamada con herramientas a cada uno de los seis modelos
+make corpus-b                 # regenera los 5 proveedores sintéticos, su verdad y 60 tareas (sin red)
+make corpus-b-servir          # sirve el corpus B: web en :8800 y MCP en :8801
 ```
 
 ## Estructura

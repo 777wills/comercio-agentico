@@ -2,12 +2,14 @@
 
 ## Siguiente sesión
 
-**S01 — Corpus B sintético y tareas** (mar 10-nov; ver `docs/PLAN.md`, sección S01).
+**S02 — Agente N2 y emparejamiento: MVP de punta a punta** (mié 11-nov; ver `docs/PLAN.md`, sección S02).
+S01 se cerró el 9-nov, con un día de adelanto.
 
-Siguiente paso exacto: generar el catálogo de referencia (~40 productos: portátiles, monitores, celulares,
-audífonos, almacenamiento) con `obtener_extractor("deepseek-flash", ...)` o Haiku, validarlo con `OfertaExtraida`
-y `gtin_valido`, y ampliar `perfiles/electronica.yaml` con los atributos que falten para esas categorías (p. ej.
-procesador, frecuencia de refresco, cancelación de ruido). Antes de escribir FastMCP, consultar Context7.
+Siguiente paso exacto: consultar Context7 para langchain-mcp-adapters (cliente del MCP de P1 en
+`http://127.0.0.1:8801/mcp`), crawl4ai (`abrir_pagina` → Markdown) y el modelo de embeddings multilingüe local
+(D15). Después, escribir las herramientas `abrir_pagina`, `leer_documento` (pypdf, ya instalado, y texto),
+`consultar_mcp` y `extraer_ofertas`, y luego el grafo LangGraph. La prueba de humo usa 5 tareas de
+`tareas/tareas_b.jsonl` (una por categoría) con `deepseek-flash`, con el corpus servido por `make corpus-b-servir`.
 
 ## Presupuesto de modelos
 
@@ -15,7 +17,7 @@ procesador, frecuencia de refresco, cancelación de ruido). Antes de escribir Fa
 |---|---|
 | Presupuesto total | 300,00 |
 | Créditos comprados | 50,00 (Anthropic 30 + OpenRouter 20), 9-nov |
-| Gastado acumulado | ~0,26 (S00: ping de los 6 modelos, diagnóstico y dos mediciones de extracción en los 6) |
+| Gastado acumulado | ~0,28 (S00: ~0,26 en ping, diagnóstico y mediciones de extracción; S01: 0,024 en el catálogo del corpus B con DeepSeek Flash) |
 
 Costo medido el 9-nov (S00) de una extracción estructurada típica (página con 12 ofertas, 1500–3500 tokens de
 entrada, `json_schema`): Flash 0,0015 · Haiku 0,0016 · DeepSeek Pro 0,006 · Sonnet 0,025 · Kimi 0,032 ·
@@ -41,6 +43,18 @@ largas que la de prueba (recalibrar en S03 con el arnés), y Opus queda cerca de
 El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un subproceso.
 
 ## Bitácora
+
+### 9-nov-2026 — S01 Corpus B sintético y tareas
+- Catálogo de 40 productos (8 por categoría) generado con DeepSeek Flash en 5 llamadas (US$0,024). El LLM dejó
+  copias de los alias dentro de `atributos` y escribió los TB decimales (1000 GB). Lo corrige `reparar()` de
+  forma determinista, sin volver a llamar al modelo. El GTIN-13 lo asigna el código (prefijo 200) (D58).
+- Perfil ampliado a las 5 categorías (8 atributos nuevos).
+- Generador determinista (semilla 20261110): 95 ofertas, 36 productos ofrecidos (18 en 3+ proveedores),
+  4 sin oferta y 3 solo agotados. P1 por FastMCP 4.1.6, P2 HTML con JSON-LD, P3 HTML plano, P4 PDF (fpdf2,
+  reproducible byte a byte) y P5 chat tipo WhatsApp. `make corpus-b-servir` sirve todo (probado en vivo).
+- 60 tareas en `tareas/tareas_b.jsonl` (12/12/15/12/9), con respuesta de `calcular_respuesta()` sobre la verdad.
+- 18 pruebas nuevas (52 en total) en verde; Ruff limpio. Dependencias nuevas: fastmcp, fpdf2, pypdf, jinja2.
+- Informe: `docs/informe/03_metodologia_corpus.md`.
 
 ### 9-nov-2026 — Reorganización (entre S00 y S01)
 - La raíz queda solo con el proyecto de código. Material del curso, entregables y contexto histórico movidos a
@@ -78,6 +92,9 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
   `docs/PROMPT_SESION.md`, `.gitignore`; repositorio git local inicializado.
 
 ## Pendientes abiertos
+
+- Verificar en la especificación general de GS1 que el rango de prefijos 200–299 es de circulación restringida,
+  antes de citarlo en el informe (gs1.org rechaza la consulta automática; revisar en el navegador).
 
 - Plantilla institucional de trabajo escrito (IEEE): Wills la descarga del aula y la pone en `privado/curso/` antes de S10.
 - Verificar en S06 si la taxonomía MITRE pertinente es ATLAS.

@@ -1,13 +1,64 @@
 # Perfil de categoría declarativo: electrónica de consumo (D20).
 # Cambiar de dominio es escribir otro YAML como este; el código no cambia (E4, propuesto).
 nombre: electronica
-descripcion: Televisores, portátiles, celulares y monitores vendidos en Colombia.
+descripcion: Portátiles, monitores, celulares, audífonos y almacenamiento vendidos en Colombia.
 
 # Orden de preferencia para decidir que dos ofertas son el mismo producto (D15).
 # Sin GTIN ni MPN se recurre a marca + modelo, con embeddings del catálogo y confirmación del LLM.
 identificador_emparejamiento: [gtin, mpn, marca_modelo]
 
 atributos:
+  - nombre: tipo_producto
+    tipo: categoria
+    sinonimos: [categoria, categoría, tipo]
+    valores:
+      portatil: ["portátil", "laptop", "notebook", "computador portátil", "port"]
+      monitor: ["pantalla de computador", "monitor gamer", "mon"]
+      celular: ["smartphone", "teléfono", "telefono", "móvil", "movil", "cel"]
+      audifonos: ["audífonos", "auriculares", "headphones", "earbuds", "diadema", "aud"]
+      almacenamiento: ["disco", "disco externo", "ssd", "memoria usb", "microsd", "alm"]
+
+  - nombre: procesador
+    tipo: texto
+    sinonimos: [cpu, chip, procesador]
+
+  - nombre: frecuencia_refresco
+    tipo: numero
+    unidad: hz
+    sinonimos: [tasa de refresco, refresco, frecuencia]
+    mayor_es_mejor: true
+
+  - nombre: cancelacion_ruido
+    tipo: booleano
+    sinonimos: [anc, cancelación de ruido, cancelación activa de ruido]
+
+  - nombre: inalambrico
+    tipo: booleano
+    sinonimos: [inalámbrico, bluetooth, wireless]
+
+  - nombre: autonomia
+    tipo: numero
+    unidad: horas
+    conversiones: {h: 1.0, hrs: 1.0, hora: 1.0}
+    sinonimos: [autonomía, duración de batería]
+    mayor_es_mejor: true
+
+  - nombre: tipo_almacenamiento
+    tipo: categoria
+    sinonimos: [tipo de disco, tecnología de almacenamiento]
+    valores:
+      SSD: ["ssd nvme", "nvme", "ssd sata", "estado sólido"]
+      HDD: ["disco duro", "hdd mecánico"]
+      USB: ["memoria usb", "usb flash", "pendrive"]
+      microSD: ["micro sd", "tarjeta microsd", "tarjeta de memoria"]
+
+  - nombre: velocidad_lectura
+    tipo: numero
+    unidad: mb/s
+    conversiones: {"gb/s": 1000.0}
+    sinonimos: [lectura, velocidad de lectura]
+    mayor_es_mejor: true
+
   - nombre: tamano_pantalla
     tipo: numero
     unidad: pulgadas

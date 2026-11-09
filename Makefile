@@ -5,7 +5,7 @@
 SHELL := /bin/bash
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
@@ -32,6 +32,16 @@ format-check: ## Verifica el formato sin modificarlo
 
 ping: ## Llama con herramientas a los seis modelos (gasta centavos; requiere .env)
 	uv run python -m comercio_agentico.ping
+
+corpus-b: ## Regenera proveedores, verdad y tareas del corpus B (US$0, sin red)
+	uv run python -m comercio_agentico.corpus_b.generar
+	uv run python -m comercio_agentico.corpus_b.tareas
+
+corpus-b-servir: ## Sirve P2-P5 en :8800 y P1 (MCP) en :8801; Ctrl+C para detener (US$0)
+	uv run python -m comercio_agentico.corpus_b.servir
+
+corpus-b-catalogo: ## Regenera el catálogo con DeepSeek Flash (~US$0,03; requiere .env)
+	uv run python -m comercio_agentico.corpus_b.catalogo
 
 test: ## Ejecuta las pruebas
 	uv run pytest

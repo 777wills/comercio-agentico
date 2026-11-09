@@ -1,0 +1,758 @@
+{
+  "modelo_generador": "deepseek-flash",
+  "costo_usd": 0.02442,
+  "productos": [
+    {
+      "marca": "Lenovo",
+      "modelo": "IdeaPad Slim 3 15IAN8",
+      "mpn": "82XQ00L3CO",
+      "titulo": "Lenovo IdeaPad Slim 3 15IAN8 Intel Core i3-1315U 8GB 256GB SSD 15.6\"",
+      "precio_referencia_cop": 1899900,
+      "atributos": {
+        "procesador": "Intel Core i3-1315U",
+        "memoria_ram": 8,
+        "almacenamiento": 256,
+        "tamano_pantalla": 15.6,
+        "peso": 1.62
+      },
+      "alias_comercial": "Lenovo IdeaPad Slim 3 15IAN8 8GB/256GB",
+      "alias_pdf": "PORT LENOVO IDEAPAD SLIM3 I3 8/256 15.6",
+      "alias_mensaje": "lenovo ideapad slim3 i3 8/256",
+      "id": "C01",
+      "categoria": "portatil",
+      "gtin": "2000000000015"
+    },
+    {
+      "marca": "HP",
+      "modelo": "Pavilion Plus 14-ew1053dx",
+      "mpn": "9Y7F3LA",
+      "titulo": "HP Pavilion Plus 14-ew1053dx Intel Core Ultra 5 125H 16GB 512GB SSD 14\" OLED",
+      "precio_referencia_cop": 4799900,
+      "atributos": {
+        "procesador": "Intel Core Ultra 5 125H",
+        "memoria_ram": 16,
+        "almacenamiento": 512,
+        "tamano_pantalla": 14,
+        "peso": 1.4
+      },
+      "alias_comercial": "HP Pavilion Plus 14-ew1053dx 16GB/512GB",
+      "alias_pdf": "PORT HP PAVILION PLUS U5 16/512 14",
+      "alias_mensaje": "hp pavilion plus ultra5 16/512",
+      "id": "C02",
+      "categoria": "portatil",
+      "gtin": "2000000000022"
+    },
+    {
+      "marca": "Acer",
+      "modelo": "Aspire 5 A515-58M-57LR",
+      "mpn": "NX.KHFAL.002",
+      "titulo": "Acer Aspire 5 A515-58M-57LR Intel Core i5-1335U 16GB 512GB SSD 15.6\"",
+      "precio_referencia_cop": 3299900,
+      "atributos": {
+        "procesador": "Intel Core i5-1335U",
+        "memoria_ram": 16,
+        "almacenamiento": 512,
+        "tamano_pantalla": 15.6,
+        "peso": 1.77
+      },
+      "alias_comercial": "Acer Aspire 5 A515-58M-57LR 16GB/512GB",
+      "alias_pdf": "PORT ACER ASPIRE5 I5 16/512 15.6",
+      "alias_mensaje": "acer aspire5 i5 16/512",
+      "id": "C03",
+      "categoria": "portatil",
+      "gtin": "2000000000039"
+    },
+    {
+      "marca": "Dell",
+      "modelo": "Latitude 5450",
+      "mpn": "N003L5450CO",
+      "titulo": "Dell Latitude 5450 Intel Core Ultra 7 165U 16GB 512GB SSD 14\"",
+      "precio_referencia_cop": 6499900,
+      "atributos": {
+        "procesador": "Intel Core Ultra 7 165U",
+        "memoria_ram": 16,
+        "almacenamiento": 512,
+        "tamano_pantalla": 14,
+        "peso": 1.4
+      },
+      "alias_comercial": "Dell Latitude 5450 Ultra 7 16GB/512GB",
+      "alias_pdf": "PORT DELL LATITUDE5450 U7 16/512 14",
+      "alias_mensaje": "dell latitude 5450 ultra7 16/512",
+      "id": "C04",
+      "categoria": "portatil",
+      "gtin": "2000000000046"
+    },
+    {
+      "marca": "Apple",
+      "modelo": "MacBook Pro 14 M4 Pro",
+      "mpn": "MX2H3LL/A",
+      "titulo": "Apple MacBook Pro 14 M4 Pro 24GB 1TB SSD 14.2\"",
+      "precio_referencia_cop": 11999900,
+      "atributos": {
+        "procesador": "Apple M4 Pro",
+        "memoria_ram": 24,
+        "almacenamiento": 1024,
+        "tamano_pantalla": 14.2,
+        "peso": 1.55
+      },
+      "alias_comercial": "Apple MacBook Pro 14 M4 Pro 24GB/1TB",
+      "alias_pdf": "PORT APPLE MACBOOK PRO14 M4PRO 24/1TB",
+      "alias_mensaje": "macbook pro 14 m4pro 24/1tb",
+      "id": "C05",
+      "categoria": "portatil",
+      "gtin": "2000000000053"
+    },
+    {
+      "marca": "MSI",
+      "modelo": "Katana 15 HX B14VGK",
+      "mpn": "9S7-158571-021",
+      "titulo": "MSI Katana 15 HX B14VGK Intel Core i7-14650HX 16GB 1TB SSD RTX 4060 15.6\"",
+      "precio_referencia_cop": 7999900,
+      "atributos": {
+        "procesador": "Intel Core i7-14650HX",
+        "memoria_ram": 16,
+        "almacenamiento": 1024,
+        "tamano_pantalla": 15.6,
+        "peso": 2.3
+      },
+      "alias_comercial": "MSI Katana 15 HX B14VGK i7 16GB/1TB RTX 4060",
+      "alias_pdf": "PORT MSI KATANA15 HX I7 16/1TB 15.6",
+      "alias_mensaje": "msi katana 15 hx i7 16/1tb rtx4060",
+      "id": "C06",
+      "categoria": "portatil",
+      "gtin": "2000000000060"
+    },
+    {
+      "marca": "ASUS",
+      "modelo": "Vivobook 15 X1504VA-NJ123",
+      "mpn": "X1504VA-NJ123",
+      "titulo": "ASUS Vivobook 15 X1504VA-NJ123 Intel Core i5-1335U 8GB 512GB SSD 15.6\"",
+      "precio_referencia_cop": 2699900,
+      "atributos": {
+        "procesador": "Intel Core i5-1335U",
+        "memoria_ram": 8,
+        "almacenamiento": 512,
+        "tamano_pantalla": 15.6,
+        "peso": 1.7
+      },
+      "alias_comercial": "ASUS Vivobook 15 X1504VA 8GB/512GB",
+      "alias_pdf": "PORT ASUS VIVOBOOK15 X1504 I5 8/512",
+      "alias_mensaje": "asus vivobook 15 x1504 i5 8/512",
+      "id": "C07",
+      "categoria": "portatil",
+      "gtin": "2000000000077"
+    },
+    {
+      "marca": "ASUS",
+      "modelo": "Vivobook 15 X1504VA-NJ124",
+      "mpn": "X1504VA-NJ124",
+      "titulo": "ASUS Vivobook 15 X1504VA-NJ124 Intel Core i5-1335U 16GB 512GB SSD 15.6\"",
+      "precio_referencia_cop": 3099900,
+      "atributos": {
+        "procesador": "Intel Core i5-1335U",
+        "memoria_ram": 16,
+        "almacenamiento": 512,
+        "tamano_pantalla": 15.6,
+        "peso": 1.7
+      },
+      "alias_comercial": "ASUS Vivobook 15 X1504VA 16GB/512GB",
+      "alias_pdf": "PORT ASUS VIVOBOOK15 X1504 I5 16/512",
+      "alias_mensaje": "asus vivobook 15 x1504 i5 16/512",
+      "id": "C08",
+      "categoria": "portatil",
+      "gtin": "2000000000084"
+    },
+    {
+      "marca": "LG",
+      "modelo": "24MR400-B",
+      "mpn": "24MR400-B.AWSP",
+      "titulo": "Monitor LG 24MR400-B 24\" FHD IPS 100Hz",
+      "precio_referencia_cop": 499900,
+      "atributos": {
+        "tamano_pantalla": 24,
+        "resolucion": "FHD",
+        "tipo_panel": "IPS",
+        "frecuencia_refresco": 100
+      },
+      "alias_comercial": "Monitor LG 24MR400-B 24\" FHD IPS 100Hz",
+      "alias_pdf": "MON LG 24MR400 24 FHD IPS 100HZ",
+      "alias_mensaje": "lg 24mr400 24 fhd ips 100hz",
+      "id": "C09",
+      "categoria": "monitor",
+      "gtin": "2000000000091"
+    },
+    {
+      "marca": "Samsung",
+      "modelo": "Smart Monitor M8 M80D",
+      "mpn": "LS32DM801UNXZA-32G",
+      "titulo": "Monitor Samsung Smart Monitor M8 M80D 32\" 4K QLED 32GB",
+      "precio_referencia_cop": 2599900,
+      "atributos": {
+        "tamano_pantalla": 32,
+        "resolucion": "4K",
+        "tipo_panel": "QLED",
+        "frecuencia_refresco": 60
+      },
+      "alias_comercial": "Monitor Samsung Smart Monitor M8 M80D 32\" 4K QLED 32GB",
+      "alias_pdf": "MON SAMS SMART M8 M80D 32 4K QLED 32GB",
+      "alias_mensaje": "samsung smart m8 m80d 32 4k qled 32gb",
+      "id": "C10",
+      "categoria": "monitor",
+      "gtin": "2000000000107"
+    },
+    {
+      "marca": "Samsung",
+      "modelo": "Smart Monitor M8 M80D",
+      "mpn": "LS32DM801UNXZA-64G",
+      "titulo": "Monitor Samsung Smart Monitor M8 M80D 32\" 4K QLED 64GB",
+      "precio_referencia_cop": 2899900,
+      "atributos": {
+        "tamano_pantalla": 32,
+        "resolucion": "4K",
+        "tipo_panel": "QLED",
+        "frecuencia_refresco": 60
+      },
+      "alias_comercial": "Monitor Samsung Smart Monitor M8 M80D 32\" 4K QLED 64GB",
+      "alias_pdf": "MON SAMS SMART M8 M80D 32 4K QLED 64GB",
+      "alias_mensaje": "samsung smart m8 m80d 32 4k qled 64gb",
+      "id": "C11",
+      "categoria": "monitor",
+      "gtin": "2000000000114"
+    },
+    {
+      "marca": "Xiaomi",
+      "modelo": "A27i",
+      "mpn": "ELA5349GL",
+      "titulo": "Monitor Xiaomi A27i 27\" FHD IPS 100Hz",
+      "precio_referencia_cop": 699900,
+      "atributos": {
+        "tamano_pantalla": 27,
+        "resolucion": "FHD",
+        "tipo_panel": "IPS",
+        "frecuencia_refresco": 100
+      },
+      "alias_comercial": "Monitor Xiaomi A27i 27\" FHD IPS 100Hz",
+      "alias_pdf": "MON XIAOMI A27I 27 FHD IPS 100HZ",
+      "alias_mensaje": "xiaomi a27i 27 fhd ips 100hz",
+      "id": "C12",
+      "categoria": "monitor",
+      "gtin": "2000000000121"
+    },
+    {
+      "marca": "ASUS",
+      "modelo": "TUF Gaming VG27AQ",
+      "mpn": "VG27AQ",
+      "titulo": "Monitor ASUS TUF Gaming VG27AQ 27\" QHD IPS 165Hz",
+      "precio_referencia_cop": 1499900,
+      "atributos": {
+        "tamano_pantalla": 27,
+        "resolucion": "QHD",
+        "tipo_panel": "IPS",
+        "frecuencia_refresco": 165
+      },
+      "alias_comercial": "Monitor ASUS TUF Gaming VG27AQ 27\" QHD IPS 165Hz",
+      "alias_pdf": "MON ASUS TUF VG27AQ 27 QHD IPS 165HZ",
+      "alias_mensaje": "asus tuf vg27aq 27 qhd 165hz",
+      "id": "C13",
+      "categoria": "monitor",
+      "gtin": "2000000000138"
+    },
+    {
+      "marca": "Dell",
+      "modelo": "UltraSharp U2723QE",
+      "mpn": "U2723QE",
+      "titulo": "Monitor Dell UltraSharp U2723QE 27\" 4K IPS 60Hz",
+      "precio_referencia_cop": 2999900,
+      "atributos": {
+        "tamano_pantalla": 27,
+        "resolucion": "4K",
+        "tipo_panel": "IPS",
+        "frecuencia_refresco": 60
+      },
+      "alias_comercial": "Monitor Dell UltraSharp U2723QE 27\" 4K IPS 60Hz",
+      "alias_pdf": "MON DELL U2723QE 27 4K IPS USB-C",
+      "alias_mensaje": "dell ultrasharp u2723qe 27 4k ips usb-c",
+      "id": "C14",
+      "categoria": "monitor",
+      "gtin": "2000000000145"
+    },
+    {
+      "marca": "LG",
+      "modelo": "UltraGear OLED 27GR95QE-B",
+      "mpn": "27GR95QE-B",
+      "titulo": "Monitor LG UltraGear OLED 27GR95QE-B 27\" QHD OLED 240Hz",
+      "precio_referencia_cop": 4299900,
+      "atributos": {
+        "tamano_pantalla": 27,
+        "resolucion": "QHD",
+        "tipo_panel": "OLED",
+        "frecuencia_refresco": 240
+      },
+      "alias_comercial": "Monitor LG UltraGear OLED 27GR95QE-B 27\" QHD OLED 240Hz",
+      "alias_pdf": "MON LG ULTRAGEAR OLED 27 QHD 240HZ",
+      "alias_mensaje": "lg ultragear oled 27 qhd 240hz",
+      "id": "C15",
+      "categoria": "monitor",
+      "gtin": "2000000000152"
+    },
+    {
+      "marca": "Dell",
+      "modelo": "Alienware AW3225QF",
+      "mpn": "AW3225QF",
+      "titulo": "Monitor Dell Alienware AW3225QF 32\" 4K OLED 240Hz",
+      "precio_referencia_cop": 7999900,
+      "atributos": {
+        "tamano_pantalla": 32,
+        "resolucion": "4K",
+        "tipo_panel": "OLED",
+        "frecuencia_refresco": 240
+      },
+      "alias_comercial": "Monitor Dell Alienware AW3225QF 32\" 4K OLED 240Hz",
+      "alias_pdf": "MON DELL ALIENWARE 32 4K OLED 240HZ",
+      "alias_mensaje": "dell alienware aw3225qf 32 4k oled 240hz",
+      "id": "C16",
+      "categoria": "monitor",
+      "gtin": "2000000000169"
+    },
+    {
+      "marca": "Tecno",
+      "modelo": "Spark Go 2026",
+      "mpn": "TEC-SG2026-4-128",
+      "titulo": "Tecno Spark Go 2026 4/128 GB",
+      "precio_referencia_cop": 549900,
+      "atributos": {
+        "memoria_ram": 4,
+        "almacenamiento": 128,
+        "tamano_pantalla": 6.6,
+        "bateria": 5000
+      },
+      "alias_comercial": "Tecno Spark Go 2026 4/128 GB",
+      "alias_pdf": "CEL TECNO SPARK GO 2026 4/128 6.6",
+      "alias_mensaje": "tecno spark go 2026 4/128",
+      "id": "C17",
+      "categoria": "celular",
+      "gtin": "2000000000176"
+    },
+    {
+      "marca": "Motorola",
+      "modelo": "Moto G86 5G",
+      "mpn": "MOT-G86-5G-8-256",
+      "titulo": "Motorola Moto G86 5G 8/256 GB",
+      "precio_referencia_cop": 1299900,
+      "atributos": {
+        "memoria_ram": 8,
+        "almacenamiento": 256,
+        "tamano_pantalla": 6.7,
+        "bateria": 5200
+      },
+      "alias_comercial": "Motorola Moto G86 5G 8/256 GB",
+      "alias_pdf": "CEL MOTOROLA MOTO G86 5G 8/256 6.7",
+      "alias_mensaje": "moto g86 5g 8/256",
+      "id": "C18",
+      "categoria": "celular",
+      "gtin": "2000000000183"
+    },
+    {
+      "marca": "Xiaomi",
+      "modelo": "Redmi Note 15 8/128",
+      "mpn": "XIA-RN15-8-128",
+      "titulo": "Xiaomi Redmi Note 15 8/128 GB",
+      "precio_referencia_cop": 899900,
+      "atributos": {
+        "memoria_ram": 8,
+        "almacenamiento": 128,
+        "tamano_pantalla": 6.67,
+        "bateria": 5500
+      },
+      "alias_comercial": "Xiaomi Redmi Note 15 8/128 GB",
+      "alias_pdf": "CEL XIAOMI REDMI NOTE 15 8/128 6.67",
+      "alias_mensaje": "xiaomi redmi note 15 8/128",
+      "id": "C19",
+      "categoria": "celular",
+      "gtin": "2000000000190"
+    },
+    {
+      "marca": "Xiaomi",
+      "modelo": "Redmi Note 15 8/256",
+      "mpn": "XIA-RN15-8-256",
+      "titulo": "Xiaomi Redmi Note 15 8/256 GB",
+      "precio_referencia_cop": 1049900,
+      "atributos": {
+        "memoria_ram": 8,
+        "almacenamiento": 256,
+        "tamano_pantalla": 6.67,
+        "bateria": 5500
+      },
+      "alias_comercial": "Xiaomi Redmi Note 15 8/256 GB",
+      "alias_pdf": "CEL XIAOMI REDMI NOTE 15 8/256 6.67",
+      "alias_mensaje": "xiaomi redmi note 15 8/256",
+      "id": "C20",
+      "categoria": "celular",
+      "gtin": "2000000000206"
+    },
+    {
+      "marca": "Samsung",
+      "modelo": "Galaxy A56 5G",
+      "mpn": "SAM-A56-5G-8-256",
+      "titulo": "Samsung Galaxy A56 5G 8/256 GB",
+      "precio_referencia_cop": 1799900,
+      "atributos": {
+        "memoria_ram": 8,
+        "almacenamiento": 256,
+        "tamano_pantalla": 6.7,
+        "bateria": 5000
+      },
+      "alias_comercial": "Samsung Galaxy A56 5G 8/256 GB",
+      "alias_pdf": "CEL SAMSUNG GALAXY A56 5G 8/256 6.7",
+      "alias_mensaje": "samsung galaxy a56 5g 8/256",
+      "id": "C21",
+      "categoria": "celular",
+      "gtin": "2000000000213"
+    },
+    {
+      "marca": "Honor",
+      "modelo": "X7d 5G",
+      "mpn": "HON-X7D-5G-8-256",
+      "titulo": "Honor X7d 5G 8/256 GB",
+      "precio_referencia_cop": 999900,
+      "atributos": {
+        "memoria_ram": 8,
+        "almacenamiento": 256,
+        "tamano_pantalla": 6.77,
+        "bateria": 6000
+      },
+      "alias_comercial": "Honor X7d 5G 8/256 GB",
+      "alias_pdf": "CEL HONOR X7D 5G 8/256 6.77",
+      "alias_mensaje": "honor x7d 5g 8/256",
+      "id": "C22",
+      "categoria": "celular",
+      "gtin": "2000000000220"
+    },
+    {
+      "marca": "Apple",
+      "modelo": "iPhone 17 Pro Max",
+      "mpn": "APL-IP17PM-12-256",
+      "titulo": "Apple iPhone 17 Pro Max 12/256 GB",
+      "precio_referencia_cop": 8999900,
+      "atributos": {
+        "memoria_ram": 12,
+        "almacenamiento": 256,
+        "tamano_pantalla": 6.9,
+        "bateria": 5000
+      },
+      "alias_comercial": "Apple iPhone 17 Pro Max 12/256 GB",
+      "alias_pdf": "CEL APPLE IPHONE 17 PRO MAX 12/256 6.9",
+      "alias_mensaje": "iphone 17 pro max 12/256",
+      "id": "C23",
+      "categoria": "celular",
+      "gtin": "2000000000237"
+    },
+    {
+      "marca": "Samsung",
+      "modelo": "Galaxy S26 Ultra",
+      "mpn": "SAM-S26U-12-512",
+      "titulo": "Samsung Galaxy S26 Ultra 12/512 GB",
+      "precio_referencia_cop": 7499900,
+      "atributos": {
+        "memoria_ram": 12,
+        "almacenamiento": 512,
+        "tamano_pantalla": 6.9,
+        "bateria": 5400
+      },
+      "alias_comercial": "Samsung Galaxy S26 Ultra 12/512 GB",
+      "alias_pdf": "CEL SAMSUNG GALAXY S26 ULTRA 12/512 6.9",
+      "alias_mensaje": "samsung galaxy s26 ultra 12/512",
+      "id": "C24",
+      "categoria": "celular",
+      "gtin": "2000000000244"
+    },
+    {
+      "marca": "Apple",
+      "modelo": "AirPods Pro (2.ª generación) USB-C",
+      "mpn": "MTJV3LZ/A",
+      "titulo": "Apple AirPods Pro (2.ª generación) USB-C",
+      "precio_referencia_cop": 1199000,
+      "atributos": {
+        "cancelacion_ruido": true,
+        "inalambrico": true,
+        "autonomia": 6
+      },
+      "alias_comercial": "AirPods Pro 2 USB-C",
+      "alias_pdf": "AUD APPLE AIRPODS PRO 2 USB-C ANC",
+      "alias_mensaje": "airpods pro 2 usb c anc",
+      "id": "C25",
+      "categoria": "audifonos",
+      "gtin": "2000000000251"
+    },
+    {
+      "marca": "Sony",
+      "modelo": "WH-1000XM5",
+      "mpn": "WH1000XM5/B",
+      "titulo": "Sony WH-1000XM5",
+      "precio_referencia_cop": 1499000,
+      "atributos": {
+        "cancelacion_ruido": true,
+        "inalambrico": true,
+        "autonomia": 30
+      },
+      "alias_comercial": "Sony WH-1000XM5 ANC",
+      "alias_pdf": "AUD SONY WH-1000XM5 ANC BT",
+      "alias_mensaje": "sony wh1000xm5 anc",
+      "id": "C26",
+      "categoria": "audifonos",
+      "gtin": "2000000000268"
+    },
+    {
+      "marca": "JBL",
+      "modelo": "Tune 520BT",
+      "mpn": "JBLT520BTBLK",
+      "titulo": "JBL Tune 520BT",
+      "precio_referencia_cop": 199900,
+      "atributos": {
+        "cancelacion_ruido": false,
+        "inalambrico": true,
+        "autonomia": 57
+      },
+      "alias_comercial": "JBL Tune 520BT Bluetooth",
+      "alias_pdf": "AUD JBL TUNE 520BT BLUETOOTH",
+      "alias_mensaje": "jbl tune 520bt",
+      "id": "C27",
+      "categoria": "audifonos",
+      "gtin": "2000000000275"
+    },
+    {
+      "marca": "Xiaomi",
+      "modelo": "Redmi Buds 5",
+      "mpn": "M2316E1",
+      "titulo": "Xiaomi Redmi Buds 5",
+      "precio_referencia_cop": 149900,
+      "atributos": {
+        "cancelacion_ruido": true,
+        "inalambrico": true,
+        "autonomia": 10
+      },
+      "alias_comercial": "Redmi Buds 5 ANC",
+      "alias_pdf": "AUD XIAOMI REDMI BUDS 5 ANC",
+      "alias_mensaje": "redmi buds 5 anc",
+      "id": "C28",
+      "categoria": "audifonos",
+      "gtin": "2000000000282"
+    },
+    {
+      "marca": "Samsung",
+      "modelo": "Galaxy Buds2 Pro",
+      "mpn": "SM-R510NZKALTA",
+      "titulo": "Samsung Galaxy Buds2 Pro",
+      "precio_referencia_cop": 699900,
+      "atributos": {
+        "cancelacion_ruido": true,
+        "inalambrico": true,
+        "autonomia": 5
+      },
+      "alias_comercial": "Galaxy Buds2 Pro ANC",
+      "alias_pdf": "AUD SAMSUNG GALAXY BUDS2 PRO ANC",
+      "alias_mensaje": "galaxy buds2 pro anc",
+      "id": "C29",
+      "categoria": "audifonos",
+      "gtin": "2000000000299"
+    },
+    {
+      "marca": "Logitech",
+      "modelo": "G435 Lightspeed",
+      "mpn": "981-000995",
+      "titulo": "Logitech G435 Lightspeed",
+      "precio_referencia_cop": 279900,
+      "atributos": {
+        "cancelacion_ruido": false,
+        "inalambrico": true,
+        "autonomia": 18
+      },
+      "alias_comercial": "G435 Lightspeed",
+      "alias_pdf": "AUD LOGITECH G435 LIGHTSPEED",
+      "alias_mensaje": "logitech g435 lightspeed",
+      "id": "C30",
+      "categoria": "audifonos",
+      "gtin": "2000000000305"
+    },
+    {
+      "marca": "Sony",
+      "modelo": "NW-WS623",
+      "mpn": "NWWS623/4GB",
+      "titulo": "Sony NW-WS623 4GB",
+      "precio_referencia_cop": 399900,
+      "atributos": {
+        "cancelacion_ruido": false,
+        "inalambrico": true,
+        "autonomia": 12
+      },
+      "alias_comercial": "Sony Walkman NW-WS623 4GB",
+      "alias_pdf": "AUD SONY NW-WS623 4GB BT",
+      "alias_mensaje": "sony nw ws623 4gb",
+      "id": "C31",
+      "categoria": "audifonos",
+      "gtin": "2000000000312"
+    },
+    {
+      "marca": "Sony",
+      "modelo": "NW-WS623",
+      "mpn": "NWWS623/8GB",
+      "titulo": "Sony NW-WS623 8GB",
+      "precio_referencia_cop": 449900,
+      "atributos": {
+        "cancelacion_ruido": false,
+        "inalambrico": true,
+        "autonomia": 12
+      },
+      "alias_comercial": "Sony Walkman NW-WS623 8GB",
+      "alias_pdf": "AUD SONY NW-WS623 8GB BT",
+      "alias_mensaje": "sony nw ws623 8gb",
+      "id": "C32",
+      "categoria": "audifonos",
+      "gtin": "2000000000329"
+    },
+    {
+      "marca": "Kingston",
+      "modelo": "DataTraveler Exodia",
+      "mpn": "DTX/128GB",
+      "titulo": "Kingston DataTraveler Exodia 128 GB",
+      "precio_referencia_cop": 45900,
+      "atributos": {
+        "tipo_almacenamiento": "USB",
+        "almacenamiento": 128,
+        "velocidad_lectura": 100
+      },
+      "alias_comercial": "Memoria USB Kingston DataTraveler Exodia 128 GB",
+      "alias_pdf": "USB KINGSTON DT EXODIA 128GB",
+      "alias_mensaje": "usb kingston exodia 128gb",
+      "id": "C33",
+      "categoria": "almacenamiento",
+      "gtin": "2000000000336"
+    },
+    {
+      "marca": "SanDisk",
+      "modelo": "Ultra microSDXC",
+      "mpn": "SDSQUA4-256G-GN6MN",
+      "titulo": "SanDisk Ultra microSDXC 256 GB",
+      "precio_referencia_cop": 99900,
+      "atributos": {
+        "tipo_almacenamiento": "microSD",
+        "almacenamiento": 256,
+        "velocidad_lectura": 150
+      },
+      "alias_comercial": "MicroSD SanDisk Ultra 256 GB",
+      "alias_pdf": "MICROSD SANDISK ULTRA 256GB",
+      "alias_mensaje": "micro sd sandisk ultra 256gb",
+      "id": "C34",
+      "categoria": "almacenamiento",
+      "gtin": "2000000000343"
+    },
+    {
+      "marca": "ADATA",
+      "modelo": "SU650",
+      "mpn": "ASU650SS-512GT-C",
+      "titulo": "ADATA SU650 SSD 512 GB",
+      "precio_referencia_cop": 189900,
+      "atributos": {
+        "tipo_almacenamiento": "SSD",
+        "almacenamiento": 512,
+        "velocidad_lectura": 520
+      },
+      "alias_comercial": "SSD ADATA SU650 512 GB",
+      "alias_pdf": "SSD ADATA SU650 512GB SATA",
+      "alias_mensaje": "ssd adata su650 512gb",
+      "id": "C35",
+      "categoria": "almacenamiento",
+      "gtin": "2000000000350"
+    },
+    {
+      "marca": "Western Digital",
+      "modelo": "Blue",
+      "mpn": "WD10EZEX",
+      "titulo": "Western Digital Blue 1 TB",
+      "precio_referencia_cop": 249900,
+      "atributos": {
+        "tipo_almacenamiento": "HDD",
+        "almacenamiento": 1024,
+        "velocidad_lectura": 150
+      },
+      "alias_comercial": "Disco Duro Western Digital Blue 1 TB",
+      "alias_pdf": "HDD WD BLUE 1TB 3.5 SATA",
+      "alias_mensaje": "disco wd blue 1tb pc",
+      "id": "C36",
+      "categoria": "almacenamiento",
+      "gtin": "2000000000367"
+    },
+    {
+      "marca": "Samsung",
+      "modelo": "T7 Shield 1 TB",
+      "mpn": "MU-PE1T0S/AM",
+      "titulo": "Samsung T7 Shield 1 TB",
+      "precio_referencia_cop": 649900,
+      "atributos": {
+        "tipo_almacenamiento": "SSD",
+        "almacenamiento": 1024,
+        "velocidad_lectura": 1050
+      },
+      "alias_comercial": "SSD Portátil Samsung T7 Shield 1 TB",
+      "alias_pdf": "SSD SAMSUNG T7 SHIELD 1TB",
+      "alias_mensaje": "ssd samsung t7 shield 1tb",
+      "id": "C37",
+      "categoria": "almacenamiento",
+      "gtin": "2000000000374"
+    },
+    {
+      "marca": "Samsung",
+      "modelo": "T7 Shield 2 TB",
+      "mpn": "MU-PE2T0S/AM",
+      "titulo": "Samsung T7 Shield 2 TB",
+      "precio_referencia_cop": 1099900,
+      "atributos": {
+        "tipo_almacenamiento": "SSD",
+        "almacenamiento": 2048,
+        "velocidad_lectura": 1050
+      },
+      "alias_comercial": "SSD Portátil Samsung T7 Shield 2 TB",
+      "alias_pdf": "SSD SAMSUNG T7 SHIELD 2TB",
+      "alias_mensaje": "ssd samsung t7 shield 2tb",
+      "id": "C38",
+      "categoria": "almacenamiento",
+      "gtin": "2000000000381"
+    },
+    {
+      "marca": "Seagate",
+      "modelo": "IronWolf Pro",
+      "mpn": "ST8000NT001",
+      "titulo": "Seagate IronWolf Pro 8 TB",
+      "precio_referencia_cop": 1499900,
+      "atributos": {
+        "tipo_almacenamiento": "HDD",
+        "almacenamiento": 8192,
+        "velocidad_lectura": 250
+      },
+      "alias_comercial": "Disco Duro Seagate IronWolf Pro 8 TB",
+      "alias_pdf": "HDD SEAGATE IRONWOLF PRO 8TB",
+      "alias_mensaje": "disco seagate ironwolf pro 8tb nas",
+      "id": "C39",
+      "categoria": "almacenamiento",
+      "gtin": "2000000000398"
+    },
+    {
+      "marca": "Crucial",
+      "modelo": "X9 Pro",
+      "mpn": "CT4000X9PROSSD9",
+      "titulo": "Crucial X9 Pro 4 TB",
+      "precio_referencia_cop": 1899900,
+      "atributos": {
+        "tipo_almacenamiento": "SSD",
+        "almacenamiento": 4096,
+        "velocidad_lectura": 1050
+      },
+      "alias_comercial": "SSD Portátil Crucial X9 Pro 4 TB",
+      "alias_pdf": "SSD CRUCIAL X9 PRO 4TB",
+      "alias_mensaje": "ssd crucial x9 pro 4tb",
+      "id": "C40",
+      "categoria": "almacenamiento",
+      "gtin": "2000000000404"
+    }
+  ]
+}

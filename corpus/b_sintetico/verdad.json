@@ -1,0 +1,2332 @@
+{
+  "semilla": 20261110,
+  "proveedores": [
+    {
+      "id": "P1",
+      "nombre": "Mayorista Digital",
+      "tipo_fuente": "mcp"
+    },
+    {
+      "id": "P2",
+      "nombre": "TiendaNova",
+      "tipo_fuente": "web_schema"
+    },
+    {
+      "id": "P3",
+      "nombre": "ElectroBarrio",
+      "tipo_fuente": "web_plana"
+    },
+    {
+      "id": "P4",
+      "nombre": "Distribuciones Andinas",
+      "tipo_fuente": "pdf"
+    },
+    {
+      "id": "P5",
+      "nombre": "Carlos Tecnología",
+      "tipo_fuente": "mensaje"
+    }
+  ],
+  "productos_sin_oferta": [
+    "C12",
+    "C20",
+    "C31",
+    "C37"
+  ],
+  "productos_solo_agotados": [
+    "C18",
+    "C23",
+    "C26"
+  ],
+  "ofertas": [
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C01",
+      "oferta": {
+        "titulo": "Lenovo IdeaPad Slim 3 15IAN8 Intel Core i3-1315U 8GB 256GB SSD 15.6\"",
+        "precio": 1919900.0,
+        "moneda": "COP",
+        "gtin": "2000000000015",
+        "mpn": "82XQ00L3CO",
+        "marca": "Lenovo",
+        "modelo": "IdeaPad Slim 3 15IAN8",
+        "disponibilidad": "en_stock",
+        "costo_envio": 0.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "procesador": "Intel Core i3-1315U",
+          "memoria_ram": 8,
+          "almacenamiento": 256,
+          "tamano_pantalla": 15.6,
+          "peso": 1.62
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0001"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C01",
+      "oferta": {
+        "titulo": "Lenovo IdeaPad Slim 3 15IAN8 Intel Core i3-1315U 8GB 256GB SSD 15.6\"",
+        "precio": 1939900.0,
+        "moneda": "COP",
+        "gtin": "2000000000015",
+        "mpn": "82XQ00L3CO",
+        "marca": "Lenovo",
+        "modelo": "IdeaPad Slim 3 15IAN8",
+        "disponibilidad": "en_stock",
+        "costo_envio": 12900.0,
+        "plazo_entrega_dias": 3,
+        "condiciones_entrega": null,
+        "atributos": {
+          "procesador": "Intel Core i3-1315U",
+          "memoria_ram": 8,
+          "almacenamiento": 256,
+          "tamano_pantalla": 15.6,
+          "peso": 1.62
+        }
+      },
+      "ubicacion": "p2_web_schema/c01.html"
+    },
+    {
+      "proveedor": "P3",
+      "nombre_proveedor": "ElectroBarrio",
+      "tipo_fuente": "web_plana",
+      "producto_id": "C01",
+      "oferta": {
+        "titulo": "Lenovo IdeaPad Slim 3 15IAN8 8GB/256GB",
+        "precio": 1949900.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": "Lenovo",
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 15000.0,
+        "plazo_entrega_dias": 4,
+        "condiciones_entrega": null,
+        "atributos": {
+          "procesador": "Intel Core i3-1315U",
+          "memoria_ram": 8,
+          "almacenamiento": 256,
+          "tamano_pantalla": 15.6,
+          "peso": 1.62
+        }
+      },
+      "ubicacion": "p3_web_plana/portatil.html#item-c01"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C01",
+      "oferta": {
+        "titulo": "PORT LENOVO IDEAPAD SLIM3 I3 8/256 15.6",
+        "precio": 1798000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 5,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA019"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C02",
+      "oferta": {
+        "titulo": "HP Pavilion Plus 14-ew1053dx Intel Core Ultra 5 125H 16GB 512GB SSD 14\" OLED",
+        "precio": 4876900.0,
+        "moneda": "COP",
+        "gtin": "2000000000022",
+        "mpn": "9Y7F3LA",
+        "marca": "HP",
+        "modelo": "Pavilion Plus 14-ew1053dx",
+        "disponibilidad": "en_stock",
+        "costo_envio": 0.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "procesador": "Intel Core Ultra 5 125H",
+          "memoria_ram": 16,
+          "almacenamiento": 512,
+          "tamano_pantalla": 14,
+          "peso": 1.4
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0002"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C02",
+      "oferta": {
+        "titulo": "HP Pavilion Plus 14-ew1053dx Intel Core Ultra 5 125H 16GB 512GB SSD 14\" OLED",
+        "precio": 4588900.0,
+        "moneda": "COP",
+        "gtin": "2000000000022",
+        "mpn": "9Y7F3LA",
+        "marca": "HP",
+        "modelo": "Pavilion Plus 14-ew1053dx",
+        "disponibilidad": "bajo_pedido",
+        "costo_envio": 0.0,
+        "plazo_entrega_dias": 10,
+        "condiciones_entrega": null,
+        "atributos": {
+          "procesador": "Intel Core Ultra 5 125H",
+          "memoria_ram": 16,
+          "almacenamiento": 512,
+          "tamano_pantalla": 14,
+          "peso": 1.4
+        }
+      },
+      "ubicacion": "p2_web_schema/c02.html"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C02",
+      "oferta": {
+        "titulo": "PORT HP PAVILION PLUS U5 16/512 14",
+        "precio": 4644000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 5,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA018"
+    },
+    {
+      "proveedor": "P3",
+      "nombre_proveedor": "ElectroBarrio",
+      "tipo_fuente": "web_plana",
+      "producto_id": "C03",
+      "oferta": {
+        "titulo": "Acer Aspire 5 A515-58M-57LR 16GB/512GB",
+        "precio": 3253900.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": "Acer",
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 15000.0,
+        "plazo_entrega_dias": 4,
+        "condiciones_entrega": null,
+        "atributos": {
+          "procesador": "Intel Core i5-1335U",
+          "memoria_ram": 16,
+          "almacenamiento": 512,
+          "tamano_pantalla": 15.6,
+          "peso": 1.77
+        }
+      },
+      "ubicacion": "p3_web_plana/portatil.html#item-c03"
+    },
+    {
+      "proveedor": "P5",
+      "nombre_proveedor": "Carlos Tecnología",
+      "tipo_fuente": "mensaje",
+      "producto_id": "C03",
+      "oferta": {
+        "titulo": "acer aspire5 i5 16/512",
+        "precio": 3135000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 10000.0,
+        "plazo_entrega_dias": 1,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p5_mensaje/chat.txt#L4"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C04",
+      "oferta": {
+        "titulo": "Dell Latitude 5450 Intel Core Ultra 7 165U 16GB 512GB SSD 14\"",
+        "precio": 6411900.0,
+        "moneda": "COP",
+        "gtin": "2000000000046",
+        "mpn": "N003L5450CO",
+        "marca": "Dell",
+        "modelo": "Latitude 5450",
+        "disponibilidad": "agotado",
+        "costo_envio": 0.0,
+        "plazo_entrega_dias": 3,
+        "condiciones_entrega": null,
+        "atributos": {
+          "procesador": "Intel Core Ultra 7 165U",
+          "memoria_ram": 16,
+          "almacenamiento": 512,
+          "tamano_pantalla": 14,
+          "peso": 1.4
+        }
+      },
+      "ubicacion": "p2_web_schema/c04.html"
+    },
+    {
+      "proveedor": "P3",
+      "nombre_proveedor": "ElectroBarrio",
+      "tipo_fuente": "web_plana",
+      "producto_id": "C04",
+      "oferta": {
+        "titulo": "Dell Latitude 5450 Ultra 7 16GB/512GB",
+        "precio": 6088900.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": "Dell",
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 15000.0,
+        "plazo_entrega_dias": 4,
+        "condiciones_entrega": null,
+        "atributos": {
+          "procesador": "Intel Core Ultra 7 165U",
+          "memoria_ram": 16,
+          "almacenamiento": 512,
+          "tamano_pantalla": 14,
+          "peso": 1.4
+        }
+      },
+      "ubicacion": "p3_web_plana/portatil.html#item-c04"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C04",
+      "oferta": {
+        "titulo": "PORT DELL LATITUDE5450 U7 16/512 14",
+        "precio": 6173000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "agotado",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 5,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA017"
+    },
+    {
+      "proveedor": "P5",
+      "nombre_proveedor": "Carlos Tecnología",
+      "tipo_fuente": "mensaje",
+      "producto_id": "C04",
+      "oferta": {
+        "titulo": "dell latitude 5450 ultra7 16/512",
+        "precio": 5840000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "agotado",
+        "costo_envio": 10000.0,
+        "plazo_entrega_dias": 1,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p5_mensaje/chat.txt#L5"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C05",
+      "oferta": {
+        "titulo": "Apple MacBook Pro 14 M4 Pro 24GB 1TB SSD 14.2\"",
+        "precio": 12398900.0,
+        "moneda": "COP",
+        "gtin": "2000000000053",
+        "mpn": "MX2H3LL/A",
+        "marca": "Apple",
+        "modelo": "MacBook Pro 14 M4 Pro",
+        "disponibilidad": "en_stock",
+        "costo_envio": 0.0,
+        "plazo_entrega_dias": 3,
+        "condiciones_entrega": null,
+        "atributos": {
+          "procesador": "Apple M4 Pro",
+          "memoria_ram": 24,
+          "almacenamiento": 1024,
+          "tamano_pantalla": 14.2,
+          "peso": 1.55
+        }
+      },
+      "ubicacion": "p2_web_schema/c05.html"
+    },
+    {
+      "proveedor": "P3",
+      "nombre_proveedor": "ElectroBarrio",
+      "tipo_fuente": "web_plana",
+      "producto_id": "C05",
+      "oferta": {
+        "titulo": "Apple MacBook Pro 14 M4 Pro 24GB/1TB",
+        "precio": 11193900.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": "Apple",
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 15000.0,
+        "plazo_entrega_dias": 4,
+        "condiciones_entrega": null,
+        "atributos": {
+          "procesador": "Apple M4 Pro",
+          "memoria_ram": 24,
+          "almacenamiento": 1024,
+          "tamano_pantalla": 14.2,
+          "peso": 1.55
+        }
+      },
+      "ubicacion": "p3_web_plana/portatil.html#item-c05"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C06",
+      "oferta": {
+        "titulo": "MSI Katana 15 HX B14VGK Intel Core i7-14650HX 16GB 1TB SSD RTX 4060 15.6\"",
+        "precio": 7272900.0,
+        "moneda": "COP",
+        "gtin": "2000000000060",
+        "mpn": "9S7-158571-021",
+        "marca": "MSI",
+        "modelo": "Katana 15 HX B14VGK",
+        "disponibilidad": "en_stock",
+        "costo_envio": 0.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "procesador": "Intel Core i7-14650HX",
+          "memoria_ram": 16,
+          "almacenamiento": 1024,
+          "tamano_pantalla": 15.6,
+          "peso": 2.3
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0003"
+    },
+    {
+      "proveedor": "P3",
+      "nombre_proveedor": "ElectroBarrio",
+      "tipo_fuente": "web_plana",
+      "producto_id": "C06",
+      "oferta": {
+        "titulo": "MSI Katana 15 HX B14VGK i7 16GB/1TB RTX 4060",
+        "precio": 8082900.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": "MSI",
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 15000.0,
+        "plazo_entrega_dias": 4,
+        "condiciones_entrega": null,
+        "atributos": {
+          "procesador": "Intel Core i7-14650HX",
+          "memoria_ram": 16,
+          "almacenamiento": 1024,
+          "tamano_pantalla": 15.6,
+          "peso": 2.3
+        }
+      },
+      "ubicacion": "p3_web_plana/portatil.html#item-c06"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C06",
+      "oferta": {
+        "titulo": "PORT MSI KATANA15 HX I7 16/1TB 15.6",
+        "precio": 7144000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "bajo_pedido",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 12,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA020"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C07",
+      "oferta": {
+        "titulo": "ASUS Vivobook 15 X1504VA-NJ123 Intel Core i5-1335U 8GB 512GB SSD 15.6\"",
+        "precio": 2610900.0,
+        "moneda": "COP",
+        "gtin": "2000000000077",
+        "mpn": "X1504VA-NJ123",
+        "marca": "ASUS",
+        "modelo": "Vivobook 15 X1504VA-NJ123",
+        "disponibilidad": "en_stock",
+        "costo_envio": 0.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "procesador": "Intel Core i5-1335U",
+          "memoria_ram": 8,
+          "almacenamiento": 512,
+          "tamano_pantalla": 15.6,
+          "peso": 1.7
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0004"
+    },
+    {
+      "proveedor": "P3",
+      "nombre_proveedor": "ElectroBarrio",
+      "tipo_fuente": "web_plana",
+      "producto_id": "C07",
+      "oferta": {
+        "titulo": "ASUS Vivobook 15 X1504VA 8GB/512GB",
+        "precio": 2523900.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": "ASUS",
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 15000.0,
+        "plazo_entrega_dias": 4,
+        "condiciones_entrega": null,
+        "atributos": {
+          "procesador": "Intel Core i5-1335U",
+          "memoria_ram": 8,
+          "almacenamiento": 512,
+          "tamano_pantalla": 15.6,
+          "peso": 1.7
+        }
+      },
+      "ubicacion": "p3_web_plana/portatil.html#item-c07"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C08",
+      "oferta": {
+        "titulo": "ASUS Vivobook 15 X1504VA-NJ124 Intel Core i5-1335U 16GB 512GB SSD 15.6\"",
+        "precio": 3110900.0,
+        "moneda": "COP",
+        "gtin": "2000000000084",
+        "mpn": "X1504VA-NJ124",
+        "marca": "ASUS",
+        "modelo": "Vivobook 15 X1504VA-NJ124",
+        "disponibilidad": "agotado",
+        "costo_envio": 0.0,
+        "plazo_entrega_dias": 3,
+        "condiciones_entrega": null,
+        "atributos": {
+          "procesador": "Intel Core i5-1335U",
+          "memoria_ram": 16,
+          "almacenamiento": 512,
+          "tamano_pantalla": 15.6,
+          "peso": 1.7
+        }
+      },
+      "ubicacion": "p2_web_schema/c08.html"
+    },
+    {
+      "proveedor": "P3",
+      "nombre_proveedor": "ElectroBarrio",
+      "tipo_fuente": "web_plana",
+      "producto_id": "C08",
+      "oferta": {
+        "titulo": "ASUS Vivobook 15 X1504VA 16GB/512GB",
+        "precio": 3087900.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": "ASUS",
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 15000.0,
+        "plazo_entrega_dias": 4,
+        "condiciones_entrega": null,
+        "atributos": {
+          "procesador": "Intel Core i5-1335U",
+          "memoria_ram": 16,
+          "almacenamiento": 512,
+          "tamano_pantalla": 15.6,
+          "peso": 1.7
+        }
+      },
+      "ubicacion": "p3_web_plana/portatil.html#item-c08"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C08",
+      "oferta": {
+        "titulo": "PORT ASUS VIVOBOOK15 X1504 I5 16/512",
+        "precio": 2999000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 5,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA016"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C09",
+      "oferta": {
+        "titulo": "Monitor LG 24MR400-B 24\" FHD IPS 100Hz",
+        "precio": 474900.0,
+        "moneda": "COP",
+        "gtin": "2000000000091",
+        "mpn": "24MR400-B.AWSP",
+        "marca": "LG",
+        "modelo": "24MR400-B",
+        "disponibilidad": "en_stock",
+        "costo_envio": 14900.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tamano_pantalla": 24,
+          "resolucion": "FHD",
+          "tipo_panel": "IPS",
+          "frecuencia_refresco": 100
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0005"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C09",
+      "oferta": {
+        "titulo": "Monitor LG 24MR400-B 24\" FHD IPS 100Hz",
+        "precio": 523900.0,
+        "moneda": "COP",
+        "gtin": "2000000000091",
+        "mpn": "24MR400-B.AWSP",
+        "marca": "LG",
+        "modelo": "24MR400-B",
+        "disponibilidad": "en_stock",
+        "costo_envio": 12900.0,
+        "plazo_entrega_dias": 3,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tamano_pantalla": 24,
+          "resolucion": "FHD",
+          "tipo_panel": "IPS",
+          "frecuencia_refresco": 100
+        }
+      },
+      "ubicacion": "p2_web_schema/c09.html"
+    },
+    {
+      "proveedor": "P3",
+      "nombre_proveedor": "ElectroBarrio",
+      "tipo_fuente": "web_plana",
+      "producto_id": "C09",
+      "oferta": {
+        "titulo": "Monitor LG 24MR400-B 24\" FHD IPS 100Hz",
+        "precio": 521900.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": "LG",
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 15000.0,
+        "plazo_entrega_dias": 4,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tamano_pantalla": 24,
+          "resolucion": "FHD",
+          "tipo_panel": "IPS",
+          "frecuencia_refresco": 100
+        }
+      },
+      "ubicacion": "p3_web_plana/monitor.html#item-c09"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C09",
+      "oferta": {
+        "titulo": "MON LG 24MR400 24 FHD IPS 100HZ",
+        "precio": 493000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 5,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA014"
+    },
+    {
+      "proveedor": "P5",
+      "nombre_proveedor": "Carlos Tecnología",
+      "tipo_fuente": "mensaje",
+      "producto_id": "C10",
+      "oferta": {
+        "titulo": "samsung smart m8 m80d 32 4k qled 32gb",
+        "precio": 2500000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 10000.0,
+        "plazo_entrega_dias": 1,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p5_mensaje/chat.txt#L7"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C11",
+      "oferta": {
+        "titulo": "Monitor Samsung Smart Monitor M8 M80D 32\" 4K QLED 64GB",
+        "precio": 2843900.0,
+        "moneda": "COP",
+        "gtin": "2000000000114",
+        "mpn": "LS32DM801UNXZA-64G",
+        "marca": "Samsung",
+        "modelo": "Smart Monitor M8 M80D",
+        "disponibilidad": "en_stock",
+        "costo_envio": 0.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tamano_pantalla": 32,
+          "resolucion": "4K",
+          "tipo_panel": "QLED",
+          "frecuencia_refresco": 60
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0006"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C11",
+      "oferta": {
+        "titulo": "Monitor Samsung Smart Monitor M8 M80D 32\" 4K QLED 64GB",
+        "precio": 3082900.0,
+        "moneda": "COP",
+        "gtin": "2000000000114",
+        "mpn": "LS32DM801UNXZA-64G",
+        "marca": "Samsung",
+        "modelo": "Smart Monitor M8 M80D",
+        "disponibilidad": "en_stock",
+        "costo_envio": 0.0,
+        "plazo_entrega_dias": 3,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tamano_pantalla": 32,
+          "resolucion": "4K",
+          "tipo_panel": "QLED",
+          "frecuencia_refresco": 60
+        }
+      },
+      "ubicacion": "p2_web_schema/c11.html"
+    },
+    {
+      "proveedor": "P3",
+      "nombre_proveedor": "ElectroBarrio",
+      "tipo_fuente": "web_plana",
+      "producto_id": "C11",
+      "oferta": {
+        "titulo": "Monitor Samsung Smart Monitor M8 M80D 32\" 4K QLED 64GB",
+        "precio": 2965900.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": "Samsung",
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 15000.0,
+        "plazo_entrega_dias": 4,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tamano_pantalla": 32,
+          "resolucion": "4K",
+          "tipo_panel": "QLED",
+          "frecuencia_refresco": 60
+        }
+      },
+      "ubicacion": "p3_web_plana/monitor.html#item-c11"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C11",
+      "oferta": {
+        "titulo": "MON SAMS SMART M8 M80D 32 4K QLED 64GB",
+        "precio": 2732000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 5,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA015"
+    },
+    {
+      "proveedor": "P5",
+      "nombre_proveedor": "Carlos Tecnología",
+      "tipo_fuente": "mensaje",
+      "producto_id": "C11",
+      "oferta": {
+        "titulo": "samsung smart m8 m80d 32 4k qled 64gb",
+        "precio": 2765000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 10000.0,
+        "plazo_entrega_dias": 1,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p5_mensaje/chat.txt#L8"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C13",
+      "oferta": {
+        "titulo": "Monitor ASUS TUF Gaming VG27AQ 27\" QHD IPS 165Hz",
+        "precio": 1447900.0,
+        "moneda": "COP",
+        "gtin": "2000000000138",
+        "mpn": "VG27AQ",
+        "marca": "ASUS",
+        "modelo": "TUF Gaming VG27AQ",
+        "disponibilidad": "en_stock",
+        "costo_envio": 12900.0,
+        "plazo_entrega_dias": 3,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tamano_pantalla": 27,
+          "resolucion": "QHD",
+          "tipo_panel": "IPS",
+          "frecuencia_refresco": 165
+        }
+      },
+      "ubicacion": "p2_web_schema/c13.html"
+    },
+    {
+      "proveedor": "P3",
+      "nombre_proveedor": "ElectroBarrio",
+      "tipo_fuente": "web_plana",
+      "producto_id": "C13",
+      "oferta": {
+        "titulo": "Monitor ASUS TUF Gaming VG27AQ 27\" QHD IPS 165Hz",
+        "precio": 1456900.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": "ASUS",
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 15000.0,
+        "plazo_entrega_dias": 4,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tamano_pantalla": 27,
+          "resolucion": "QHD",
+          "tipo_panel": "IPS",
+          "frecuencia_refresco": 165
+        }
+      },
+      "ubicacion": "p3_web_plana/monitor.html#item-c13"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C13",
+      "oferta": {
+        "titulo": "MON ASUS TUF VG27AQ 27 QHD IPS 165HZ",
+        "precio": 1390000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 5,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA011"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C14",
+      "oferta": {
+        "titulo": "Monitor Dell UltraSharp U2723QE 27\" 4K IPS 60Hz",
+        "precio": 2863900.0,
+        "moneda": "COP",
+        "gtin": "2000000000145",
+        "mpn": "U2723QE",
+        "marca": "Dell",
+        "modelo": "UltraSharp U2723QE",
+        "disponibilidad": "agotado",
+        "costo_envio": 0.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tamano_pantalla": 27,
+          "resolucion": "4K",
+          "tipo_panel": "IPS",
+          "frecuencia_refresco": 60
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0007"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C14",
+      "oferta": {
+        "titulo": "Monitor Dell UltraSharp U2723QE 27\" 4K IPS 60Hz",
+        "precio": 2849900.0,
+        "moneda": "COP",
+        "gtin": "2000000000145",
+        "mpn": "U2723QE",
+        "marca": "Dell",
+        "modelo": "UltraSharp U2723QE",
+        "disponibilidad": "en_stock",
+        "costo_envio": 0.0,
+        "plazo_entrega_dias": 3,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tamano_pantalla": 27,
+          "resolucion": "4K",
+          "tipo_panel": "IPS",
+          "frecuencia_refresco": 60
+        }
+      },
+      "ubicacion": "p2_web_schema/c14.html"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C14",
+      "oferta": {
+        "titulo": "MON DELL U2723QE 27 4K IPS USB-C",
+        "precio": 2900000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 5,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA013"
+    },
+    {
+      "proveedor": "P3",
+      "nombre_proveedor": "ElectroBarrio",
+      "tipo_fuente": "web_plana",
+      "producto_id": "C15",
+      "oferta": {
+        "titulo": "Monitor LG UltraGear OLED 27GR95QE-B 27\" QHD OLED 240Hz",
+        "precio": 4410900.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": "LG",
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 15000.0,
+        "plazo_entrega_dias": 4,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tamano_pantalla": 27,
+          "resolucion": "QHD",
+          "tipo_panel": "OLED",
+          "frecuencia_refresco": 240
+        }
+      },
+      "ubicacion": "p3_web_plana/monitor.html#item-c15"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C16",
+      "oferta": {
+        "titulo": "Monitor Dell Alienware AW3225QF 32\" 4K OLED 240Hz",
+        "precio": 8117900.0,
+        "moneda": "COP",
+        "gtin": "2000000000169",
+        "mpn": "AW3225QF",
+        "marca": "Dell",
+        "modelo": "Alienware AW3225QF",
+        "disponibilidad": "en_stock",
+        "costo_envio": 0.0,
+        "plazo_entrega_dias": 3,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tamano_pantalla": 32,
+          "resolucion": "4K",
+          "tipo_panel": "OLED",
+          "frecuencia_refresco": 240
+        }
+      },
+      "ubicacion": "p2_web_schema/c16.html"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C16",
+      "oferta": {
+        "titulo": "MON DELL ALIENWARE 32 4K OLED 240HZ",
+        "precio": 7184000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 5,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA012"
+    },
+    {
+      "proveedor": "P5",
+      "nombre_proveedor": "Carlos Tecnología",
+      "tipo_fuente": "mensaje",
+      "producto_id": "C16",
+      "oferta": {
+        "titulo": "dell alienware aw3225qf 32 4k oled 240hz",
+        "precio": 7295000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "agotado",
+        "costo_envio": 10000.0,
+        "plazo_entrega_dias": 1,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p5_mensaje/chat.txt#L9"
+    },
+    {
+      "proveedor": "P3",
+      "nombre_proveedor": "ElectroBarrio",
+      "tipo_fuente": "web_plana",
+      "producto_id": "C17",
+      "oferta": {
+        "titulo": "Tecno Spark Go 2026 4/128 GB",
+        "precio": 523900.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": "Tecno",
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 15000.0,
+        "plazo_entrega_dias": 4,
+        "condiciones_entrega": null,
+        "atributos": {
+          "memoria_ram": 4,
+          "almacenamiento": 128,
+          "tamano_pantalla": 6.6,
+          "bateria": 5000
+        }
+      },
+      "ubicacion": "p3_web_plana/celular.html#item-c17"
+    },
+    {
+      "proveedor": "P5",
+      "nombre_proveedor": "Carlos Tecnología",
+      "tipo_fuente": "mensaje",
+      "producto_id": "C17",
+      "oferta": {
+        "titulo": "tecno spark go 2026 4/128",
+        "precio": 500000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "bajo_pedido",
+        "costo_envio": 10000.0,
+        "plazo_entrega_dias": 8,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p5_mensaje/chat.txt#L13"
+    },
+    {
+      "proveedor": "P3",
+      "nombre_proveedor": "ElectroBarrio",
+      "tipo_fuente": "web_plana",
+      "producto_id": "C18",
+      "oferta": {
+        "titulo": "Motorola Moto G86 5G 8/256 GB",
+        "precio": 1227900.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": "Motorola",
+        "modelo": null,
+        "disponibilidad": "agotado",
+        "costo_envio": 15000.0,
+        "plazo_entrega_dias": 4,
+        "condiciones_entrega": null,
+        "atributos": {
+          "memoria_ram": 8,
+          "almacenamiento": 256,
+          "tamano_pantalla": 6.7,
+          "bateria": 5200
+        }
+      },
+      "ubicacion": "p3_web_plana/celular.html#item-c18"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C19",
+      "oferta": {
+        "titulo": "Xiaomi Redmi Note 15 8/128 GB",
+        "precio": 828900.0,
+        "moneda": "COP",
+        "gtin": "2000000000190",
+        "mpn": "XIA-RN15-8-128",
+        "marca": "Xiaomi",
+        "modelo": "Redmi Note 15 8/128",
+        "disponibilidad": "en_stock",
+        "costo_envio": 14900.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "memoria_ram": 8,
+          "almacenamiento": 128,
+          "tamano_pantalla": 6.67,
+          "bateria": 5500
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0008"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C19",
+      "oferta": {
+        "titulo": "CEL XIAOMI REDMI NOTE 15 8/128 6.67",
+        "precio": 848000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "agotado",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 5,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA007"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C21",
+      "oferta": {
+        "titulo": "Samsung Galaxy A56 5G 8/256 GB",
+        "precio": 1733900.0,
+        "moneda": "COP",
+        "gtin": "2000000000213",
+        "mpn": "SAM-A56-5G-8-256",
+        "marca": "Samsung",
+        "modelo": "Galaxy A56 5G",
+        "disponibilidad": "en_stock",
+        "costo_envio": 0.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "memoria_ram": 8,
+          "almacenamiento": 256,
+          "tamano_pantalla": 6.7,
+          "bateria": 5000
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0009"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C21",
+      "oferta": {
+        "titulo": "Samsung Galaxy A56 5G 8/256 GB",
+        "precio": 1778900.0,
+        "moneda": "COP",
+        "gtin": "2000000000213",
+        "mpn": "SAM-A56-5G-8-256",
+        "marca": "Samsung",
+        "modelo": "Galaxy A56 5G",
+        "disponibilidad": "bajo_pedido",
+        "costo_envio": 12900.0,
+        "plazo_entrega_dias": 10,
+        "condiciones_entrega": null,
+        "atributos": {
+          "memoria_ram": 8,
+          "almacenamiento": 256,
+          "tamano_pantalla": 6.7,
+          "bateria": 5000
+        }
+      },
+      "ubicacion": "p2_web_schema/c21.html"
+    },
+    {
+      "proveedor": "P5",
+      "nombre_proveedor": "Carlos Tecnología",
+      "tipo_fuente": "mensaje",
+      "producto_id": "C21",
+      "oferta": {
+        "titulo": "samsung galaxy a56 5g 8/256",
+        "precio": 1740000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 10000.0,
+        "plazo_entrega_dias": 1,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p5_mensaje/chat.txt#L14"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C22",
+      "oferta": {
+        "titulo": "Honor X7d 5G 8/256 GB",
+        "precio": 973900.0,
+        "moneda": "COP",
+        "gtin": "2000000000220",
+        "mpn": "HON-X7D-5G-8-256",
+        "marca": "Honor",
+        "modelo": "X7d 5G",
+        "disponibilidad": "en_stock",
+        "costo_envio": 14900.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "memoria_ram": 8,
+          "almacenamiento": 256,
+          "tamano_pantalla": 6.77,
+          "bateria": 6000
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0010"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C23",
+      "oferta": {
+        "titulo": "Apple iPhone 17 Pro Max 12/256 GB",
+        "precio": 8299900.0,
+        "moneda": "COP",
+        "gtin": "2000000000237",
+        "mpn": "APL-IP17PM-12-256",
+        "marca": "Apple",
+        "modelo": "iPhone 17 Pro Max",
+        "disponibilidad": "agotado",
+        "costo_envio": 0.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "memoria_ram": 12,
+          "almacenamiento": 256,
+          "tamano_pantalla": 6.9,
+          "bateria": 5000
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0011"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C23",
+      "oferta": {
+        "titulo": "Apple iPhone 17 Pro Max 12/256 GB",
+        "precio": 8920900.0,
+        "moneda": "COP",
+        "gtin": "2000000000237",
+        "mpn": "APL-IP17PM-12-256",
+        "marca": "Apple",
+        "modelo": "iPhone 17 Pro Max",
+        "disponibilidad": "agotado",
+        "costo_envio": 0.0,
+        "plazo_entrega_dias": 3,
+        "condiciones_entrega": null,
+        "atributos": {
+          "memoria_ram": 12,
+          "almacenamiento": 256,
+          "tamano_pantalla": 6.9,
+          "bateria": 5000
+        }
+      },
+      "ubicacion": "p2_web_schema/c23.html"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C24",
+      "oferta": {
+        "titulo": "Samsung Galaxy S26 Ultra 12/512 GB",
+        "precio": 7087900.0,
+        "moneda": "COP",
+        "gtin": "2000000000244",
+        "mpn": "SAM-S26U-12-512",
+        "marca": "Samsung",
+        "modelo": "Galaxy S26 Ultra",
+        "disponibilidad": "en_stock",
+        "costo_envio": 0.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "memoria_ram": 12,
+          "almacenamiento": 512,
+          "tamano_pantalla": 6.9,
+          "bateria": 5400
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0012"
+    },
+    {
+      "proveedor": "P3",
+      "nombre_proveedor": "ElectroBarrio",
+      "tipo_fuente": "web_plana",
+      "producto_id": "C24",
+      "oferta": {
+        "titulo": "Samsung Galaxy S26 Ultra 12/512 GB",
+        "precio": 7076900.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": "Samsung",
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 15000.0,
+        "plazo_entrega_dias": 4,
+        "condiciones_entrega": null,
+        "atributos": {
+          "memoria_ram": 12,
+          "almacenamiento": 512,
+          "tamano_pantalla": 6.9,
+          "bateria": 5400
+        }
+      },
+      "ubicacion": "p3_web_plana/celular.html#item-c24"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C25",
+      "oferta": {
+        "titulo": "Apple AirPods Pro (2.ª generación) USB-C",
+        "precio": 1139900.0,
+        "moneda": "COP",
+        "gtin": "2000000000251",
+        "mpn": "MTJV3LZ/A",
+        "marca": "Apple",
+        "modelo": "AirPods Pro (2.ª generación) USB-C",
+        "disponibilidad": "en_stock",
+        "costo_envio": 12900.0,
+        "plazo_entrega_dias": 3,
+        "condiciones_entrega": null,
+        "atributos": {
+          "cancelacion_ruido": true,
+          "inalambrico": true,
+          "autonomia": 6
+        }
+      },
+      "ubicacion": "p2_web_schema/c25.html"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C25",
+      "oferta": {
+        "titulo": "AUD APPLE AIRPODS PRO 2 USB-C ANC",
+        "precio": 1148000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 5,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA001"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C26",
+      "oferta": {
+        "titulo": "Sony WH-1000XM5",
+        "precio": 1592900.0,
+        "moneda": "COP",
+        "gtin": "2000000000268",
+        "mpn": "WH1000XM5/B",
+        "marca": "Sony",
+        "modelo": "WH-1000XM5",
+        "disponibilidad": "agotado",
+        "costo_envio": 12900.0,
+        "plazo_entrega_dias": 3,
+        "condiciones_entrega": null,
+        "atributos": {
+          "cancelacion_ruido": true,
+          "inalambrico": true,
+          "autonomia": 30
+        }
+      },
+      "ubicacion": "p2_web_schema/c26.html"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C26",
+      "oferta": {
+        "titulo": "AUD SONY WH-1000XM5 ANC BT",
+        "precio": 1374000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "agotado",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 5,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA005"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C27",
+      "oferta": {
+        "titulo": "JBL Tune 520BT",
+        "precio": 195900.0,
+        "moneda": "COP",
+        "gtin": "2000000000275",
+        "mpn": "JBLT520BTBLK",
+        "marca": "JBL",
+        "modelo": "Tune 520BT",
+        "disponibilidad": "en_stock",
+        "costo_envio": 14900.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "cancelacion_ruido": false,
+          "inalambrico": true,
+          "autonomia": 57
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0013"
+    },
+    {
+      "proveedor": "P3",
+      "nombre_proveedor": "ElectroBarrio",
+      "tipo_fuente": "web_plana",
+      "producto_id": "C27",
+      "oferta": {
+        "titulo": "JBL Tune 520BT Bluetooth",
+        "precio": 204900.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": "JBL",
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 15000.0,
+        "plazo_entrega_dias": 4,
+        "condiciones_entrega": null,
+        "atributos": {
+          "cancelacion_ruido": false,
+          "inalambrico": true,
+          "autonomia": 57
+        }
+      },
+      "ubicacion": "p3_web_plana/audifonos.html#item-c27"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C27",
+      "oferta": {
+        "titulo": "AUD JBL TUNE 520BT BLUETOOTH",
+        "precio": 187000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "bajo_pedido",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 12,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA002"
+    },
+    {
+      "proveedor": "P5",
+      "nombre_proveedor": "Carlos Tecnología",
+      "tipo_fuente": "mensaje",
+      "producto_id": "C27",
+      "oferta": {
+        "titulo": "jbl tune 520bt",
+        "precio": 175000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "agotado",
+        "costo_envio": 10000.0,
+        "plazo_entrega_dias": 1,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p5_mensaje/chat.txt#L16"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C28",
+      "oferta": {
+        "titulo": "Xiaomi Redmi Buds 5",
+        "precio": 144900.0,
+        "moneda": "COP",
+        "gtin": "2000000000282",
+        "mpn": "M2316E1",
+        "marca": "Xiaomi",
+        "modelo": "Redmi Buds 5",
+        "disponibilidad": "en_stock",
+        "costo_envio": 12900.0,
+        "plazo_entrega_dias": 3,
+        "condiciones_entrega": null,
+        "atributos": {
+          "cancelacion_ruido": true,
+          "inalambrico": true,
+          "autonomia": 10
+        }
+      },
+      "ubicacion": "p2_web_schema/c28.html"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C28",
+      "oferta": {
+        "titulo": "AUD XIAOMI REDMI BUDS 5 ANC",
+        "precio": 139000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "bajo_pedido",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 12,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA006"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C29",
+      "oferta": {
+        "titulo": "Samsung Galaxy Buds2 Pro",
+        "precio": 658900.0,
+        "moneda": "COP",
+        "gtin": "2000000000299",
+        "mpn": "SM-R510NZKALTA",
+        "marca": "Samsung",
+        "modelo": "Galaxy Buds2 Pro",
+        "disponibilidad": "bajo_pedido",
+        "costo_envio": 14900.0,
+        "plazo_entrega_dias": 9,
+        "condiciones_entrega": null,
+        "atributos": {
+          "cancelacion_ruido": true,
+          "inalambrico": true,
+          "autonomia": 5
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0014"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C29",
+      "oferta": {
+        "titulo": "Samsung Galaxy Buds2 Pro",
+        "precio": 737900.0,
+        "moneda": "COP",
+        "gtin": "2000000000299",
+        "mpn": "SM-R510NZKALTA",
+        "marca": "Samsung",
+        "modelo": "Galaxy Buds2 Pro",
+        "disponibilidad": "en_stock",
+        "costo_envio": 12900.0,
+        "plazo_entrega_dias": 3,
+        "condiciones_entrega": null,
+        "atributos": {
+          "cancelacion_ruido": true,
+          "inalambrico": true,
+          "autonomia": 5
+        }
+      },
+      "ubicacion": "p2_web_schema/c29.html"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C30",
+      "oferta": {
+        "titulo": "Logitech G435 Lightspeed",
+        "precio": 277900.0,
+        "moneda": "COP",
+        "gtin": "2000000000305",
+        "mpn": "981-000995",
+        "marca": "Logitech",
+        "modelo": "G435 Lightspeed",
+        "disponibilidad": "agotado",
+        "costo_envio": 14900.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "cancelacion_ruido": false,
+          "inalambrico": true,
+          "autonomia": 18
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0015"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C30",
+      "oferta": {
+        "titulo": "Logitech G435 Lightspeed",
+        "precio": 272900.0,
+        "moneda": "COP",
+        "gtin": "2000000000305",
+        "mpn": "981-000995",
+        "marca": "Logitech",
+        "modelo": "G435 Lightspeed",
+        "disponibilidad": "en_stock",
+        "costo_envio": 12900.0,
+        "plazo_entrega_dias": 3,
+        "condiciones_entrega": null,
+        "atributos": {
+          "cancelacion_ruido": false,
+          "inalambrico": true,
+          "autonomia": 18
+        }
+      },
+      "ubicacion": "p2_web_schema/c30.html"
+    },
+    {
+      "proveedor": "P3",
+      "nombre_proveedor": "ElectroBarrio",
+      "tipo_fuente": "web_plana",
+      "producto_id": "C30",
+      "oferta": {
+        "titulo": "G435 Lightspeed",
+        "precio": 281900.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": "Logitech",
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 15000.0,
+        "plazo_entrega_dias": 4,
+        "condiciones_entrega": null,
+        "atributos": {
+          "cancelacion_ruido": false,
+          "inalambrico": true,
+          "autonomia": 18
+        }
+      },
+      "ubicacion": "p3_web_plana/audifonos.html#item-c30"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C30",
+      "oferta": {
+        "titulo": "AUD LOGITECH G435 LIGHTSPEED",
+        "precio": 251000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 5,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA003"
+    },
+    {
+      "proveedor": "P5",
+      "nombre_proveedor": "Carlos Tecnología",
+      "tipo_fuente": "mensaje",
+      "producto_id": "C30",
+      "oferta": {
+        "titulo": "logitech g435 lightspeed",
+        "precio": 250000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 10000.0,
+        "plazo_entrega_dias": 1,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p5_mensaje/chat.txt#L17"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C32",
+      "oferta": {
+        "titulo": "Sony NW-WS623 8GB",
+        "precio": 449900.0,
+        "moneda": "COP",
+        "gtin": "2000000000329",
+        "mpn": "NWWS623/8GB",
+        "marca": "Sony",
+        "modelo": "NW-WS623",
+        "disponibilidad": "en_stock",
+        "costo_envio": 14900.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "cancelacion_ruido": false,
+          "inalambrico": true,
+          "autonomia": 12
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0016"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C32",
+      "oferta": {
+        "titulo": "AUD SONY NW-WS623 8GB BT",
+        "precio": 426000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 5,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA004"
+    },
+    {
+      "proveedor": "P5",
+      "nombre_proveedor": "Carlos Tecnología",
+      "tipo_fuente": "mensaje",
+      "producto_id": "C32",
+      "oferta": {
+        "titulo": "sony nw ws623 8gb",
+        "precio": 425000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 10000.0,
+        "plazo_entrega_dias": 1,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p5_mensaje/chat.txt#L18"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C33",
+      "oferta": {
+        "titulo": "Kingston DataTraveler Exodia 128 GB",
+        "precio": 44900.0,
+        "moneda": "COP",
+        "gtin": "2000000000336",
+        "mpn": "DTX/128GB",
+        "marca": "Kingston",
+        "modelo": "DataTraveler Exodia",
+        "disponibilidad": "agotado",
+        "costo_envio": 14900.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tipo_almacenamiento": "USB",
+          "almacenamiento": 128,
+          "velocidad_lectura": 100
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0017"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C33",
+      "oferta": {
+        "titulo": "Kingston DataTraveler Exodia 128 GB",
+        "precio": 48900.0,
+        "moneda": "COP",
+        "gtin": "2000000000336",
+        "mpn": "DTX/128GB",
+        "marca": "Kingston",
+        "modelo": "DataTraveler Exodia",
+        "disponibilidad": "en_stock",
+        "costo_envio": 12900.0,
+        "plazo_entrega_dias": 3,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tipo_almacenamiento": "USB",
+          "almacenamiento": 128,
+          "velocidad_lectura": 100
+        }
+      },
+      "ubicacion": "p2_web_schema/c33.html"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C33",
+      "oferta": {
+        "titulo": "USB KINGSTON DT EXODIA 128GB",
+        "precio": 45000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 5,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA022"
+    },
+    {
+      "proveedor": "P5",
+      "nombre_proveedor": "Carlos Tecnología",
+      "tipo_fuente": "mensaje",
+      "producto_id": "C33",
+      "oferta": {
+        "titulo": "usb kingston exodia 128gb",
+        "precio": 40000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 10000.0,
+        "plazo_entrega_dias": 1,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p5_mensaje/chat.txt#L20"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C34",
+      "oferta": {
+        "titulo": "SanDisk Ultra microSDXC 256 GB",
+        "precio": 93900.0,
+        "moneda": "COP",
+        "gtin": "2000000000343",
+        "mpn": "SDSQUA4-256G-GN6MN",
+        "marca": "SanDisk",
+        "modelo": "Ultra microSDXC",
+        "disponibilidad": "en_stock",
+        "costo_envio": 14900.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tipo_almacenamiento": "microSD",
+          "almacenamiento": 256,
+          "velocidad_lectura": 150
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0018"
+    },
+    {
+      "proveedor": "P3",
+      "nombre_proveedor": "ElectroBarrio",
+      "tipo_fuente": "web_plana",
+      "producto_id": "C34",
+      "oferta": {
+        "titulo": "MicroSD SanDisk Ultra 256 GB",
+        "precio": 94900.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": "SanDisk",
+        "modelo": null,
+        "disponibilidad": "agotado",
+        "costo_envio": 15000.0,
+        "plazo_entrega_dias": 4,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tipo_almacenamiento": "microSD",
+          "almacenamiento": 256,
+          "velocidad_lectura": 150
+        }
+      },
+      "ubicacion": "p3_web_plana/almacenamiento.html#item-c34"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C34",
+      "oferta": {
+        "titulo": "MICROSD SANDISK ULTRA 256GB",
+        "precio": 95000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "bajo_pedido",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 12,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA010"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C35",
+      "oferta": {
+        "titulo": "ADATA SU650 SSD 512 GB",
+        "precio": 181900.0,
+        "moneda": "COP",
+        "gtin": "2000000000350",
+        "mpn": "ASU650SS-512GT-C",
+        "marca": "ADATA",
+        "modelo": "SU650",
+        "disponibilidad": "en_stock",
+        "costo_envio": 14900.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tipo_almacenamiento": "SSD",
+          "almacenamiento": 512,
+          "velocidad_lectura": 520
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0019"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C35",
+      "oferta": {
+        "titulo": "ADATA SU650 SSD 512 GB",
+        "precio": 184900.0,
+        "moneda": "COP",
+        "gtin": "2000000000350",
+        "mpn": "ASU650SS-512GT-C",
+        "marca": "ADATA",
+        "modelo": "SU650",
+        "disponibilidad": "en_stock",
+        "costo_envio": 12900.0,
+        "plazo_entrega_dias": 3,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tipo_almacenamiento": "SSD",
+          "almacenamiento": 512,
+          "velocidad_lectura": 520
+        }
+      },
+      "ubicacion": "p2_web_schema/c35.html"
+    },
+    {
+      "proveedor": "P5",
+      "nombre_proveedor": "Carlos Tecnología",
+      "tipo_fuente": "mensaje",
+      "producto_id": "C35",
+      "oferta": {
+        "titulo": "ssd adata su650 512gb",
+        "precio": 170000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 10000.0,
+        "plazo_entrega_dias": 1,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p5_mensaje/chat.txt#L21"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C36",
+      "oferta": {
+        "titulo": "HDD WD BLUE 1TB 3.5 SATA",
+        "precio": 242000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 5,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA009"
+    },
+    {
+      "proveedor": "P5",
+      "nombre_proveedor": "Carlos Tecnología",
+      "tipo_fuente": "mensaje",
+      "producto_id": "C36",
+      "oferta": {
+        "titulo": "disco wd blue 1tb pc",
+        "precio": 225000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 10000.0,
+        "plazo_entrega_dias": 1,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p5_mensaje/chat.txt#L22"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C38",
+      "oferta": {
+        "titulo": "Samsung T7 Shield 2 TB",
+        "precio": 1002900.0,
+        "moneda": "COP",
+        "gtin": "2000000000381",
+        "mpn": "MU-PE2T0S/AM",
+        "marca": "Samsung",
+        "modelo": "T7 Shield 2 TB",
+        "disponibilidad": "agotado",
+        "costo_envio": 0.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tipo_almacenamiento": "SSD",
+          "almacenamiento": 2048,
+          "velocidad_lectura": 1050
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0020"
+    },
+    {
+      "proveedor": "P3",
+      "nombre_proveedor": "ElectroBarrio",
+      "tipo_fuente": "web_plana",
+      "producto_id": "C38",
+      "oferta": {
+        "titulo": "SSD Portátil Samsung T7 Shield 2 TB",
+        "precio": 1074900.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": "Samsung",
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 15000.0,
+        "plazo_entrega_dias": 4,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tipo_almacenamiento": "SSD",
+          "almacenamiento": 2048,
+          "velocidad_lectura": 1050
+        }
+      },
+      "ubicacion": "p3_web_plana/almacenamiento.html#item-c38"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C38",
+      "oferta": {
+        "titulo": "SSD SAMSUNG T7 SHIELD 2TB",
+        "precio": 1026000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "agotado",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 5,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA021"
+    },
+    {
+      "proveedor": "P3",
+      "nombre_proveedor": "ElectroBarrio",
+      "tipo_fuente": "web_plana",
+      "producto_id": "C39",
+      "oferta": {
+        "titulo": "Disco Duro Seagate IronWolf Pro 8 TB",
+        "precio": 1474900.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": "Seagate",
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 15000.0,
+        "plazo_entrega_dias": 4,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tipo_almacenamiento": "HDD",
+          "almacenamiento": 8192,
+          "velocidad_lectura": 250
+        }
+      },
+      "ubicacion": "p3_web_plana/almacenamiento.html#item-c39"
+    },
+    {
+      "proveedor": "P4",
+      "nombre_proveedor": "Distribuciones Andinas",
+      "tipo_fuente": "pdf",
+      "producto_id": "C39",
+      "oferta": {
+        "titulo": "HDD SEAGATE IRONWOLF PRO 8TB",
+        "precio": 1340000.0,
+        "moneda": "COP",
+        "gtin": null,
+        "mpn": null,
+        "marca": null,
+        "modelo": null,
+        "disponibilidad": "en_stock",
+        "costo_envio": 25000.0,
+        "plazo_entrega_dias": 5,
+        "condiciones_entrega": null,
+        "atributos": {}
+      },
+      "ubicacion": "p4_pdf/lista_precios.pdf#DA008"
+    },
+    {
+      "proveedor": "P1",
+      "nombre_proveedor": "Mayorista Digital",
+      "tipo_fuente": "mcp",
+      "producto_id": "C40",
+      "oferta": {
+        "titulo": "Crucial X9 Pro 4 TB",
+        "precio": 1841900.0,
+        "moneda": "COP",
+        "gtin": "2000000000404",
+        "mpn": "CT4000X9PROSSD9",
+        "marca": "Crucial",
+        "modelo": "X9 Pro",
+        "disponibilidad": "en_stock",
+        "costo_envio": 0.0,
+        "plazo_entrega_dias": 2,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tipo_almacenamiento": "SSD",
+          "almacenamiento": 4096,
+          "velocidad_lectura": 1050
+        }
+      },
+      "ubicacion": "mcp://p1/detalle_producto/MD-0021"
+    },
+    {
+      "proveedor": "P2",
+      "nombre_proveedor": "TiendaNova",
+      "tipo_fuente": "web_schema",
+      "producto_id": "C40",
+      "oferta": {
+        "titulo": "Crucial X9 Pro 4 TB",
+        "precio": 1883900.0,
+        "moneda": "COP",
+        "gtin": "2000000000404",
+        "mpn": "CT4000X9PROSSD9",
+        "marca": "Crucial",
+        "modelo": "X9 Pro",
+        "disponibilidad": "agotado",
+        "costo_envio": 12900.0,
+        "plazo_entrega_dias": 3,
+        "condiciones_entrega": null,
+        "atributos": {
+          "tipo_almacenamiento": "SSD",
+          "almacenamiento": 4096,
+          "velocidad_lectura": 1050
+        }
+      },
+      "ubicacion": "p2_web_schema/c40.html"
+    }
+  ]
+}
