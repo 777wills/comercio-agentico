@@ -13,11 +13,13 @@ Antes de empezar, confirmar con Wills:
 | Concepto | US$ |
 |---|---|
 | Presupuesto total | 300,00 |
-| Créditos comprados | 70,00 (Anthropic 40 + OpenRouter 30), 9-nov |
+| Créditos comprados | 50,00 (Anthropic 30 + OpenRouter 20), 9-nov |
 | Gastado acumulado | ~0,00 (prueba de claves: Haiku 5.5 + modelo gratuito de OpenRouter) |
 
 Claves verificadas el 9-nov: `.env` creado por Wills; Anthropic y OpenRouter responden HTTP 200. Recomendado: límite
-de gasto de US$30 en la clave de OpenRouter. El `.env` nunca se lee ni se muestra en las sesiones: las claves se
+de gasto de US$20 en la clave de OpenRouter. Con US$30 en Anthropic el saldo es justo para desarrollo + E3 si la
+regla de parada llega a Opus (~US$27 estimado): revisar saldo antes de correr Sonnet y Opus en S05 y recargar si
+hace falta. El `.env` nunca se lee ni se muestra en las sesiones: las claves se
 cargan en un subproceso.
 
 Estimación inicial (recalibrar en S00 con tokens reales): ~US$0,03–0,18 por tarea según el modelo; total de
