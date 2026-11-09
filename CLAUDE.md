@@ -78,6 +78,10 @@ El repositorio de GitHub es **público**. Nunca se versionan: claves (`.env`), m
 universidad, documentos personales (`.docx`, `.pptx`, `.pdf`, `.xlsx`), `contexto_claude/` ni las copias de
 tiendas reales del corpus A (solo su manifiesto con sumas de verificación). Revisa `git status` antes de cada commit.
 
+**Claves secretas:** nunca leas, muestres ni imprimas `.env` ni el valor de una clave. El código las carga con
+python-dotenv o variables de entorno; para pruebas en la terminal, cárgalas en un subproceso (`set -a; . ./.env`) y
+muestra solo códigos de respuesta y resultados.
+
 ## Archivos
 
 | Ruta | Qué es |
