@@ -35,7 +35,9 @@ Haz esto al terminar la sesión, o antes si el contexto se está llenando (no es
 3. Registra en `docs/DECISIONES.md` cualquier decisión nueva o cambiada.
 4. Si la sesión produjo resultados, deja su borrador de sección en `docs/informe/` (así el informe se escribe por
    partes).
-5. Agrega la sección de la sesión en `docs/GUIA_PRUEBAS.md` (ver "Explicar y enseñar a probar").
+5. Actualiza `docs/ENTENDER_EL_PROYECTO.md`: entrada nueva en la sección 9 (bitácora explicada) y, si cambió
+   algo, las secciones 3–8 y el glosario. Agrega la sección de la sesión en `docs/GUIA_PRUEBAS.md` (ver "Explicar y
+   enseñar a probar").
 6. Commit con mensaje descriptivo (Wills autorizó un commit por sesión). Push si el remoto existe.
 7. Mensaje final a Wills: qué se hizo y por qué, en lenguaje claro; cómo probarlo él mismo (remite a la sección
    de la guía); gasto de la sesión; qué necesitas de él; siguiente sesión.
@@ -43,6 +45,10 @@ Haz esto al terminar la sesión, o antes si el contexto se está llenando (no es
 ## Explicar y enseñar a probar (pedido de Wills)
 
 Wills quiere entender lo que se construye y poder correrlo él mismo. En cada sesión:
+
+- **Documenta para entender** en `docs/ENTENDER_EL_PROYECTO.md`, en lenguaje claro: qué se hizo, por qué, archivo
+  por archivo, los conceptos de IA nuevos explicados con ejemplos (y al glosario) y los hallazgos. Mismo formato que
+  la entrada de S00. Mantén vigentes las secciones 6 (modelos y dinero) y 8 (dónde estamos).
 
 - **Explica** lo construido: qué hace cada componente nuevo, cómo encaja en la arquitectura de cuatro capas y qué
   concepto de IA aplica (por ejemplo, salida estructurada, ReAct, embeddings, separación de planos). Nivel de
@@ -110,6 +116,7 @@ muestra solo códigos de respuesta y resultados.
 | `docs/ESTADO.md` | Bitácora y siguiente paso |
 | `docs/DECISIONES.md` | Registro de decisiones con su porqué |
 | `docs/PROMPT_SESION.md` | Prompt único de arranque de sesión |
+| `docs/ENTENDER_EL_PROYECTO.md` | Explicación en lenguaje claro del proyecto y de cada sesión (para Wills) |
 | `docs/GUIA_PRUEBAS.md` | Qué se construyó en cada sesión y cómo probarlo sin gastar presupuesto |
 | `docs/informe/` | Borradores de secciones del informe (versionados), escritos sesión a sesión |
 | `CONSTITUTION.md`, `README.md`, `Makefile` | Estándar del proyecto, presentación pública y tareas (`make help`) |

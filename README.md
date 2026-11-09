@@ -53,6 +53,7 @@ docs/                    plan, decisiones, estado, guía de pruebas e informe
 - [`CONSTITUTION.md`](CONSTITUTION.md): propósito, alcance, stack, convenciones y flujo.
 - [`docs/DECISIONES.md`](docs/DECISIONES.md): decisiones y su justificación.
 - [`docs/PLAN.md`](docs/PLAN.md): plan de ejecución por sesiones.
+- [`docs/ENTENDER_EL_PROYECTO.md`](docs/ENTENDER_EL_PROYECTO.md): el proyecto explicado en lenguaje claro.
 - [`docs/GUIA_PRUEBAS.md`](docs/GUIA_PRUEBAS.md): qué se construyó en cada sesión y cómo probarlo sin costo.
 
 ## Licencia
