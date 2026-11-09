@@ -47,7 +47,7 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
   `privado/` (fuera de git): `privado/curso/`, `privado/entregables/`, `privado/contexto_claude/` (D55).
 - Nuevo pedido de Wills: cada sesión explica lo construido y deja instrucciones de prueba sin costo en
   `docs/GUIA_PRUEBAS.md` (D56). Sección de S00 ya escrita y verificada (demo sin red y 34 pruebas en verde).
-- Nuevo documento `docs/ENTENDER_EL_PROYECTO.md` con la explicación de todo lo hecho (planeación y S00); cada
+- Nuevo documento `privado/ENTENDER_EL_PROYECTO.md` con la explicación de todo lo hecho (planeación y S00); cada
   sesión agrega su entrada (D57).
 
 ### 9-nov-2026 — S00 Arranque técnico

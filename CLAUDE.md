@@ -35,7 +35,7 @@ Haz esto al terminar la sesión, o antes si el contexto se está llenando (no es
 3. Registra en `docs/DECISIONES.md` cualquier decisión nueva o cambiada.
 4. Si la sesión produjo resultados, deja su borrador de sección en `docs/informe/` (así el informe se escribe por
    partes).
-5. Actualiza `docs/ENTENDER_EL_PROYECTO.md`: entrada nueva en la sección 9 (bitácora explicada) y, si cambió
+5. Actualiza `privado/ENTENDER_EL_PROYECTO.md`: entrada nueva en la sección 9 (bitácora explicada) y, si cambió
    algo, las secciones 3–8 y el glosario. Agrega la sección de la sesión en `docs/GUIA_PRUEBAS.md` (ver "Explicar y
    enseñar a probar").
 6. Commit con mensaje descriptivo (Wills autorizó un commit por sesión). Push si el remoto existe.
@@ -46,7 +46,7 @@ Haz esto al terminar la sesión, o antes si el contexto se está llenando (no es
 
 Wills quiere entender lo que se construye y poder correrlo él mismo. En cada sesión:
 
-- **Documenta para entender** en `docs/ENTENDER_EL_PROYECTO.md`, en lenguaje claro: qué se hizo, por qué, archivo
+- **Documenta para entender** en `privado/ENTENDER_EL_PROYECTO.md`, en lenguaje claro: qué se hizo, por qué, archivo
   por archivo, los conceptos de IA nuevos explicados con ejemplos (y al glosario) y los hallazgos. Mismo formato que
   la entrada de S00. Mantén vigentes las secciones 6 (modelos y dinero) y 8 (dónde estamos).
 
@@ -116,7 +116,6 @@ muestra solo códigos de respuesta y resultados.
 | `docs/ESTADO.md` | Bitácora y siguiente paso |
 | `docs/DECISIONES.md` | Registro de decisiones con su porqué |
 | `docs/PROMPT_SESION.md` | Prompt único de arranque de sesión |
-| `docs/ENTENDER_EL_PROYECTO.md` | Explicación en lenguaje claro del proyecto y de cada sesión (para Wills) |
 | `docs/GUIA_PRUEBAS.md` | Qué se construyó en cada sesión y cómo probarlo sin gastar presupuesto |
 | `docs/informe/` | Borradores de secciones del informe (versionados), escritos sesión a sesión |
 | `CONSTITUTION.md`, `README.md`, `Makefile` | Estándar del proyecto, presentación pública y tareas (`make help`) |
@@ -125,6 +124,7 @@ Carpeta `privado/` (no versionada):
 
 | Ruta | Qué es |
 |---|---|
+| `privado/ENTENDER_EL_PROYECTO.md` | Explicación en lenguaje claro del proyecto y de cada sesión (para Wills; no se versiona) |
 | `privado/contexto_claude/CONTEXTO_SESION.md` | Contexto histórico de sep-2026 |
 | `privado/curso/syllabus_PAIII.pdf`, `privado/curso/Rubrica_PAIII_2026.xlsx` | Programa y rúbrica del curso |
 | `privado/curso/Plantilla presentacion institucional Icesi -2026.pptx` | Plantilla obligatoria de diapositivas |
