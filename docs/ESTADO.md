@@ -42,6 +42,12 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 
 ## Bitácora
 
+### 9-nov-2026 — Reorganización (entre S00 y S01)
+- La raíz queda solo con el proyecto de código. Material del curso, entregables y contexto histórico movidos a
+  `privado/` (fuera de git): `privado/curso/`, `privado/entregables/`, `privado/contexto_claude/` (D55).
+- Nuevo pedido de Wills: cada sesión explica lo construido y deja instrucciones de prueba sin costo en
+  `docs/GUIA_PRUEBAS.md` (D56). Sección de S00 ya escrita y verificada (demo sin red y 34 pruebas en verde).
+
 ### 9-nov-2026 — S00 Arranque técnico
 - Proyecto `uv` en Python 3.13.16 (D53) con LangGraph 1.2.20, LangChain 1.4.9, langchain-anthropic 1.7.10,
   langchain-openrouter 0.2.9, crawl4ai 0.9.5, Streamlit 1.67.0, Pydantic 2.12.5; `uv.lock` versionado.
@@ -71,7 +77,7 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 
 ## Pendientes abiertos
 
-- Plantilla institucional de trabajo escrito (IEEE): Wills la descarga del aula antes de S10.
+- Plantilla institucional de trabajo escrito (IEEE): Wills la descarga del aula y la pone en `privado/curso/` antes de S10.
 - Verificar en S06 si la taxonomía MITRE pertinente es ATLAS.
 - Informe primario de la CCCE (primer trimestre de 2026), si se cita en el informe.
 - Verificación exhaustiva de las referencias del plan de trabajo antes de reutilizarlas (S10).

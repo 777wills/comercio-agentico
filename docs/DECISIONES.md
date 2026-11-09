@@ -3,7 +3,7 @@
 Cada decisión tiene su porqué. Para cambiar una, se debate con Wills y se agrega una entrada nueva que la reemplace
 (no se borra la anterior; se marca como reemplazada).
 
-Estado al 9-nov-2026 (planeación y S00). Base previa: `contexto_claude/CONTEXTO_SESION.md` (sep-2026).
+Estado al 9-nov-2026 (planeación y S00). Base previa: `privado/contexto_claude/CONTEXTO_SESION.md` (sep-2026).
 
 ## Alcance y calendario
 
@@ -84,10 +84,12 @@ together.ai/pricing, fireworks.ai/pricing, siliconflow.com/pricing, novita.ai/pr
 | # | Decisión | Porqué |
 |---|---|---|
 | D50 | Git en esta carpeta; **GitHub público**; un commit por sesión. | Trazabilidad, respaldo y entregable (Cr8). Wills no requiere repo privado. |
-| D51 | Fuera de git: `.env`, `contexto_claude/`, `.docx/.pptx/.pdf/.xlsx/.csv`, HTML del aula virtual y copias del corpus A. | Repo público: claves, material institucional, documentos personales y obra de terceros. |
+| D51 | (Actualizada por D55) Fuera de git: `.env`, `contexto_claude/`, `.docx/.pptx/.pdf/.xlsx/.csv`, HTML del aula virtual y copias del corpus A. | Repo público: claves, material institucional, documentos personales y obra de terceros. |
 | D52 | (S00, 9-nov) Se adopta parcialmente el estándar de proyectos del profesor Jan Polanco (skill `jan-project-standard`): **Ruff, pre-commit, Makefile (`make check`), CI en GitHub Actions, LICENSE MIT, README con badges, `uv.lock` versionado, Conventional Commits** y un `CONSTITUTION.md` breve que remite a DECISIONES, PLAN y ESTADO. Se descartan CODE_OF_CONDUCT, CONTRIBUTING, plantillas de issue, labels, Dependabot, `main` protegida por PR, identidad `includeIf`, tgrep/.opencode y Slidev. | Profesionaliza el repositorio (R.7.2, Cr8) a bajo costo y adelanta la CI de D17. Lo descartado es gobernanza de proyectos colaborativos o choca con un commit por sesión y con la plantilla institucional de presentación. CONSTITUTION no duplica contenido para no crear una segunda fuente de verdad. |
 | D53 | (S00) **Python 3.13** (`.python-version`, `requires-python >=3.13`), instalado por `uv`. | Lo exige el estándar (D52); todas las dependencias funcionan en 3.13.16. |
 | D54 | (S00) Repositorio público **`777wills/comercio-agentico`**. | Coincide con el paquete `comercio_agentico`. |
+| D55 | (9-nov, tras S00) La raíz contiene solo el proyecto de código. Todo lo demás va en **`privado/`** (fuera de git): `privado/curso/` (syllabus, rúbrica, plantillas, páginas del aula, banco de retos), `privado/entregables/` (plan, presentaciones, ensayo de Ética, informe final y video), `privado/contexto_claude/`. | Repositorio público más limpio y una sola regla de exclusión; los documentos de trabajo no se mezclan con el código. |
+| D56 | (9-nov) Cada sesión **explica** lo construido y el concepto de IA aplicado, y deja instrucciones de prueba en `docs/GUIA_PRUEBAS.md`. Las pruebas manuales no consumen presupuesto: sin red primero, luego modelo gratuito de OpenRouter, luego una sola llamada al modelo más barato; cada comando declara su costo; nunca Sonnet, Kimi ni Opus. | Pedido de Wills: entender y poder correr el proyecto sin mover el presupuesto de las API. La guía sirve además como documentación de replicación (Cr8). |
 
 ## Aportes de otros cursos de la maestría (revisados en Moodle el 9-nov)
 

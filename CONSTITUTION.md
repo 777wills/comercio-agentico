@@ -62,7 +62,8 @@ tareas/, ataques/        tareas con verdad conocida y suite adversarial
 arnes/, resultados/      ejecutor de corridas, métricas y corridas versionadas
 app/                     interfaz Streamlit
 tests/                   pruebas (pytest)
-docs/                    plan, estado, decisiones e informe por partes
+docs/                    plan, estado, decisiones, guía de pruebas e informe por partes
+privado/                 fuera de git: material del curso, entregables y contexto (D55)
 ```
 
 ## 5. Convenciones

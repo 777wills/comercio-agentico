@@ -9,7 +9,7 @@ Carpeta de trabajo y repositorio de William Suaza Losada ("Wills"). Proyecto **i
 3. Consulta `docs/DECISIONES.md` cuando una tarea toque una decisión ya tomada. **No reabras decisiones sin
    debatirlas con Wills**; si cambian, se registra la nueva con su porqué.
 4. Antes de escribir código, propón a Wills en 3–5 líneas lo que harás en la sesión y espera su visto bueno.
-5. `contexto_claude/CONTEXTO_SESION.md` es histórico (sep-2026). Úsalo solo para las referencias ya verificadas
+5. `privado/contexto_claude/CONTEXTO_SESION.md` es histórico (sep-2026). Úsalo solo para las referencias ya verificadas
    (sección 4), los errores ya cometidos (sección 5) y los conceptos explicados (sección 7). Donde contradiga a
    `docs/DECISIONES.md`, manda DECISIONES.
 
@@ -35,7 +35,25 @@ Haz esto al terminar la sesión, o antes si el contexto se está llenando (no es
 3. Registra en `docs/DECISIONES.md` cualquier decisión nueva o cambiada.
 4. Si la sesión produjo resultados, deja su borrador de sección en `docs/informe/` (así el informe se escribe por
    partes).
-5. Commit con mensaje descriptivo (Wills autorizó un commit por sesión). Push si el remoto existe.
+5. Agrega la sección de la sesión en `docs/GUIA_PRUEBAS.md` (ver "Explicar y enseñar a probar").
+6. Commit con mensaje descriptivo (Wills autorizó un commit por sesión). Push si el remoto existe.
+7. Mensaje final a Wills: qué se hizo y por qué, en lenguaje claro; cómo probarlo él mismo (remite a la sección
+   de la guía); gasto de la sesión; qué necesitas de él; siguiente sesión.
+
+## Explicar y enseñar a probar (pedido de Wills)
+
+Wills quiere entender lo que se construye y poder correrlo él mismo. En cada sesión:
+
+- **Explica** lo construido: qué hace cada componente nuevo, cómo encaja en la arquitectura de cuatro capas y qué
+  concepto de IA aplica (por ejemplo, salida estructurada, ReAct, embeddings, separación de planos). Nivel de
+  desarrollador senior: sin explicar programación básica, sí explicando las decisiones de IA.
+- **Deja instrucciones de prueba** en `docs/GUIA_PRUEBAS.md`, una sección por sesión, con comandos copiables, qué
+  debe ver si funciona y cómo interpretarlo.
+- **Las pruebas manuales no deben mover el presupuesto.** Orden de preferencia: (1) sin red y sin costo
+  (`make test`, datos de ejemplo, modelo simulado); (2) modelo gratuito de OpenRouter (`:free`) cuando la función
+  lo soporte; (3) el modelo más barato (`deepseek-flash` o `haiku`) con una sola llamada. Nunca Sonnet, Kimi ni Opus
+  en una prueba manual. **Cada comando declara su costo estimado** (p. ej. "US$0", "< US$0,01").
+- Si una prueba con costo es inevitable, ofrece el tope por comando (`COSTO_MAXIMO_POR_TAREA_USD`) y dilo.
 
 ## Cómo trabajar con Wills (lo que ha pedido explícitamente)
 
@@ -74,9 +92,11 @@ El aula virtual exige entregar el documento y la presentación al menos una sema
 
 ## Repositorio público
 
-El repositorio de GitHub es **público**. Nunca se versionan: claves (`.env`), material del curso y de la
-universidad, documentos personales (`.docx`, `.pptx`, `.pdf`, `.xlsx`), `contexto_claude/` ni las copias de
-tiendas reales del corpus A (solo su manifiesto con sumas de verificación). Revisa `git status` antes de cada commit.
+El repositorio de GitHub es **público** (`777wills/comercio-agentico`). La raíz contiene solo el proyecto de código.
+Todo lo que no es código va en **`privado/`**, que está fuera de git: material del curso, entregables (plan,
+presentaciones, informe final en PDF) y el contexto histórico. Nunca se versionan: claves (`.env`), `privado/`,
+documentos de oficina (`.docx`, `.pptx`, `.pdf`, `.xlsx`) ni las copias de tiendas reales del corpus A (solo su
+manifiesto con sumas de verificación). Revisa `git status` antes de cada commit.
 
 **Claves secretas:** nunca leas, muestres ni imprimas `.env` ni el valor de una clave. El código las carga con
 python-dotenv o variables de entorno; para pruebas en la terminal, cárgalas en un subproceso (`set -a; . ./.env`) y
@@ -90,11 +110,21 @@ muestra solo códigos de respuesta y resultados.
 | `docs/ESTADO.md` | Bitácora y siguiente paso |
 | `docs/DECISIONES.md` | Registro de decisiones con su porqué |
 | `docs/PROMPT_SESION.md` | Prompt único de arranque de sesión |
-| `docs/informe/` | Borradores de secciones del informe, escritos sesión a sesión |
-| `contexto_claude/CONTEXTO_SESION.md` | Contexto histórico de sep-2026 (no versionado) |
-| `Plan_de_trabajo_PAIII_WilliamSuaza.docx` / `.pdf` | Plan de trabajo entregado |
-| `Presentacion_Plan_PAIII_WilliamSuaza.pptx` | Presentación del plan (5 láminas, guion en notas) |
-| `Trabajo_final_Etica_WilliamSuaza.docx` | Ensayo de Ética (otra asignatura, trabajo en grupo; mismo caso) |
-| `Plantilla presentacion institucional Icesi -2026.pptx` | Plantilla obligatoria de diapositivas |
-| `syllabus_PAIII.pdf`, `Rubrica_PAIII_2026.xlsx` | Programa y rúbrica del curso |
-| `Tema_ ... Intu.html` (2) | Páginas del aula virtual (fechas y lineamientos de entrega) |
+| `docs/GUIA_PRUEBAS.md` | Qué se construyó en cada sesión y cómo probarlo sin gastar presupuesto |
+| `docs/informe/` | Borradores de secciones del informe (versionados), escritos sesión a sesión |
+| `CONSTITUTION.md`, `README.md`, `Makefile` | Estándar del proyecto, presentación pública y tareas (`make help`) |
+
+Carpeta `privado/` (no versionada):
+
+| Ruta | Qué es |
+|---|---|
+| `privado/contexto_claude/CONTEXTO_SESION.md` | Contexto histórico de sep-2026 |
+| `privado/curso/syllabus_PAIII.pdf`, `privado/curso/Rubrica_PAIII_2026.xlsx` | Programa y rúbrica del curso |
+| `privado/curso/Plantilla presentacion institucional Icesi -2026.pptx` | Plantilla obligatoria de diapositivas |
+| `privado/curso/Tema_ ... Intu.html` (2) | Páginas del aula virtual (fechas y lineamientos de entrega) |
+| `privado/curso/Challenges_MCD_MIAA_2026_2 - Retos disponibles.csv` | Banco de retos de la universidad |
+| `privado/curso/` | Aquí va también la plantilla institucional del informe (IEEE) cuando Wills la descargue |
+| `privado/entregables/Plan_de_trabajo_PAIII_WilliamSuaza.docx` / `.pdf` | Plan de trabajo entregado |
+| `privado/entregables/Presentacion_Plan_PAIII_WilliamSuaza.pptx` | Presentación del plan (5 láminas, guion en notas) |
+| `privado/entregables/Trabajo_final_Etica_WilliamSuaza.docx` | Ensayo de Ética (otra asignatura, trabajo en grupo; mismo caso) |
+| `privado/entregables/` | Aquí van el informe final (PDF), la presentación final y el guion del video |

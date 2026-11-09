@@ -45,7 +45,7 @@ make ping                     # una llamada con herramientas a cada uno de los s
 src/comercio_agentico/   esquema canónico, fábrica de modelos y agente
 perfiles/                perfiles de categoría declarativos (YAML)
 tests/                   pruebas
-docs/                    plan, decisiones, estado e informe
+docs/                    plan, decisiones, estado, guía de pruebas e informe
 ```
 
 ## Documentación
@@ -53,6 +53,7 @@ docs/                    plan, decisiones, estado e informe
 - [`CONSTITUTION.md`](CONSTITUTION.md): propósito, alcance, stack, convenciones y flujo.
 - [`docs/DECISIONES.md`](docs/DECISIONES.md): decisiones y su justificación.
 - [`docs/PLAN.md`](docs/PLAN.md): plan de ejecución por sesiones.
+- [`docs/GUIA_PRUEBAS.md`](docs/GUIA_PRUEBAS.md): qué se construyó en cada sesión y cómo probarlo sin costo.
 
 ## Licencia
 

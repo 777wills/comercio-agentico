@@ -3,7 +3,10 @@
 .env.*
 !.env.example
 
-# Material del curso, documentos personales y de la universidad (el repositorio es público)
+# Material del curso, entregables y contexto privado (el repositorio es público)
+privado/
+
+# Red de seguridad: documentos de oficina fuera de privado/ tampoco se versionan
 *.docx
 *.pptx
 *.pdf

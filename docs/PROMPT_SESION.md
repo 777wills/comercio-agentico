@@ -16,8 +16,11 @@ Iniciamos una sesión de trabajo del Proyecto III.
    créditos, Context7 antes de usar cualquier API de librería, y ninguna decisión nueva sin debatirla conmigo
    (pregúntame con opciones y una recomendada).
 4. Si el contexto se está llenando, no sigas: haz corte limpio en el último punto estable.
-5. Al terminar, haz el "Cierre obligatorio" de CLAUDE.md (ESTADO, casillas del PLAN, DECISIONES, borrador del informe,
-   commit y push) y dime en pocas líneas qué quedó hecho, qué quedó pendiente y cuál es la siguiente sesión.
+5. Mientras trabajas, explícame lo que construyes y el concepto de IA que aplica (ver "Explicar y enseñar a probar"
+   en CLAUDE.md).
+6. Al terminar, haz el "Cierre obligatorio" de CLAUDE.md (ESTADO, casillas del PLAN, DECISIONES, borrador del informe,
+   sección nueva en docs/GUIA_PRUEBAS.md, commit y push) y dime: qué quedó hecho y por qué, cómo lo pruebo yo mismo
+   sin gastar presupuesto (cada comando con su costo), qué quedó pendiente, el gasto y cuál es la siguiente sesión.
 
 Notas para hoy (opcional): <escribe aquí cualquier novedad: tiempo disponible, cambios, problemas>
 ```

@@ -55,7 +55,8 @@ arnes/                      # ejecutor de corridas y métricas M1–M6
 resultados/                 # corridas versionadas (jsonl) y figuras
 app/streamlit_app.py
 tests/
-docs/                       # plan, estado, decisiones, informe por partes
+docs/                       # plan, estado, decisiones, guía de pruebas, informe por partes
+privado/                    # fuera de git: material del curso, entregables, contexto histórico
 ```
 
 ## 4. Calendario
@@ -86,7 +87,7 @@ E2 ni E3.
       OpenRouter ~US$40. Presupuesto total máximo: US$300. Comprados US$50 el 9-nov; recarga de Anthropic
       antes de Sonnet/Opus en S05 (ver `docs/ESTADO.md`).
 - [x] Crear `.env` con `ANTHROPIC_API_KEY` y `OPENROUTER_API_KEY` (S00).
-- [ ] Descargar la plantilla institucional de trabajo escrito (IEEE) del aula y ponerla en la carpeta (antes de S10).
+- [ ] Descargar la plantilla institucional de trabajo escrito (IEEE) del aula y ponerla en `privado/curso/` (antes de S10).
 - [x] Confirmar la creación del repositorio público en GitHub (S00): `777wills/comercio-agentico`.
 
 ---
@@ -289,13 +290,13 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
       primario de la CCCE si se cita.
 - [ ] Revisión de metacomentario y de registro académico.
 
-**Terminado cuando:** PDF generado, con referencias verificadas.
+**Terminado cuando:** PDF generado en `privado/entregables/`, con referencias verificadas.
 
 ## S11 — Auditoría, presentación y radicación (jue 19-nov)
 
 - [ ] Auditoría del informe contra la rúbrica criterio por criterio (R.6.1, R.6.2, RA1, R.7.1, R.7.2) y contra los
       lineamientos del aula virtual; corregir lo que falle.
-- [ ] Presentación de 5 láminas sobre la plantilla institucional, guion completo en notas del orador; sirve para la
+- [ ] Presentación de 5 láminas sobre la plantilla institucional (`privado/curso/`), guardada en `privado/entregables/`, guion completo en notas del orador; sirve para la
       presustentación del 20-nov y como base del video.
 - [ ] Preguntas probables del tribunal con respuesta preparada.
 - [ ] Wills radica informe y presentación.
