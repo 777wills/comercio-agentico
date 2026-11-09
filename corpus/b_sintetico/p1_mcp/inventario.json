@@ -5,7 +5,7 @@
     {
       "referencia": "MD-0001",
       "descripcion": "Lenovo IdeaPad Slim 3 15IAN8 Intel Core i3-1315U 8GB 256GB SSD 15.6\"",
-      "ean": "2000000000015",
+      "ean": "9520000000011",
       "pn": "82XQ00L3CO",
       "fabricante": "Lenovo",
       "modelo": "IdeaPad Slim 3 15IAN8",
@@ -26,7 +26,7 @@
     {
       "referencia": "MD-0002",
       "descripcion": "HP Pavilion Plus 14-ew1053dx Intel Core Ultra 5 125H 16GB 512GB SSD 14\" OLED",
-      "ean": "2000000000022",
+      "ean": "9520000000028",
       "pn": "9Y7F3LA",
       "fabricante": "HP",
       "modelo": "Pavilion Plus 14-ew1053dx",
@@ -47,7 +47,7 @@
     {
       "referencia": "MD-0003",
       "descripcion": "MSI Katana 15 HX B14VGK Intel Core i7-14650HX 16GB 1TB SSD RTX 4060 15.6\"",
-      "ean": "2000000000060",
+      "ean": "9520000000066",
       "pn": "9S7-158571-021",
       "fabricante": "MSI",
       "modelo": "Katana 15 HX B14VGK",
@@ -68,7 +68,7 @@
     {
       "referencia": "MD-0004",
       "descripcion": "ASUS Vivobook 15 X1504VA-NJ123 Intel Core i5-1335U 8GB 512GB SSD 15.6\"",
-      "ean": "2000000000077",
+      "ean": "9520000000073",
       "pn": "X1504VA-NJ123",
       "fabricante": "ASUS",
       "modelo": "Vivobook 15 X1504VA-NJ123",
@@ -89,7 +89,7 @@
     {
       "referencia": "MD-0005",
       "descripcion": "Monitor LG 24MR400-B 24\" FHD IPS 100Hz",
-      "ean": "2000000000091",
+      "ean": "9520000000097",
       "pn": "24MR400-B.AWSP",
       "fabricante": "LG",
       "modelo": "24MR400-B",
@@ -109,7 +109,7 @@
     {
       "referencia": "MD-0006",
       "descripcion": "Monitor Samsung Smart Monitor M8 M80D 32\" 4K QLED 64GB",
-      "ean": "2000000000114",
+      "ean": "9520000000110",
       "pn": "LS32DM801UNXZA-64G",
       "fabricante": "Samsung",
       "modelo": "Smart Monitor M8 M80D",
@@ -129,7 +129,7 @@
     {
       "referencia": "MD-0007",
       "descripcion": "Monitor Dell UltraSharp U2723QE 27\" 4K IPS 60Hz",
-      "ean": "2000000000145",
+      "ean": "9520000000141",
       "pn": "U2723QE",
       "fabricante": "Dell",
       "modelo": "UltraSharp U2723QE",
@@ -149,7 +149,7 @@
     {
       "referencia": "MD-0008",
       "descripcion": "Xiaomi Redmi Note 15 8/128 GB",
-      "ean": "2000000000190",
+      "ean": "9520000000196",
       "pn": "XIA-RN15-8-128",
       "fabricante": "Xiaomi",
       "modelo": "Redmi Note 15 8/128",
@@ -169,7 +169,7 @@
     {
       "referencia": "MD-0009",
       "descripcion": "Samsung Galaxy A56 5G 8/256 GB",
-      "ean": "2000000000213",
+      "ean": "9520000000219",
       "pn": "SAM-A56-5G-8-256",
       "fabricante": "Samsung",
       "modelo": "Galaxy A56 5G",
@@ -189,7 +189,7 @@
     {
       "referencia": "MD-0010",
       "descripcion": "Honor X7d 5G 8/256 GB",
-      "ean": "2000000000220",
+      "ean": "9520000000226",
       "pn": "HON-X7D-5G-8-256",
       "fabricante": "Honor",
       "modelo": "X7d 5G",
@@ -209,7 +209,7 @@
     {
       "referencia": "MD-0011",
       "descripcion": "Apple iPhone 17 Pro Max 12/256 GB",
-      "ean": "2000000000237",
+      "ean": "9520000000233",
       "pn": "APL-IP17PM-12-256",
       "fabricante": "Apple",
       "modelo": "iPhone 17 Pro Max",
@@ -229,7 +229,7 @@
     {
       "referencia": "MD-0012",
       "descripcion": "Samsung Galaxy S26 Ultra 12/512 GB",
-      "ean": "2000000000244",
+      "ean": "9520000000240",
       "pn": "SAM-S26U-12-512",
       "fabricante": "Samsung",
       "modelo": "Galaxy S26 Ultra",
@@ -249,7 +249,7 @@
     {
       "referencia": "MD-0013",
       "descripcion": "JBL Tune 520BT",
-      "ean": "2000000000275",
+      "ean": "9520000000271",
       "pn": "JBLT520BTBLK",
       "fabricante": "JBL",
       "modelo": "Tune 520BT",
@@ -268,7 +268,7 @@
     {
       "referencia": "MD-0014",
       "descripcion": "Samsung Galaxy Buds2 Pro",
-      "ean": "2000000000299",
+      "ean": "9520000000295",
       "pn": "SM-R510NZKALTA",
       "fabricante": "Samsung",
       "modelo": "Galaxy Buds2 Pro",
@@ -287,7 +287,7 @@
     {
       "referencia": "MD-0015",
       "descripcion": "Logitech G435 Lightspeed",
-      "ean": "2000000000305",
+      "ean": "9520000000301",
       "pn": "981-000995",
       "fabricante": "Logitech",
       "modelo": "G435 Lightspeed",
@@ -306,7 +306,7 @@
     {
       "referencia": "MD-0016",
       "descripcion": "Sony NW-WS623 8GB",
-      "ean": "2000000000329",
+      "ean": "9520000000325",
       "pn": "NWWS623/8GB",
       "fabricante": "Sony",
       "modelo": "NW-WS623",
@@ -325,7 +325,7 @@
     {
       "referencia": "MD-0017",
       "descripcion": "Kingston DataTraveler Exodia 128 GB",
-      "ean": "2000000000336",
+      "ean": "9520000000332",
       "pn": "DTX/128GB",
       "fabricante": "Kingston",
       "modelo": "DataTraveler Exodia",
@@ -344,7 +344,7 @@
     {
       "referencia": "MD-0018",
       "descripcion": "SanDisk Ultra microSDXC 256 GB",
-      "ean": "2000000000343",
+      "ean": "9520000000349",
       "pn": "SDSQUA4-256G-GN6MN",
       "fabricante": "SanDisk",
       "modelo": "Ultra microSDXC",
@@ -363,7 +363,7 @@
     {
       "referencia": "MD-0019",
       "descripcion": "ADATA SU650 SSD 512 GB",
-      "ean": "2000000000350",
+      "ean": "9520000000356",
       "pn": "ASU650SS-512GT-C",
       "fabricante": "ADATA",
       "modelo": "SU650",
@@ -382,7 +382,7 @@
     {
       "referencia": "MD-0020",
       "descripcion": "Samsung T7 Shield 2 TB",
-      "ean": "2000000000381",
+      "ean": "9520000000387",
       "pn": "MU-PE2T0S/AM",
       "fabricante": "Samsung",
       "modelo": "T7 Shield 2 TB",
@@ -401,7 +401,7 @@
     {
       "referencia": "MD-0021",
       "descripcion": "Crucial X9 Pro 4 TB",
-      "ean": "2000000000404",
+      "ean": "9520000000400",
       "pn": "CT4000X9PROSSD9",
       "fabricante": "Crucial",
       "modelo": "X9 Pro",

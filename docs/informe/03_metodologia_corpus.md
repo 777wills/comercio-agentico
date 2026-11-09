@@ -14,8 +14,10 @@ US$0,024. Las instrucciones exigían marcas reales, un rango de precios amplio y
 que difieren solo en memoria o capacidad, para que el emparejamiento sin identificador tenga casos difíciles. El
 modelo propone además tres formas de nombrar cada producto: comercial, abreviada de lista mayorista e informal de
 mensajería. Las tareas en las que un modelo de lenguaje es poco fiable las asume el código: el GTIN-13 de cada
-producto se asigna por programa con su dígito de control, y cada atributo se valida contra el perfil de
-categoría, que exige el nombre canónico, la unidad canónica y una categoría reconocida. Dos correcciones
+producto se asigna por programa con su dígito de control y con el prefijo 952, que GS1 reserva para
+demostraciones y ejemplos de su sistema [ref: GS1, «GS1 Company Prefix», gs1.org/standards/id-keys/company-prefix,
+consultado el 9-nov-2026], de modo que ningún código sintético coincide con un producto real. Además, cada
+atributo se valida contra el perfil de categoría, que exige el nombre canónico, la unidad canónica y una categoría reconocida. Dos correcciones
 deterministas se aplican a la salida del modelo antes de validarla: se descartan claves ajenas a la categoría y
 las capacidades en terabytes decimales se llevan a la convención binaria del perfil. El catálogo resultante se
 congela y se versiona, de modo que el resto del corpus no depende de nuevas llamadas al modelo.

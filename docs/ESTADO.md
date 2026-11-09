@@ -47,7 +47,7 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 ### 9-nov-2026 — S01 Corpus B sintético y tareas
 - Catálogo de 40 productos (8 por categoría) generado con DeepSeek Flash en 5 llamadas (US$0,024). El LLM dejó
   copias de los alias dentro de `atributos` y escribió los TB decimales (1000 GB). Lo corrige `reparar()` de
-  forma determinista, sin volver a llamar al modelo. El GTIN-13 lo asigna el código (prefijo 200) (D58).
+  forma determinista, sin volver a llamar al modelo. El GTIN-13 lo asigna el código con el prefijo GS1 952, de demostración, verificado en la tabla oficial de prefijos (D58).
 - Perfil ampliado a las 5 categorías (8 atributos nuevos).
 - Generador determinista (semilla 20261110): 95 ofertas, 36 productos ofrecidos (18 en 3+ proveedores),
   4 sin oferta y 3 solo agotados. P1 por FastMCP 4.1.6, P2 HTML con JSON-LD, P3 HTML plano, P4 PDF (fpdf2,
@@ -93,8 +93,6 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 
 ## Pendientes abiertos
 
-- Verificar en la especificación general de GS1 que el rango de prefijos 200–299 es de circulación restringida,
-  antes de citarlo en el informe (gs1.org rechaza la consulta automática; revisar en el navegador).
 
 - Plantilla institucional de trabajo escrito (IEEE): Wills la descarga del aula y la pone en `privado/curso/` antes de S10.
 - Verificar en S06 si la taxonomía MITRE pertinente es ATLAS.

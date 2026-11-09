@@ -56,7 +56,7 @@ def test_catalogo_completo_y_valido(catalogo):
 
 
 def test_gtin_sintetico_y_reparacion():
-    assert gtin_valido(gtin13(7)) and gtin13(7).startswith("200")
+    assert gtin_valido(gtin13(7)) and gtin13(7).startswith("952")
     reparado = reparar(
         {
             "atributos": {

@@ -20,7 +20,7 @@
       "alias_mensaje": "lenovo ideapad slim3 i3 8/256",
       "id": "C01",
       "categoria": "portatil",
-      "gtin": "2000000000015"
+      "gtin": "9520000000011"
     },
     {
       "marca": "HP",
@@ -40,7 +40,7 @@
       "alias_mensaje": "hp pavilion plus ultra5 16/512",
       "id": "C02",
       "categoria": "portatil",
-      "gtin": "2000000000022"
+      "gtin": "9520000000028"
     },
     {
       "marca": "Acer",
@@ -60,7 +60,7 @@
       "alias_mensaje": "acer aspire5 i5 16/512",
       "id": "C03",
       "categoria": "portatil",
-      "gtin": "2000000000039"
+      "gtin": "9520000000035"
     },
     {
       "marca": "Dell",
@@ -80,7 +80,7 @@
       "alias_mensaje": "dell latitude 5450 ultra7 16/512",
       "id": "C04",
       "categoria": "portatil",
-      "gtin": "2000000000046"
+      "gtin": "9520000000042"
     },
     {
       "marca": "Apple",
@@ -100,7 +100,7 @@
       "alias_mensaje": "macbook pro 14 m4pro 24/1tb",
       "id": "C05",
       "categoria": "portatil",
-      "gtin": "2000000000053"
+      "gtin": "9520000000059"
     },
     {
       "marca": "MSI",
@@ -120,7 +120,7 @@
       "alias_mensaje": "msi katana 15 hx i7 16/1tb rtx4060",
       "id": "C06",
       "categoria": "portatil",
-      "gtin": "2000000000060"
+      "gtin": "9520000000066"
     },
     {
       "marca": "ASUS",
@@ -140,7 +140,7 @@
       "alias_mensaje": "asus vivobook 15 x1504 i5 8/512",
       "id": "C07",
       "categoria": "portatil",
-      "gtin": "2000000000077"
+      "gtin": "9520000000073"
     },
     {
       "marca": "ASUS",
@@ -160,7 +160,7 @@
       "alias_mensaje": "asus vivobook 15 x1504 i5 16/512",
       "id": "C08",
       "categoria": "portatil",
-      "gtin": "2000000000084"
+      "gtin": "9520000000080"
     },
     {
       "marca": "LG",
@@ -179,7 +179,7 @@
       "alias_mensaje": "lg 24mr400 24 fhd ips 100hz",
       "id": "C09",
       "categoria": "monitor",
-      "gtin": "2000000000091"
+      "gtin": "9520000000097"
     },
     {
       "marca": "Samsung",
@@ -198,7 +198,7 @@
       "alias_mensaje": "samsung smart m8 m80d 32 4k qled 32gb",
       "id": "C10",
       "categoria": "monitor",
-      "gtin": "2000000000107"
+      "gtin": "9520000000103"
     },
     {
       "marca": "Samsung",
@@ -217,7 +217,7 @@
       "alias_mensaje": "samsung smart m8 m80d 32 4k qled 64gb",
       "id": "C11",
       "categoria": "monitor",
-      "gtin": "2000000000114"
+      "gtin": "9520000000110"
     },
     {
       "marca": "Xiaomi",
@@ -236,7 +236,7 @@
       "alias_mensaje": "xiaomi a27i 27 fhd ips 100hz",
       "id": "C12",
       "categoria": "monitor",
-      "gtin": "2000000000121"
+      "gtin": "9520000000127"
     },
     {
       "marca": "ASUS",
@@ -255,7 +255,7 @@
       "alias_mensaje": "asus tuf vg27aq 27 qhd 165hz",
       "id": "C13",
       "categoria": "monitor",
-      "gtin": "2000000000138"
+      "gtin": "9520000000134"
     },
     {
       "marca": "Dell",
@@ -274,7 +274,7 @@
       "alias_mensaje": "dell ultrasharp u2723qe 27 4k ips usb-c",
       "id": "C14",
       "categoria": "monitor",
-      "gtin": "2000000000145"
+      "gtin": "9520000000141"
     },
     {
       "marca": "LG",
@@ -293,7 +293,7 @@
       "alias_mensaje": "lg ultragear oled 27 qhd 240hz",
       "id": "C15",
       "categoria": "monitor",
-      "gtin": "2000000000152"
+      "gtin": "9520000000158"
     },
     {
       "marca": "Dell",
@@ -312,7 +312,7 @@
       "alias_mensaje": "dell alienware aw3225qf 32 4k oled 240hz",
       "id": "C16",
       "categoria": "monitor",
-      "gtin": "2000000000169"
+      "gtin": "9520000000165"
     },
     {
       "marca": "Tecno",
@@ -331,7 +331,7 @@
       "alias_mensaje": "tecno spark go 2026 4/128",
       "id": "C17",
       "categoria": "celular",
-      "gtin": "2000000000176"
+      "gtin": "9520000000172"
     },
     {
       "marca": "Motorola",
@@ -350,7 +350,7 @@
       "alias_mensaje": "moto g86 5g 8/256",
       "id": "C18",
       "categoria": "celular",
-      "gtin": "2000000000183"
+      "gtin": "9520000000189"
     },
     {
       "marca": "Xiaomi",
@@ -369,7 +369,7 @@
       "alias_mensaje": "xiaomi redmi note 15 8/128",
       "id": "C19",
       "categoria": "celular",
-      "gtin": "2000000000190"
+      "gtin": "9520000000196"
     },
     {
       "marca": "Xiaomi",
@@ -388,7 +388,7 @@
       "alias_mensaje": "xiaomi redmi note 15 8/256",
       "id": "C20",
       "categoria": "celular",
-      "gtin": "2000000000206"
+      "gtin": "9520000000202"
     },
     {
       "marca": "Samsung",
@@ -407,7 +407,7 @@
       "alias_mensaje": "samsung galaxy a56 5g 8/256",
       "id": "C21",
       "categoria": "celular",
-      "gtin": "2000000000213"
+      "gtin": "9520000000219"
     },
     {
       "marca": "Honor",
@@ -426,7 +426,7 @@
       "alias_mensaje": "honor x7d 5g 8/256",
       "id": "C22",
       "categoria": "celular",
-      "gtin": "2000000000220"
+      "gtin": "9520000000226"
     },
     {
       "marca": "Apple",
@@ -445,7 +445,7 @@
       "alias_mensaje": "iphone 17 pro max 12/256",
       "id": "C23",
       "categoria": "celular",
-      "gtin": "2000000000237"
+      "gtin": "9520000000233"
     },
     {
       "marca": "Samsung",
@@ -464,7 +464,7 @@
       "alias_mensaje": "samsung galaxy s26 ultra 12/512",
       "id": "C24",
       "categoria": "celular",
-      "gtin": "2000000000244"
+      "gtin": "9520000000240"
     },
     {
       "marca": "Apple",
@@ -482,7 +482,7 @@
       "alias_mensaje": "airpods pro 2 usb c anc",
       "id": "C25",
       "categoria": "audifonos",
-      "gtin": "2000000000251"
+      "gtin": "9520000000257"
     },
     {
       "marca": "Sony",
@@ -500,7 +500,7 @@
       "alias_mensaje": "sony wh1000xm5 anc",
       "id": "C26",
       "categoria": "audifonos",
-      "gtin": "2000000000268"
+      "gtin": "9520000000264"
     },
     {
       "marca": "JBL",
@@ -518,7 +518,7 @@
       "alias_mensaje": "jbl tune 520bt",
       "id": "C27",
       "categoria": "audifonos",
-      "gtin": "2000000000275"
+      "gtin": "9520000000271"
     },
     {
       "marca": "Xiaomi",
@@ -536,7 +536,7 @@
       "alias_mensaje": "redmi buds 5 anc",
       "id": "C28",
       "categoria": "audifonos",
-      "gtin": "2000000000282"
+      "gtin": "9520000000288"
     },
     {
       "marca": "Samsung",
@@ -554,7 +554,7 @@
       "alias_mensaje": "galaxy buds2 pro anc",
       "id": "C29",
       "categoria": "audifonos",
-      "gtin": "2000000000299"
+      "gtin": "9520000000295"
     },
     {
       "marca": "Logitech",
@@ -572,7 +572,7 @@
       "alias_mensaje": "logitech g435 lightspeed",
       "id": "C30",
       "categoria": "audifonos",
-      "gtin": "2000000000305"
+      "gtin": "9520000000301"
     },
     {
       "marca": "Sony",
@@ -590,7 +590,7 @@
       "alias_mensaje": "sony nw ws623 4gb",
       "id": "C31",
       "categoria": "audifonos",
-      "gtin": "2000000000312"
+      "gtin": "9520000000318"
     },
     {
       "marca": "Sony",
@@ -608,7 +608,7 @@
       "alias_mensaje": "sony nw ws623 8gb",
       "id": "C32",
       "categoria": "audifonos",
-      "gtin": "2000000000329"
+      "gtin": "9520000000325"
     },
     {
       "marca": "Kingston",
@@ -626,7 +626,7 @@
       "alias_mensaje": "usb kingston exodia 128gb",
       "id": "C33",
       "categoria": "almacenamiento",
-      "gtin": "2000000000336"
+      "gtin": "9520000000332"
     },
     {
       "marca": "SanDisk",
@@ -644,7 +644,7 @@
       "alias_mensaje": "micro sd sandisk ultra 256gb",
       "id": "C34",
       "categoria": "almacenamiento",
-      "gtin": "2000000000343"
+      "gtin": "9520000000349"
     },
     {
       "marca": "ADATA",
@@ -662,7 +662,7 @@
       "alias_mensaje": "ssd adata su650 512gb",
       "id": "C35",
       "categoria": "almacenamiento",
-      "gtin": "2000000000350"
+      "gtin": "9520000000356"
     },
     {
       "marca": "Western Digital",
@@ -680,7 +680,7 @@
       "alias_mensaje": "disco wd blue 1tb pc",
       "id": "C36",
       "categoria": "almacenamiento",
-      "gtin": "2000000000367"
+      "gtin": "9520000000363"
     },
     {
       "marca": "Samsung",
@@ -698,7 +698,7 @@
       "alias_mensaje": "ssd samsung t7 shield 1tb",
       "id": "C37",
       "categoria": "almacenamiento",
-      "gtin": "2000000000374"
+      "gtin": "9520000000370"
     },
     {
       "marca": "Samsung",
@@ -716,7 +716,7 @@
       "alias_mensaje": "ssd samsung t7 shield 2tb",
       "id": "C38",
       "categoria": "almacenamiento",
-      "gtin": "2000000000381"
+      "gtin": "9520000000387"
     },
     {
       "marca": "Seagate",
@@ -734,7 +734,7 @@
       "alias_mensaje": "disco seagate ironwolf pro 8tb nas",
       "id": "C39",
       "categoria": "almacenamiento",
-      "gtin": "2000000000398"
+      "gtin": "9520000000394"
     },
     {
       "marca": "Crucial",
@@ -752,7 +752,7 @@
       "alias_mensaje": "ssd crucial x9 pro 4tb",
       "id": "C40",
       "categoria": "almacenamiento",
-      "gtin": "2000000000404"
+      "gtin": "9520000000400"
     }
   ]
 }

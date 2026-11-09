@@ -37,8 +37,9 @@ ATRIBUTOS_POR_CATEGORIA: dict[str, list[str]] = {
 }
 PRODUCTOS_POR_CATEGORIA = 8
 
-# Prefijo GS1 de circulación restringida (uso interno): no choca con productos reales.
-PREFIJO_GTIN = "200"
+# GS1 reserva el prefijo 952 para demostraciones y ejemplos de su sistema
+# (https://www.gs1.org/standards/id-keys/company-prefix): no choca con productos reales.
+PREFIJO_GTIN = "952"
 
 
 class ProductoGenerado(BaseModel):
@@ -76,7 +77,7 @@ class ProductoCatalogo(ProductoGenerado):
 
 
 def gtin13(numero: int) -> str:
-    """GTIN-13 sintético: prefijo restringido + 9 dígitos + dígito de control."""
+    """GTIN-13 sintético: prefijo de demostración + 9 dígitos + dígito de control."""
     cuerpo = f"{PREFIJO_GTIN}{numero:09d}"
     suma = sum(int(d) * (3 if i % 2 == 0 else 1) for i, d in enumerate(reversed(cuerpo)))
     return cuerpo + str((10 - suma % 10) % 10)
@@ -201,10 +202,13 @@ def generar(modelo: str = "deepseek-flash", ruta: Path = RUTA_CATALOGO) -> list[
 
 
 def reparar_archivo(ruta: Path = RUTA_CATALOGO) -> None:
-    """Aplica ``reparar`` a un catálogo ya generado, sin volver a llamar al LLM."""
+    """Aplica ``reparar`` y reasigna los GTIN de un catálogo ya generado, sin llamar al LLM."""
     datos = json.loads(ruta.read_text(encoding="utf-8"))
     productos = [
-        ProductoCatalogo.model_validate(reparar(p, p["categoria"])) for p in datos["productos"]
+        ProductoCatalogo.model_validate(
+            {**reparar(p, p["categoria"]), "gtin": gtin13(int(p["id"][1:]))}
+        )
+        for p in datos["productos"]
     ]
     validar_catalogo(productos, cargar_perfil(RUTA_PERFIL))
     _guardar(productos, ruta, datos["modelo_generador"], datos["costo_usd"])
