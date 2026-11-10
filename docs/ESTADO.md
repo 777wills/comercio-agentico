@@ -10,8 +10,9 @@ Siguiente paso exacto:
    vigente) antes de escribir `ataques/mapeo.md`.
 2. Diseñar las 20 cargas (5 clases × 4 ubicaciones) con su predicado de éxito verificable por programa; usar el
    `llms.txt` de Alkosto como caso real documentado.
-3. Elegir el clasificador de inyección de Hugging Face para C2 (licencia, tamaño, latencia en el i5-1240P sin GPU,
-   RAM) y proponerlo a Wills con opciones antes de integrarlo. Compararlo con Jev a nivel de fragmentos (D80):
+3. Elegir el clasificador de inyección de Hugging Face para C2 (licencia permisiva y **sin acceso restringido**
+   en el Hub, para que cualquiera que clone el repositorio público o despliegue la demo lo descargue sin pedir
+   permiso; tamaño, latencia en el i5-1240P sin GPU, RAM) y proponerlo a Wills con opciones antes de integrarlo. Compararlo con Jev a nivel de fragmentos (D80):
    API oficial `api.typesafe.ai` con `TYPESAFE_API_KEY` del `.env` (Wills crea la cuenta en console.typesafe.ai;
    **no** usar `thejevai.com`, el dominio de una guía comunitaria sin empresa identificada). Incluir la variante
    adaptativa de «política falsificada» y fragmentos limpios en español. Leer antes el recetario oficial de
@@ -24,7 +25,7 @@ Siguiente paso exacto:
 | Concepto | US$ |
 |---|---|
 | Presupuesto total | 300,00 |
-| Créditos comprados | 50,00 (Anthropic 30 + OpenRouter 20), 9-nov. Anthropic: US$29,83 disponibles y US$0,17 gastados (consola, 9-nov 21:43) |
+| Créditos comprados | 55,00 (Anthropic 30 + OpenRouter 20, 9-nov; TypeSafe 5, 10-nov, el mínimo que acepta, para la comparación con Jev de D80). Anthropic: US$29,83 disponibles y US$0,17 gastados (consola, 9-nov 21:43) |
 | Gastado acumulado | ~9,2 (S00: ~0,26; S01: 0,024; S02: ~0,18; S03: 1,74; S04: ~1,32; S05: ~5,7 = corpus A v1 0,361 + calibración v3 0,919 + E3 Flash 1,371 + E3 Haiku 1,528 + corrida parcial de Flash descartada 1,312 + ~0,2 de llamadas perdidas en la suspensión). OpenRouter: 7,46 de 20 usados (10-nov). Anthropic: ~US$28,3 disponibles tras Haiku |
 
 Costo medido el 9-nov (S00) de una extracción estructurada típica (página con 12 ofertas, 1500–3500 tokens de
@@ -186,7 +187,7 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 
 - Plantilla institucional de trabajo escrito (IEEE): Wills la descarga del aula y la pone en `privado/curso/` antes de S10.
 - Verificar en S06 si la taxonomía MITRE pertinente es ATLAS.
-- Wills: crear cuenta en console.typesafe.ai y poner `TYPESAFE_API_KEY` en `.env` antes de S06 (D80). Benchmark de Red Hat sobre Jev (2-oct-2026) no se pudo leer; no citar sus cifras sin verificarlas.
+- Cuenta de TypeSafe creada y `TYPESAFE_API_KEY` en `.env` (10-nov; la API oficial responde y expone `jev-latest` y `jev-preview`). Benchmark de Red Hat sobre Jev (2-oct-2026) no se pudo leer; no citar sus cifras sin verificarlas.
 - Informe primario de la CCCE (primer trimestre de 2026), si se cita en el informe.
 - Verificación exhaustiva de las referencias del plan de trabajo antes de reutilizarlas (S10).
 - E3 se detuvo en Haiku (D78): DeepSeek Pro, Kimi, Sonnet y Opus van como propuestos en la hoja de ruta del informe.
