@@ -116,7 +116,7 @@ Las tiendas reales introducen tres dificultades que el corpus sintético no ten�
 - **Productos parecidos.** El cruce por nombre entre sitemaps propuso, para 8 de los 25 productos, una ficha de
   Falabella que resultó ser otro producto (iPhone 15 frente a iPhone 15 Plus; Zenbook S16 de 16 GB frente al de
   32 GB). Esas fichas se conservan como distractores reales. La equivalencia se decidió título contra título
-  (`equivalencias.yaml`): 6 iguales, 8 distintos y 1 dudoso, tratado como distinto.
+  (`equivalencias.yaml`): 7 iguales y 8 distintos. Un caso que el título no resolvía se confirmó con la referencia del fabricante que la ficha publica en sus especificaciones.
 
 Alkosto y Ktronix, del mismo titular, publican el mismo precio para los 24 productos comunes; constituyen dos
 fuentes independientes en la lectura, pero no en el precio. El catálogo de referencia del corpus A (24 productos)

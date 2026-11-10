@@ -12,7 +12,8 @@
    "R12",
    "R13",
    "R14",
-   "R17"
+   "R17",
+   "R25"
   ],
   "distinto": {
    "R01": "iPhone 16e 512 GB frente a 128 GB",
@@ -23,9 +24,6 @@
    "R09": "IdeaPad Slim 5 AMD frente a Snapdragon X1P",
    "R10": "IdeaPad 5 2 en 1 OLED frente a IdeaPad Ryzen 7 5700U 2 TB",
    "R11": "Samsung ViewFinity D700 de 32 frente a 27 pulgadas"
-  },
-  "dudoso": {
-   "R25": "Alkosto no publica el modelo (Kingston 240GB); Falabella dice A400 240GB"
   },
   "excluido": {
    "R15": "Alkosto y Ktronix ya no publican la ficha (sin datos de producto)"
@@ -1356,7 +1354,7 @@
    "proveedor": "A3",
    "nombre_proveedor": "Falabella",
    "tipo_fuente": "web_schema",
-   "producto_id": null,
+   "producto_id": "R25",
    "oferta": {
     "titulo": "kingston SSD Unidad de estado solido A400 240GB 25”",
     "precio": 520900.0,

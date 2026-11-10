@@ -16,7 +16,7 @@ como máximo) se corrió una vez sobre las 20 tareas del corpus A (`resultados/c
 Costo medio por tarea: US$0,0181 [0,0173–0,0189]; latencia p50 183 s [165–194]. La recolección fue completa: las
 33 ofertas válidas de las tareas llegaron al cuadro comparativo (100,0 % [89,6–100,0]). El emparejamiento por
 nombre con Falabella, que no publica GTIN, asignó al producto correcto las seis fichas equivalentes y dejó sin
-emparejar las nueve fichas de productos parecidos, incluidos los ocho distractores.
+emparejar los ocho distractores; la ficha R25, entonces sin confirmar, también quedó sin emparejar.
 
 La caída frente al corpus B (90,0 %) tiene una causa única: la **disponibilidad**. La exactitud de ese campo fue de
 43 % (29/68), y en las fichas de Alkosto el extractor marcó «en existencia» 8 de 37 veces. Las tiendas reales

@@ -378,7 +378,7 @@ encontrará el JSON-LD con dos ofertas sin etiqueta: es lo que el agente tiene q
 **4. Ver los hechos y las decisiones de equivalencia — costo US$0**
 
 ```bash
-cat corpus/a_real/equivalencias.yaml     # 6 iguales, 8 distintos (distractores), 1 dudoso: R25
+cat corpus/a_real/equivalencias.yaml     # 7 iguales y 8 distintos (distractores)
 head -c 1500 corpus/a_real/manifest.json # agente de usuario, pausa y SHA-256 de cada lectura
 ```
 

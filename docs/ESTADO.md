@@ -15,7 +15,6 @@ Siguiente paso exacto:
    «activa» = verdadero), con pruebas de los valores reales de la v2 (`'،27'`, `'، 1000'`, `'،8,'`,
    `'true / activa / sí'`). Luego `make corpus-b-servir` y `make calibracion` (~US$0,9) y renombrar a `_v3`.
    Comparar v0 → v3 en `docs/informe/04_resultados_calibracion.md`.
-3. Pedir a Wills la revisión de R25 en `corpus/a_real/equivalencias.yaml` (dudoso).
 4. Seguir con S05 (E3) sobre la versión v3, hasta Sonnet como tope (D76): Opus solo con autorización de Wills.
 
 ## Presupuesto de modelos
@@ -169,7 +168,6 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 - Informe primario de la CCCE (primer trimestre de 2026), si se cita en el informe.
 - Verificación exhaustiva de las referencias del plan de trabajo antes de reutilizarlas (S10).
 - E3 llega hasta Sonnet; Opus solo con autorización explícita de Wills (D76). Sin recarga prevista de Anthropic.
-- Revisión de R25 en `corpus/a_real/equivalencias.yaml` (Wills).
 - Usar el `llms.txt` de Alkosto (instrucciones dirigidas al LLM) como caso real en S06.
 - Referencias de Wilson (1927) y Efron (1979) para los intervalos: verificar en la fuente primaria en S10.
 - Comprobar que el arnés soporta la concurrencia con Kimi y Opus (límite de tasa) antes de E3.
