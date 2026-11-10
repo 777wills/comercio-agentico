@@ -4,6 +4,12 @@ Carpeta de trabajo y repositorio de William Suaza Losada ("Wills"). Proyecto **i
 
 ## Arranque obligatorio de cada sesión
 
+Este archivo es el punto de entrada para cualquier agente o modelo, sea cual sea la herramienta. Para tener todo el
+contexto, lee en este orden:
+
+0. `privado/contexto_claude/MEMORIA_CLAUDE_CODE.md`: reglas acumuladas entre sesiones que no están aquí (tope de
+   gasto en Anthropic, estado vigente de las cargas de ataque, uso de Context7). Si existe una memoria propia de la
+   herramienta, esta prevalece.
 1. Lee `docs/ESTADO.md` (dónde quedamos y cuál es la siguiente sesión).
 2. Lee en `docs/PLAN.md` **solo** la sección de la sesión que toca, más la sección 1 (principios) si no la tienes presente.
 3. Consulta `docs/DECISIONES.md` cuando una tarea toque una decisión ya tomada. **No reabras decisiones sin
@@ -26,13 +32,31 @@ Carpeta de trabajo y repositorio de William Suaza Losada ("Wills"). Proyecto **i
 - **Documentación de librerías:** usa Context7 antes de escribir código contra cualquier API de librería (LangGraph,
   LangChain, crawl4ai, FastAPI, SvelteKit, SQLAlchemy, FastMCP...). No escribas de memoria firmas que cambian entre versiones.
 
+## Contexto compartido entre herramientas (obligatorio para todo agente)
+
+Wills trabaja este proyecto con varias herramientas y modelos (Claude Code, OpenCode, Pi, el chat de VS Code...).
+**El contexto vive solo en disco, dentro de este proyecto**; la memoria interna de cada herramienta no cuenta,
+porque las demás no la ven.
+
+- **Guarda en el momento, no solo al cierre.** Cada decisión que acuerdes con Wills va de inmediato a
+  `docs/DECISIONES.md`. Cada regla de trabajo o preferencia nueva va a
+  `privado/contexto_claude/MEMORIA_CLAUDE_CODE.md`, y cada avance a `docs/ESTADO.md`. Si la sesión se corta, lo
+  acordado ya está escrito.
+- **Si tu herramienta tiene memoria propia**, escribe lo mismo también en el archivo de disco. Ante una
+  contradicción, manda el disco.
+- **Firma tus entradas** en `docs/ESTADO.md` con la herramienta y el modelo (p. ej. "OpenCode · Opus 5.5"), para
+  saber de dónde vino cada cambio.
+- **Al arrancar, relee el disco aunque creas tener contexto:** otra herramienta pudo cambiarlo desde tu última
+  sesión. Revisa además `git log` y `git status` para ver cambios recientes.
+
 ## Cierre obligatorio de cada sesión (corte limpio)
 
 Haz esto al terminar la sesión, o antes si el contexto se está llenando (no esperes a que se sature):
 
 1. Actualiza `docs/ESTADO.md`: qué se hizo, qué quedó pendiente, gasto de la sesión, **siguiente paso exacto**.
 2. Marca las casillas cumplidas en `docs/PLAN.md`.
-3. Registra en `docs/DECISIONES.md` cualquier decisión nueva o cambiada.
+3. Registra en `docs/DECISIONES.md` cualquier decisión nueva o cambiada. Si Wills fijó una regla de trabajo que
+   debe valer entre sesiones, agrégala a `privado/contexto_claude/MEMORIA_CLAUDE_CODE.md`.
 4. Si la sesión produjo resultados, deja su borrador de sección en `docs/informe/` (así el informe se escribe por
    partes).
 5. Actualiza `privado/ENTENDER_EL_PROYECTO.md`: entrada nueva en la sección 9 (bitácora explicada) y, si cambió
@@ -130,6 +154,7 @@ Carpeta `privado/` (no versionada):
 | Ruta | Qué es |
 |---|---|
 | `privado/ENTENDER_EL_PROYECTO.md` | Explicación en lenguaje claro del proyecto y de cada sesión (para Wills; no se versiona) |
+| `privado/contexto_claude/MEMORIA_CLAUDE_CODE.md` | Memoria persistente entre sesiones (se lee al arrancar y se actualiza al cerrar) |
 | `privado/contexto_claude/CONTEXTO_SESION.md` | Contexto histórico de sep-2026 |
 | `privado/curso/syllabus_PAIII.pdf`, `privado/curso/Rubrica_PAIII_2026.xlsx` | Programa y rúbrica del curso |
 | `privado/curso/Plantilla presentacion institucional Icesi -2026.pptx` | Plantilla obligatoria de diapositivas |
