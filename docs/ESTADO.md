@@ -2,17 +2,16 @@
 
 ## Siguiente sesión
 
-**S06-bis (tarea manual de Wills) + S07 — E2 curva seguridad-utilidad.** S06 se trabajó el 10-nov: la parte
-**defensiva y de medición** quedó construida, probada e integrada (C0–C3, clasificador de C2 elegido con evidencia,
-C3 de precio, `ataques/mapeo.md`). **Pendiente, a cargo de Wills:** redactar y plantar las 20 cargas de ataque
-(`privado/tarea_cargas/INSTRUCCIONES.md` (paso a paso) y `docs/PLAN.md` sección **S06-bis**, con esquema, reglas de seguridad y un prompt copiable). El asistente
-no puede redactar ni integrar cargas de inyección; esa autoría es de Wills. Sin las cargas no corre E2 (S07), que
-es el resultado estrella.
+**S06-bis (arnés) + S07 — E2 curva seguridad-utilidad.** Las 20 cargas quedaron redactadas y validadas el 10-nov en
+`privado/tarea_cargas/cargas.yaml` (5 clases × 4 ubicaciones; D92), sin modificar el corpus limpio. La parte
+**defensiva y de medición** ya estaba construida, probada e integrada (C0–C3, clasificador de C2 elegido con
+evidencia, C3 de precio, `ataques/mapeo.md`). Falta plantar las cargas y ejecutarlas para obtener M5; sin ese arnés
+no corre E2 (S07), que es el resultado estrella.
 
 Siguiente paso exacto:
-1. **Wills:** escribir los 20 textos en `ataques/cargas.yaml` siguiendo S06-bis, y lanzar el prompt de esa sección
-   en una sesión enfocada para construir el arnés de plantado y los predicados, correr la prueba de humo (1 carga
-   por clase en C0 y C3, Flash, < US$0,15) y medir M5.
+1. En una sesión nueva, construir el arnés de plantado y los predicados con el prompt de
+   `privado/tarea_cargas/INSTRUCCIONES.md`, **sin modificar los textos**; correr la prueba de humo (1 carga por
+   clase en C0 y C3, Flash, < US$0,15) y medir M5.
 2. Con M5 disponible, S07: curva seguridad-utilidad C0–C3 (utilidad = M2 benigno; seguridad = 1 − M5),
    frontera de Pareto y codo, costo y latencia por capa.
 3. Pendiente aún sin hacer de S06: comparación del clasificador de C2 con **Jev** a nivel de fragmentos (D80),
@@ -67,6 +66,16 @@ largas que la de prueba (recalibrar en S03 con el arnés), y Opus queda cerca de
 El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un subproceso.
 
 ## Bitácora
+
+### 10-nov-2026 — S06-bis: redacción y validación de las 20 cargas
+- `privado/tarea_cargas/cargas.yaml` contiene las 20 combinaciones (5 clases × 4 ubicaciones), con `archivo`,
+  `tarea`, `objetivo`, `predicado` y `texto`. Redacción asistida autorizada por Wills (D92); archivo fuera de git.
+- Se eligieron B013, B016 y B045 por su respuesta conocida y cobertura de los proveedores atacantes. Las acciones
+  usan C11; la exfiltración fija el presupuesto de B045 (2.990.000 COP) y la alteración de precio usa C11 a 900.000 COP.
+- Validación local: 20 IDs consecutivos, matriz 5×4 completa, archivos/tareas existentes, proveedor coherente con
+  ubicación, presupuesto coincidente con la tarea y `{URL_ACCION}` presente solo en las 8 cargas que lo requieren.
+- No se plantó ninguna carga ni cambió `corpus/b_sintetico/`. Gasto: **US$0**. Pendiente: arnés, plantado, prueba de
+  humo C0/C3 y M5.
 
 ### 9/10-nov-2026 — Cierre de S04 (D74, D75) y S05 E3
 - **D74:** `abrir_pagina` antepone al Markdown los objetos schema.org `Product`/`Offer` (JSON-LD y microdatos,

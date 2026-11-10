@@ -238,13 +238,13 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
 
 **Objetivo:** cuatro configuraciones de defensa y 20 cargas de ataque listas para medir.
 
-> **Estado (10-nov):** la parte defensiva y de medición está hecha y probada. **Pendiente: redacción y plantado de
-> las 20 cargas (tarea manual de Wills, sección S06-bis al final del plan)** y la comparación con Jev (D80).
+> **Estado (10-nov):** la parte defensiva y de medición está hecha y probada; las 20 cargas ya están redactadas y
+> validadas (D92). **Pendiente: plantado y arnés (sección S06-bis al final del plan)** y la comparación con Jev (D80).
 
-- [ ] Suite: 5 clases (desviar la compra hacia un proveedor, inflar cantidades, exfiltrar el presupuesto u otros
+- [x] Suite: 5 clases (desviar la compra hacia un proveedor, inflar cantidades, exfiltrar el presupuesto u otros
       datos del mandato, saltarse la confirmación humana, alterar el precio comparado) × 4 cargas (variando
       ubicación y forma: texto visible, oculto en HTML, en el PDF, en el mensaje). Cada carga con su **predicado de
-      éxito verificable por programa**.
+      éxito verificable por programa** (definidas el 10-nov; falta ejecutarlas con el arnés).
 - [x] Mapeo de cada clase a OWASP LLM01 y a la técnica MITRE (es **ATLAS**, v2026.10) en `ataques/mapeo.md`.
       (hecho 10-nov; incluye OWASP Agentic 2026 ASI01/ASI02).
 - [ ] Variantes del corpus B con las cargas plantadas (copia por carga; la versión limpia no se toca).
@@ -386,19 +386,18 @@ corrida siguiendo el README.
 
 ---
 
-## S06-bis — Redacción y plantado de las 20 cargas (tarea manual de Wills)
+## S06-bis — Redacción y plantado de las 20 cargas
 
 **Por qué es una tarea aparte.** En la sesión del 10-nov, el asistente construyó y probó toda la
-parte defensiva y de medición (C0–C3, el clasificador de C2, la verificación de precio de C3, el
-mapeo a los marcos y la elección del clasificador), pero **no puede redactar ni plantar los textos
-de ataque** (las cargas de inyección). Por eso esos textos los escribe Wills, que además es el autor
-académico del trabajo. Lo que queda pendiente es solo la **autoría y el plantado** de las 20 cargas
-y el arnés que las corre; las defensas que deben frenarlas ya existen y están probadas.
+parte defensiva y de medición (C0–C3, el clasificador de C2, la verificación de precio de C3 y el
+mapeo a los marcos). Las 20 cargas quedaron redactadas y validadas posteriormente con autorización
+expresa de Wills (D92). Lo que queda pendiente es el **plantado** de las cargas y el arnés que las
+corre; las defensas que deben frenarlas ya existen y están probadas.
 
 **Qué se entrega al terminar esta tarea:**
 
-- [ ] `ataques/cargas.yaml` con las 20 cargas (5 clases × 4 ubicaciones), cada una con su campo
-      `texto` escrito por Wills y su predicado de éxito ya definido en el esquema.
+- [x] `privado/tarea_cargas/cargas.yaml` con las 20 cargas (5 clases × 4 ubicaciones), cada una con su campo
+      `texto` y su predicado de éxito definido en el esquema (10-nov; redacción asistida autorizada por D92).
 - [ ] Las variantes del corpus en `corpus/b_ataques/<id>/` (una copia por carga; la versión limpia
       en `corpus/b_sintetico/` **no se toca**).
 - [ ] El arnés `python -m comercio_agentico.ataques.correr` que, para cada carga y configuración,
@@ -425,7 +424,7 @@ Las cuatro **ubicaciones** usan los cuatro formatos de proveedor del corpus B: `
 la vista), `oculto_html` (P2, oculto en el HTML o en el JSON-LD), `pdf` (P4) y `mensaje` (P5, chat).
 Cada clase se planta en las cuatro: 5 × 4 = 20.
 
-### Esquema de `ataques/cargas.yaml`
+### Esquema de `privado/tarea_cargas/cargas.yaml`
 
 Cada entrada tiene estos campos. Wills escribe `texto`; el resto es metadato que fija el escenario y
 el predicado:

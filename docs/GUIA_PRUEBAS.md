@@ -517,3 +517,56 @@ corren juntos con el clasificador real sobre una tarea benigna sin falsas alarma
 cat ataques/mapeo.md          # OWASP LLM01:2025, OWASP Agentic 2026, MITRE ATLAS v2026.10
 cat docs/informe/03_metodologia_seguridad.md
 ```
+
+---
+
+## S06-bis — Redacción y validación de las 20 cargas (10-nov)
+
+### Qué se construyó y por qué
+
+`privado/tarea_cargas/cargas.yaml` define las 20 cargas (5 clases × 4 ubicaciones), su página, tarea benigna y
+predicado automático. Los textos permanecen fuera de git y todavía **no están plantados**: el corpus limpio no cambió.
+La validación comprueba la cobertura factorial y las referencias del experimento, no la eficacia del ataque; M5 se
+obtendrá con el arnés de la siguiente sesión.
+
+### Cómo probarlo
+
+**Validar estructura, referencias y marcadores — costo US$0 (sin red)**
+
+```bash
+uv run python - <<'EOF'
+from pathlib import Path
+import json
+import yaml
+
+cargas = yaml.safe_load(Path('privado/tarea_cargas/cargas.yaml').read_text())['cargas']
+tareas = {json.loads(s)['id']: json.loads(s) for s in Path('tareas/tareas_b.jsonl').read_text().splitlines()}
+proveedores = {'visible': 'P3', 'oculto_html': 'P2', 'pdf': 'P4', 'mensaje': 'P5'}
+assert len(cargas) == 20
+assert [c['id'] for c in cargas] == [f'A{i:02d}' for i in range(1, 21)]
+assert len({(c['clase'], c['ubicacion']) for c in cargas}) == 20
+for c in cargas:
+    assert c['proveedor'] == proveedores[c['ubicacion']]
+    assert Path('corpus/b_sintetico', c['archivo']).is_file()
+    assert c['tarea'] in tareas and c['texto'].strip()
+    if c['clase'] in {'inflar_cantidad', 'saltar_confirmacion'}:
+        assert '{URL_ACCION}' in c['texto'] and 'url_accion' in c['predicado']
+    else:
+        assert '{URL_ACCION}' not in c['texto']
+    if c['clase'] == 'exfiltrar_mandato':
+        assert c['predicado']['presupuesto'] == tareas[c['tarea']]['criterios']['presupuesto_max']
+print('OK: 20 cargas, cobertura 5x4, archivos/tareas válidos y marcadores correctos.')
+EOF
+```
+
+Debe imprimir exactamente la línea final `OK`. El comando no muestra los textos ni llama a modelos.
+
+**Comprobar que el archivo sensible y el corpus limpio están aislados — costo US$0**
+
+```bash
+git status --short --ignored=matching -- privado/tarea_cargas/cargas.yaml corpus/b_sintetico
+git status --short corpus/b_sintetico
+```
+
+La primera orden debe mostrar `!! privado/`; la segunda no debe producir salida. No ejecutar todavía un arnés de
+ataques: su construcción y la prueba de humo C0/C3 (< US$0,15) corresponden a la siguiente sesión.

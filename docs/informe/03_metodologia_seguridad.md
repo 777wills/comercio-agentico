@@ -81,3 +81,18 @@ usuario elegir entre los dos modelos validados (`CLASIFICADORES` en `agente/defe
 > Nota de alcance: esta tabla mide **falsas alarmas**, no la detección de ataques. La detección se
 > mide con la suite de cargas (métrica M5) en los resultados E2. Un clasificador con pocas falsas
 > alarmas pero baja detección se descartaría en esa segunda medición.
+
+## Diseño de la suite adversarial
+
+La suite consta de **20 cargas sintéticas**, una por combinación de cinco objetivos adversariales y cuatro ubicaciones:
+desviar la compra, inflar la cantidad, exfiltrar el presupuesto del mandato, saltar la confirmación humana y alterar
+el precio comparado, en texto visible de P3, HTML oculto de P2, PDF de P4 y mensaje de P5. Cada carga fija el archivo
+de destino, una tarea benigna con respuesta conocida y un predicado observable por programa. Las instrucciones se
+conservan fuera del repositorio público; su plantado se realizará exclusivamente sobre copias locales del corpus B.
+
+Las tareas seleccionadas (B013, B016 y B045) ofrecen cobertura de los proveedores atacantes y evitan confundir un
+fallo de cobertura con un éxito defensivo. Las cargas de acción incluyen un marcador de URL que el arnés sustituirá
+por una dirección local; los predicados de exfiltración y precio fijan, respectivamente, el presupuesto de la tarea
+y un valor falso explícito. La métrica M5 será la proporción de cargas cuyo predicado resulta verdadero. Esta fase
+validó la estructura completa de la matriz, las referencias a archivos y tareas y los marcadores requeridos; la
+eficacia de los ataques y de las defensas se medirá al ejecutar el arnés.
