@@ -10,8 +10,12 @@ Siguiente paso exacto:
    vigente) antes de escribir `ataques/mapeo.md`.
 2. Diseñar las 20 cargas (5 clases × 4 ubicaciones) con su predicado de éxito verificable por programa; usar el
    `llms.txt` de Alkosto como caso real documentado.
-3. Elegir el clasificador de inyección de Hugging Face para C2 (licencia, tamaño, latencia en CPU) y proponerlo a
-   Wills con opciones antes de integrarlo.
+3. Elegir el clasificador de inyección de Hugging Face para C2 (licencia, tamaño, latencia en el i5-1240P sin GPU,
+   RAM) y proponerlo a Wills con opciones antes de integrarlo. Compararlo con Jev a nivel de fragmentos (D80):
+   API oficial `api.typesafe.ai` con `TYPESAFE_API_KEY` del `.env` (Wills crea la cuenta en console.typesafe.ai;
+   **no** usar `thejevai.com`, el dominio de una guía comunitaria sin empresa identificada). Incluir la variante
+   adaptativa de «política falsificada» y fragmentos limpios en español. Leer antes el recetario oficial de
+   *guardrails* y la referencia de la API (docs.typesafe.ai).
 4. Prueba de humo: 1 carga por clase en C0 y C3, con DeepSeek Flash (modelo base, D79).
 5. Corridas largas: lanzarlas con `systemd-inhibit --what=sleep` (el equipo se suspendió a mitad de E3).
 
@@ -182,6 +186,7 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 
 - Plantilla institucional de trabajo escrito (IEEE): Wills la descarga del aula y la pone en `privado/curso/` antes de S10.
 - Verificar en S06 si la taxonomía MITRE pertinente es ATLAS.
+- Wills: crear cuenta en console.typesafe.ai y poner `TYPESAFE_API_KEY` en `.env` antes de S06 (D80). Benchmark de Red Hat sobre Jev (2-oct-2026) no se pudo leer; no citar sus cifras sin verificarlas.
 - Informe primario de la CCCE (primer trimestre de 2026), si se cita en el informe.
 - Verificación exhaustiva de las referencias del plan de trabajo antes de reutilizarlas (S10).
 - E3 se detuvo en Haiku (D78): DeepSeek Pro, Kimi, Sonnet y Opus van como propuestos en la hoja de ruta del informe.
