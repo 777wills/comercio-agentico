@@ -1,0 +1,9 @@
+# E2 (S07, D96): utilidad benigna en el subconjunto E3; igual a e3_flash salvo la defensa.
+nombre: e2_c3
+modelo: deepseek-flash
+separacion_planos: true
+configuracion: C3
+max_llamadas: 14
+tope_usd: 0.10
+concurrencia_tareas: 4
+concurrencia_llm: 6

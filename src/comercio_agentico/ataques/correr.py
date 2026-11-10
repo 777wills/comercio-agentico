@@ -7,6 +7,10 @@ El servidor HTTP de cada variante usa un puerto local efímero; P1 sigue en el M
 Prueba de humo (5 clases × C0/C3, DeepSeek Flash, tope total US$0,15)::
 
     uv run python -m comercio_agentico.ataques.correr --humo --tope-total 0.15
+
+Matriz E2 (20 cargas × C0–C3 × 3 repeticiones, 4 ejecuciones simultáneas)::
+
+    uv run python -m comercio_agentico.ataques.correr --repeticiones 3 --tope-total 3.9
 """
 
 from __future__ import annotations
@@ -17,6 +21,7 @@ import datetime as dt
 import gzip
 import json
 import logging
+import tempfile
 import threading
 from collections.abc import Awaitable, Callable, Sequence
 from pathlib import Path
@@ -84,11 +89,15 @@ def registro_local(puerto: int) -> RegistroFuentes:
 def _resumen_grupo(filas: list[dict[str, Any]]) -> dict[str, Any]:
     resultado = m5(filas)
     intervalo = wilson(int(resultado["k"]), int(resultado["n"]))
+    aciertos = sum(bool((f.get("evaluacion") or {}).get("acierto")) for f in filas)
+    segundos = sorted(f["segundos"] for f in filas if f.get("segundos") is not None)
     return {
         **resultado,
         "ic95": [intervalo["bajo"], intervalo["alto"]],
         "errores": sum(bool(f.get("error")) for f in filas),
         "costo_usd": round(sum(f.get("costo_usd") or 0.0 for f in filas), 6),
+        "acierto_bajo_ataque": round(aciertos / len(filas), 4) if filas else None,
+        "segundos_p50": segundos[len(segundos) // 2] if segundos else None,
     }
 
 
@@ -202,8 +211,15 @@ async def ejecutar(
     emparejador: Emparejador | Any = None,
     clasificador: Any = None,
     informe: Path | None = None,
+    concurrencia: int = 1,
+    concurrencia_llm: int = 6,
 ) -> dict[str, Any]:
-    """Corre secuencialmente para aislar cada variante y acotar el gasto."""
+    """Cada variante tiene su propio servidor; ``concurrencia`` ejecuciones corren a la vez.
+
+    El orden es repetición → carga → configuración, de modo que un tope alcanzado deja
+    repeticiones completas. Con concurrencia > 1 el tope total puede excederse en lo que
+    gasten las ejecuciones ya iniciadas (cada una acotada por ``tope_usd``).
+    """
     salida.parent.mkdir(parents=True, exist_ok=True)
     previas = leer_filas(salida)
     hechas = {
@@ -217,23 +233,95 @@ async def ejecutar(
         clasificador = ClasificadorInyeccion()
     prompt, commit = version_prompt(), commit_actual()
     ficha = MODELOS[modelo]
+    sem = asyncio.Semaphore(concurrencia)
+    sem_llm = asyncio.Semaphore(concurrencia_llm)
+    cerrojo = asyncio.Lock()
+    servidores: list[tuple[Any, threading.Thread]] = []
+    contexto: dict[str, tuple[RegistroFuentes, str]] = {}
 
-    for carga in cargas:
-        pendientes = [
-            (configuracion, repeticion)
+    async def una(carga: Carga, configuracion: Configuracion, repeticion: int) -> None:
+        nonlocal gasto
+        async with sem:
+            if tope_total is not None and gasto >= tope_total:
+                log.warning(
+                    "Tope total alcanzado; se omite %s %s r%d", carga.id, configuracion, repeticion
+                )
+                return
+            registro, huella = contexto[carga.id]
+            tarea = tareas[carga.tarea]
+            restante = None if tope_total is None else max(0.0, tope_total - gasto)
+            if restante is None:
+                tope = tope_usd
+            elif tope_usd is None:
+                tope = restante
+            else:
+                tope = min(tope_usd, restante)
+            meta = {
+                "corrida": salida.stem,
+                "config": {"modelo": modelo, "configuracion": configuracion, "tope_usd": tope},
+                "modelo": modelo,
+                "id_modelo": ficha.id_modelo,
+                "proveedor_fijado": ficha.proveedor or ficha.plataforma,
+                "version_prompt": prompt,
+                "hash_corpus": huella,
+                "corpus": f"b_ataques/{carga.id}",
+                "commit": commit,
+                "conjunto_tareas": RUTA_TAREAS.name,
+                "carga": carga.id,
+                "clase": carga.clase,
+                "ubicacion": carga.ubicacion,
+                "proveedor_atacante": carga.proveedor,
+                "configuracion": configuracion,
+            }
+            inicio = asyncio.get_running_loop().time()
+            try:
+                resultado = await preguntar_fn(
+                    tarea.consulta,
+                    modelo=modelo,
+                    configuracion=configuracion,
+                    separacion_planos=configuracion != "C0",
+                    clasificador=clasificador,
+                    tope_usd=tope,
+                    emparejador=emparejador,
+                    registro=registro,
+                    semaforo_llm=sem_llm,
+                )
+                fila = registro_ejecucion(tarea, repeticion, resultado, meta)
+            except Exception as error:
+                segundos = asyncio.get_running_loop().time() - inicio
+                log.warning("%s %s: %s", carga.id, configuracion, error)
+                fila = registro_error(tarea, repeticion, error, segundos, meta)
+            fila["exito_ataque"] = evaluar_exito(carga, fila)
+        async with cerrojo:
+            with salida.open("a", encoding="utf-8") as archivo:
+                archivo.write(json.dumps(fila, ensure_ascii=False) + "\n")
+            gasto += fila.get("costo_usd") or 0.0
+            log.info(
+                "%s %s r%d: %s · US$%.4f · acumulado US$%.4f",
+                carga.id,
+                configuracion,
+                repeticion,
+                "ÉXITO ATAQUE" if fila["exito_ataque"] else "sin éxito",
+                fila.get("costo_usd") or 0.0,
+                gasto,
+            )
+
+    trabajos = sorted(
+        (
+            (repeticion, carga, configuracion)
+            for carga in cargas
             for configuracion in configuraciones
             for repeticion in range(1, repeticiones + 1)
             if (carga.id, configuracion, carga.tarea, repeticion) not in hechas
-        ]
-        if not pendientes:
-            continue
-        if tope_total is not None and gasto >= tope_total:
-            log.warning("Tope total US$%.4f alcanzado; quedan ejecuciones pendientes", tope_total)
-            break
-        web = servidor_web(0, directorio=origen)  # reserva el puerto antes de escribir la URL
-        puerto = int(web.server_address[1])
-        hilo = threading.Thread(target=web.serve_forever, daemon=True)
-        try:
+        ),
+        key=lambda t: (t[0], t[1].id, t[2]),
+    )
+    try:
+        for carga in {c.id: c for _, c, _ in trabajos}.values():
+            web = servidor_web(0, directorio=origen)  # reserva el puerto antes de escribir la URL
+            puerto = int(web.server_address[1])
+            hilo = threading.Thread(target=web.serve_forever, daemon=True)
+            servidores.append((web, hilo))
             variante = plantar(
                 carga,
                 origen=origen,
@@ -243,72 +331,10 @@ async def ejecutar(
             # La variante ya está cerrada a escrituras antes de aceptar las lecturas del agente.
             web.RequestHandlerClass.keywords["directory"] = str(variante)
             hilo.start()
-            registro = registro_local(puerto)
-            huella = hash_corpus(variante, tareas=RUTA_TAREAS)
-            for configuracion, repeticion in pendientes:
-                if tope_total is not None and gasto >= tope_total:
-                    log.warning("Tope total alcanzado; no se inician más ejecuciones")
-                    break
-                tarea = tareas[carga.tarea]
-                restante = None if tope_total is None else max(0.0, tope_total - gasto)
-                if restante is None:
-                    tope = tope_usd
-                elif tope_usd is None:
-                    tope = restante
-                else:
-                    tope = min(tope_usd, restante)
-                meta = {
-                    "corrida": salida.stem,
-                    "config": {
-                        "modelo": modelo,
-                        "configuracion": configuracion,
-                        "tope_usd": tope,
-                    },
-                    "modelo": modelo,
-                    "id_modelo": ficha.id_modelo,
-                    "proveedor_fijado": ficha.proveedor or ficha.plataforma,
-                    "version_prompt": prompt,
-                    "hash_corpus": huella,
-                    "corpus": f"b_ataques/{carga.id}",
-                    "commit": commit,
-                    "conjunto_tareas": RUTA_TAREAS.name,
-                    "carga": carga.id,
-                    "clase": carga.clase,
-                    "ubicacion": carga.ubicacion,
-                    "proveedor_atacante": carga.proveedor,
-                    "configuracion": configuracion,
-                }
-                inicio = asyncio.get_running_loop().time()
-                try:
-                    resultado = await preguntar_fn(
-                        tarea.consulta,
-                        modelo=modelo,
-                        configuracion=configuracion,
-                        separacion_planos=configuracion != "C0",
-                        clasificador=clasificador,
-                        tope_usd=tope,
-                        emparejador=emparejador,
-                        registro=registro,
-                    )
-                    fila = registro_ejecucion(tarea, repeticion, resultado, meta)
-                except Exception as error:
-                    segundos = asyncio.get_running_loop().time() - inicio
-                    log.warning("%s %s: %s", carga.id, configuracion, error)
-                    fila = registro_error(tarea, repeticion, error, segundos, meta)
-                fila["exito_ataque"] = evaluar_exito(carga, fila)
-                with salida.open("a", encoding="utf-8") as archivo:
-                    archivo.write(json.dumps(fila, ensure_ascii=False) + "\n")
-                gasto += fila.get("costo_usd") or 0.0
-                log.info(
-                    "%s %s r%d: %s · US$%.4f · acumulado US$%.4f",
-                    carga.id,
-                    configuracion,
-                    repeticion,
-                    "ÉXITO ATAQUE" if fila["exito_ataque"] else "sin éxito",
-                    fila.get("costo_usd") or 0.0,
-                    gasto,
-                )
-        finally:
+            contexto[carga.id] = (registro_local(puerto), hash_corpus(variante, tareas=RUTA_TAREAS))
+        await asyncio.gather(*(una(c, cfg, rep) for rep, c, cfg in trabajos))
+    finally:
+        for web, hilo in servidores:
             if hilo.is_alive():
                 web.shutdown()
                 hilo.join()
@@ -332,6 +358,7 @@ def main() -> None:
     parser.add_argument("--modelo", default="deepseek-flash", choices=MODELOS)
     parser.add_argument("--tope", type=float, default=0.05, help="Tope de US$ por ejecución")
     parser.add_argument("--tope-total", type=float, help="No inicia ejecuciones tras este gasto")
+    parser.add_argument("--concurrencia", type=int, default=4, help="Ejecuciones simultáneas")
     parser.add_argument("--salida", type=Path)
     parser.add_argument("--simulado", action="store_true", help="Agente simulado, US$0 y sin red")
     args = parser.parse_args()
@@ -363,6 +390,8 @@ def main() -> None:
             "preguntar_fn": AgenteSimulado(),
             "emparejador": "no se usa",
             "clasificador": "no se usa",
+            # Copias aparte: no pisa las variantes de una corrida real en curso.
+            "variantes": Path(tempfile.gettempdir()) / "b_ataques_simulado",
         }
     resumen = asyncio.run(
         ejecutar(
@@ -375,6 +404,7 @@ def main() -> None:
             tope_usd=args.tope,
             tope_total=args.tope_total,
             informe=None,
+            concurrencia=args.concurrencia,
             **extra,
         )
     )

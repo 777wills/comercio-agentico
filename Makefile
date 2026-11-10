@@ -5,7 +5,7 @@
 SHELL := /bin/bash
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo corpus-a-recolectar corpus-a corpus-a-servir corpus-a-correr humo candidatos app arnes-simulado calibracion e3 e3-frontera metricas
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo corpus-a-recolectar corpus-a corpus-a-servir corpus-a-correr humo candidatos app arnes-simulado calibracion e3 e3-frontera e2-ataques e2-ataques-simulado e2-utilidad e2 jev metricas
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
@@ -77,6 +77,21 @@ e3: ## E3, un modelo en el subconjunto 30 × 3: make e3 MODELO=flash|haiku|deeps
 
 e3-frontera: ## E3: tabla, regla de parada D77 y frontera costo-desempeño con las corridas hechas (US$0)
 	uv run python -m comercio_agentico.arnes.e3
+
+e2-ataques: ## E2: 20 cargas × C0–C3 × 3 repeticiones con Flash (~US$3,7; requiere corpus-b-servir)
+	uv run python -m comercio_agentico.ataques.correr --repeticiones 3 --tope-total 3.8 --concurrencia 4
+
+e2-ataques-simulado: ## E2: la matriz completa con el agente simulado (US$0, sin red)
+	uv run python -m comercio_agentico.ataques.correr --simulado --salida /tmp/e2_simulado.jsonl
+
+e2-utilidad: ## E2: utilidad benigna, subconjunto E3 × C0–C3 × 1 (~US$1,8; requiere corpus-b-servir)
+	for c in c0 c1 c2 c3; do uv run python -m comercio_agentico.arnes.correr --config configs/e2_$$c.yaml --tareas tareas/subconjunto_e3.jsonl --repeticiones 1 --metricas; done
+
+e2: ## E2: curva seguridad-utilidad, Pareto, codo y control limpio con las corridas hechas (US$0)
+	uv run python -m comercio_agentico.arnes.e2
+
+jev: ## Compara el clasificador de C2 con Jev (TypeSafe) en 68 fragmentos (< US$0,01; requiere TYPESAFE_API_KEY)
+	uv run python -m comercio_agentico.ataques.comparar_jev
 
 metricas: ## Recalcula métricas de una corrida: make metricas CORRIDA=resultados/corridas/<archivo>.jsonl (US$0)
 	uv run python -m comercio_agentico.arnes.metricas $(CORRIDA)

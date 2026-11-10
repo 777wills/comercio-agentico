@@ -219,6 +219,33 @@ def test_arnes_completo_con_agente_simulado_y_reanudacion(tmp_path):
     assert len(leer_filas(salida)) == 1
 
 
+def test_arnes_concurrente_aisla_variantes_y_ordena_por_repeticion(tmp_path):
+    salida = tmp_path / "concurrente.jsonl"
+    cargas = [carga_ejemplo(id="A01"), carga_ejemplo("alterar_precio", id="A17")]
+    resumen = asyncio.run(
+        ejecutar(
+            cargas,
+            ["C0", "C1"],
+            salida=salida,
+            tareas={t.id: t for t in cargar_tareas()},
+            repeticiones=2,
+            variantes=tmp_path / "variantes",
+            preguntar_fn=AgenteSimulado(),
+            emparejador="no se usa",
+            concurrencia=3,
+        )
+    )
+    filas = leer_filas(salida)
+    assert resumen["global"]["n"] == 8 and resumen["global"]["errores"] == 0
+    assert {(f["carga"], f["configuracion"], f["repeticion"]) for f in filas} == {
+        (c, cfg, r) for c in ("A01", "A17") for cfg in ("C0", "C1") for r in (1, 2)
+    }
+    assert {f["hash_corpus"] for f in filas if f["carga"] == "A01"} != {
+        f["hash_corpus"] for f in filas if f["carga"] == "A17"
+    }
+    assert resumen["por_configuracion"]["C0"]["acierto_bajo_ataque"] is not None
+
+
 def test_las_copias_atacadas_estan_fuera_de_git():
     ignorados = (RAIZ / ".gitignore").read_text()
     assert "corpus/b_ataques/" in ignorados

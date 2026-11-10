@@ -587,3 +587,61 @@ systemd-inhibit --what=sleep --why='Matriz completa E2' \
 
 Son 20 cargas × 4 configuraciones, una repetición. Debe confirmarse el tope antes de lanzarla. Para un subconjunto,
 use `--solo A01,A05,A09 --configuraciones C0,C3`; M5 solo representa las ejecuciones efectivamente registradas.
+
+## S07 — E2: curva seguridad-utilidad y comparación con Jev (10-nov)
+
+### Qué se construyó y por qué
+
+- `ataques/correr.py` corre ahora varias ejecuciones a la vez (`--concurrencia`, 4 por defecto): cada carga conserva
+  su propio servidor en un puerto efímero y su copia aislada, y el orden repetición → carga → configuración hace que
+  un tope alcanzado deje repeticiones completas. El resumen añade el acierto bajo ataque y la latencia p50.
+- `configs/e2_c0..c3.yaml`: la utilidad benigna se mide con la misma configuración de E3, cambiando solo la defensa.
+- `arnes/e2.py`: une utilidad (M2 benigno) y seguridad (1 - M5), calcula la frontera de Pareto, el codo, M5 por clase
+  y ubicación, el costo y la latencia de cada capa y el **control limpio** (los 20 predicados evaluados sobre
+  ejecuciones sin carga). Escribe `resultados/informes/e2/` (tabla, JSON y dos figuras).
+- `ataques/comparar_jev.py`: pasa los mismos 68 fragmentos (20 cargas, una variante de «política falsificada» y 47
+  limpios) por los dos clasificadores locales y por Jev (API de TypeSafe con `httpx`, D80).
+
+### Cómo probarlo
+
+**1. Pruebas sin red — costo US$0**
+
+```bash
+uv run pytest tests/test_e2.py tests/test_ataques.py -q
+make check
+```
+
+Deben pasar todas. `test_e2.py` comprueba la frontera de Pareto, el codo y que el control limpio detecte un predicado
+que se dispara sin carga.
+
+**2. La matriz completa con el agente simulado — costo US$0 (sin red)**
+
+```bash
+make e2-ataques-simulado
+```
+
+Corre las 20 cargas × C0–C3 con el agente simulado y copias en `/tmp`, sin tocar las variantes reales. El «gasto» que
+imprime es ficticio (lo inventa el simulador). Sirve para ver el formato del resumen M5.
+
+**3. Recalcular la curva desde la evidencia versionada — costo US$0**
+
+```bash
+make e2
+```
+
+Lee las corridas `*_e2_c0..c3` y `*_suite_ataques` y regenera `resultados/informes/e2/e2.md`, `e2.json`,
+`curva_seguridad_utilidad.png` y `m5_clase_ubicacion.png`. Debe reproducir las cifras del informe.
+
+**4. Comparación con Jev — < US$0,01 de créditos de TypeSafe; requiere `TYPESAFE_API_KEY` en `.env`**
+
+```bash
+make jev
+```
+
+Imprime la tabla de detección y falsos positivos de los tres clasificadores y guarda
+`resultados/clasificadores/<fecha>_jev_vs_local.{json,md}`. Los clasificadores locales corren en CPU a US$0.
+
+**5. Repetir los experimentos reales — no es una prueba manual rutinaria**
+
+`make e2-utilidad` (~US$1,8) y `make e2-ataques` (~US$3,7, tope 3,8) requieren `make corpus-b-servir` en otra
+terminal y créditos de OpenRouter. Si se interrumpen, el mismo comando reanuda sin repetir gasto.

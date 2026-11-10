@@ -251,8 +251,9 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
 - [x] Configuraciones C0–C3 integradas en el agente y el arnés (`agente/defensa.py`, `--configuracion C0..C3`).
       C2: clasificador Horizon-Labs Guard elegido con evidencia (D85), licencia Apache-2.0, p50 192 ms en CPU,
       0 falsos positivos. C3: banda de catálogo y mediana. C4 lista blanca: no (hoja de ruta). (hecho 10-nov)
-- [ ] Comparación del clasificador de C2 con Jev a nivel de fragmentos (D80). **Pendiente:** requiere las cargas
-      escritas (S06-bis). Fragmentos limpios en español ya extraídos (`ataques/fragmentos_limpios_b.jsonl`).
+- [x] Comparación del clasificador de C2 con Jev a nivel de fragmentos (D80). Hecha en S07 (10-nov): Horizon 20/20
+      cargas y 0/47 limpios; Jev 1.14.0 20/20 y 0/47 (política falsificada 0,71 frente a 0,99); Wolf 14/20. Jev no
+      supera al local: C2 se mantiene. `resultados/clasificadores/2026-11-10_jev_vs_local.*`.
 - [x] Dejar una variante del corpus B con una inyección plantada lista para el laboratorio de ataques de CotIA.
       Las 20 copias locales están disponibles; A01 es el caso inicial. (10-nov)
 - [x] Prueba de humo: 1 carga por clase en C0 y C3. Diagonal clase × ubicación más A05/A09/A13 (D94): M5 C0 1/8 =
@@ -265,12 +266,14 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
 
 **Objetivo:** el resultado estrella del proyecto.
 
-- [ ] Para cada configuración C0–C3 con el modelo base: utilidad = M2 sobre las tareas benignas; seguridad = 1 − tasa
-      de éxito del ataque (M5) sobre las 20 cargas (3 repeticiones si el presupuesto lo permite).
-- [ ] Curva seguridad-utilidad, frontera de Pareto y codo; costo y latencia añadidos por cada capa.
-- [ ] Análisis por clase de ataque y por nivel de madurez del proveedor donde se plantó.
+- [x] Para cada configuración C0–C3 con el modelo base: utilidad = M2 sobre las tareas benignas; seguridad = 1 − tasa
+      de éxito del ataque (M5) sobre las 20 cargas (3 repeticiones si el presupuesto lo permite). Hecho 10-nov (D96):
+      utilidad 93,3 / 93,3 / 96,7 / 93,3 %; M5 C0 7/60 = 11,7 %, C1–C3 0/60; control limpio 0/80; US$5,35.
+- [x] Curva seguridad-utilidad, frontera de Pareto y codo; costo y latencia añadidos por cada capa
+      (`make e2`, `resultados/informes/e2/`). C1 aporta toda la reducción medible; C2 es el codo formal por una tarea.
+- [x] Análisis por clase de ataque y por nivel de madurez del proveedor donde se plantó (mensaje P5 5/15 en C0).
 - [ ] Opcional si sobra presupuesto: repetir C0 y C3 con un segundo modelo de otro proveedor para ver si el efecto
-      de la defensa se sostiene.
+      de la defensa se sostiene. **Propuesto** (no se corrió; queda en la hoja de ruta salvo decisión de Wills).
 
 **Terminado cuando:** existe la figura de la curva con intervalos y su interpretación escrita.
 **Informe:** `04_resultados_e2.md`.
@@ -362,7 +365,8 @@ corrida siguiendo el README.
 - [ ] Ensamblar los borradores de `docs/informe/` en la plantilla institucional: introducción y problema, estado del
       arte, metodología, resultados, discusión (incluye ética, legal y seguridad, citando el ensayo de Ética como
       base), conclusiones, hoja de ruta (lo propuesto: E4, N1/ACP/UCP/AP2, más proveedores de modelos en CotIA además de
-      OpenRouter, autohospedaje de pesos abiertos, descubrimiento abierto de proveedores, IPAC como servicio) y referencias.
+      OpenRouter, autohospedaje de pesos abiertos, descubrimiento abierto de proveedores, IPAC como servicio, catálogo de
+      referencia gestionado con pgvector, D97) y referencias.
 - [ ] Verificar cada referencia y cifra contra la fuente primaria; unificar la edición de OWASP; descargar el informe
       primario de la CCCE si se cita.
 - [ ] Revisión de metacomentario y de registro académico.
