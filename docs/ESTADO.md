@@ -16,14 +16,14 @@ Siguiente paso exacto:
    `'true / activa / sí'`). Luego `make corpus-b-servir` y `make calibracion` (~US$0,9) y renombrar a `_v3`.
    Comparar v0 → v3 en `docs/informe/04_resultados_calibracion.md`.
 3. Pedir a Wills la revisión de R25 en `corpus/a_real/equivalencias.yaml` (dudoso).
-4. Seguir con S05 (E3) sobre la versión v3. Recargar Anthropic antes de correr Sonnet.
+4. Seguir con S05 (E3) sobre la versión v3, hasta Sonnet como tope (D76): Opus solo con autorización de Wills.
 
 ## Presupuesto de modelos
 
 | Concepto | US$ |
 |---|---|
 | Presupuesto total | 300,00 |
-| Créditos comprados | 50,00 (Anthropic 30 + OpenRouter 20), 9-nov |
+| Créditos comprados | 50,00 (Anthropic 30 + OpenRouter 20), 9-nov. Anthropic: US$29,83 disponibles y US$0,17 gastados (consola, 9-nov 21:43) |
 | Gastado acumulado | ~3,52 (S00: ~0,26; S01: 0,024; S02: ~0,18; S03: 1,74; S04: ~1,32 en DeepSeek Flash: calibración v2 0,923 + repetición de B029 0,016, prueba de humo del corpus A 0,019 y corrida del corpus A 0,361). OpenRouter informaba 2,009 de uso al cierre de S03 |
 
 Costo medido el 9-nov (S00) de una extracción estructurada típica (página con 12 ofertas, 1500–3500 tokens de
@@ -42,7 +42,7 @@ salida cada una).
 
 Recalibración: la estimación anterior (0,03–0,18 por tarea) se queda corta en el tope. Si la regla de parada de
 E3 llega a Opus con todas las tareas, Anthropic necesita ~US$55 (Haiku + Sonnet + Opus) más desarrollo, E2 y E1:
-**recargar ~US$40 en Anthropic antes de correr Sonnet en S05**. OpenRouter (US$20) alcanza para los tres modelos
+~~recargar ~US$40 en Anthropic~~ (sustituido por D76: E3 llega hasta Sonnet y Opus requiere autorización; los US$29,83 alcanzan). OpenRouter (US$20) alcanza para los tres modelos
 chinos. El total sigue muy por debajo de US$300. Riesgos: las páginas reales del corpus A pueden ser mucho más
 largas que la de prueba (recalibrar en S03 con el arnés), y Opus queda cerca del tope `COSTO_MAXIMO_POR_TAREA_USD`
 = 0,50: subirlo a 1,00 solo para las corridas de Opus en E3.
@@ -168,7 +168,7 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 - Verificar en S06 si la taxonomía MITRE pertinente es ATLAS.
 - Informe primario de la CCCE (primer trimestre de 2026), si se cita en el informe.
 - Verificación exhaustiva de las referencias del plan de trabajo antes de reutilizarlas (S10).
-- Recargar ~US$40 en Anthropic antes de Sonnet en S05 (Wills).
+- E3 llega hasta Sonnet; Opus solo con autorización explícita de Wills (D76). Sin recarga prevista de Anthropic.
 - Revisión de R25 en `corpus/a_real/equivalencias.yaml` (Wills).
 - Usar el `llms.txt` de Alkosto (instrucciones dirigidas al LLM) como caso real en S06.
 - Referencias de Wilson (1927) y Efron (1979) para los intervalos: verificar en la fuente primaria en S10.
