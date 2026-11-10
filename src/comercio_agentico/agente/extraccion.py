@@ -28,9 +28,9 @@ Reglas:
 - precio: precio final por unidad como número, sin separadores ("$ 1.939.900" → 1939900; "170 \
 mil" → 170000). moneda: COP salvo que el fragmento diga otra.
 - disponibilidad: en_stock (disponible, hay, quedan N, SI), agotado (agotado, se acabó, no queda, \
-AGOT), bajo_pedido (a pedido, por encargo, PED). Un producto que se ofrece con precio sin aviso \
-de agotado ni de encargo ("nuevo sellado", "✅") está en_stock; si el fragmento no permite \
-saberlo, desconocida.
+AGOT), bajo_pedido (a pedido, por encargo, PED). En un mensaje o chat, un producto que el \
+vendedor ofrece con precio sin aviso de agotado ni de encargo ("nuevo sellado", "✅") está \
+en_stock. En listados y páginas que no indican existencias, desconocida.
 - costo_envio y plazo_entrega_dias: si el fragmento trae condiciones generales (encabezado, pie o \
 mensaje aparte: "flete $25.000 por despacho", "flete gratis desde $1.000.000", "domicilio 10 \
 mil", "a pedido en 12 días"), aplícalas a cada oferta según corresponda. Si no hay dato, null.

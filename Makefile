@@ -5,7 +5,7 @@
 SHELL := /bin/bash
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo humo candidatos
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo humo candidatos app arnes-simulado calibracion metricas
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
@@ -48,6 +48,19 @@ candidatos: ## Embeddings: candidatos del catálogo para nombres informales (US$
 
 humo: ## Prueba de humo del agente: 5 tareas con DeepSeek Flash (~US$0,05; requiere corpus-b-servir)
 	uv run python -m comercio_agentico.preguntar --tareas B001,B013,B025,B037,B054 --tope 0.10
+
+app: ## Interfaz Streamlit (modo simulado US$0; consulta libre ~US$0,02 y requiere corpus-b-servir)
+	uv run streamlit run src/comercio_agentico/app.py
+
+arnes-simulado: ## Arnés completo con el agente simulado: 60 tareas × 3 repeticiones + métricas (US$0, sin red)
+	rm -f resultados/corridas/*_calibracion_flash_simulado.jsonl
+	uv run python -m comercio_agentico.arnes.correr --config configs/calibracion_flash.yaml --simulado --repeticiones 3 --metricas
+
+calibracion: ## Corrida de calibración: 60 tareas con DeepSeek Flash + métricas (~US$1; requiere corpus-b-servir)
+	uv run python -m comercio_agentico.arnes.correr --config configs/calibracion_flash.yaml --repeticiones 1 --metricas
+
+metricas: ## Recalcula métricas de una corrida: make metricas CORRIDA=resultados/corridas/<archivo>.jsonl (US$0)
+	uv run python -m comercio_agentico.arnes.metricas $(CORRIDA)
 
 test: ## Ejecuta las pruebas
 	uv run pytest

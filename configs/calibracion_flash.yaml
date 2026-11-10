@@ -1,0 +1,8 @@
+# Corrida de calibración (S03): modelo barato, separación de planos activa (C1).
+nombre: calibracion_flash
+modelo: deepseek-flash
+separacion_planos: true
+max_llamadas: 14
+tope_usd: 0.10
+concurrencia_tareas: 4
+concurrencia_llm: 6

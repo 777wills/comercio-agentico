@@ -250,3 +250,81 @@ make humo
 
 Corre B001, B013, B025, B037 y B054 (una por categoría) y escribe el resumen `N/5 aciertos`. Los resultados de la
 sesión están en `resultados/humo_s02.jsonl`, sin necesidad de volver a correrla.
+
+## S03 — Arnés de evaluación y Streamlit mínimo (9-nov)
+
+### Qué se construyó y por qué
+
+| Componente | Qué hace | Concepto de IA / decisión |
+|---|---|---|
+| `configs/*.yaml` | Una configuración evaluable del agente: modelo, C0/C1, límite de herramientas, tope de gasto y concurrencia. | Los experimentos E1–E3 serán solo archivos de configuración distintos sobre el mismo arnés. |
+| `arnes/correr.py` | Corre una configuración sobre un conjunto de tareas con N repeticiones, 4 tareas a la vez y **un semáforo de llamadas al LLM compartido** entre tareas. Anexa cada ejecución al JSONL con modelo, proveedor, versión de prompt (hash), hash del corpus, commit, tokens, costo y latencia. Reanuda si se interrumpe. | **Evaluación reproducible:** cada número del informe se puede rastrear a un prompt, un corpus y un commit exactos. |
+| `arnes/metricas.py` | M1 (extracción campo a campo por fuente, recolección), M2 (éxito por categoría), M3 (acuerdo entre repeticiones), M4 (abstención, cobertura, exactitud selectiva), M6 (costo, latencia p50/p90). Intervalos de Wilson y bootstrap. Escribe `metricas.md`, `metricas.json` y tres PNG. | **Evaluación sin juez:** todo se compara con la verdad construida del corpus B, nunca con la opinión de otro LLM. Los intervalos impiden leer diferencias que son ruido. |
+| `arnes/simulado.py` | Agente "oráculo" que responde desde la verdad e introduce errores conocidos (precios desviados, la oferta más cara, abstenciones omitidas). | **Probar el instrumento antes de medir:** si las métricas no encuentran exactamente los errores sembrados, el arnés está mal, no el agente. |
+| `app.py` | Streamlit: caja de consulta, cuadro comparativo con la recomendada, procedencia desplegable (fuente, URL, SHA-256, fragmento original). Modo simulado a US$0. | La procedencia es visible para el usuario: el principio "verificable" llega a la interfaz. |
+| `arnes/subconjunto.py` → `tareas/subconjunto_e3.jsonl` | 30 tareas para E3: la mitad de cada categoría, al azar con semilla fija, congeladas antes de ver resultados (D64). | Evita el **sesgo de selección**: elegir las tareas "difíciles para Flash" favorecería a los otros modelos por regresión a la media. |
+| `esquema.py` (`_todos_obligatorios`) y prompt del extractor | En el JSON Schema que ve el LLM, todos los campos de la oferta son obligatorios (anulables). La regla "con precio y sin aviso = en_stock" queda solo para mensajes (D66, D67). | **El esquema orienta, no obliga:** DeepInfra no restringe la decodificación, y un campo opcional el modelo lo omite. |
+| `tests/test_arnes.py` | 13 pruebas sin red: métricas con errores sembrados, reanudación, subconjunto congelado, esquema obligatorio y la app con `AppTest` de Streamlit. | — |
+
+### Cómo probarlo
+
+**1. Pruebas completas — costo US$0 (sin red)**
+
+```bash
+make check          # lint + formato + 83 pruebas (70 anteriores + 13 de S03)
+```
+
+**2. El arnés completo con el agente simulado — costo US$0 (sin red, sin servidor, ~5 s)**
+
+```bash
+make arnes-simulado
+```
+
+Corre 60 tareas × 3 repeticiones con el oráculo e imprime el informe de métricas; lo guarda en
+`resultados/informes/<fecha>_calibracion_flash_simulado/` (abra los PNG). Qué debe ver y cómo interpretarlo:
+
+- M2 global 80 %: el oráculo falla a propósito en las tareas sin respuesta en posición impar y en una de cada seis
+  con varias ofertas. `vaga` sale 100 % porque ahí se acepta cualquier oferta válida.
+- M1: solo el campo `precio` baja de 100 % (los precios desviados un 10 %). Las columnas en "—" son campos que esa
+  fuente no publica (P4 y P5 no traen GTIN): no se castiga al extractor por lo que no existe.
+- M3: 100 % de acuerdo y rango 0, porque el oráculo es determinista. Con un LLM real este número es el ruido que
+  usa la regla de parada de E3.
+- M4: abstención correcta 44 % (12/27): justo las abstenciones que el oráculo omite.
+
+**3. La interfaz — costo US$0 en modo simulado**
+
+```bash
+make app            # abre http://localhost:8501
+```
+
+Elija "Tarea del corpus con agente simulado (US$0)", seleccione `B013` y pulse Buscar. Debe ver la recomendación
+en verde, el cuadro con la flecha en la oferta elegida y, abajo, la procedencia de cada oferta con su SHA-256.
+
+Consulta libre con el agente real — costo ~US$0,02 (DeepSeek Flash, tope de US$0,10 por consulta): con
+`make corpus-b-servir` en otra terminal y las claves cargadas (`set -a; . ./.env; set +a; make app`), elija
+"Consulta libre" y pregunte, por ejemplo, "¿Dónde compro más barato el monitor Samsung M8 de 32 pulgadas con 64 GB?".
+Tarda 2–4 minutos.
+
+**4. Recalcular y comparar las métricas de las dos calibraciones reales — costo US$0**
+
+```bash
+make metricas CORRIDA=resultados/corridas/2026-11-09_calibracion_flash_v0.jsonl.gz   # esquema con opcionales
+make metricas CORRIDA=resultados/corridas/2026-11-09_calibracion_flash_v1.jsonl.gz   # v1, campos obligatorios
+```
+
+Qué comparar (también en `resultados/informes/<corrida>/metricas.md` y sus PNG):
+
+- **M1, filas gtin/mpn/marca de P1:** 0 % en v0 y 99–100 % en v1. Es el efecto del esquema obligatorio, en una
+  fuente que publica esos datos como campos JSON.
+- **M1, columna "Ofertas (de listado)" de P2:** ~1000 de ~1100 ofertas vienen del índice, que solo trae título y
+  precio. Ahí solo se compara el precio.
+- **M2:** 52/60 frente a 49/60, con intervalos que se solapan: es ruido. Las tareas vagas (5–7/12) son las más
+  débiles.
+- **Por qué fallan:** el intérprete devuelve la necesidad vacía en 19 de las 27 tareas con criterios (se corrige
+  al inicio de la próxima sesión). Para verlo en una tarea:
+  `zcat resultados/corridas/2026-11-09_calibracion_flash_v1.jsonl.gz | grep '"B059"' | uv run python -c "import json,sys; print(json.load(sys.stdin)['necesidad'])"`
+  muestra `restricciones: []` y `presupuesto_max: None`, aunque la consulta pide 64 GB de RAM por menos de
+  $2.000.000.
+
+No vuelve a llamar al modelo: solo relee el JSONL. En git se guarda comprimido (`.jsonl.gz`); el `.jsonl` sin comprimir queda solo en la máquina, para reanudar corridas. Rehacer la calibración completa (`make calibracion`) cuesta
+~US$1 y no hace falta para revisar los resultados.

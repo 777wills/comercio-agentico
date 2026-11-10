@@ -17,6 +17,7 @@ dependencies = [
     "langchain-anthropic>=1.7.10",
     "langchain-openrouter>=0.2.9",
     "langgraph>=1.2.20",
+    "matplotlib>=3.11.2",
     "pydantic>=2.12.5",
     "pypdf>=7.0.0",
     "python-dotenv>=1.2.4",
@@ -44,6 +45,9 @@ src = ["src", "tests"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM", "RUF", "C4"]
+
+# Signos tipográficos del español en textos y docstrings (× en «60 × 3», – en intervalos).
+allowed-confusables = ["×", "–"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["comercio_agentico"]

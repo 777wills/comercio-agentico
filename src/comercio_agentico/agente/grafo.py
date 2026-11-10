@@ -534,7 +534,13 @@ async def preguntar(
     catalogo: list[ProductoCatalogo] | None = None,
     emparejador: Emparejador | None = None,
     perfil: PerfilCategoria | None = None,
+    semaforo_llm: asyncio.Semaphore | None = None,
 ) -> Resultado:
+    """Responde una consulta.
+
+    ``semaforo_llm`` permite que varias tareas en paralelo compartan un único límite de llamadas
+    simultáneas al LLM (el arnés lo usa); si falta, cada tarea crea el suyo.
+    """
     inicio = time.perf_counter()
     registro = registro or cargar_fuentes()
     perfil = perfil or cargar_perfil(RUTA_PERFIL)
@@ -550,6 +556,7 @@ async def preguntar(
             costo=costo,
             separacion_planos=separacion_planos,
             max_llamadas=max_llamadas,
+            _semaforo=semaforo_llm,
         )
         grafo = construir_grafo(ctx)
         try:

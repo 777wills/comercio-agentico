@@ -39,3 +39,9 @@ resultados/cache/
 
 # Excepción: PDF generados del corpus B sintético sí se versionan
 !corpus/b_sintetico/**/*.pdf
+
+# Corridas: se versiona solo la copia comprimida (.jsonl.gz); el .jsonl sirve para reanudar.
+resultados/corridas/*.jsonl
+resultados/corridas/*_simulado.jsonl.gz
+# Salidas del agente simulado (se regeneran con make arnes-simulado)
+resultados/informes/*_simulado/

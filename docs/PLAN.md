@@ -170,16 +170,16 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
 
 **Objetivo:** cualquier configuración se evalúa con un comando y produce métricas sin juicio humano.
 
-- [ ] `arnes/correr.py --config <yaml> --tareas <jsonl> --repeticiones N`: ejecuta en paralelo moderado, guarda cada
+- [x] `arnes/correr.py --config <yaml> --tareas <jsonl> --repeticiones N`: ejecuta en paralelo moderado, guarda cada
       corrida en `resultados/corridas/<fecha>_<config>.jsonl` con modelo, proveedor, versión de prompt, hash del
       corpus, commit, tokens, costo y latencia.
-- [ ] Métricas: M1 exactitud de extracción por ruta (campo a campo contra `verdad.json`), M2 éxito por categoría de
+- [x] Métricas: M1 exactitud de extracción por ruta (campo a campo contra `verdad.json`), M2 éxito por categoría de
       tarea, M3 acuerdo entre ejecuciones, M4 abstención (y exactitud sobre lo cubierto), M6 costo por tarea y
       latencia p50/p90. Intervalos de confianza (Wilson o bootstrap).
-- [ ] Tabla resumen y gráficos básicos (matplotlib) en `resultados/`.
-- [ ] Corrida de calibración: 60 tareas × 1 repetición con el modelo barato. Fija el subconjunto estratificado de ~30
+- [x] Tabla resumen y gráficos básicos (matplotlib) en `resultados/`.
+- [x] Corrida de calibración: 60 tareas × 1 repetición con el modelo barato. Fija el subconjunto estratificado de ~30
       tareas para E3 (y lo congela en `tareas/subconjunto_e3.jsonl`).
-- [ ] Streamlit mínimo: caja de consulta, cuadro comparativo, procedencia expandible.
+- [x] Streamlit mínimo: caja de consulta, cuadro comparativo, procedencia expandible.
 
 **Terminado cuando:** la corrida de calibración genera el informe de métricas completo y la app responde una consulta.
 **Informe:** `docs/informe/03_metodologia_metricas.md` + primeros números en `04_resultados_calibracion.md`.

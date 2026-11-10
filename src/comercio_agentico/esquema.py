@@ -48,10 +48,18 @@ Disponibilidad = Literal["en_stock", "bajo_pedido", "agotado", "desconocida"]
 ValorAtributo = str | float | int | bool
 
 
+def _todos_obligatorios(esquema: dict) -> None:
+    """En el JSON Schema que recibe el LLM, todo campo es obligatorio (anulable si su tipo lo
+    admite). Sin esto, un modelo puede omitir los opcionales aunque la fuente los publique: DeepSeek
+    Flash omitía GTIN, MPN y marca en el 100 % de las ofertas (S03). La validación de Pydantic no
+    cambia: los valores por defecto siguen valiendo al construir ofertas en el código."""
+    esquema["required"] = list(esquema.get("properties", {}))
+
+
 class OfertaExtraida(BaseModel):
     """Oferta tal como la extrae el modelo de un fragmento (la procedencia la pone el código)."""
 
-    model_config = ConfigDict(str_strip_whitespace=True)
+    model_config = ConfigDict(str_strip_whitespace=True, json_schema_extra=_todos_obligatorios)
 
     titulo: str = Field(
         min_length=1, description="Nombre del producto tal como aparece en la fuente."

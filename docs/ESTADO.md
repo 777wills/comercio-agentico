@@ -2,15 +2,18 @@
 
 ## Siguiente sesión
 
-**S03 — Arnés de evaluación y Streamlit mínimo** (jue 12-nov; ver `docs/PLAN.md`, sección S03).
-S02 se cerró el 9-nov, con dos días de adelanto.
+**S04 — Corpus A real** (jue 12 / vie 13-nov; ver `docs/PLAN.md`, sección S04), **precedida por la corrección
+del intérprete y la calibración v2** (D69). S03 se cerró el 9-nov, con tres días de adelanto.
 
-Siguiente paso exacto: escribir `arnes/correr.py` reutilizando `comercio_agentico.agente.grafo.preguntar` y
-`preguntar.evaluar`/`registro_jsonl` (ya producen el JSONL por tarea). **Tareas en paralelo** (p. ej. 4 a la vez,
-con un semáforo global de llamadas al LLM compartido entre tareas): una tarea tarda ~195 s con DeepSeek Flash, así
-que 60 tareas en serie tomarían ~3 h. Después, M1 campo a campo contra `verdad.json` (las ofertas emparejadas
-están en `Resultado.ofertas`), M2–M4 y M6, y la corrida de calibración de 60 tareas (~US$0,90). Consultar
-Context7 para Streamlit antes de la app mínima.
+Siguiente paso exacto:
+1. Aplicar `_todos_obligatorios` (de `esquema.py`) a `Necesidad` y `RestriccionAtributo`
+   (`agente/interpretacion.py`) y a `Decisiones` (`emparejamiento.py`). Agregar en `interpretar()` un reintento
+   ante `OutputParserException` (JSON truncado) y, si falla de nuevo, una necesidad mínima con alerta. Pruebas sin
+   red de ambos caminos. Revisar con Context7 el manejo de errores de `with_structured_output`.
+2. `make corpus-b-servir` y `make calibracion` (~US$0,9, ~45 min; las corridas v0 y v1 ya tienen sufijo, así
+   que la v2 no se reanuda sobre ellas). Renombrar la nueva a `_v2` al terminar. Comparar v0 → v1 → v2 en `docs/informe/04_resultados_calibracion.md`. Meta: la necesidad vacía en 19/27 debe
+   bajar a casi 0; revisar las tareas vagas.
+3. Seguir con S04.
 
 ## Presupuesto de modelos
 
@@ -18,7 +21,7 @@ Context7 para Streamlit antes de la app mínima.
 |---|---|
 | Presupuesto total | 300,00 |
 | Créditos comprados | 50,00 (Anthropic 30 + OpenRouter 20), 9-nov |
-| Gastado acumulado | ~0,46 (S00: ~0,26 en ping, diagnóstico y mediciones de extracción; S01: 0,024 en el catálogo del corpus B; S02: ~0,18 en DeepSeek Flash, de ellos 0,076 la prueba de humo). OpenRouter informa 0,267 de uso total sobre US$20 al cierre de S02 |
+| Gastado acumulado | ~2,20 (S00: ~0,26; S01: 0,024; S02: ~0,18; S03: 1,74 en DeepSeek Flash: dos calibraciones de 60 tareas, 0,81 + 0,89, y sondeos de diagnóstico por menos de US$0,01). OpenRouter informa 2,009 de uso total sobre US$20 al cierre de S03 |
 
 Costo medido el 9-nov (S00) de una extracción estructurada típica (página con 12 ofertas, 1500–3500 tokens de
 entrada, `json_schema`): Flash 0,0015 · Haiku 0,0016 · DeepSeek Pro 0,006 · Sonnet 0,025 · Kimi 0,032 ·
@@ -44,6 +47,28 @@ largas que la de prueba (recalibrar en S03 con el arnés), y Opus queda cerca de
 El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un subproceso.
 
 ## Bitácora
+
+### 9-nov-2026 — S03 Arnés de evaluación y Streamlit mínimo
+- `arnes/correr.py`: configuración YAML (`configs/calibracion_flash.yaml`), 4 tareas en paralelo con un semáforo
+  de llamadas al LLM compartido (6), JSONL por ejecución con versión de prompt (SHA-256 de instrucciones y
+  esquemas), hash del corpus y de las tareas, commit, tokens, costo y latencia, más todas las ofertas recolectadas.
+  Reanuda si se interrumpe (se probó: la sesión se cortó a las 24/60 y la corrida siguió sin repetir nada).
+- `arnes/metricas.py`: M1 por fuente (campo a campo; los listados solo en precio), recolección, M2, M3, M4, M6;
+  Wilson y *bootstrap* (scipy). `metricas.md`, `metricas.json` y 3 PNG por corrida en `resultados/informes/`.
+- `arnes/simulado.py`: agente oráculo con errores sembrados; las pruebas verifican que las métricas los encuentran
+  exactamente. `make arnes-simulado` (US$0).
+- `app.py` (Streamlit): consulta, cuadro comparativo y procedencia desplegable; modo simulado a US$0. `make app`.
+- Subconjunto E3 congelado antes de ver resultados: `tareas/subconjunto_e3.jsonl`, 30 tareas (D64).
+- **Calibración v0** (`..._v0.jsonl.gz`, prompt `4dfdd15ebbcf`): M2 52/60, M1 86,3 %, US$0,81, p50 146 s. **Hallazgo:** Flash omitía
+  GTIN, MPN y marca en el 100 % de las ofertas (campos opcionales del esquema). Corrección D66 (campos
+  obligatorios) y D67 (regla de existencias solo en mensajes).
+- **Calibración v1** (`..._v1.jsonl.gz`, prompt `724697af2251`): M2 49/60 [70,1–89,4] (dentro del ruido frente a v0), M1 95,7 %,
+  identificadores de P1 99–100 %, US$0,89, p50 179 s, p90 255 s. **Hallazgo:** el intérprete devuelve la necesidad
+  vacía en 19/27 tareas con criterios; es la causa principal de los fallos (D69, al inicio de la próxima sesión).
+- Corridas versionadas comprimidas (`.jsonl.gz`, ~250 KB frente a ~3 MB; el hook de pre-commit limita a 2 MB);
+  el `.jsonl` queda fuera de git y sirve para reanudar.
+- 13 pruebas nuevas (83 en total); Ruff limpio. Dependencia nueva: matplotlib (scipy pasa a usarse directamente).
+- Informe: `docs/informe/03_metodologia_metricas.md` y `docs/informe/04_resultados_calibracion.md`.
 
 ### 9-nov-2026 — S02 Agente N2 y emparejamiento
 - Herramientas: `abrir_pagina` (crawl4ai → Markdown + enlaces del mismo sitio), `leer_documento` (pypdf/texto),
@@ -121,7 +146,8 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 - Informe primario de la CCCE (primer trimestre de 2026), si se cita en el informe.
 - Verificación exhaustiva de las referencias del plan de trabajo antes de reutilizarlas (S10).
 - Recargar ~US$40 en Anthropic antes de Sonnet en S05 (Wills).
-- Latencia: ~195 s por tarea con DeepSeek Flash. E3 necesita tareas en paralelo (S03) y reintentos ante el límite de
-  tasa de DeepInfra (Kimi devolvió 429 durante S02).
+- Corrección del intérprete y calibración v2 (D69), antes de S04.
+- Referencias de Wilson (1927) y Efron (1979) para los intervalos: verificar en la fuente primaria en S10.
+- Comprobar que el arnés soporta la concurrencia con Kimi y Opus (límite de tasa) antes de E3.
 - Año de la conferencia de ReAct (versión de ICLR, arXiv:2210.03629) por confirmar en S10.
 - Archify (diagrama de arquitectura del estándar del profesor) como opción en S09 para el informe.
