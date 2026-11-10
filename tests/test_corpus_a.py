@@ -98,3 +98,30 @@ def test_tareas_clave_del_corpus_a():
     # Lenovo Yoga 7: agotado en todas; el X1 Yoga de Falabella es otro producto.
     assert tareas["A018"].respuesta.abstencion
     assert sum(t.respuesta.abstencion for t in tareas.values()) == 4
+
+
+def test_lectura_web_agrega_los_datos_schema_org(catalogo, tmp_path):
+    """D74: el texto que lee el agente trae los datos schema.org (donde está la disponibilidad),
+    tanto en microdatos (A1) como en JSON-LD (A3); el Markdown de crawl4ai los perdía."""
+    from comercio_agentico.agente.lectura import datos_estructurados
+
+    construir_sitio(HECHOS, catalogo, tmp_path)
+    for tienda in ("a1", "a3"):
+        ficha = next(p for p in sorted((tmp_path / tienda).glob("r*.html")))
+        bloque = datos_estructurados(ficha.read_text(encoding="utf-8"), "http://127.0.0.1/")
+        assert bloque.startswith("Datos estructurados de la página (schema.org):")
+        assert "schema.org/InStock" in bloque or "schema.org/OutOfStock" in bloque
+        assert '"price"' in bloque
+
+
+def test_datos_schema_org_vacio_roto_y_recortado():
+    from comercio_agentico.agente.lectura import MAX_DATOS_ESTRUCTURADOS, datos_estructurados
+
+    assert datos_estructurados("<html><body><p>Hola</p></body></html>", "http://x/") == ""
+    assert datos_estructurados("", "http://x/") == ""
+    enorme = json.dumps({"@type": "Product", "description": "x" * 20_000})
+    bloque = datos_estructurados(
+        f'<script type="application/ld+json">{enorme}</script>', "http://x/"
+    )
+    assert bloque.count("x") < MAX_DATOS_ESTRUCTURADOS + 100
+    assert "…(recortado)" in bloque

@@ -1,0 +1,8 @@
+# E3 (S05): solo cambia el modelo; C1 sin defensa adicional ni N3 (D31, D42, D77).
+nombre: e3_kimi
+modelo: kimi
+separacion_planos: true
+max_llamadas: 14
+tope_usd: 0.50
+concurrencia_tareas: 4
+concurrencia_llm: 6

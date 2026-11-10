@@ -394,3 +394,77 @@ configuración).
 
 **No ejecute sin necesidad** `make corpus-a-recolectar`: vuelve a leer las 75 fichas reales (US$0 en modelos, pero
 hace 75 peticiones a las tiendas y cambia los hechos, y con ellos la verdad).
+
+## S05 — Lectura con schema.org (D74), normalización tolerante (D75) y E3 (9-nov)
+
+### Qué se construyó y por qué
+
+| Componente | Qué hace | Concepto de IA / decisión |
+|---|---|---|
+| `agente/lectura.py` (`datos_estructurados`) | Antes del Markdown de cada página web, agrega los objetos schema.org `Product`/`Offer` (JSON-LD y microdatos, con `extruct`), en JSON compacto y con tope de 6000 caracteres. | **Lectura para máquinas:** la conversión a Markdown descarta los metadatos donde las tiendas publican la disponibilidad. El bloque es contenido del proveedor (plano de datos) y queda dentro del SHA-256 de procedencia. |
+| `agente/interpretacion.py` (`valor_canonico`) | El número de una restricción es la primera cifra del texto (`'،27'` → 27; `'1.000 GB'` → 1000) y la unidad, la palabra siguiente (`MB/s` incluido). Booleanos: «sí/true/activa» y «no/false»; si dice ambas cosas o ninguna, se descarta. | **Robustez ante salidas imperfectas del LLM:** limpiar de forma determinista lo que el modelo barato ensucia, sin otra llamada al modelo. |
+| `arnes/e3.py` | Lee las corridas `*_e3_*`, las ordena según D31, aplica la regla de parada D77 y dibuja la frontera costo-desempeño (con su frente de Pareto). | **Escalamiento con regla fijada antes de ver datos:** solo se paga un modelo más caro si el anterior mejoró más que el ruido entre repeticiones. |
+| `configs/e3_*.yaml`, `make e3`, `make e3-frontera` | Una configuración por modelo (solo cambia el modelo y el tope de gasto) y los comandos para correr y comparar. | Experimento controlado: una sola variable. |
+
+### Cómo probarlo
+
+**1. Pruebas completas — costo US$0 (sin red)**
+
+```bash
+make check          # lint + formato + 113 pruebas (19 nuevas)
+```
+
+Vale la pena leer: `tests/test_corpus_a.py::test_lectura_web_agrega_los_datos_schema_org` (una ficha A1 con
+microdatos y una A3 con JSON-LD), `tests/test_agente.py::test_restricciones_tolerantes_a_la_basura_del_modelo`
+(los valores que Flash escribió de verdad en la calibración v2), `tests/test_arnes.py::test_regla_d77_*` y `tests/test_arnes.py::test_una_corrida_que_cruza_la_medianoche_se_reanuda`.
+
+**2. Ver el bloque schema.org que ahora lee el agente — costo US$0 (sin red)**
+
+```bash
+make corpus-a       # reconstruye las tiendas si no existen
+uv run python -c "
+from pathlib import Path
+from comercio_agentico.agente.lectura import datos_estructurados
+print(datos_estructurados(Path('corpus/a_real/sitio/a3/r03.html').read_text(), 'http://127.0.0.1:8802/'))"
+```
+
+Debe ver «Datos estructurados de la página (schema.org):» y un JSON con dos `Offer` de Falabella, cada una con
+`price` y `availability` (`https://schema.org/InStock`). Es exactamente lo que el Markdown perdía.
+
+**3. Probar la normalización con valores sucios — costo US$0**
+
+```bash
+uv run python -c "
+from comercio_agentico.agente.interpretacion import Necesidad, RestriccionAtributo
+from comercio_agentico.esquema import cargar_perfil
+p = cargar_perfil('perfiles/electronica.yaml')
+for a, v in [('tamano_pantalla', '،27'), ('almacenamiento', '1.000 GB'), ('cancelacion_ruido', 'true / activa / sí'), ('cancelacion_ruido', 'no activa')]:
+    print(a, repr(v), '→', Necesidad(restricciones=[RestriccionAtributo(atributo=a, operador='>=', valor=v)]).restricciones_duras(p))"
+```
+
+Las tres primeras deben dar una restricción (27, 1000 y True); la cuarta, una lista vacía (se descarta por
+contradictoria).
+
+**4. Comparar las corridas ya hechas — costo US$0 (sin red)**
+
+```bash
+make e3-frontera                                            # tabla, regla D77 y frontera.png
+cat resultados/informes/2026-11-09_calibracion_flash_v3/metricas.md
+cat resultados/informes/2026-11-09_corpus_a_flash_v1/metricas.md
+```
+
+`resultados/informes/e3/e3.md` muestra, por modelo, M2 media, rango entre repeticiones, abstención correcta,
+costo por tarea y latencia, y una línea por paso con «se sube» o «se para». La figura `frontera.png` pone el costo
+en el eje horizontal (logarítmico) y M2 en el vertical: lo que está arriba a la izquierda domina.
+
+**5. Una tarea con Haiku en el agente real — costo < US$0,02 (requiere `make corpus-b-servir`)**
+
+```bash
+uv run python -m comercio_agentico.arnes.correr --config configs/e3_haiku.yaml --solo B004 \
+  --salida /tmp/b004_haiku.jsonl
+```
+
+Haiku tarda ~1 minuto por tarea (Flash, ~2,5). El tope por tarea es US$0,10.
+
+**No ejecute sin necesidad** `make e3 MODELO=...`: cada modelo son 90 ejecuciones (Flash y Haiku ~US$1,5;
+DeepSeek Pro ~US$9; Sonnet y Kimi ~US$20–26).

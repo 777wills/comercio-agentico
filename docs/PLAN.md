@@ -198,7 +198,7 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
       cuando exista (extracción determinista); revisión humana rápida de Wills solo sobre los casos dudosos.
 - [x] Corrida del agente sobre el corpus A con el modelo barato.
 
-*Hecho el 9-nov con D70: en lugar de copias se guardan hechos y las tiendas se reconstruyen (sus términos prohíben copiar). Línea base 8/20; la repetición con lectura schema.org (D74) queda para la sesión siguiente.*
+*Hecho el 9-nov con D70: en lugar de copias se guardan hechos y las tiendas se reconstruyen (sus términos prohíben copiar). Línea base 8/20; con la lectura schema.org (D74), 19/20 (v1).*
 
 **Terminado cuando:** las 20 tareas reales tienen referencia y una corrida completa con métricas.
 **Informe:** sección de corpus A en `03_metodologia_corpus.md` y resultados en `04_resultados_corpus_a.md`.
@@ -207,11 +207,13 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
 
 **Objetivo:** frontera costo-desempeño y elección del modelo base, gastando solo lo necesario.
 
-- [ ] Configuración base fija (sin defensa adicional a C1, sin N3); solo cambia el modelo.
-- [ ] Orden D31. Por modelo: subconjunto de 30 tareas × 3 repeticiones; M2 por categoría, M3, M4, M6.
-- [ ] Regla de parada D42 aplicada y documentada en cada paso (qué se midió, qué ruido, por qué se subió o se paró).
-- [ ] Gráfico de frontera costo-desempeño (costo por tarea vs. M2) y tabla con intervalos.
-- [ ] Elegir el modelo base con argumento (desempeño, costo, latencia, pesos abiertos) y registrar en DECISIONES.
+- [x] Configuración base fija (sin defensa adicional a C1, sin N3); solo cambia el modelo.
+- [x] Orden D31. Por modelo: subconjunto de 30 tareas × 3 repeticiones; M2 por categoría, M3, M4, M6.
+- [x] Regla de parada D42 aplicada y documentada en cada paso (qué se midió, qué ruido, por qué se subió o se paró).
+- [x] Gráfico de frontera costo-desempeño (costo por tarea vs. M2) y tabla con intervalos.
+- [x] Elegir el modelo base con argumento (desempeño, costo, latencia, pesos abiertos) y registrar en DECISIONES.
+
+*Hecho el 9–10-nov: E3 se detuvo en Haiku por D77 (D78); modelo base DeepSeek Flash (D79). Antes se cerró S04 con D74 (corpus A 19/20) y D75 (calibración v3 58/60).*
 
 **Terminado cuando:** hay modelo base decidido con evidencia y la figura de la frontera.
 **Informe:** `04_resultados_e3.md` (alimenta Cr2: argumentación de la elección del modelo).

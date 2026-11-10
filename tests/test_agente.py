@@ -198,6 +198,39 @@ def test_restricciones_se_llevan_a_unidad_canonica(atributo, valor, esperado):
     assert n.restricciones_duras(PERFIL)[0].valor == esperado
 
 
+@pytest.mark.parametrize(
+    ("atributo", "operador", "valor", "esperado"),
+    [  # valores que escribió DeepSeek Flash en la calibración v2 (D75)
+        ("tamano_pantalla", ">=", "،27", 27.0),
+        ("almacenamiento", ">=", "، 1000", 1000.0),
+        ("memoria_ram", ">=", "،8,", 8.0),
+        ("autonomia", ">=", "،5,", 5.0),
+        ("cancelacion_ruido", "==", "true / activa / sí", True),
+        ("inalambrico", "==", "true", True),
+        ("inalambrico", "==", "No", False),
+        ("almacenamiento", ">=", "1.000 GB", 1000.0),  # punto de miles
+        ("peso", "<=", "1.6", 1.6),  # punto decimal
+        ("velocidad_lectura", ">=", "1 GB/s", 1000.0),  # unidad compuesta
+    ],
+)
+def test_restricciones_tolerantes_a_la_basura_del_modelo(atributo, operador, valor, esperado):
+    n = Necesidad(
+        restricciones=[RestriccionAtributo(atributo=atributo, operador=operador, valor=valor)]
+    )
+    assert n.restricciones_duras(PERFIL)[0].valor == esperado
+
+
+@pytest.mark.parametrize(
+    ("atributo", "valor"),
+    [("almacenamiento", "،"), ("cancelacion_ruido", "no activa"), ("inalambrico", "quizá")],
+)
+def test_restricciones_sin_sentido_se_descartan(atributo, valor):
+    n = Necesidad(
+        restricciones=[RestriccionAtributo(atributo=atributo, operador="==", valor=valor)]
+    )
+    assert n.restricciones_duras(PERFIL) == []
+
+
 def test_sin_duplicados_prefiere_la_ficha_al_listado():
     listado = oferta("P2", "C11", 3_082_900, envio=None, plazo=None)
     ficha = oferta("P2", "C11", 3_082_900, envio=0, gtin=PRODUCTOS["C11"].gtin)

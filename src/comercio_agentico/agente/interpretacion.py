@@ -26,6 +26,9 @@ from comercio_agentico.esquema import (
 )
 from comercio_agentico.modelos import invocar_estructurado
 
+VERDADEROS = {"sí", "si", "true", "verdadero", "activa", "activo", "yes", "1", "con"}
+FALSOS = {"no", "false", "falso", "inactiva", "inactivo", "desactivada", "0", "sin"}
+
 
 class RestriccionAtributo(BaseModel):
     model_config = ConfigDict(json_schema_extra=_todos_obligatorios)
@@ -40,14 +43,31 @@ class RestriccionAtributo(BaseModel):
         return str(valor).lower() if isinstance(valor, bool) else str(valor)
 
     def valor_canonico(self, atributo: AtributoComparable) -> float | str | bool:
-        """Número con unidad ("16 GB", "1 TB", "27 pulgadas") → unidad canónica del perfil."""
+        """Número con unidad ("16 GB", "1 TB", "27 pulgadas") → unidad canónica del perfil.
+
+        Tolerante a la basura que escriben los modelos baratos (D75): el número es la primera
+        cifra del texto (``'،27'`` → 27, ``'، 1000'`` → 1000, ``'1.000 GB'`` → 1000) y la unidad, la
+        palabra que la sigue (``MB/s`` incluido). Un booleano es verdadero si el texto dice «sí»,
+        «true» o «activa», falso si dice «no» o «false», y se rechaza si no dice ninguna de las dos
+        cosas o dice ambas («no activa»).
+        """
         texto = self.valor.strip()
         if atributo.tipo == "numero":
-            numero = re.match(r"^\s*(\d+(?:[.,]\d+)?)\s*(.*)$", texto)
+            numero = re.search(r"\d{1,3}(?:\.\d{3})+(?![\d.,])|\d+(?:[.,]\d+)?", texto)
             if not numero:
                 raise ValueError(f"Valor no numérico para {atributo.nombre}: {texto!r}")
-            cifra, unidad = float(numero.group(1).replace(",", ".")), numero.group(2).strip()
-            return atributo.normalizar(cifra, unidad or None)
+            cifra = numero.group(0)
+            cifra = cifra.replace(".", "") if re.fullmatch(r"\d{1,3}(?:\.\d{3})+", cifra) else cifra
+            unidad = re.match(r"\s*([^\W\d_]+(?:/[^\W\d_]+)?|\")", texto[numero.end() :])
+            return atributo.normalizar(
+                float(cifra.replace(",", ".")), unidad.group(1) if unidad else None
+            )
+        if atributo.tipo == "booleano":
+            palabras = set(re.findall(r"[^\W\d_]+|\d+", texto.lower()))
+            si, no = bool(palabras & VERDADEROS), bool(palabras & FALSOS)
+            if si != no:
+                return si
+            raise ValueError(f"Valor no booleano para {atributo.nombre}: {texto!r}")
         return atributo.normalizar(texto)
 
 

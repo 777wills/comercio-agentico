@@ -1,0 +1,44 @@
+{
+ "pasos": [
+  {
+   "modelo": "deepseek-flash",
+   "corrida": "2026-11-10_e3_flash",
+   "m2_media": 0.888888888888889,
+   "m2_rango": 0.09999999999999998,
+   "m2_bajo": 0.8074221497873896,
+   "m2_alto": 0.9385168081070229,
+   "ejecuciones": 90,
+   "abstencion_correcta": 1.0,
+   "acuerdo_total": 0.8666666666666667,
+   "costo_medio": 0.015235366666666667,
+   "latencia_p50": 129.05
+  },
+  {
+   "modelo": "haiku",
+   "corrida": "2026-11-09_e3_haiku",
+   "m2_media": 0.9,
+   "m2_rango": 0.06666666666666665,
+   "m2_bajo": 0.8207582512456635,
+   "m2_alto": 0.946493248302875,
+   "ejecuciones": 90,
+   "abstencion_correcta": 1.0,
+   "acuerdo_total": 0.9333333333333333,
+   "costo_medio": 0.01697672222222222,
+   "latencia_p50": 56.25
+  }
+ ],
+ "veredictos": [
+  {
+   "modelo": "haiku",
+   "frente_a": "deepseek-flash",
+   "ruido": 0.09999999999999998,
+   "delta_m2": 0.011111111111111072,
+   "delta_abstencion": 0.0,
+   "sube": false
+  }
+ ],
+ "pareto": [
+  "deepseek-flash",
+  "haiku"
+ ]
+}

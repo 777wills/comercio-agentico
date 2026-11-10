@@ -69,6 +69,7 @@ que el intérprete no tradujo.
 | v0 | Línea base | 86,7 % [75,8–93,1] (52/60) | 12/12 | 12/12 | 12/15 | 7/12 | 9/9 | US$0,0135 | 146 s |
 | v1 | Extractor con campos obligatorios | 81,7 % [70,1–89,4] (49/60) | 12/12 | 11/12 | 13/15 | 5/12 | 8/9 | US$0,0148 | 179 s |
 | v2 | Intérprete y confirmador con campos obligatorios | 90,0 % [79,9–95,3] (54/60) | 12/12 | 12/12 | 14/15 | 7/12 | 9/9 | US$0,0156 | 161 s |
+| v3 | Normalización tolerante de restricciones y lectura con datos schema.org | 96,7 % [88,6–99,1] (58/60) | 12/12 | 12/12 | 15/15 | 10/12 | 9/9 | US$0,0153 | 151 s |
 
 Los intervalos de las tres versiones se solapan: con 60 tareas, la mejora de v1 a v2 es compatible con el ruido de
 muestreo, aunque coincide en dirección con el mecanismo observado (la necesidad recupera sus restricciones). La
@@ -79,3 +80,18 @@ De los seis fallos de la v2, cinco ocurren en tareas vagas. En cuatro, el intér
 correcta pero escribe un valor no normalizable (`'،27'`, `'، 1000'`, `'،8,'`, `'true / activa / sí'`) y la
 restricción se descarta; en los demás, traduce la necesidad a otro atributo (memoria en lugar de almacenamiento) o
 no la traduce. La normalización tolerante de esos valores se mide en la calibración v3.
+
+**Calibración v3: normalización tolerante y lectura con datos schema.org.** La cuarta versión toma como valor
+numérico de una restricción la primera cifra del texto, con la unidad que la sigue, y acepta como booleano
+verdadero o falso las formas habituales («sí», «true», «activa»; «no», «false»); un texto sin cifra o con ambos
+sentidos se sigue descartando. Incorpora además la lectura de los datos schema.org de la página (sección del
+corpus A). Con 96,7 % [88,6–99,1] (58/60), la v3 recuperó las cinco tareas que la v2 fallaba por valores no
+normalizables o por la restricción de orden, a igual costo (US$0,0153 [0,0148–0,0159] por tarea). La exactitud
+sobre lo cubierto subió de 84,3 % en v0 a 98,0 % [89,5–99,6] (49/50). El intervalo de la v3 todavía se solapa con
+los de v0 y v2; la evidencia de la mejora es la correspondencia entre cada tarea recuperada y su causa corregida,
+más que la diferencia agregada.
+
+Los dos fallos restantes son tareas vagas en las que la traducción de la consulta a una cifra es discutible: «un
+celular al que le dure mucho la batería» se tradujo como autonomía de al menos 24 horas, atributo que el catálogo
+no publica para celulares, en lugar de capacidad de batería; y «mucho espacio» para fotos se tradujo como al menos
+1 TB, cuando la referencia fija 2 TB. La v3 es la configuración base de E3.

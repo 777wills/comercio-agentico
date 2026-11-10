@@ -2,20 +2,18 @@
 
 ## Siguiente sesión
 
-**Cierre de S04 (D74, D75) y luego S05 — E3** (`docs/PLAN.md`, sección S05). S04 se cerró el 9-nov, con tres días
-de adelanto.
+**S06 — N4 defensa y suite adversarial** (`docs/PLAN.md`, sección S06). S05 se cerró el 10-nov, con tres días de
+adelanto.
 
 Siguiente paso exacto:
-1. **D74:** en `agente/lectura.py` (`abrir_pagina`), extraer con `extruct` los microdatos y el JSON-LD
-   `Product`/`Offer` del HTML (`resultado.html` de crawl4ai) y agregarlos al `Documento` como bloque de texto
-   («Datos estructurados de la página: …»), en el plano de datos. Revisar con Context7 si crawl4ai expone el HTML
-   en `CrawlResult`. Pruebas sin red con una ficha reconstruida A1 y una A3. Luego `make corpus-a-servir` y
-   `make corpus-a-correr` (~US$0,36), y renombrar a `_v1`. Meta: la disponibilidad deja de ser «desconocida».
-2. **D75:** normalización tolerante en `RestriccionAtributo.valor_canonico` (primera cifra del texto; «sí», «true»,
-   «activa» = verdadero), con pruebas de los valores reales de la v2 (`'،27'`, `'، 1000'`, `'،8,'`,
-   `'true / activa / sí'`). Luego `make corpus-b-servir` y `make calibracion` (~US$0,9) y renombrar a `_v3`.
-   Comparar v0 → v3 en `docs/informe/04_resultados_calibracion.md`.
-4. Seguir con S05 (E3) sobre la versión v3, hasta Sonnet como tope (D76): Opus solo con autorización de Wills.
+1. Verificar con Context7 y en la fuente primaria la taxonomía MITRE pertinente (ATLAS) y OWASP LLM01 (versión
+   vigente) antes de escribir `ataques/mapeo.md`.
+2. Diseñar las 20 cargas (5 clases × 4 ubicaciones) con su predicado de éxito verificable por programa; usar el
+   `llms.txt` de Alkosto como caso real documentado.
+3. Elegir el clasificador de inyección de Hugging Face para C2 (licencia, tamaño, latencia en CPU) y proponerlo a
+   Wills con opciones antes de integrarlo.
+4. Prueba de humo: 1 carga por clase en C0 y C3, con DeepSeek Flash (modelo base, D79).
+5. Corridas largas: lanzarlas con `systemd-inhibit --what=sleep` (el equipo se suspendió a mitad de E3).
 
 ## Presupuesto de modelos
 
@@ -23,7 +21,7 @@ Siguiente paso exacto:
 |---|---|
 | Presupuesto total | 300,00 |
 | Créditos comprados | 50,00 (Anthropic 30 + OpenRouter 20), 9-nov. Anthropic: US$29,83 disponibles y US$0,17 gastados (consola, 9-nov 21:43) |
-| Gastado acumulado | ~3,52 (S00: ~0,26; S01: 0,024; S02: ~0,18; S03: 1,74; S04: ~1,32 en DeepSeek Flash: calibración v2 0,923 + repetición de B029 0,016, prueba de humo del corpus A 0,019 y corrida del corpus A 0,361). OpenRouter informaba 2,009 de uso al cierre de S03 |
+| Gastado acumulado | ~9,2 (S00: ~0,26; S01: 0,024; S02: ~0,18; S03: 1,74; S04: ~1,32; S05: ~5,7 = corpus A v1 0,361 + calibración v3 0,919 + E3 Flash 1,371 + E3 Haiku 1,528 + corrida parcial de Flash descartada 1,312 + ~0,2 de llamadas perdidas en la suspensión). OpenRouter: 7,46 de 20 usados (10-nov). Anthropic: ~US$28,3 disponibles tras Haiku |
 
 Costo medido el 9-nov (S00) de una extracción estructurada típica (página con 12 ofertas, 1500–3500 tokens de
 entrada, `json_schema`): Flash 0,0015 · Haiku 0,0016 · DeepSeek Pro 0,006 · Sonnet 0,025 · Kimi 0,032 ·
@@ -49,6 +47,25 @@ largas que la de prueba (recalibrar en S03 con el arnés), y Opus queda cerca de
 El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un subproceso.
 
 ## Bitácora
+
+### 9/10-nov-2026 — Cierre de S04 (D74, D75) y S05 E3
+- **D74:** `abrir_pagina` antepone al Markdown los objetos schema.org `Product`/`Offer` (JSON-LD y microdatos,
+  `extruct`; tope 6000 caracteres). Context7 confirmó que `CrawlResult.html` es el HTML original. **Corpus A v1:
+  19/20 = 95,0 % [76,4–99,1]** (v0: 8/20); disponibilidad 43 % → 96 %; US$0,361. El fallo A003 es de planificación
+  (no abre la ficha de Falabella). Efecto secundario: el GTIN extraído en A1/A2 cae de 35/62 a 1/67 porque
+  schema.org lo etiqueta `sku` (hallazgo para N3).
+- **D75:** `valor_canonico` toma la primera cifra y la unidad siguiente (`MB/s` incluido; punto de miles) y
+  booleanos tolerantes (contradictorios se descartan). **Calibración v3: 58/60 = 96,7 % [88,6–99,1]**, US$0,919;
+  recuperó B029, B032, B033, B036, B039. Fallan B031 y B035 (vagas: traducción discutible de la cifra).
+- **E3 (D77 fijada antes de correr):** Flash 88,9 % [80,7–93,9], rango 10,0 pp, US$0,0152, p50 129 s; Haiku 90,0 %
+  [82,1–94,6], rango 6,7 pp, US$0,0170, p50 56 s. ΔM2 +1,1 pp < ruido 10 pp → **se para (D78)**. **Modelo base:
+  DeepSeek Flash (D79)**. `arnes/e3.py` (`make e3`, `make e3-frontera`), `configs/e3_*.yaml`.
+- Incidente: el equipo se suspendió a las 23:15 con E3-Flash en 84/90; al reanudar pasada la medianoche, el arnés
+  creó un archivo con la fecha nueva y empezó de cero (US$1,31 desperdiciados). Corregido: `ruta_salida` reanuda
+  la corrida sin terminar con el mismo nombre aunque sea de otro día.
+- 19 pruebas nuevas (113 en total); Ruff limpio.
+- Informe: sección 4.y de `04_resultados_corpus_a.md`, v3 en `04_resultados_calibracion.md`,
+  `04_resultados_e3.md` nuevo.
 
 ### 9-nov-2026 — Corrección del intérprete (D69, D71) y S04 Corpus A real
 - `invocar_estructurado` (reintento ante JSON inválido o truncado y degradación controlada con la alerta
@@ -167,9 +184,10 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 - Verificar en S06 si la taxonomía MITRE pertinente es ATLAS.
 - Informe primario de la CCCE (primer trimestre de 2026), si se cita en el informe.
 - Verificación exhaustiva de las referencias del plan de trabajo antes de reutilizarlas (S10).
-- E3 llega hasta Sonnet; Opus solo con autorización explícita de Wills (D76). Sin recarga prevista de Anthropic.
+- E3 se detuvo en Haiku (D78): DeepSeek Pro, Kimi, Sonnet y Opus van como propuestos en la hoja de ruta del informe.
 - Usar el `llms.txt` de Alkosto (instrucciones dirigidas al LLM) como caso real en S06.
 - Referencias de Wilson (1927) y Efron (1979) para los intervalos: verificar en la fuente primaria en S10.
-- Comprobar que el arnés soporta la concurrencia con Kimi y Opus (límite de tasa) antes de E3.
+- La verificación N3 (S08) no debe suponer el GTIN en la oferta extraída: en el corpus A llega como `sku` en schema.org.
+- Planificador: en A003 no abre la ficha cuando el listado no trae disponibilidad (candidato a mejora o limitación declarada).
 - Año de la conferencia de ReAct (versión de ICLR, arXiv:2210.03629) por confirmar en S10.
 - Archify (diagrama de arquitectura del estándar del profesor) como opción en S09 para el informe.

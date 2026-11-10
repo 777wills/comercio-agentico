@@ -1,6 +1,8 @@
 """Lectura de fuentes: trae el texto de cada proveedor tal como lo publica. Sin LLM y sin costo.
 
-- Web (P2, P3, corpus A): crawl4ai con Chromium sin interfaz → Markdown + enlaces del mismo sitio.
+- Web (P2, P3, corpus A): crawl4ai con Chromium sin interfaz → Markdown + enlaces del mismo sitio,
+  precedido de los datos schema.org ``Product``/``Offer`` (JSON-LD y microdatos, con ``extruct``):
+  la conversión a Markdown los descarta y muchas tiendas publican ahí la disponibilidad (D74).
 - Documentos (P4 PDF, P5 chat): descarga HTTP; el PDF pasa por pypdf.
 - MCP (P1): cliente de FastMCP; busca y trae la ficha completa de cada resultado.
 
@@ -21,6 +23,34 @@ from pypdf import PdfReader
 from comercio_agentico.agente.fuentes import Fuente, RegistroFuentes
 
 os.environ.setdefault("CRAWL4AI_NO_CLOUD_NOTICE", "1")
+
+MAX_DATOS_ESTRUCTURADOS = 6_000  # caracteres del bloque schema.org por página
+TIPOS_SCHEMA = ("Product", "Offer", "ProductGroup")
+
+
+def datos_estructurados(html: str, url: str) -> str:
+    """Texto con los objetos schema.org de producto u oferta de la página; vacío si no hay.
+
+    Es contenido del proveedor como cualquier otro (plano de datos): no se interpreta aquí.
+    """
+    import extruct
+
+    try:
+        datos = extruct.extract(html, base_url=url, syntaxes=["json-ld", "microdata"], uniform=True)
+    except Exception:  # HTML mal formado: la página se lee igual, solo sin este bloque
+        return ""
+    objetos = [
+        it
+        for sintaxis in ("json-ld", "microdata")
+        for it in datos.get(sintaxis, [])
+        if isinstance(it, dict) and any(t in str(it.get("@type")) for t in TIPOS_SCHEMA)
+    ]
+    if not objetos:
+        return ""
+    cuerpo = json.dumps(objetos, ensure_ascii=False, separators=(",", ":"))
+    if len(cuerpo) > MAX_DATOS_ESTRUCTURADOS:
+        cuerpo = cuerpo[:MAX_DATOS_ESTRUCTURADOS] + " …(recortado)"
+    return f"Datos estructurados de la página (schema.org):\n{cuerpo}\n\nContenido de la página:\n"
 
 
 class FuenteNoAutorizada(ValueError):
@@ -80,6 +110,7 @@ class Lector:
             raise OSError(f"No se pudo abrir {url}: {resultado.error_message}")
         markdown = resultado.markdown
         texto = getattr(markdown, "raw_markdown", None) or str(markdown)
+        texto = datos_estructurados(resultado.html or "", url) + texto
         enlaces = sorted(
             {
                 e["href"]

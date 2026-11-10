@@ -200,3 +200,64 @@ def test_corrida_comprimida_se_lee_igual(tmp_path):
     assert gz.name == "2026-01-01_x.jsonl.gz" and comprimir(salida).read_bytes() == gz.read_bytes()
     assert metricas.cargar_corrida(gz) == metricas.cargar_corrida(salida)
     assert metricas.nombre_corrida(gz) == "2026-01-01_x"
+
+
+# --------------------------------------------------------------------------------------------------
+# E3: regla de parada D77 y frontera
+
+
+def _paso(modelo, m2, rango, abst=0.5, costo=0.01):
+    from comercio_agentico.arnes.e3 import Paso
+
+    return Paso(modelo, f"e3_{modelo}", m2, rango, m2 - 0.1, m2 + 0.1, 90, abst, 0.8, costo, 150.0)
+
+
+def test_regla_d77_sube_solo_si_supera_el_ruido():
+    from comercio_agentico.arnes.e3 import regla_parada
+
+    flash, haiku = _paso("deepseek-flash", 0.80, 0.05), _paso("haiku", 0.84, 0.03)
+    assert [v.sube for v in regla_parada([flash, haiku])] == [False]  # +4 pp < 5 pp de ruido
+    haiku = _paso("haiku", 0.87, 0.03)
+    assert [v.sube for v in regla_parada([flash, haiku])] == [True]  # +7 pp > 5 pp
+    # La abstención correcta también justifica subir aunque M2 empate.
+    haiku = _paso("haiku", 0.80, 0.03, abst=0.70)
+    assert regla_parada([flash, haiku])[0].sube
+
+
+def test_regla_d77_compara_con_el_mejor_ya_medido():
+    from comercio_agentico.arnes.e3 import regla_parada
+
+    pasos = [
+        _paso("deepseek-flash", 0.80, 0.02),
+        _paso("haiku", 0.70, 0.02),  # peor: el mejor sigue siendo Flash
+        _paso("deepseek-pro", 0.81, 0.02),  # mejora a Haiku, no a Flash
+    ]
+    v = regla_parada(pasos)
+    assert [x.frente_a for x in v] == ["deepseek-flash", "deepseek-flash"]
+    assert [x.sube for x in v] == [False, False]
+
+
+def test_frontera_de_pareto():
+    from comercio_agentico.arnes.e3 import frontera_pareto
+
+    pasos = [
+        _paso("deepseek-flash", 0.80, 0.0, costo=0.015),
+        _paso("haiku", 0.78, 0.0, costo=0.02),  # dominado por Flash
+        _paso("sonnet", 0.90, 0.0, costo=0.25),
+    ]
+    assert frontera_pareto(pasos) == ["deepseek-flash", "sonnet"]
+
+
+def test_una_corrida_que_cruza_la_medianoche_se_reanuda(tmp_path):
+    import datetime as dt
+
+    from comercio_agentico.arnes.correr import ruta_salida
+
+    hoy = dt.date(2026, 11, 10)
+    assert ruta_salida("e3_pro", tmp_path, hoy).name == "2026-11-10_e3_pro.jsonl"
+    ayer = tmp_path / "2026-11-09_e3_pro.jsonl"
+    ayer.write_text("{}\n")
+    assert ruta_salida("e3_pro", tmp_path, hoy) == ayer  # sin terminar: se reanuda
+    (tmp_path / "2026-11-09_e3_pro.jsonl.gz").write_bytes(b"")
+    assert ruta_salida("e3_pro", tmp_path, hoy).name == "2026-11-10_e3_pro.jsonl"  # terminada
+    assert ruta_salida("e3_pro_v1", tmp_path, hoy).name == "2026-11-10_e3_pro_v1.jsonl"

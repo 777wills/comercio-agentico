@@ -5,7 +5,7 @@
 SHELL := /bin/bash
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo corpus-a-recolectar corpus-a corpus-a-servir corpus-a-correr humo candidatos app arnes-simulado calibracion metricas
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo corpus-a-recolectar corpus-a corpus-a-servir corpus-a-correr humo candidatos app arnes-simulado calibracion e3 e3-frontera metricas
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
@@ -71,6 +71,12 @@ arnes-simulado: ## Arnés completo con el agente simulado: 60 tareas × 3 repeti
 
 calibracion: ## Corrida de calibración: 60 tareas con DeepSeek Flash + métricas (~US$1; requiere corpus-b-servir)
 	uv run python -m comercio_agentico.arnes.correr --config configs/calibracion_flash.yaml --repeticiones 1 --metricas
+
+e3: ## E3, un modelo en el subconjunto 30 × 3: make e3 MODELO=flash|haiku|deepseek-pro|kimi|sonnet (Flash ~US$1,5; requiere corpus-b-servir)
+	uv run python -m comercio_agentico.arnes.correr --config configs/e3_$(MODELO).yaml --tareas tareas/subconjunto_e3.jsonl --repeticiones 3 --metricas
+
+e3-frontera: ## E3: tabla, regla de parada D77 y frontera costo-desempeño con las corridas hechas (US$0)
+	uv run python -m comercio_agentico.arnes.e3
 
 metricas: ## Recalcula métricas de una corrida: make metricas CORRIDA=resultados/corridas/<archivo>.jsonl (US$0)
 	uv run python -m comercio_agentico.arnes.metricas $(CORRIDA)

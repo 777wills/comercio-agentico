@@ -31,3 +31,33 @@ Falabella, el agente no confundió los productos.
 El corpus sintético no reveló esta limitación porque su tienda con JSON-LD también mostraba la disponibilidad en
 texto. La corrección (D74) incorpora a la lectura web los datos schema.org de la página como texto del plano de
 datos; esta corrida queda como línea base del corpus A.
+
+## 4.y Lectura con datos schema.org (D74)
+
+La lectura web del agente antepone ahora al Markdown de la página los objetos schema.org `Product` y `Offer` que
+publica (JSON-LD y microdatos, extraídos con `extruct`), como texto del plano de datos. Con el resto de la
+configuración igual, la corrida sobre las mismas 20 tareas (`resultados/corridas/2026-11-09_corpus_a_flash_v1`)
+dio:
+
+| Categoría | Línea base (v0) | Con datos schema.org (v1) |
+|---|---|---|
+| Producto específico | 16,7 % [3,0–56,4] (1/6) | 83,3 % [43,6–97,0] (5/6) |
+| Menor precio | 40,0 % [11,8–76,9] (2/5) | 100,0 % [56,6–100,0] (5/5) |
+| Restricciones | 20,0 % [3,6–62,4] (1/5) | 100,0 % [56,6–100,0] (5/5) |
+| Sin respuesta | 100,0 % [51,0–100,0] (4/4) | 100,0 % [51,0–100,0] (4/4) |
+| **Global** | **40,0 % [21,9–61,3] (8/20)** | **95,0 % [76,4–99,1] (19/20)** |
+
+La exactitud de la disponibilidad pasó de 43 % (29/68) a 96 % (72/75), y la recolección siguió completa (33/33).
+El costo por tarea no cambió (US$0,0180 [0,0173–0,0189]); la latencia p50 fue de 169 s [153–180]. Los intervalos
+de ambas corridas no se solapan, de modo que la mejora no se explica por la variación entre ejecuciones.
+
+El único fallo (A003) es de planificación y ya estaba en la línea base: el agente leyó el listado de Falabella,
+que no publica la disponibilidad, y no abrió la ficha del monitor, que sí la publica; sin ese dato, la única oferta
+en existencia se descartó y el agente se abstuvo.
+
+Un efecto secundario muestra la sensibilidad del extractor a las etiquetas. En Alkosto y Ktronix el código
+visible de la ficha es el EAN, y schema.org lo publica como `sku`. Con la lectura en Markdown, el extractor tomaba
+ese código como GTIN en 35 de 62 ofertas de ficha (16 coincidían con la verdad); con el objeto schema.org a la
+vista, lo hizo en 1 de 67, en cumplimiento de su instrucción de copiar el GTIN solo cuando aparece como tal. El emparejamiento no se resintió,
+porque los productos se reconocieron por nombre con los embeddings, pero la verificación determinista de N3 (S08)
+no debe suponer que el GTIN llega siempre en la oferta extraída.

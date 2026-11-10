@@ -281,9 +281,8 @@ def principal(args: argparse.Namespace) -> Path:
     if args.solo:
         pedidas = set(args.solo.split(","))
         tareas = [t for t in tareas if t.id in pedidas]
-    fecha = dt.date.today().isoformat()
     nombre = f"{config.nombre}_simulado" if args.simulado else config.nombre
-    salida = Path(args.salida) if args.salida else DIR_CORRIDAS / f"{fecha}_{nombre}.jsonl"
+    salida = Path(args.salida) if args.salida else ruta_salida(nombre)
     ficha = MODELOS[config.modelo]
     meta = {
         "corrida": salida.stem,
@@ -317,6 +316,20 @@ def principal(args: argparse.Namespace) -> Path:
     comprimida = comprimir(salida)
     log.info("Registro: %s (copia versionable: %s)", salida, comprimida.name)
     return salida
+
+
+def ruta_salida(nombre: str, directorio: Path = DIR_CORRIDAS, hoy: dt.date | None = None) -> Path:
+    """Archivo de la corrida: la más reciente sin terminar con ese nombre, aunque sea de otro día
+    (una corrida que cruza la medianoche se reanuda en vez de empezar de cero); si no hay, una
+    nueva con la fecha de hoy. Una corrida terminada tiene su copia ``.gz``."""
+    pendientes = [
+        r
+        for r in sorted(directorio.glob(f"????-??-??_{nombre}.jsonl"))
+        if not r.with_name(r.name + ".gz").exists()
+    ]
+    if pendientes:
+        return pendientes[-1]
+    return directorio / f"{(hoy or dt.date.today()).isoformat()}_{nombre}.jsonl"
 
 
 def comprimir(salida: Path) -> Path:
