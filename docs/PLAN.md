@@ -14,8 +14,15 @@ limpio en el último punto estable y la siguiente sesión retoma desde `docs/EST
 
 ## 2. Arquitectura objetivo (MVP)
 
+Producto publicado: **CotIA** (D84). Stack (D81): frontend SvelteKit estático (modo oscuro) servido por una API
+FastAPI en el mismo proceso que el agente; progreso en vivo por SSE; PostgreSQL (SQLAlchemy); un contenedor Docker.
+El visitante usa su propia clave de OpenRouter (D82).
+
 ```
-Consulta en lenguaje natural (Streamlit)
+CotIA — navegador (SvelteKit: consulta, progreso, cuadro, procedencia, laboratorio, resultados, historial, configuración)
+        │ HTTPS: JSON + SSE (la clave de OpenRouter del visitante viaja por petición; no se guarda)
+        ▼
+API FastAPI ──── PostgreSQL (consultas y propuestas del historial)
         │
         ▼
 Agente LangGraph (planificador)  ── solo ve instrucciones del usuario y datos ya extraídos (N4: separación de planos)
@@ -53,7 +60,9 @@ tareas/                     # tareas_b.jsonl, tareas_a.jsonl
 ataques/                    # suite adversarial y su mapeo OWASP/MITRE
 arnes/                      # ejecutor de corridas y métricas M1–M6
 resultados/                 # corridas versionadas (jsonl) y figuras
-app/streamlit_app.py
+src/comercio_agentico/api/  # FastAPI: consultas, SSE, configuración, resultados, historial (S09a)
+web/                        # SvelteKit: frontend de CotIA (S09b)
+Dockerfile, compose.yaml    # contenedor único + PostgreSQL local (S09c)
 tests/
 docs/                       # plan, estado, decisiones, guía de pruebas, informe por partes
 privado/                    # fuera de git: material del curso, entregables, contexto histórico
@@ -69,23 +78,30 @@ privado/                    # fuera de git: material del curso, entregables, con
 | S03 | jue 12-nov | Arnés de evaluación y métricas + Streamlit mínimo | R.6.1 Cr4, R.6.2 Cr6 |
 | S04 | jue 12 / vie 13-nov | Corpus A real (crawling de tiendas colombianas) | R.7.1 Cr1, Cr3 |
 | S05 | vie 13-nov | **E3** modelos con escalamiento y regla de parada | R.6.1 Cr2, Cr4 |
-| S06 | sáb 14-nov | N4 defensa (C1–C3) + suite adversarial | R.6.2 Cr7 |
-| S07 | dom 15-nov | **E2** curva seguridad-utilidad | R.6.2 Cr7, R.6.1 Cr4 |
-| S08 | lun 16-nov | N3 verificación + **E1**; N1 si sobra tiempo | R.6.1 Cr4, R.6.2 Cr6 |
-| S09 | mar 17-nov | App Streamlit final + MLOps ligero + README | R.6.2 Cr8, R.7.2 |
-| S10 | mié 18-nov | Informe IEEE completo (borrador → PDF) | RA1 comunicación escrita |
+| S06 | mié 11-nov | N4 defensa (C1–C3) + suite adversarial + comparación con Jev (D80) | R.6.2 Cr7 |
+| S07 | jue 12-nov | **E2** curva seguridad-utilidad | R.6.2 Cr7, R.6.1 Cr4 |
+| S08 | vie 13-nov | N3 verificación + **E1**; N1 si sobra tiempo | R.6.1 Cr4, R.6.2 Cr6 |
+| S09a | sáb 14-nov | **CotIA (1/3):** API FastAPI + SSE + PostgreSQL + llave propia | R.6.2 Cr8 |
+| S09b | dom 15-nov | **CotIA (2/3):** frontend SvelteKit en modo oscuro | R.6.2 Cr8, R.7.2 |
+| S09c | lun 16-nov | **CotIA (3/3):** Docker, despliegue público, CI, trazas y README | R.6.2 Cr8, R.7.2 |
+| S10 | mar 17 / mié 18-nov | Informe IEEE completo (borrador → PDF) | RA1 comunicación escrita |
 | S11 | jue 19-nov | Auditoría contra rúbrica, presentación de 5 láminas, radicación | RA1, RA2 oral |
 | S12 | 21–26-nov | Video de 10 min, ensayo de preguntas, pulido de la demo | RA2 oral |
 
-**Recortes de contingencia, en este orden, si hay atraso:** C4 → N1 → Opus en E3 (si la regla de parada no lo
+*Reprogramado el 10-nov: S00–S05 se terminaron el 9 y 10-nov; S06–S09 se adelantan y el producto CotIA (D81–D84)
+reemplaza la app Streamlit con tres sesiones (S09a–c). Las fechas de S00–S05 quedan como estaban planeadas.*
+
+**Recortes de contingencia, en este orden, si hay atraso:** C4 → N1 → historial de CotIA → panel de resultados de
+CotIA → Opus en E3 (si la regla de parada no lo
 exige, ya queda fuera) → corpus A de 20 a 10 tareas → E1 se reduce a una ablación sobre el corpus B. Nunca se recorta
-E2 ni E3.
+E2, E3, el laboratorio de ataques ni la publicación de CotIA.
 
 ## 5. Prerrequisitos que dependen de Wills
 
-- [ ] Comprar créditos (estimación inicial, se recalibra en S00 midiendo tokens reales): Anthropic ~US$60,
-      OpenRouter ~US$40. Presupuesto total máximo: US$300. Comprados US$50 el 9-nov; recarga de Anthropic
-      antes de Sonnet/Opus en S05 (ver `docs/ESTADO.md`).
+- [x] Comprar créditos: Anthropic US$30 y OpenRouter US$20 (9-nov); TypeSafe US$5 (10-nov, D80). Presupuesto total
+      máximo: US$300. Sin recarga prevista: E3 se detuvo en Haiku (D78).
+- [x] Clave de TypeSafe en `.env` (10-nov).
+- [ ] Cuentas para el despliegue de CotIA (plataforma y PostgreSQL gestionado), cuando se elijan en S09c.
 - [x] Crear `.env` con `ANTHROPIC_API_KEY` y `OPENROUTER_API_KEY` (S00).
 - [ ] Descargar la plantilla institucional de trabajo escrito (IEEE) del aula y ponerla en `privado/curso/` (antes de S10).
 - [x] Confirmar la creación del repositorio público en GitHub (S00): `777wills/comercio-agentico`.
@@ -218,7 +234,7 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
 **Terminado cuando:** hay modelo base decidido con evidencia y la figura de la frontera.
 **Informe:** `04_resultados_e3.md` (alimenta Cr2: argumentación de la elección del modelo).
 
-## S06 — N4 defensa y suite adversarial (sáb 14-nov)
+## S06 — N4 defensa y suite adversarial (mié 11-nov)
 
 **Objetivo:** cuatro configuraciones de defensa y 20 cargas de ataque listas para medir.
 
@@ -233,12 +249,15 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
       inyección de Hugging Face sobre cada fragmento; verificar licencia, tamaño y latencia en CPU), C3 (C2 +
       verificación cruzada de precio contra los demás proveedores y el rango del catálogo). C4 lista blanca solo si
       sobra tiempo.
+- [ ] Comparación del clasificador de C2 con Jev a nivel de fragmentos (D80): mismas cargas, variante adaptativa de
+      «política falsificada» y fragmentos limpios en español; detección y falsos positivos.
+- [ ] Dejar una variante del corpus B con una inyección plantada lista para el laboratorio de ataques de CotIA.
 - [ ] Prueba de humo: 1 carga por clase en C0 y C3.
 
 **Terminado cuando:** las 20 cargas y C0–C3 corren y el predicado de éxito se evalúa por programa.
 **Informe:** `03_metodologia_seguridad.md` (taxonomía, mapeo, configuraciones).
 
-## S07 — E2: curva seguridad-utilidad (dom 15-nov)
+## S07 — E2: curva seguridad-utilidad (jue 12-nov)
 
 **Objetivo:** el resultado estrella del proyecto.
 
@@ -252,7 +271,7 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
 **Terminado cuando:** existe la figura de la curva con intervalos y su interpretación escrita.
 **Informe:** `04_resultados_e2.md`.
 
-## S08 — N3 verificación, E1 y N1 opcional (lun 16-nov)
+## S08 — N3 verificación, E1 y N1 opcional (vie 13-nov)
 
 **Objetivo:** medir el aporte de la verificación.
 
@@ -267,29 +286,64 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
 **Terminado cuando:** tabla de E1 con y sin verificación y su lectura de predicción selectiva.
 **Informe:** `04_resultados_e1.md`.
 
-## S09 — Producto y MLOps ligero (mar 17-nov)
+## S09a — CotIA (1/3): API y persistencia (sáb 14-nov)
 
-**Objetivo:** demo presentable y prácticas de operación mínimas.
+**Objetivo:** el agente expuesto como servicio, listo para el frontend (D81, D82, D83).
 
-- [ ] Streamlit final: consulta, cuadro comparativo, panel de procedencia por dato, alertas de inyección detectada,
-      ofertas no verificadas, costo de la consulta, aviso de que el agente no ejecuta pagos.
-- [ ] GitHub Actions: `pytest` + una tarea de humo con modelo simulado en cada push.
-- [ ] Trazas de llamadas al LLM (LangSmith o Langfuse; elegir el más simple de configurar, con Context7).
-- [ ] README completo: qué es, cómo reproducir cada experimento con un comando, estructura, licencias y límites
-      legales del corpus A.
+- [ ] Context7 para FastAPI (SSE), SQLAlchemy y el cliente de OpenRouter antes de escribir código.
+- [ ] `src/comercio_agentico/api/`: `POST /api/consultas` (consulta, corpus A/B, configuración de defensa, modelo;
+      la clave de OpenRouter llega en una cabecera y no se guarda ni se registra), `GET /api/consultas/{id}/eventos`
+      (SSE: interpretación, cada fuente leída, extracción, emparejamiento, propuesta), `GET /api/consultas/{id}`,
+      `GET /api/consultas` (historial del visitante anónimo), `GET /api/modelos` (lista curada con costo estimado),
+      `GET /api/ejemplos`, `GET /api/resultados` (métricas y figuras de E1–E3), `GET /api/salud`.
+- [ ] Laboratorio: la consulta acepta C0 o C3 sobre la variante del corpus con inyección plantada (S06).
+- [ ] PostgreSQL con SQLAlchemy (consultas y propuestas); SQLite en memoria en las pruebas.
+- [ ] Lista curada de modelos: prueba de humo (una tarea) por modelo candidato de OpenRouter, incluidos `:free`.
+- [ ] Los proveedores del corpus B y las tiendas reconstruidas del corpus A arrancan con la API.
+- [ ] Pruebas sin red (agente simulado): contrato de la API, SSE, que la clave nunca aparece en registros ni en la base.
+
+**Terminado cuando:** una consulta de punta a punta por la API, con progreso SSE, usando una clave de OpenRouter.
+
+## S09b — CotIA (2/3): frontend (dom 15-nov)
+
+**Objetivo:** interfaz moderna, profesional y en modo oscuro.
+
+- [ ] Context7 para SvelteKit (adapter-static), Tailwind y la librería de componentes elegida.
+- [ ] `web/`: inicio con la consulta y ejemplos; progreso en vivo; cuadro comparativo con procedencia desplegable por
+      celda; alertas, costo y tiempo; aviso de que no ejecuta pagos; Configuración (clave en el navegador, modelo de la
+      lista curada); selector de corpus A/B; laboratorio de ataques (C0 frente a C3); panel de resultados; historial.
+- [ ] Diseño responsivo; sin clave se navega todo y la consulta pide configurarla.
+- [ ] Compilación estática servida por FastAPI.
+
+**Terminado cuando:** el flujo completo funciona en local desde el navegador.
+
+## S09c — CotIA (3/3): publicación y MLOps ligero (lun 16-nov)
+
+**Objetivo:** MVP publicado y reproducible.
+
+- [ ] Elegir la plataforma de despliegue con datos oficiales verificados (RAM para Chromium, embeddings y
+      clasificador; costo; arranque; PostgreSQL gestionado; dominio) y proponerla a Wills con opciones.
+- [ ] `Dockerfile` (contenedor único) y `compose.yaml` (con PostgreSQL) para local.
+- [ ] Despliegue público con HTTPS; prueba de humo en producción con la clave de Wills.
+- [ ] GitHub Actions: lint, `pytest`, compilación del frontend y una tarea de humo con modelo simulado.
+- [ ] Trazas de llamadas al LLM (LangSmith o Langfuse; el más simple de configurar, con Context7), sin registrar
+      claves.
+- [ ] README completo: qué es CotIA, URL pública, cómo reproducir cada experimento con un comando, cómo correr el
+      producto en local, estructura, licencias y límites legales del corpus A.
 - [ ] Capturas y video corto de la demo para la presentación.
 
-**Terminado cuando:** un tercero puede clonar, configurar `.env` y reproducir una corrida siguiendo el README.
-**Informe:** `03_metodologia_operacion.md`.
+**Terminado cuando:** CotIA responde en una URL pública y un tercero puede clonar, configurar y reproducir una
+corrida siguiendo el README.
+**Informe:** `03_metodologia_operacion.md` (producto, arquitectura de despliegue y operación).
 
-## S10 — Informe IEEE (mié 18-nov)
+## S10 — Informe IEEE (mar 17 / mié 18-nov)
 
 **Objetivo:** informe completo en la plantilla institucional, en PDF.
 
 - [ ] Ensamblar los borradores de `docs/informe/` en la plantilla institucional: introducción y problema, estado del
       arte, metodología, resultados, discusión (incluye ética, legal y seguridad, citando el ensayo de Ética como
-      base), conclusiones, hoja de ruta (lo propuesto: E4, N1/ACP/UCP/AP2, SvelteKit/PostgreSQL, autohospedaje de
-      pesos abiertos, descubrimiento abierto de proveedores, IPAC como servicio) y referencias.
+      base), conclusiones, hoja de ruta (lo propuesto: E4, N1/ACP/UCP/AP2, más proveedores de modelos en CotIA además de
+      OpenRouter, autohospedaje de pesos abiertos, descubrimiento abierto de proveedores, IPAC como servicio) y referencias.
 - [ ] Verificar cada referencia y cifra contra la fuente primaria; unificar la edición de OWASP; descargar el informe
       primario de la CCCE si se cita.
 - [ ] Revisión de metacomentario y de registro académico.

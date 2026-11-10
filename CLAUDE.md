@@ -16,7 +16,7 @@ Carpeta de trabajo y repositorio de William Suaza Losada ("Wills"). Proyecto **i
 ## Principios que rigen todo el trabajo
 
 - **Simplicidad por encima de la sobreingeniería.** Primero un producto mínimo viable que funcione de punta a punta
-  con librerías y componentes existentes (LangChain/LangGraph, crawl4ai, Streamlit, FastMCP, Hugging Face); luego se
+  con librerías y componentes existentes (LangChain/LangGraph, crawl4ai, FastAPI, SvelteKit, FastMCP, Hugging Face); luego se
   profesionaliza. Antes de escribir algo propio, pregunta si una librería ya lo hace.
 - **La IA primero.** Se prioriza lo que corresponde a la maestría: agentes, scraping y crawling con LLM, extracción,
   defensa frente a inyección, evaluación. Lo determinista (API de catálogo N1, despliegue) va al final.
@@ -24,7 +24,7 @@ Carpeta de trabajo y repositorio de William Suaza Losada ("Wills"). Proyecto **i
 - **Cuidar los créditos.** Desarrollo con el modelo más barato; los modelos caros solo en experimentos y según la
   regla de parada de E3. Registra el gasto en `docs/ESTADO.md`.
 - **Documentación de librerías:** usa Context7 antes de escribir código contra cualquier API de librería (LangGraph,
-  LangChain, crawl4ai, Streamlit, FastMCP...). No escribas de memoria firmas que cambian entre versiones.
+  LangChain, crawl4ai, FastAPI, SvelteKit, SQLAlchemy, FastMCP...). No escribas de memoria firmas que cambian entre versiones.
 
 ## Cierre obligatorio de cada sesión (corte limpio)
 
@@ -83,6 +83,11 @@ Wills quiere entender lo que se construye y poder correrlo él mismo. En cada se
 
 Prototipo de agente de compras verificable sobre proveedores heterogéneos, con defensa medida frente a inyección
 indirecta de instrucciones. Título: *Comercio agéntico: del comprador al proveedor*.
+
+**Producto publicado: CotIA** (D84), un MVP en una URL pública: frontend SvelteKit en modo oscuro + API FastAPI en el
+mismo proceso que el agente + PostgreSQL, en un contenedor Docker (D81). El visitante usa su propia clave de
+OpenRouter y elige un modelo de una lista curada; el proyecto no expone sus créditos ni muestra corridas grabadas
+(D82). Funcionalidades en D83. Streamlit se retiró.
 
 ## Fechas
 

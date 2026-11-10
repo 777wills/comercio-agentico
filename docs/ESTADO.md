@@ -2,8 +2,9 @@
 
 ## Siguiente sesión
 
-**S06 — N4 defensa y suite adversarial** (`docs/PLAN.md`, sección S06). S05 se cerró el 10-nov, con tres días de
-adelanto.
+**S06 — N4 defensa y suite adversarial** (`docs/PLAN.md`, sección S06; fecha objetivo 11-nov). S05 se cerró el
+10-nov, con tres días de adelanto. El plan se reprogramó ese día: Streamlit se reemplaza por el producto **CotIA**
+(SvelteKit + FastAPI + PostgreSQL, llave propia de OpenRouter; D81–D84) en tres sesiones, S09a–c (14–16-nov).
 
 Siguiente paso exacto:
 1. Verificar con Context7 y en la fuente primaria la taxonomía MITRE pertinente (ATLAS) y OWASP LLM01 (versión
@@ -17,8 +18,9 @@ Siguiente paso exacto:
    **no** usar `thejevai.com`, el dominio de una guía comunitaria sin empresa identificada). Incluir la variante
    adaptativa de «política falsificada» y fragmentos limpios en español. Leer antes el recetario oficial de
    *guardrails* y la referencia de la API (docs.typesafe.ai).
-4. Prueba de humo: 1 carga por clase en C0 y C3, con DeepSeek Flash (modelo base, D79).
-5. Corridas largas: lanzarlas con `systemd-inhibit --what=sleep` (el equipo se suspendió a mitad de E3).
+4. Dejar una variante del corpus B con una inyección plantada lista para el laboratorio de ataques de CotIA (D83).
+5. Prueba de humo: 1 carga por clase en C0 y C3, con DeepSeek Flash (modelo base, D79).
+6. Corridas largas: lanzarlas con `systemd-inhibit --what=sleep` (el equipo se suspendió a mitad de E3).
 
 ## Presupuesto de modelos
 
@@ -196,4 +198,6 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 - La verificación N3 (S08) no debe suponer el GTIN en la oferta extraída: en el corpus A llega como `sku` en schema.org.
 - Planificador: en A003 no abre la ficha cuando el listado no trae disponibilidad (candidato a mejora o limitación declarada).
 - Año de la conferencia de ReAct (versión de ICLR, arXiv:2210.03629) por confirmar en S10.
-- Archify (diagrama de arquitectura del estándar del profesor) como opción en S09 para el informe.
+- Archify (diagrama de arquitectura del estándar del profesor) como opción en S09c para el informe.
+- CotIA: elegir plataforma de despliegue y PostgreSQL gestionado en S09c con precios y límites verificados en la fuente; Wills crea las cuentas.
+- `app.py` (Streamlit) y `make app` siguen en el repositorio hasta que S09b los reemplace; se retiran entonces.

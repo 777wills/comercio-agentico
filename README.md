@@ -25,9 +25,13 @@ Recibe una necesidad de compra en lenguaje natural, consulta proveedores con dis
 (servidor MCP, web con schema.org, web plana, PDF y mensajería), extrae ofertas a un esquema canónico con
 procedencia obligatoria y entrega una propuesta comparativa trazable, o se abstiene. No ejecuta pagos.
 
+El producto se publica como **CotIA** (en construcción): el visitante configura su propia clave de OpenRouter y ve
+en vivo cómo el agente consulta a los proveedores, la procedencia de cada dato y un laboratorio de ataques.
+
 ## Stack
 
-Python 3.13 · uv · LangGraph / LangChain · Anthropic y OpenRouter · crawl4ai · Pydantic · FastMCP · Streamlit ·
+Python 3.13 · uv · LangGraph / LangChain · Anthropic y OpenRouter · crawl4ai · Pydantic · FastMCP · FastAPI ·
+SvelteKit · PostgreSQL ·
 Ruff · pytest · GitHub Actions.
 
 ## Primeros pasos

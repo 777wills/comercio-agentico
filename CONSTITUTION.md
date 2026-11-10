@@ -46,7 +46,7 @@ determinista (al final o propuesto). Experimentos **E3** (modelos), **E2** (segu
 | Contenido web | crawl4ai (Playwright → Markdown) |
 | Esquema y validación | Pydantic 2 |
 | Proveedor sintético por MCP | FastMCP |
-| Interfaz | Streamlit |
+| Producto (CotIA) | API FastAPI (SSE) · frontend SvelteKit + Tailwind en modo oscuro · PostgreSQL con SQLAlchemy · Docker (D81) |
 | Calidad | Ruff, pre-commit, pytest; CI en GitHub Actions |
 
 ## 4. Estructura
@@ -60,7 +60,8 @@ perfiles/                perfiles de categoría declarativos (YAML)
 corpus/                  b_sintetico (versionado) y a_real (solo manifiesto)
 tareas/, ataques/        tareas con verdad conocida y suite adversarial
 arnes/, resultados/      ejecutor de corridas, métricas y corridas versionadas
-app/                     interfaz Streamlit
+api/ (en el paquete)     API FastAPI de CotIA
+web/                     frontend SvelteKit de CotIA
 tests/                   pruebas (pytest)
 docs/                    plan, estado, decisiones, guía de pruebas e informe por partes
 privado/                 fuera de git: material del curso, entregables y contexto (D55)
