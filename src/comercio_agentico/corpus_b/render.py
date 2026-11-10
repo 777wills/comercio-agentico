@@ -334,7 +334,8 @@ FECHA_LISTA = datetime(2026, 11, 10, tzinfo=UTC)
 DISP_P4 = {"en_stock": "SI", "agotado": "AGOT", "bajo_pedido": "PED"}
 
 
-def render_p4_pdf(destino: Path, proveedor: Proveedor, ofertas, productos, azar):
+def render_p4_pdf(destino: Path, proveedor: Proveedor, ofertas, productos, azar, nota=None):
+    """``nota``: párrafo tras la tabla; solo lo usa el plantado de la suite (S06-bis)."""
     pdf = FPDF()
     pdf.set_title(f"Lista de precios {proveedor.nombre}")
     pdf.set_creation_date(FECHA_LISTA)  # fecha fija: el PDF es reproducible byte a byte
@@ -372,6 +373,9 @@ def render_p4_pdf(destino: Path, proveedor: Proveedor, ofertas, productos, azar)
             for texto in (codigo, of["titulo"], pesos(of["precio"]), DISP_P4[of["disponibilidad"]]):
                 fila.cell(texto)
             ubicaciones[o["producto_id"]] = f"{destino.name}/lista_precios.pdf#{codigo}"
+    if nota:
+        pdf.ln(3)
+        pdf.multi_cell(0, 5, nota, new_x="LMARGIN", new_y="NEXT")
     pdf.output(str(destino / "lista_precios.pdf"))
     return ubicaciones
 

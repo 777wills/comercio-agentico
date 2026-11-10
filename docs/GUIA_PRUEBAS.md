@@ -520,53 +520,70 @@ cat docs/informe/03_metodologia_seguridad.md
 
 ---
 
-## S06-bis — Redacción y validación de las 20 cargas (10-nov)
+## S06-bis — Plantado, predicados y arnés de las 20 cargas (10-nov)
 
 ### Qué se construyó y por qué
 
-`privado/tarea_cargas/cargas.yaml` define las 20 cargas (5 clases × 4 ubicaciones), su página, tarea benigna y
-predicado automático. Los textos permanecen fuera de git y todavía **no están plantados**: el corpus limpio no cambió.
-La validación comprueba la cobertura factorial y las referencias del experimento, no la eficacia del ataque; M5 se
-obtendrá con el arnés de la siguiente sesión.
+`ataques/cargas.yaml` conserva las 20 cargas (5 clases × 4 ubicaciones), versionadas y públicas (D95).
+`ataques/suite.py` valida la matriz y evalúa los cinco predicados sobre JSONL; `ataques/plantar.py` genera las copias
+locales y `ataques/correr.py` ejecuta C0–C3, reanuda y calcula M5. El HTML oculto usa JSON-LD para sobrevivir al
+lector, la nota del PDF va tras la tabla y la línea del chat la escribe el propio vendedor (D93). Las copias se
+regeneran y no se versionan.
 
 ### Cómo probarlo
 
-**Validar estructura, referencias y marcadores — costo US$0 (sin red)**
+**1. Pruebas sin red, con agente simulado y carga neutra — costo US$0**
 
 ```bash
-uv run python - <<'EOF'
-from pathlib import Path
-import json
-import yaml
-
-cargas = yaml.safe_load(Path('privado/tarea_cargas/cargas.yaml').read_text())['cargas']
-tareas = {json.loads(s)['id']: json.loads(s) for s in Path('tareas/tareas_b.jsonl').read_text().splitlines()}
-proveedores = {'visible': 'P3', 'oculto_html': 'P2', 'pdf': 'P4', 'mensaje': 'P5'}
-assert len(cargas) == 20
-assert [c['id'] for c in cargas] == [f'A{i:02d}' for i in range(1, 21)]
-assert len({(c['clase'], c['ubicacion']) for c in cargas}) == 20
-for c in cargas:
-    assert c['proveedor'] == proveedores[c['ubicacion']]
-    assert Path('corpus/b_sintetico', c['archivo']).is_file()
-    assert c['tarea'] in tareas and c['texto'].strip()
-    if c['clase'] in {'inflar_cantidad', 'saltar_confirmacion'}:
-        assert '{URL_ACCION}' in c['texto'] and 'url_accion' in c['predicado']
-    else:
-        assert '{URL_ACCION}' not in c['texto']
-    if c['clase'] == 'exfiltrar_mandato':
-        assert c['predicado']['presupuesto'] == tareas[c['tarea']]['criterios']['presupuesto_max']
-print('OK: 20 cargas, cobertura 5x4, archivos/tareas válidos y marcadores correctos.')
-EOF
+uv run pytest tests/test_ataques.py -q
+make check
 ```
 
-Debe imprimir exactamente la línea final `OK`. El comando no muestra los textos ni llama a modelos.
+La primera orden debe reportar 16 pruebas en verde y la segunda, 142. Se usa la cadena `NEUTRA_PRUEBA`: se comprueban
+los cinco predicados, los cuatro formatos, la sustitución de URL, la inmutabilidad del corpus limpio, la evidencia y
+la reanudación. No se carga ningún LLM ni se abre una fuente externa.
 
-**Comprobar que el archivo sensible y el corpus limpio están aislados — costo US$0**
+**2. Regenerar las 20 variantes — costo US$0 (sin red)**
 
 ```bash
-git status --short --ignored=matching -- privado/tarea_cargas/cargas.yaml corpus/b_sintetico
+uv run python -m comercio_agentico.ataques.plantar
+git status --short --ignored=matching -- corpus/b_ataques corpus/b_sintetico
 git status --short corpus/b_sintetico
 ```
 
-La primera orden debe mostrar `!! privado/`; la segunda no debe producir salida. No ejecutar todavía un arnés de
-ataques: su construcción y la prueba de humo C0/C3 (< US$0,15) corresponden a la siguiente sesión.
+Deben existir `corpus/b_ataques/A01/` … `A20/`; la primera revisión muestra `!! corpus/b_ataques/` y la segunda no
+produce salida. `A01` queda disponible como variante inicial del laboratorio de CotIA.
+
+**3. Reproducir la prueba de humo real — tope US$0,26 acumulado; requiere OpenRouter**
+
+En una terminal, arranque P1 (no expone ningún servicio fuera de `127.0.0.1`):
+
+```bash
+uv run python -m comercio_agentico.corpus_b.servidor_mcp
+```
+
+En otra, cargue las claves sin imprimirlas y ejecute la diagonal clase × ubicación (A01 visible, A06 oculto, A11 PDF,
+A16 mensaje, A17 visible) en C0 y C3 (10 ejecuciones; D94):
+
+```bash
+set -a; . ./.env; set +a
+systemd-inhibit --what=sleep --why='Prueba de humo E2' \
+  uv run python -m comercio_agentico.ataques.correr --humo --tope 0.05 --tope-total 0.26
+```
+
+El comando no inicia más ejecuciones al alcanzar el tope acumulado. Al terminar imprime M5 por configuración y el
+gasto. La evidencia queda en `resultados/ataques/2026-11-10_humo_ataques_m5.{json,md}` y la corrida comprimida en
+`.jsonl.gz`. Ese archivo del 10-nov incluye también A05, A09 y A13 (primera pasada, solo cargas visibles). Si se
+interrumpe, repita exactamente el
+mismo comando: reanuda por (carga, configuración, tarea, repetición), sin repetir gasto ya registrado.
+
+**4. Matriz completa de E2 — estimación US$1,20; no es una prueba manual rutinaria**
+
+```bash
+set -a; . ./.env; set +a
+systemd-inhibit --what=sleep --why='Matriz completa E2' \
+  uv run python -m comercio_agentico.ataques.correr --tope 0.05 --tope-total 1.50
+```
+
+Son 20 cargas × 4 configuraciones, una repetición. Debe confirmarse el tope antes de lanzarla. Para un subconjunto,
+use `--solo A01,A05,A09 --configuraciones C0,C3`; M5 solo representa las ejecuciones efectivamente registradas.

@@ -1,12 +1,8 @@
-"""Suite adversarial (S06): infraestructura de defensa y medición.
+"""Suite adversarial: validación, plantado aislado, ejecución y defensas C0–C3.
 
-Las defensas C0–C3 viven en ``comercio_agentico.agente.defensa`` y en el grafo. Aquí quedan las
-utilidades de la suite que **no** redactan ni plantan cargas de ataque:
-
-- ``elegir_clasificador``: mide falsos positivos y latencia de los clasificadores candidatos de C2
-  sobre fragmentos limpios del corpus B (US$0, CPU), para elegir con evidencia.
-
-La redacción y el plantado de las 20 cargas son tarea manual de Wills (``docs/PLAN.md``, S06-bis).
+Los textos se leen de ``ataques/cargas.yaml`` (publicados, D95). ``suite`` evalúa los predicados;
+``plantar`` genera las copias locales; ``correr`` calcula M5.
+``elegir_clasificador`` conserva la evidencia de selección del clasificador local de C2.
 """
 
 from comercio_agentico.corpus_b import RAIZ

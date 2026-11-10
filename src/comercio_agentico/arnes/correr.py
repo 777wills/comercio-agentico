@@ -132,7 +132,14 @@ def hash_corpus(directorio: Path = DIR_CORPUS, tareas: Path | None = None) -> st
     archivos = sorted(p for p in directorio.rglob("*") if p.is_file())
     if tareas is not None:
         archivos.append(tareas)
-    return _sha([str(p.relative_to(RAIZ)).encode() + p.read_bytes() for p in archivos])
+
+    def nombre(ruta: Path) -> str:
+        try:
+            return str(ruta.relative_to(RAIZ))
+        except ValueError:  # variantes temporales de las pruebas, fuera del repositorio
+            return str(ruta)
+
+    return _sha([nombre(p).encode() + p.read_bytes() for p in archivos])
 
 
 def commit_actual() -> str:

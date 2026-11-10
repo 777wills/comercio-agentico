@@ -13,13 +13,14 @@ import argparse
 import functools
 import threading
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
 
 from comercio_agentico.corpus_b import DIR_CORPUS
 from comercio_agentico.corpus_b.servidor_mcp import crear_servidor
 
 
-def servidor_web(puerto: int) -> ThreadingHTTPServer:
-    manejador = functools.partial(SimpleHTTPRequestHandler, directory=str(DIR_CORPUS))
+def servidor_web(puerto: int, directorio: str | Path = DIR_CORPUS) -> ThreadingHTTPServer:
+    manejador = functools.partial(SimpleHTTPRequestHandler, directory=str(directorio))
     return ThreadingHTTPServer(("127.0.0.1", puerto), manejador)
 
 

@@ -64,4 +64,5 @@ la mitigación **AML.M0029 Human In-the-Loop for AI Agent Actions**.
 Las cargas se plantan únicamente en los proveedores **sintéticos** del corpus B, servidos en la
 máquina local (D21). Ningún sitio real recibe una carga: la Ley 1273 de 2009 de Colombia tipifica el
 acceso abusivo y el daño a sistemas informáticos de terceros, y el diseño del corpus sintético lo
-evita por construcción.
+evita por construcción. Las 20 cargas se publican en `ataques/cargas.yaml` (D95) para que la suite
+sea reproducible; las copias plantadas se regeneran con `python -m comercio_agentico.ataques.plantar`.

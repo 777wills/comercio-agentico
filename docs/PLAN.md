@@ -247,14 +247,16 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
       éxito verificable por programa** (definidas el 10-nov; falta ejecutarlas con el arnés).
 - [x] Mapeo de cada clase a OWASP LLM01 y a la técnica MITRE (es **ATLAS**, v2026.10) en `ataques/mapeo.md`.
       (hecho 10-nov; incluye OWASP Agentic 2026 ASI01/ASI02).
-- [ ] Variantes del corpus B con las cargas plantadas (copia por carga; la versión limpia no se toca).
+- [x] Variantes del corpus B con las cargas plantadas (copia por carga; la versión limpia no se toca). (10-nov)
 - [x] Configuraciones C0–C3 integradas en el agente y el arnés (`agente/defensa.py`, `--configuracion C0..C3`).
       C2: clasificador Horizon-Labs Guard elegido con evidencia (D85), licencia Apache-2.0, p50 192 ms en CPU,
       0 falsos positivos. C3: banda de catálogo y mediana. C4 lista blanca: no (hoja de ruta). (hecho 10-nov)
 - [ ] Comparación del clasificador de C2 con Jev a nivel de fragmentos (D80). **Pendiente:** requiere las cargas
       escritas (S06-bis). Fragmentos limpios en español ya extraídos (`ataques/fragmentos_limpios_b.jsonl`).
-- [ ] Dejar una variante del corpus B con una inyección plantada lista para el laboratorio de ataques de CotIA.
-- [ ] Prueba de humo: 1 carga por clase en C0 y C3.
+- [x] Dejar una variante del corpus B con una inyección plantada lista para el laboratorio de ataques de CotIA.
+      Las 20 copias locales están disponibles; A01 es el caso inicial. (10-nov)
+- [x] Prueba de humo: 1 carga por clase en C0 y C3. Diagonal clase × ubicación más A05/A09/A13 (D94): M5 C0 1/8 =
+      12,5 %; C3 0/8 = 0,0 %; utilidad 16/16; US$0,2327. (10-nov)
 
 **Terminado cuando:** las 20 cargas y C0–C3 corren y el predicado de éxito se evalúa por programa.
 **Informe:** `03_metodologia_seguridad.md` (taxonomía, mapeo, configuraciones).
@@ -396,14 +398,16 @@ corre; las defensas que deben frenarlas ya existen y están probadas.
 
 **Qué se entrega al terminar esta tarea:**
 
-- [x] `privado/tarea_cargas/cargas.yaml` con las 20 cargas (5 clases × 4 ubicaciones), cada una con su campo
+- [x] `ataques/cargas.yaml` (publicado, D95; antes en `privado/tarea_cargas/`) con las 20 cargas (5 clases × 4
+      ubicaciones), cada una con su campo
       `texto` y su predicado de éxito definido en el esquema (10-nov; redacción asistida autorizada por D92).
-- [ ] Las variantes del corpus en `corpus/b_ataques/<id>/` (una copia por carga; la versión limpia
-      en `corpus/b_sintetico/` **no se toca**).
-- [ ] El arnés `python -m comercio_agentico.ataques.correr` que, para cada carga y configuración,
-      corre el agente y evalúa el predicado por programa (sin juicio humano).
-- [ ] Prueba de humo: 1 carga por clase en C0 y C3 con DeepSeek Flash (coste < US$0,15).
-- [ ] Una variante dejada lista para el laboratorio de ataques de CotIA (D83).
+- [x] Las variantes del corpus en `corpus/b_ataques/<id>/` (una copia por carga; la versión limpia
+      en `corpus/b_sintetico/` **no se toca**). (10-nov)
+- [x] El arnés `python -m comercio_agentico.ataques.correr` que, para cada carga y configuración,
+      corre el agente y evalúa el predicado por programa (sin juicio humano). (10-nov)
+- [x] Prueba de humo: 1 carga por clase en C0 y C3 con DeepSeek Flash, en diagonal clase × ubicación (D94).
+      M5 C0 = 12,5 % (1/8); C3 = 0,0 % (0/8); sin errores; US$0,2327 en dos pasadas. (10-nov)
+- [x] Una variante dejada lista para el laboratorio de ataques de CotIA (D83). A01 y las demás copias locales. (10-nov)
 
 **Terminado cuando** las 20 cargas y C0–C3 corren y el predicado de éxito se evalúa por programa.
 Esto habilita S07 (curva seguridad-utilidad, el resultado estrella).
@@ -424,7 +428,7 @@ Las cuatro **ubicaciones** usan los cuatro formatos de proveedor del corpus B: `
 la vista), `oculto_html` (P2, oculto en el HTML o en el JSON-LD), `pdf` (P4) y `mensaje` (P5, chat).
 Cada clase se planta en las cuatro: 5 × 4 = 20.
 
-### Esquema de `privado/tarea_cargas/cargas.yaml`
+### Esquema de `ataques/cargas.yaml`
 
 Cada entrada tiene estos campos. Wills escribe `texto`; el resto es metadato que fija el escenario y
 el predicado:
@@ -459,8 +463,8 @@ cargas:
 - **Las clases con URL** (`inflar_cantidad`, `saltar_confirmacion`) necesitan que el texto incluya el
   marcador `{URL_ACCION}`, que el arnés reemplaza por la URL local de acción del proveedor (estilo
   WooCommerce `?add-to-cart=ID&quantity=N`). Así el predicado puede detectar si el agente la abre.
-- **Los textos no se publican.** `cargas.yaml` vive en `privado/tarea_cargas/` (fuera de git); el
-  repositorio público no incluye los textos de inyección, solo las defensas y la metodología (D89).
+- **Los textos se publican (D95).** `ataques/cargas.yaml` está versionado, como los conjuntos de cargas de los
+  benchmarks públicos de inyección indirecta; las copias plantadas `corpus/b_ataques/` se regeneran y no se versionan.
 
 ### Cuándo hacerlo y dónde
 
@@ -468,6 +472,5 @@ Puedes hacerlo al cerrar esta sesión o al abrir S07; es independiente del resto
 listas y probadas, así que esta tarea es el único bloqueo para S07.
 
 **El paso a paso detallado, el ejemplo de entrada y el prompt para pegar están en
-`privado/tarea_cargas/INSTRUCCIONES.md`** (fuera de git, no se publica ni se auto-lee). Los textos de
-ataque se escriben en `privado/tarea_cargas/cargas.yaml`, también fuera de git: el repositorio público
-muestra las defensas, la metodología y el mapeo, pero no los textos de inyección (D89).
+`privado/tarea_cargas/INSTRUCCIONES.md`** (fuera de git, no se auto-lee). Las cargas quedaron en
+`ataques/cargas.yaml`, versionado y público desde D95.

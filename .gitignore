@@ -17,6 +17,9 @@ contexto_claude/
 
 # Copias congeladas de tiendas reales (obra de terceros); solo se versiona el manifiesto
 corpus/a_real/copias/
+# Variantes del corpus B con cargas plantadas: se regeneran desde ataques/cargas.yaml (D95).
+corpus/b_ataques/
+resultados/ataques/*_simulado/
 
 # Python y herramientas
 __pycache__/
@@ -43,6 +46,9 @@ resultados/cache/
 # Corridas: se versiona solo la copia comprimida (.jsonl.gz); el .jsonl sirve para reanudar.
 resultados/corridas/*.jsonl
 resultados/corridas/*_simulado.jsonl.gz
+resultados/ataques/*.jsonl
+resultados/ataques/*_simulado.jsonl.gz
+resultados/ataques/*_simulado_m5.*
 # Salidas del agente simulado (se regeneran con make arnes-simulado)
 resultados/informes/*_simulado/
 
