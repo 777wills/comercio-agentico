@@ -314,16 +314,21 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
 
 - [ ] Context7 para SvelteKit (adapter-static), Tailwind y la librería de componentes elegida.
 - [ ] `web/`: inicio con la consulta y ejemplos; progreso en vivo; cuadro comparativo con procedencia desplegable por
-      celda; alertas, costo y tiempo; aviso de que no ejecuta pagos; Configuración (clave en el navegador, modelo de la
-      lista curada); selector de corpus A/B; **visor del corpus congelado** (proveedores sintéticos del corpus B y
-      tiendas reconstruidas del corpus A, con sus formatos: web schema.org, web plana, PDF, chat, MCP; **y la copia
-      atacada `corpus/b_ataques/<id>/` con, por página, qué carga(s) tiene plantada(s) —clase, ubicación y fragmento
-      resaltado—, vista limpia/atacada lado a lado**; D87);
+      celda; alertas, costo y tiempo; aviso de que no ejecuta pagos; selector de corpus A/B;
       laboratorio de ataques (C0 frente a C3); panel de resultados; historial.
-- [ ] **Gasto acumulado de la sesión del visitante** (suma del costo de sus consultas con su clave, nº de consultas
-      y total; D90), además del costo por consulta.
-- [ ] **Panel de defensas** (D91): interruptor por capa (separación, clasificador, precio) + presets C0–C3 + umbral
-      del clasificador con aviso; marca «exploratorio» fuera de C0–C3. Enganchado al laboratorio de ataques.
+- [ ] **Configuración** (todo lo que el visitante controla, en un solo lugar):
+      - **Clave de OpenRouter** del visitante, guardada solo en el navegador y enviada en cada petición; sin clave
+        se navega todo pero no se ejecutan consultas (D82).
+      - **Modelo** de la lista curada, con su costo estimado por consulta (D82, `GET /api/modelos`).
+      - **Clasificador de inyección**: elegir entre los dos validados (Horizon-Labs / Wolf Defender), con sus
+        características (D86).
+      - **Panel de defensas** (D91): interruptor por capa (separación, clasificador, precio) + presets C0–C3 +
+        deslizador de umbral del clasificador con aviso; marca «exploratorio» fuera de C0–C3.
+      - **Gasto acumulado de la sesión** del visitante (nº de consultas y total con su clave; D90).
+- [ ] **Visor del corpus congelado** (proveedores sintéticos del corpus B y tiendas reconstruidas del corpus A, con
+      sus formatos: web schema.org, web plana, PDF, chat, MCP; **y la copia atacada `corpus/b_ataques/<id>/` con, por
+      página, qué carga(s) tiene plantada(s) —clase, ubicación y fragmento resaltado—, vista limpia/atacada lado a
+      lado**; D87). Ligado al selector de corpus A/B.
 - [ ] Diseño responsivo; sin clave se navega todo y la consulta pide configurarla.
 - [ ] Compilación estática servida por FastAPI.
 
