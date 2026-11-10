@@ -314,7 +314,9 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
 - [ ] `web/`: inicio con la consulta y ejemplos; progreso en vivo; cuadro comparativo con procedencia desplegable por
       celda; alertas, costo y tiempo; aviso de que no ejecuta pagos; Configuración (clave en el navegador, modelo de la
       lista curada); selector de corpus A/B; **visor del corpus congelado** (proveedores sintéticos del corpus B y
-      tiendas reconstruidas del corpus A, con sus formatos: web schema.org, web plana, PDF, chat, MCP; D87);
+      tiendas reconstruidas del corpus A, con sus formatos: web schema.org, web plana, PDF, chat, MCP; **y la copia
+      atacada `corpus/b_ataques/<id>/` con, por página, qué carga(s) tiene plantada(s) —clase, ubicación y fragmento
+      resaltado—, vista limpia/atacada lado a lado**; D87);
       laboratorio de ataques (C0 frente a C3); panel de resultados; historial.
 - [ ] **Gasto acumulado de la sesión del visitante** (suma del costo de sus consultas con su clave, nº de consultas
       y total; D90), además del costo por consulta.
