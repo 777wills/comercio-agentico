@@ -188,15 +188,17 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
 
 **Objetivo:** validez externa con tiendas colombianas reales, de forma legal y reproducible.
 
-- [ ] Revisar robots.txt y términos de 4–5 tiendas candidatas (D20); elegir 3 y documentar las exclusiones como
+- [x] Revisar robots.txt y términos de 4–5 tiendas candidatas (D20); elegir 3 y documentar las exclusiones como
       resultado.
-- [ ] Crawler con crawl4ai: agente identificable, límite de tasa, sin credenciales ni elusión de CAPTCHA; congelar
+- [x] Crawler con crawl4ai: agente identificable, límite de tasa, sin credenciales ni elusión de CAPTCHA; congelar
       ~60–100 páginas de producto de los mismos tipos del catálogo, con fecha y suma de verificación.
-- [ ] `corpus/a_real/manifest.json` versionado; las copias, fuera de git (D22).
-- [ ] Servir las copias congeladas en local para que el agente las navegue como si fueran el sitio.
-- [ ] ~20 tareas reales en `tareas/tareas_a.jsonl`. Verdad de referencia: GTIN y precio desde el JSON-LD de la copia
+- [x] `corpus/a_real/manifest.json` versionado; las copias, fuera de git (D22).
+- [x] Servir las copias congeladas en local para que el agente las navegue como si fueran el sitio.
+- [x] ~20 tareas reales en `tareas/tareas_a.jsonl`. Verdad de referencia: GTIN y precio desde el JSON-LD de la copia
       cuando exista (extracción determinista); revisión humana rápida de Wills solo sobre los casos dudosos.
-- [ ] Corrida del agente sobre el corpus A con el modelo barato.
+- [x] Corrida del agente sobre el corpus A con el modelo barato.
+
+*Hecho el 9-nov con D70: en lugar de copias se guardan hechos y las tiendas se reconstruyen (sus términos prohíben copiar). Línea base 8/20; la repetición con lectura schema.org (D74) queda para la sesión siguiente.*
 
 **Terminado cuando:** las 20 tareas reales tienen referencia y una corrida completa con métricas.
 **Informe:** sección de corpus A en `03_metodologia_corpus.md` y resultados en `04_resultados_corpus_a.md`.

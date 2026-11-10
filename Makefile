@@ -5,7 +5,7 @@
 SHELL := /bin/bash
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo humo candidatos app arnes-simulado calibracion metricas
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo corpus-a-recolectar corpus-a corpus-a-servir corpus-a-correr humo candidatos app arnes-simulado calibracion metricas
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
@@ -45,6 +45,19 @@ corpus-b-catalogo: ## Regenera el catálogo con DeepSeek Flash (~US$0,03; requie
 
 candidatos: ## Embeddings: candidatos del catálogo para nombres informales (US$0, sin LLM)
 	uv run python -m comercio_agentico.emparejamiento
+
+corpus-a-recolectar: ## Lee de nuevo las fichas reales (red; robot identificable; ~6 min; US$0)
+	uv run python -m comercio_agentico.corpus_a.recolectar
+
+corpus-a: ## Reconstruye catálogo, verdad, tiendas y tareas del corpus A desde los hechos (US$0)
+	uv run python -m comercio_agentico.corpus_a.construir
+	uv run python -m comercio_agentico.corpus_a.tareas
+
+corpus-a-servir: ## Sirve las tiendas reconstruidas A1-A3 en :8802; Ctrl+C para detener (US$0)
+	uv run python -m comercio_agentico.corpus_a.servir
+
+corpus-a-correr: ## Corrida del agente sobre el corpus A: 20 tareas con Flash (~US$0,3; requiere corpus-a-servir)
+	uv run python -m comercio_agentico.arnes.correr --config configs/corpus_a_flash.yaml --repeticiones 1 --metricas
 
 humo: ## Prueba de humo del agente: 5 tareas con DeepSeek Flash (~US$0,05; requiere corpus-b-servir)
 	uv run python -m comercio_agentico.preguntar --tareas B001,B013,B025,B037,B054 --tope 0.10

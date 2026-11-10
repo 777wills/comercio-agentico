@@ -69,6 +69,7 @@ atributos:
   - nombre: resolucion
     tipo: categoria
     sinonimos: [resolución]
+    mayor_es_mejor: true  # los valores van de menor a mayor: >= y <= se resuelven por ese orden
     valores:
       HD: ["720p", "1366x768", "1280x720"]
       FHD: ["full hd", "1080p", "1920x1080"]

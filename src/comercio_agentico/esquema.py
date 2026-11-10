@@ -201,6 +201,21 @@ class AtributoComparable(BaseModel):
         return str(valor).strip()
 
 
+def restriccion_canonica(
+    atributo: AtributoComparable, operador: Operador, valor: ValorAtributo
+) -> RestriccionDura:
+    """En una categoría ordenada (``mayor_es_mejor`` con los valores de menor a mayor), ">= 4K" es
+    "en [4K, 8K]"; en una categoría sin orden, un >= o <= se lee como igualdad."""
+    if atributo.tipo == "categoria" and operador in (">=", "<="):
+        orden = list(atributo.valores)
+        if atributo.mayor_es_mejor is not None and valor in orden:
+            i = orden.index(valor)
+            tramo = orden[i:] if operador == ">=" else orden[: i + 1]
+            return RestriccionDura(atributo=atributo.nombre, operador="en", valor=tramo)
+        operador = "=="
+    return RestriccionDura(atributo=atributo.nombre, operador=operador, valor=valor)
+
+
 class RestriccionDura(BaseModel):
     atributo: str
     operador: Operador
@@ -215,10 +230,12 @@ class RestriccionDura(BaseModel):
                 return valor == objetivo
             case "!=":
                 return valor != objetivo
-            case ">=":
-                return float(valor) >= float(objetivo)  # type: ignore[arg-type]
-            case "<=":
-                return float(valor) <= float(objetivo)  # type: ignore[arg-type]
+            case ">=" | "<=":
+                try:
+                    a, b = float(valor), float(objetivo)  # type: ignore[arg-type]
+                except (TypeError, ValueError):
+                    return False  # un orden entre textos no se puede verificar
+                return a >= b if self.operador == ">=" else a <= b
             case "en":
                 return valor in (objetivo if isinstance(objetivo, list) else [objetivo])
         return False
@@ -266,6 +283,7 @@ TipoAlerta = Literal[
     "emparejamiento_dudoso",
     "restriccion_incumplida",
     "fuente_no_disponible",
+    "interpretacion_incompleta",
 ]
 
 

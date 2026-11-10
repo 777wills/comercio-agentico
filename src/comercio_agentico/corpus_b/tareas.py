@@ -93,13 +93,15 @@ def calcular_respuesta(
         of = o["oferta"]
         if of["disponibilidad"] not in DISPONIBLES or of["moneda"] != "COP":
             continue
+        if o["producto_id"] is None:  # corpus A: producto parecido que no está en el catálogo
+            continue
         if not _cumple_producto(productos[o["producto_id"]], criterios):
             continue
         if criterios.presupuesto_max is not None and _costo(of) > criterios.presupuesto_max:
             continue
         if (
             criterios.plazo_max_dias is not None
-            and of["plazo_entrega_dias"] > criterios.plazo_max_dias
+            and (of["plazo_entrega_dias"] or 10**6) > criterios.plazo_max_dias  # sin plazo: no
         ):
             continue
         validas.append((_costo(of), o["proveedor"], o["producto_id"]))

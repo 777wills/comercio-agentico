@@ -45,3 +45,6 @@ resultados/corridas/*.jsonl
 resultados/corridas/*_simulado.jsonl.gz
 # Salidas del agente simulado (se regeneran con make arnes-simulado)
 resultados/informes/*_simulado/
+
+# Tiendas del corpus A reconstruidas: se generan con `make corpus-a` desde los hechos versionados
+corpus/a_real/sitio/

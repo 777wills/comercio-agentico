@@ -28,12 +28,13 @@ import logging
 import subprocess
 from collections.abc import Awaitable, Callable
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import yaml
 from pydantic import BaseModel, Field
 
 from comercio_agentico.agente import extraccion, grafo, interpretacion
+from comercio_agentico.agente.fuentes import cargar_fuentes
 from comercio_agentico.agente.grafo import MAX_LLAMADAS, Resultado, preguntar
 from comercio_agentico.agente.interpretacion import Necesidad
 from comercio_agentico.corpus_b import DIR_CORPUS, RAIZ
@@ -59,6 +60,30 @@ class ConfigCorrida(BaseModel):
     tope_usd: float | None = Field(default=None, description="Tope por tarea; None = .env.")
     concurrencia_tareas: int = 4
     concurrencia_llm: int = 6
+    corpus: Literal["b", "a"] = Field(
+        default="b", description="b: sintético (S01) · a: tiendas reales reconstruidas (S04)."
+    )
+
+
+def recursos_corpus(corpus: str) -> dict[str, Path]:
+    """Fuentes, catálogo, tareas, verdad y directorio de cada corpus."""
+    if corpus == "a":
+        from comercio_agentico.corpus_a import RAIZ as DIR_A
+
+        return {
+            "fuentes": RAIZ / "fuentes" / "corpus_a.yaml",
+            "catalogo": DIR_A / "catalogo.json",
+            "tareas": RAIZ / "tareas" / "tareas_a.jsonl",
+            "verdad": DIR_A / "verdad.json",
+            "directorio": DIR_A,
+        }
+    return {
+        "fuentes": RAIZ / "fuentes" / "corpus_b.yaml",
+        "catalogo": DIR_CORPUS / "catalogo.json",
+        "tareas": RAIZ / "tareas" / "tareas_b.jsonl",
+        "verdad": DIR_CORPUS / "verdad.json",
+        "directorio": DIR_CORPUS,
+    }
 
 
 def cargar_config(ruta: str | Path) -> ConfigCorrida:
@@ -193,7 +218,9 @@ async def correr(
         log.info(
             "Reanudando: %d ejecuciones ya registradas, %d pendientes", len(hechas), len(pendientes)
         )
-    emparejador = emparejador or Emparejador(cargar_catalogo())
+    recursos = recursos_corpus(config.corpus)
+    emparejador = emparejador or Emparejador(cargar_catalogo(recursos["catalogo"]))
+    registro = cargar_fuentes(recursos["fuentes"])
     meta = meta or {}
     sem_tareas = asyncio.Semaphore(config.concurrencia_tareas)
     sem_llm = asyncio.Semaphore(config.concurrencia_llm)
@@ -213,6 +240,7 @@ async def correr(
                     max_llamadas=config.max_llamadas,
                     tope_usd=config.tope_usd,
                     emparejador=emparejador,
+                    registro=registro,
                     semaforo_llm=sem_llm,
                 )
                 fila = registro_ejecucion(tarea, rep, r, meta)
@@ -247,7 +275,8 @@ def principal(args: argparse.Namespace) -> Path:
     config = cargar_config(args.config)
     if config.modelo not in MODELOS:
         raise SystemExit(f"Modelo desconocido: {config.modelo}")
-    ruta_tareas = Path(args.tareas).resolve()
+    recursos = recursos_corpus(config.corpus)
+    ruta_tareas = Path(args.tareas or recursos["tareas"]).resolve()
     tareas = cargar_tareas(ruta_tareas)
     if args.solo:
         pedidas = set(args.solo.split(","))
@@ -263,7 +292,8 @@ def principal(args: argparse.Namespace) -> Path:
         "id_modelo": ficha.id_modelo,
         "proveedor_fijado": ficha.proveedor or ficha.plataforma,
         "version_prompt": version_prompt(),
-        "hash_corpus": hash_corpus(tareas=ruta_tareas),
+        "hash_corpus": hash_corpus(recursos["directorio"], tareas=ruta_tareas),
+        "corpus": config.corpus,
         "commit": commit_actual(),
         "conjunto_tareas": ruta_tareas.name,
     }
@@ -304,7 +334,7 @@ def main() -> None:
         description=__doc__, formatter_class=argparse.RawTextHelpFormatter
     )
     parser.add_argument("--config", required=True, help="YAML de la configuración (configs/)")
-    parser.add_argument("--tareas", default=str(RAIZ / "tareas" / "tareas_b.jsonl"))
+    parser.add_argument("--tareas", help="JSONL de tareas (por defecto, las del corpus)")
     parser.add_argument("--repeticiones", type=int, default=1)
     parser.add_argument("--solo", help="Subconjunto de IDs de tarea separados por coma")
     parser.add_argument("--salida", help="Archivo JSONL (por defecto resultados/corridas/...)")
@@ -323,8 +353,14 @@ def main() -> None:
     salida = principal(args)
     if args.metricas:
         from comercio_agentico.arnes.metricas import informe
+        from comercio_agentico.corpus_b.tareas import cargar_tareas as _tareas
 
-        informe(salida)
+        recursos = recursos_corpus(cargar_config(args.config).corpus)
+        informe(
+            salida,
+            tareas=_tareas(Path(args.tareas or recursos["tareas"])),
+            verdad=json.loads(recursos["verdad"].read_text(encoding="utf-8")),
+        )
 
 
 if __name__ == "__main__":

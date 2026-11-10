@@ -1,0 +1,154 @@
+# Semillas del corpus A: fichas de producto por tienda (URL públicas, permitidas por robots.txt).
+# A1 alkosto.com y A2 ktronix.com comparten el EAN en la URL; A3 falabella.com.co es un candidato
+# por coincidencia de nombre que se confirma con los hechos recolectados.
+productos:
+  - id: R01
+    categoria: celular
+    urls:
+      A1: https://www.alkosto.com/iphone-16e-128gb-ng/p/195950051971
+      A2: https://www.ktronix.com/iphone-16e-128gb-ng/p/195950051971
+      A3: https://www.falabella.com.co/falabella-co/product/73262421/-iPhone-16e-128GB-8GB-RAM-Camara-posterior-48MP-camara-frontal-12MP-Pantalla-6,1-pulgadas-Chip-A18/73262421
+  - id: R02
+    categoria: celular
+    urls:
+      A1: https://www.alkosto.com/iphone-15-256gb-ng/p/195949037351
+      A2: https://www.ktronix.com/iphone-15-256gb-ng/p/195949037351
+      A3: https://www.falabella.com.co/falabella-co/product/prod13430670/iPhone-15-Plus-de-256GB-5G-6GB-RAM-Pantalla-6.7-pulgadas-Chip-A16-Bionic-Carga-Tipo-C-Dynamic-Island-Camara-48MP/72752119
+  - id: R03
+    categoria: celular
+    urls:
+      A1: https://www.alkosto.com/iphone-15-128gb-ng/p/195949036453
+      A2: https://www.ktronix.com/iphone-15-128gb-ng/p/195949036453
+      A3: https://www.falabella.com.co/falabella-co/product/prod13430667/iPhone-15-de-128GB-5G-6GB-RAM-Pantalla-6.1-pulgadas-Chip-A16-Bionic-Carga-Tipo-C-Dynamic-Island-Camara-48MP/72752105
+  - id: R04
+    categoria: portatil
+    urls:
+      A1: https://www.alkosto.com/computador-portatil-2-en-1-lenovo-yoga-7-14-pulgadas/p/828143742126
+      A2: https://www.ktronix.com/computador-portatil-2-en-1-lenovo-yoga-7-14-pulgadas/p/828143742126
+      A3: https://www.falabella.com.co/falabella-co/product/142697880/Portatil-Corporativo-Lenovo-X1-Yoga-Gen7-360-touch-Core-I5-1240P-8-256-SSD-Win-11-Pro-14-Touch./142697881
+  - id: R05
+    categoria: portatil
+    urls:
+      A1: https://www.alkosto.com/computador-portatil-asus-zenbook-a-14-pulgadas-oled/p/4711636618038
+      A2: https://www.ktronix.com/computador-portatil-asus-zenbook-a-14-pulgadas-oled/p/4711636618038
+      A3: https://www.falabella.com.co/falabella-co/product/143009889/ASUS-ZenBook-14-Ryzen-7-8840HS-OLED-SSD/143009890
+  - id: R06
+    categoria: portatil
+    urls:
+      A1: https://www.alkosto.com/computador-portatil-asus-zenbook-s-16-pulgadas-oled/p/4711636573771
+      A2: https://www.ktronix.com/computador-portatil-asus-zenbook-s-16-pulgadas-oled/p/4711636573771
+      A3: https://www.falabella.com.co/falabella-co/product/143893165/PORTATIL-ASUS-ZENBOOK-RYZEN-AI-9-HX-370-32GB-RAM-1-TERA-SSD-16-OLED-WQ-TOUCH-MOD-UM5606WA/143893166
+  - id: R07
+    categoria: portatil
+    urls:
+      A1: https://www.alkosto.com/computador-portatil-2-en-1-acer-aspire-spin-14-pulgadas/p/4711474847188
+      A2: https://www.ktronix.com/computador-portatil-2-en-1-acer-aspire-spin-14-pulgadas/p/4711474847188
+      A3: https://www.falabella.com.co/falabella-co/product/73244210/Portatil-2-en-1-Aspire-Spin-Acer-Intel-Core-3-8GB-de-RAM-512GB-SSD-de-Almacenamiento-Windows-11-Pantalla-14-pulgadas-ASP14-51MTN-39CV-Computador-portatil-2-en-1/73244210
+  - id: R08
+    categoria: portatil
+    urls:
+      A1: https://www.alkosto.com/computador-portatil-asus-zenbook-s14-oled-14-pulgadas/p/4711387654477
+      A2: https://www.ktronix.com/computador-portatil-asus-zenbook-s14-oled-14-pulgadas/p/4711387654477
+      A3: https://www.falabella.com.co/falabella-co/product/73064067/Portatil-ASUS-Zenbook-S14-OLED-Intel-Core-Ultra7-32GB-de-RAM-1TB-SSD-de-almacenamiento-Windows-11-14-Pulgadas-UX5406SA-PZ023W-Computador-portatil/73064067
+  - id: R09
+    categoria: portatil
+    urls:
+      A1: https://www.alkosto.com/computador-portatil-lenovo-ideapad-slim-5-14-pulgadas-oled/p/199276793454
+      A2: https://www.ktronix.com/computador-portatil-lenovo-ideapad-slim-5-14-pulgadas-oled/p/199276793454
+      A3: https://www.falabella.com.co/falabella-co/product/73017316/Portatil-Lenovo-Ideapad-Slim-5-Snapdragon-X1P-16GB-de-RAM-512GB-SSD-de-Almacenamiento-Windows-11-Pantalla-14-pulgadas-Oled-IP-Slim-5-Computador-Portatil/73017316
+  - id: R10
+    categoria: portatil
+    urls:
+      A1: https://www.alkosto.com/computador-portatil-2-en-1-lenovo-ideapad-5-14-pulgadas/p/199276735805
+      A2: https://www.ktronix.com/computador-portatil-2-en-1-lenovo-ideapad-5-14-pulgadas/p/199276735805
+      A3: https://www.falabella.com.co/falabella-co/product/123237920/LENOVO-IDEAPAD-AMD-RYZEN-7-5700U-SSD-2TB-RAM-12GB-LED-14-FHD/123237921
+  - id: R11
+    categoria: monitor
+    urls:
+      A1: https://www.alkosto.com/monitor-27-samsung-d700-4k/p/887276836881
+      A2: https://www.ktronix.com/monitor-27-samsung-d700-4k/p/887276836881
+      A3: https://www.falabella.com.co/falabella-co/product/73025658/Monitor-LCD-Samsung-D700-4K-27-pulgadas/73025658
+  - id: R12
+    categoria: monitor
+    urls:
+      A1: https://www.alkosto.com/monitor-kalley-gamer-27-pulgadas-m27g180-fhd-plano-negro/p/7705946478267
+      A2: https://www.ktronix.com/monitor-kalley-gamer-27-pulgadas-m27g180-fhd-plano-negro/p/7705946478267
+      A3: https://www.falabella.com.co/falabella-co/product/128381907/Monitor-KALLEY-Gamer-27-Pulgadas-M27G180-Plano-Negro/128381908
+  - id: R13
+    categoria: monitor
+    urls:
+      A1: https://www.alkosto.com/monitor-acer-gamer-27-pulgadas-ed270-fhd-curvo-negro/p/4711474686466
+      A2: https://www.ktronix.com/monitor-acer-gamer-27-pulgadas-ed270-fhd-curvo-negro/p/4711474686466
+      A3: https://www.falabella.com.co/falabella-co/product/140112721/Monitor-Gamer-Acer-Nitro-27-Pulgadas-Curvo-Full-HD-240-Hz-ED270/140112722
+  - id: R14
+    categoria: monitor
+    urls:
+      A1: https://www.alkosto.com/monitor-hp-omen-gamer-315-pulgadas-32c-qhd-curvo-negro/p/197029618238
+      A2: https://www.ktronix.com/monitor-hp-omen-gamer-315-pulgadas-32c-qhd-curvo-negro/p/197029618238
+      A3: https://www.falabella.com.co/falabella-co/product/142266254/Monitor-HP-OMEN-32C-Gamer-315-Pulgadas-QHD-Curvo-Negro/142266256
+  - id: R15
+    categoria: monitor
+    urls:
+      A1: https://www.alkosto.com/monitor-hp-27-pulgadas-m27f-fhd/p/195161431258
+      A2: https://www.ktronix.com/monitor-hp-27-pulgadas-m27f-fhd/p/195161431258
+      A3: https://www.falabella.com.co/falabella-co/product/135738432/Monitor-HP-M27f-FHD-2G3D3AA-de-27-pulgadas/135738433
+  - id: R16
+    categoria: audifonos
+    urls:
+      A1: https://www.alkosto.com/audifonos-esenses-inalambricos-bluetooth-on-ear-hp-1000/p/7707409109343
+      A2: https://www.ktronix.com/audifonos-esenses-inalambricos-bluetooth-on-ear-hp-1000/p/7707409109343
+      A3: https://www.falabella.com.co/falabella-co/product/138818670/Audifono-Esenses-Bluetooth-On-Ear-Kids-Ref-HP-1000-BT-AZUL/138818671
+  - id: R17
+    categoria: audifonos
+    urls:
+      A1: https://www.alkosto.com/audifonos-diadema-kalley-alambricos-over-ear-gaming-k-kga1/p/7705946893664
+      A2: https://www.ktronix.com/audifonos-diadema-kalley-alambricos-over-ear-gaming-k-kga1/p/7705946893664
+      A3: https://www.falabella.com.co/falabella-co/product/129036790/Audifonos-de-Diadema-KALLEY-Alambricos-Over-Ear-Gaming-K-KGA1-Negro/129036791
+  - id: R18
+    categoria: audifonos
+    urls:
+      A1: https://www.alkosto.com/audifonos-diadema-playstation-ps5-inalambricos-bluetooth/p/711719598268
+      A2: https://www.ktronix.com/audifonos-diadema-playstation-ps5-inalambricos-bluetooth/p/711719598268
+      A3: https://www.falabella.com.co/falabella-co/product/130775146/Diadema-Ps5-Pulse-Playstation-5-Negra/130775147
+  - id: R19
+    categoria: almacenamiento
+    urls:
+      A1: https://www.alkosto.com/memoria-micro-sd-kingston-canvas-select-plus-256gb/p/740617348507
+      A2: https://www.ktronix.com/memoria-micro-sd-kingston-canvas-select-plus-256gb/p/740617348507
+      A3: https://www.falabella.com.co/falabella-co/product/138513246/Memoria-Micro-Sd-Kingston-256gb-Canvas-Select-Plus-Class10/138513247
+  - id: R20
+    categoria: almacenamiento
+    urls:
+      A1: https://www.alkosto.com/memoria-micro-sd-kingston-canvas-select-plus-128gb/p/740617348453
+      A2: https://www.ktronix.com/memoria-micro-sd-kingston-canvas-select-plus-128gb/p/740617348453
+      A3: https://www.falabella.com.co/falabella-co/product/133242320/Memoria-Micro-Sd-Kingston-128gb-Canvas-Select-Plus-Class10/133242321
+  - id: R21
+    categoria: almacenamiento
+    urls:
+      A1: https://www.alkosto.com/memoria-micro-sd-kingston-canvas-select-plus-64gb/p/740617348408
+      A2: https://www.ktronix.com/memoria-micro-sd-kingston-canvas-select-plus-64gb/p/740617348408
+      A3: https://www.falabella.com.co/falabella-co/product/118314877/Memoria-Micro-SD-Kingston-Canvas-Select-Plus-64GB/118314881
+  - id: R22
+    categoria: almacenamiento
+    urls:
+      A1: https://www.alkosto.com/disco-estado-solido-externo-ssd-kingston-xs1000-1tb-negro/p/740617338515
+      A2: https://www.ktronix.com/disco-estado-solido-externo-ssd-kingston-xs1000-1tb-negro/p/740617338515
+      A3: https://www.falabella.com.co/falabella-co/product/132429947/Unidad-Estado-Solido-Kingston-Ssd-Xs1000-Externo-1tb-Usb-3.2/132429948
+  - id: R23
+    categoria: almacenamiento
+    urls:
+      A1: https://www.alkosto.com/memoria-usb-kingston-128-gb-datatraveler-exodia-m-dtxm/p/740617326376
+      A2: https://www.ktronix.com/memoria-usb-kingston-128-gb-datatraveler-exodia-m-dtxm/p/740617326376
+      A3: https://www.falabella.com.co/falabella-co/product/143306788/Memoria-USB-KINGSTON-128-GB-Datatraveler-Exodia-M-DTXM/143306789
+  - id: R24
+    categoria: almacenamiento
+    urls:
+      A1: https://www.alkosto.com/unidad-estado-solido-kingston-480gb/p/740617263442
+      A2: https://www.ktronix.com/unidad-estado-solido-kingston-480gb/p/740617263442
+      A3: https://www.falabella.com.co/falabella-co/product/126882445/kingston-SSD-Unidad-de-estado-solido-A400-480GB-25%E2%80%9D/126882447
+  - id: R25
+    categoria: almacenamiento
+    urls:
+      A1: https://www.alkosto.com/unidad-estado-solido-kingston-240gb/p/740617261219
+      A2: https://www.ktronix.com/unidad-estado-solido-kingston-240gb/p/740617261219
+      A3: https://www.falabella.com.co/falabella-co/product/126882427/kingston-SSD-Unidad-de-estado-solido-A400-240GB-25%E2%80%9D/126882428

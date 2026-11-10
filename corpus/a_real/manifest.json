@@ -1,0 +1,761 @@
+{
+ "descripcion": "Lectura única de fichas públicas; el HTML no se conserva (D70).",
+ "agente_usuario": "ComercioAgenticoBot/0.1 (+https://github.com/777wills/comercio-agentico)",
+ "robots_txt_respetado": true,
+ "pausa_s": [
+  4.0,
+  8.0
+ ],
+ "lecturas": [
+  {
+   "producto": "R01",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/iphone-16e-128gb-ng/p/195950051971",
+   "fecha": "2026-11-10T01:46:39+00:00",
+   "http": 200,
+   "bytes": 2781358,
+   "sha256": "d07e8adbd9de8e96a6c6eb05fc25cdf3b44e2768181982cd95a7d7a77c92c5ab",
+   "error": null
+  },
+  {
+   "producto": "R01",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/iphone-16e-128gb-ng/p/195950051971",
+   "fecha": "2026-11-10T01:46:40+00:00",
+   "http": 200,
+   "bytes": 2648715,
+   "sha256": "e7d8162a9bd0d65b9b3b829274e97b27f0fc875a352ade87b9218201e40a0c98",
+   "error": null
+  },
+  {
+   "producto": "R01",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/73262421/-iPhone-16e-128GB-8GB-RAM-Camara-posterior-48MP-camara-frontal-12MP-Pantalla-6,1-pulgadas-Chip-A18/73262421",
+   "fecha": "2026-11-10T02:03:07+00:00",
+   "http": 200,
+   "bytes": 1083683,
+   "sha256": "7c355059861f8f040e097db7f7f843fe0a318b30f3577eed4e37266a7b21ba4c",
+   "error": null
+  },
+  {
+   "producto": "R02",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/iphone-15-256gb-ng/p/195949037351",
+   "fecha": "2026-11-10T01:46:47+00:00",
+   "http": 200,
+   "bytes": 1919040,
+   "sha256": "4b63d409f4efa29c6fc9144ca7f6448cee00a3bdd4eff72edfebe28295511af4",
+   "error": null
+  },
+  {
+   "producto": "R02",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/iphone-15-256gb-ng/p/195949037351",
+   "fecha": "2026-11-10T01:46:51+00:00",
+   "http": 200,
+   "bytes": 1821758,
+   "sha256": "161df81599a6c1d0af11718363d4e93cf79e7c005ad71f97b520eeb1de390153",
+   "error": null
+  },
+  {
+   "producto": "R02",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/prod13430670/iPhone-15-Plus-de-256GB-5G-6GB-RAM-Pantalla-6.7-pulgadas-Chip-A16-Bionic-Carga-Tipo-C-Dynamic-Island-Camara-48MP/72752119",
+   "fecha": "2026-11-10T02:03:16+00:00",
+   "http": 200,
+   "bytes": 1064320,
+   "sha256": "90fbd5c8256659d065fde83336d78c8fa771a2468f166a944474329e44ba813d",
+   "error": null
+  },
+  {
+   "producto": "R03",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/iphone-15-128gb-ng/p/195949036453",
+   "fecha": "2026-11-10T01:46:56+00:00",
+   "http": 200,
+   "bytes": 1965971,
+   "sha256": "c78b2ffeabc2a472ff416d2f11d696baff09428d07401b6c3aa0fd370115619b",
+   "error": null
+  },
+  {
+   "producto": "R03",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/iphone-15-128gb-ng/p/195949036453",
+   "fecha": "2026-11-10T01:46:59+00:00",
+   "http": 200,
+   "bytes": 1867975,
+   "sha256": "ab71c6b20e0dc884d1621e3e19d8b91d0089a0297decb3034dd1c851b334134c",
+   "error": null
+  },
+  {
+   "producto": "R03",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/prod13430667/iPhone-15-de-128GB-5G-6GB-RAM-Pantalla-6.1-pulgadas-Chip-A16-Bionic-Carga-Tipo-C-Dynamic-Island-Camara-48MP/72752105",
+   "fecha": "2026-11-10T02:03:21+00:00",
+   "http": 200,
+   "bytes": 1279689,
+   "sha256": "0aab25767a53e16b7dcf55739ba2dfe2a28ce6b946b540b231637a009baeeac3",
+   "error": null
+  },
+  {
+   "producto": "R04",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/computador-portatil-2-en-1-lenovo-yoga-7-14-pulgadas/p/828143742126",
+   "fecha": "2026-11-10T01:47:05+00:00",
+   "http": 200,
+   "bytes": 1300147,
+   "sha256": "787bfa0915c9d3db02b021aba6ca389ebc65b73e575ddd538d6754202deac36a",
+   "error": null
+  },
+  {
+   "producto": "R04",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/computador-portatil-2-en-1-lenovo-yoga-7-14-pulgadas/p/828143742126",
+   "fecha": "2026-11-10T01:47:07+00:00",
+   "http": 200,
+   "bytes": 1191206,
+   "sha256": "4c6ba376a427233e7de185f3ba87f037ff3932d45be217db4839c55226a47bd3",
+   "error": null
+  },
+  {
+   "producto": "R04",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/142697880/Portatil-Corporativo-Lenovo-X1-Yoga-Gen7-360-touch-Core-I5-1240P-8-256-SSD-Win-11-Pro-14-Touch./142697881",
+   "fecha": "2026-11-10T02:03:29+00:00",
+   "http": 200,
+   "bytes": 1374850,
+   "sha256": "387baf5dc02589ab602e3de2c114bd5c6f1a50df66bf5d2c89e21efe7cd18130",
+   "error": null
+  },
+  {
+   "producto": "R05",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/computador-portatil-asus-zenbook-a-14-pulgadas-oled/p/4711636618038",
+   "fecha": "2026-11-10T01:47:12+00:00",
+   "http": 200,
+   "bytes": 1356636,
+   "sha256": "ceaeb6e369810d33248cb0e87155f37116bf0bebeaa53d3e7cadbefa726cc5a1",
+   "error": null
+  },
+  {
+   "producto": "R05",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/computador-portatil-asus-zenbook-a-14-pulgadas-oled/p/4711636618038",
+   "fecha": "2026-11-10T01:47:15+00:00",
+   "http": 200,
+   "bytes": 1231281,
+   "sha256": "cd296fb5d5e81e3f2c831736ebddf2dfbd489eba97f54834aa6fa036f35cd351",
+   "error": null
+  },
+  {
+   "producto": "R05",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/143009889/ASUS-ZenBook-14-Ryzen-7-8840HS-OLED-SSD/143009890",
+   "fecha": "2026-11-10T02:03:37+00:00",
+   "http": 200,
+   "bytes": 584344,
+   "sha256": "b6464996c5b3511bbebd11bdcd3933cace3b3325e25b857b5bea1549eeae8208",
+   "error": null
+  },
+  {
+   "producto": "R06",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/computador-portatil-asus-zenbook-s-16-pulgadas-oled/p/4711636573771",
+   "fecha": "2026-11-10T01:47:19+00:00",
+   "http": 200,
+   "bytes": 1354509,
+   "sha256": "bee8dd121a53f74a3635a5fe2c157fa66347a51a717a939474dc786487fc5b61",
+   "error": null
+  },
+  {
+   "producto": "R06",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/computador-portatil-asus-zenbook-s-16-pulgadas-oled/p/4711636573771",
+   "fecha": "2026-11-10T01:47:22+00:00",
+   "http": 200,
+   "bytes": 1244894,
+   "sha256": "e8006b7cdad5beae6b5a49e83b31e58496ccc26fcf39853f40bcb9c16a9c2462",
+   "error": null
+  },
+  {
+   "producto": "R06",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/143893165/PORTATIL-ASUS-ZENBOOK-RYZEN-AI-9-HX-370-32GB-RAM-1-TERA-SSD-16-OLED-WQ-TOUCH-MOD-UM5606WA/143893166",
+   "fecha": "2026-11-10T02:03:42+00:00",
+   "http": 200,
+   "bytes": 1146571,
+   "sha256": "6dcfc45d76e2018308085616aeef10727aeb57847f31f333963e9ecd1a13949b",
+   "error": null
+  },
+  {
+   "producto": "R07",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/computador-portatil-2-en-1-acer-aspire-spin-14-pulgadas/p/4711474847188",
+   "fecha": "2026-11-10T01:47:29+00:00",
+   "http": 200,
+   "bytes": 1300357,
+   "sha256": "25a8cdc7c1c086221513c41da3f1d5b5e6df846a9aa2435f3cd1db71ab33e527",
+   "error": null
+  },
+  {
+   "producto": "R07",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/computador-portatil-2-en-1-acer-aspire-spin-14-pulgadas/p/4711474847188",
+   "fecha": "2026-11-10T01:47:31+00:00",
+   "http": 200,
+   "bytes": 1191458,
+   "sha256": "1c6b80a56d0197cd339d47814f358445d59c41e7a709de089a3ff467bf14960f",
+   "error": null
+  },
+  {
+   "producto": "R07",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/73244210/Portatil-2-en-1-Aspire-Spin-Acer-Intel-Core-3-8GB-de-RAM-512GB-SSD-de-Almacenamiento-Windows-11-Pantalla-14-pulgadas-ASP14-51MTN-39CV-Computador-portatil-2-en-1/73244210",
+   "fecha": "2026-11-10T02:03:51+00:00",
+   "http": 200,
+   "bytes": 1048598,
+   "sha256": "5a9e362a549c99d3f32ac79bebc87eb26d7a60743b65d63aa877349788105ab3",
+   "error": null
+  },
+  {
+   "producto": "R08",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/computador-portatil-asus-zenbook-s14-oled-14-pulgadas/p/4711387654477",
+   "fecha": "2026-11-10T01:47:38+00:00",
+   "http": 200,
+   "bytes": 1322544,
+   "sha256": "f599f1ea19cdc1dfeac848ec6c15f172a562c795b7c41cae7100d822ed35b167",
+   "error": null
+  },
+  {
+   "producto": "R08",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/computador-portatil-asus-zenbook-s14-oled-14-pulgadas/p/4711387654477",
+   "fecha": "2026-11-10T01:47:39+00:00",
+   "http": 200,
+   "bytes": 1213617,
+   "sha256": "14d751264363a2638f982610d2906775280a94bfe8c2eff116c56b98822e17b7",
+   "error": null
+  },
+  {
+   "producto": "R08",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/73064067/Portatil-ASUS-Zenbook-S14-OLED-Intel-Core-Ultra7-32GB-de-RAM-1TB-SSD-de-almacenamiento-Windows-11-14-Pulgadas-UX5406SA-PZ023W-Computador-portatil/73064067",
+   "fecha": "2026-11-10T02:03:57+00:00",
+   "http": 200,
+   "bytes": 1067004,
+   "sha256": "f0654f39638be4e9759a62b623d9da69e9bb1370336fe53cd1809d4ac8d178eb",
+   "error": null
+  },
+  {
+   "producto": "R09",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/computador-portatil-lenovo-ideapad-slim-5-14-pulgadas-oled/p/199276793454",
+   "fecha": "2026-11-10T01:47:45+00:00",
+   "http": 200,
+   "bytes": 1300819,
+   "sha256": "2109fd6bf1715493e4fbfb2f79525e1dc794ab4ecba166c69d23f00bdf60bdd2",
+   "error": null
+  },
+  {
+   "producto": "R09",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/computador-portatil-lenovo-ideapad-slim-5-14-pulgadas-oled/p/199276793454",
+   "fecha": "2026-11-10T01:47:44+00:00",
+   "http": 200,
+   "bytes": 1191878,
+   "sha256": "4b01199a99f2ddc32698d26c8c823ee5b09408b3abf9e08bf9a9ff0e075e5643",
+   "error": null
+  },
+  {
+   "producto": "R09",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/73017316/Portatil-Lenovo-Ideapad-Slim-5-Snapdragon-X1P-16GB-de-RAM-512GB-SSD-de-Almacenamiento-Windows-11-Pantalla-14-pulgadas-Oled-IP-Slim-5-Computador-Portatil/73017316",
+   "fecha": "2026-11-10T02:04:05+00:00",
+   "http": 200,
+   "bytes": 1050867,
+   "sha256": "33069e2776cb126f114302021b1de596b41b9a12a1cd1d346e4e6f44d0901a59",
+   "error": null
+  },
+  {
+   "producto": "R10",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/computador-portatil-2-en-1-lenovo-ideapad-5-14-pulgadas/p/199276735805",
+   "fecha": "2026-11-10T01:47:54+00:00",
+   "http": 200,
+   "bytes": 1376462,
+   "sha256": "e9e63a20f5f4f885378afd2c48d1cac19af65936ee62a885614b7f42cd512d55",
+   "error": null
+  },
+  {
+   "producto": "R10",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/computador-portatil-2-en-1-lenovo-ideapad-5-14-pulgadas/p/199276735805",
+   "fecha": "2026-11-10T01:47:52+00:00",
+   "http": 200,
+   "bytes": 1213676,
+   "sha256": "5fe29f603e201c421fcd8ffc79f03ac47415e01d4a4d9c68928f5b311a24832a",
+   "error": null
+  },
+  {
+   "producto": "R10",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/123237920/LENOVO-IDEAPAD-AMD-RYZEN-7-5700U-SSD-2TB-RAM-12GB-LED-14-FHD/123237921",
+   "fecha": "2026-11-10T02:04:11+00:00",
+   "http": 200,
+   "bytes": 1111450,
+   "sha256": "548722968e6aa8398b45cc6c06ca2a9fc9adfce992ad3fc1c0f93544d9fc843d",
+   "error": null
+  },
+  {
+   "producto": "R11",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/monitor-27-samsung-d700-4k/p/887276836881",
+   "fecha": "2026-11-10T01:48:00+00:00",
+   "http": 200,
+   "bytes": 1334033,
+   "sha256": "7631e713d46d96e926065fb099fb7004f6a5862e7c00d765cbd7de9817ca9cc4",
+   "error": null
+  },
+  {
+   "producto": "R11",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/monitor-27-samsung-d700-4k/p/887276836881",
+   "fecha": "2026-11-10T01:48:04+00:00",
+   "http": 200,
+   "bytes": 1224885,
+   "sha256": "0e87ab461a8a61fef08380fbd66036b45af74f11665596956aceab26293180a7",
+   "error": null
+  },
+  {
+   "producto": "R11",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/73025658/Monitor-LCD-Samsung-D700-4K-27-pulgadas/73025658",
+   "fecha": "2026-11-10T02:04:20+00:00",
+   "http": 200,
+   "bytes": 1037095,
+   "sha256": "de02b56ed3d6259ad5fc9652df202ef0b149392eef3a6d0a52338c875d2f3315",
+   "error": null
+  },
+  {
+   "producto": "R12",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/monitor-kalley-gamer-27-pulgadas-m27g180-fhd-plano-negro/p/7705946478267",
+   "fecha": "2026-11-10T01:48:06+00:00",
+   "http": 200,
+   "bytes": 1290556,
+   "sha256": "a905ab76b83830b7aadab692efee8c4494209ad37962e042f61bdf4ed35386a8",
+   "error": null
+  },
+  {
+   "producto": "R12",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/monitor-kalley-gamer-27-pulgadas-m27g180-fhd-plano-negro/p/7705946478267",
+   "fecha": "2026-11-10T01:48:11+00:00",
+   "http": 200,
+   "bytes": 1181654,
+   "sha256": "0efcc8d6d8b4dceff9b4b5933a3b160eb5077f90d1b5452b87499827fe3ea731",
+   "error": null
+  },
+  {
+   "producto": "R12",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/128381907/Monitor-KALLEY-Gamer-27-Pulgadas-M27G180-Plano-Negro/128381908",
+   "fecha": "2026-11-10T02:04:27+00:00",
+   "http": 200,
+   "bytes": 1270428,
+   "sha256": "07c6351bac7892cb80d5996773d01ae3e1506d1c5e4d6cb44506751a16884c8d",
+   "error": null
+  },
+  {
+   "producto": "R13",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/monitor-acer-gamer-27-pulgadas-ed270-fhd-curvo-negro/p/4711474686466",
+   "fecha": "2026-11-10T01:48:13+00:00",
+   "http": 200,
+   "bytes": 1270240,
+   "sha256": "5f9d55ba91010525358440251ce8cb29a6383c2e663699527e1edec5f24e4351",
+   "error": null
+  },
+  {
+   "producto": "R13",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/monitor-acer-gamer-27-pulgadas-ed270-fhd-curvo-negro/p/4711474686466",
+   "fecha": "2026-11-10T01:48:18+00:00",
+   "http": 200,
+   "bytes": 1161298,
+   "sha256": "ea41a3426b4e4228929c5c65916a080f7363ceeb02fc2ec02c9b2b2dd12f4cb3",
+   "error": null
+  },
+  {
+   "producto": "R13",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/140112721/Monitor-Gamer-Acer-Nitro-27-Pulgadas-Curvo-Full-HD-240-Hz-ED270/140112722",
+   "fecha": "2026-11-10T02:04:33+00:00",
+   "http": 200,
+   "bytes": 1298275,
+   "sha256": "1d0166566e7aba2e8a541ebe68f672c774756e95864d99b965ac92363f5f5bef",
+   "error": null
+  },
+  {
+   "producto": "R14",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/monitor-hp-omen-gamer-315-pulgadas-32c-qhd-curvo-negro/p/197029618238",
+   "fecha": "2026-11-10T01:48:21+00:00",
+   "http": 200,
+   "bytes": 1318080,
+   "sha256": "7c95eaa64eb4696c78630ef61d9fbde51a2f5f9219b9e049a3d6172cc22d3a72",
+   "error": null
+  },
+  {
+   "producto": "R14",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/monitor-hp-omen-gamer-315-pulgadas-32c-qhd-curvo-negro/p/197029618238",
+   "fecha": "2026-11-10T01:48:26+00:00",
+   "http": 200,
+   "bytes": 1208444,
+   "sha256": "272c70f586130a1282b76ed3945b24718e70109956cbc156e460eea494f06150",
+   "error": null
+  },
+  {
+   "producto": "R14",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/142266254/Monitor-HP-OMEN-32C-Gamer-315-Pulgadas-QHD-Curvo-Negro/142266256",
+   "fecha": "2026-11-10T02:04:41+00:00",
+   "http": 200,
+   "bytes": 1363037,
+   "sha256": "3c30bbc2e548a8dd8cdd7f5aa6d307b33554790931199c3e08016861b9dc6df2",
+   "error": null
+  },
+  {
+   "producto": "R15",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/monitor-hp-27-pulgadas-m27f-fhd/p/195161431258",
+   "fecha": "2026-11-10T01:48:28+00:00",
+   "http": 200,
+   "bytes": 1809971,
+   "sha256": "49010205b8b433bdd44a73dacb2cb0b65376998d3ba736bc47eabd8364e29367",
+   "error": null
+  },
+  {
+   "producto": "R15",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/monitor-hp-27-pulgadas-m27f-fhd/p/195161431258",
+   "fecha": "2026-11-10T01:48:33+00:00",
+   "http": 200,
+   "bytes": 1576558,
+   "sha256": "b627f44f595257e870076b41358b4dbb9e4f43ad9169a8c8afa88eb533ee8155",
+   "error": null
+  },
+  {
+   "producto": "R15",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/135738432/Monitor-HP-M27f-FHD-2G3D3AA-de-27-pulgadas/135738433",
+   "fecha": "2026-11-10T02:04:49+00:00",
+   "http": 200,
+   "bytes": 1076322,
+   "sha256": "1078afa9c4ed00f5bf2f5654d7b8ac993787105341c96b306725d3e2d511dd1d",
+   "error": null
+  },
+  {
+   "producto": "R16",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/audifonos-esenses-inalambricos-bluetooth-on-ear-hp-1000/p/7707409109343",
+   "fecha": "2026-11-10T01:48:34+00:00",
+   "http": 200,
+   "bytes": 1287273,
+   "sha256": "3f209b0a0e4e25c6dad84330e1357d60c812ab1c101be329a2715a5aed52c920",
+   "error": null
+  },
+  {
+   "producto": "R16",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/audifonos-esenses-inalambricos-bluetooth-on-ear-hp-1000/p/7707409109343",
+   "fecha": "2026-11-10T01:48:41+00:00",
+   "http": 200,
+   "bytes": 1182811,
+   "sha256": "f608e9ba9a88df9e3e632610a80c53330e13eebb58bbcf0eca8f7b06d3c3aed4",
+   "error": null
+  },
+  {
+   "producto": "R16",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/138818670/Audifono-Esenses-Bluetooth-On-Ear-Kids-Ref-HP-1000-BT-AZUL/138818671",
+   "fecha": "2026-11-10T02:04:54+00:00",
+   "http": 200,
+   "bytes": 1066850,
+   "sha256": "6ba45f7dd7eb28b54b33dd313f822ef65398188e911b8cd7393610ba1a37bbef",
+   "error": null
+  },
+  {
+   "producto": "R17",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/audifonos-diadema-kalley-alambricos-over-ear-gaming-k-kga1/p/7705946893664",
+   "fecha": "2026-11-10T01:48:40+00:00",
+   "http": 200,
+   "bytes": 1298296,
+   "sha256": "f3c501e57053ef5ecb153d26d970fb336a25240a1329a63facb0b13f831c9e52",
+   "error": null
+  },
+  {
+   "producto": "R17",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/audifonos-diadema-kalley-alambricos-over-ear-gaming-k-kga1/p/7705946893664",
+   "fecha": "2026-11-10T01:48:49+00:00",
+   "http": 200,
+   "bytes": 1199948,
+   "sha256": "3de8cd7695933cd3b5956e62e87af2adb999076a5dc162f74a030fd6b733d88f",
+   "error": null
+  },
+  {
+   "producto": "R17",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/129036790/Audifonos-de-Diadema-KALLEY-Alambricos-Over-Ear-Gaming-K-KGA1-Negro/129036791",
+   "fecha": "2026-11-10T02:05:01+00:00",
+   "http": 200,
+   "bytes": 1255344,
+   "sha256": "8269ae47d4ad2bed75cb6a3bf1ed4c8d933bfba771d289939df89e217ce57021",
+   "error": null
+  },
+  {
+   "producto": "R18",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/audifonos-diadema-playstation-ps5-inalambricos-bluetooth/p/711719598268",
+   "fecha": "2026-11-10T01:48:46+00:00",
+   "http": 200,
+   "bytes": 1308970,
+   "sha256": "a82c6be903eb372436a58a288960cf2e929b8334bf5663972b69ef4434bb0a57",
+   "error": null
+  },
+  {
+   "producto": "R18",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/audifonos-diadema-playstation-ps5-inalambricos-bluetooth/p/711719598268",
+   "fecha": "2026-11-10T01:48:58+00:00",
+   "http": 200,
+   "bytes": 1190685,
+   "sha256": "6de68258e80f554e3e758489fcf0229f87d9cf32eb2db1ccf61a7c6434bd3ce8",
+   "error": null
+  },
+  {
+   "producto": "R18",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/130775146/Diadema-Ps5-Pulse-Playstation-5-Negra/130775147",
+   "fecha": "2026-11-10T02:05:07+00:00",
+   "http": 200,
+   "bytes": 1070861,
+   "sha256": "4bfb06c01dffd26f9935cff53298222283cc058e7d4144ee9ed849bbaf4ef327",
+   "error": null
+  },
+  {
+   "producto": "R19",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/memoria-micro-sd-kingston-canvas-select-plus-256gb/p/740617348507",
+   "fecha": "2026-11-10T01:48:56+00:00",
+   "http": 200,
+   "bytes": 1281918,
+   "sha256": "ffa2598ef28211900934ba11ec22bb64a5b2c526727bc637c0a629f87f8adb10",
+   "error": null
+  },
+  {
+   "producto": "R19",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/memoria-micro-sd-kingston-canvas-select-plus-256gb/p/740617348507",
+   "fecha": "2026-11-10T01:49:05+00:00",
+   "http": 200,
+   "bytes": 1183561,
+   "sha256": "542d933c399607fb2f32c166324f858c22ab9df9b70d9967e5c8cafdacda8636",
+   "error": null
+  },
+  {
+   "producto": "R19",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/138513246/Memoria-Micro-Sd-Kingston-256gb-Canvas-Select-Plus-Class10/138513247",
+   "fecha": "2026-11-10T02:05:13+00:00",
+   "http": 200,
+   "bytes": 1071614,
+   "sha256": "fc555516e91b11a3a29ae9d301a7688e62661c21c8fcd2f0beec77174a6c902f",
+   "error": null
+  },
+  {
+   "producto": "R20",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/memoria-micro-sd-kingston-canvas-select-plus-128gb/p/740617348453",
+   "fecha": "2026-11-10T01:49:03+00:00",
+   "http": 200,
+   "bytes": 1281930,
+   "sha256": "357dfe76c11d23389249412b0b399c614fcfda4db05ed9849d04ffeb09c45a82",
+   "error": null
+  },
+  {
+   "producto": "R20",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/memoria-micro-sd-kingston-canvas-select-plus-128gb/p/740617348453",
+   "fecha": "2026-11-10T01:49:15+00:00",
+   "http": 200,
+   "bytes": 1183573,
+   "sha256": "497e066b684b31ff0e616509b91ea5e895a5aa216561fe9b8b84fc8fbf20b56f",
+   "error": null
+  },
+  {
+   "producto": "R20",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/133242320/Memoria-Micro-Sd-Kingston-128gb-Canvas-Select-Plus-Class10/133242321",
+   "fecha": "2026-11-10T02:05:21+00:00",
+   "http": 200,
+   "bytes": 1057656,
+   "sha256": "9606e7f7566096f2d00e08cd41bae85916ed06c41653ae5b8374f51d61efa248",
+   "error": null
+  },
+  {
+   "producto": "R21",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/memoria-micro-sd-kingston-canvas-select-plus-64gb/p/740617348408",
+   "fecha": "2026-11-10T01:49:14+00:00",
+   "http": 200,
+   "bytes": 1281875,
+   "sha256": "000867ebef91dab3b4c6444a5392b8d2b4e1c06138979228efbda0c2ec174500",
+   "error": null
+  },
+  {
+   "producto": "R21",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/memoria-micro-sd-kingston-canvas-select-plus-64gb/p/740617348408",
+   "fecha": "2026-11-10T01:49:24+00:00",
+   "http": 200,
+   "bytes": 1183518,
+   "sha256": "23fcf7b836cba16342501615f36f3a5a35a25cdf5e56b6ab7b15b6a0583c7f71",
+   "error": null
+  },
+  {
+   "producto": "R21",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/118314877/Memoria-Micro-SD-Kingston-Canvas-Select-Plus-64GB/118314881",
+   "fecha": "2026-11-10T02:05:28+00:00",
+   "http": 200,
+   "bytes": 1060896,
+   "sha256": "4639d7d2defc5e6d05c56ae92f2482dfaf0a2f6f78a3f494b15acdc6415a4deb",
+   "error": null
+  },
+  {
+   "producto": "R22",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/disco-estado-solido-externo-ssd-kingston-xs1000-1tb-negro/p/740617338515",
+   "fecha": "2026-11-10T01:49:23+00:00",
+   "http": 200,
+   "bytes": 1298813,
+   "sha256": "e3e8383dcb80fbdbe8456d9cea4b71bf4c6ac47c9a50386ad846836086b93f5a",
+   "error": null
+  },
+  {
+   "producto": "R22",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/disco-estado-solido-externo-ssd-kingston-xs1000-1tb-negro/p/740617338515",
+   "fecha": "2026-11-10T01:49:31+00:00",
+   "http": 200,
+   "bytes": 1200466,
+   "sha256": "92ea08036236bda22f0a30158e28fda38bf246f54b69e109dc2b140fde22097a",
+   "error": null
+  },
+  {
+   "producto": "R22",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/132429947/Unidad-Estado-Solido-Kingston-Ssd-Xs1000-Externo-1tb-Usb-3.2/132429948",
+   "fecha": "2026-11-10T02:05:34+00:00",
+   "http": 200,
+   "bytes": 1062988,
+   "sha256": "394d9ece7440e627aba6873456c83ae9e620aea2b4d1431ba12c244368a7e20a",
+   "error": null
+  },
+  {
+   "producto": "R23",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/memoria-usb-kingston-128-gb-datatraveler-exodia-m-dtxm/p/740617326376",
+   "fecha": "2026-11-10T01:49:32+00:00",
+   "http": 200,
+   "bytes": 1292438,
+   "sha256": "410216466313ce6d7fd81f3914aafe0fc9cefbf6d4976525fb909e8e8dd637ee",
+   "error": null
+  },
+  {
+   "producto": "R23",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/memoria-usb-kingston-128-gb-datatraveler-exodia-m-dtxm/p/740617326376",
+   "fecha": "2026-11-10T01:49:38+00:00",
+   "http": 200,
+   "bytes": 1194091,
+   "sha256": "dd0d961f0bf0083750f59430aac100281d3c9c1a4d0bf0983842b9a47251ae87",
+   "error": null
+  },
+  {
+   "producto": "R23",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/143306788/Memoria-USB-KINGSTON-128-GB-Datatraveler-Exodia-M-DTXM/143306789",
+   "fecha": "2026-11-10T02:05:43+00:00",
+   "http": 200,
+   "bytes": 1061148,
+   "sha256": "bc6fa7347f00d054a18f7c70e0b952104da5f6d2350b6931f01abfd4487870b5",
+   "error": null
+  },
+  {
+   "producto": "R24",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/unidad-estado-solido-kingston-480gb/p/740617263442",
+   "fecha": "2026-11-10T01:49:39+00:00",
+   "http": 200,
+   "bytes": 1292370,
+   "sha256": "ffb3f446f63f9c281a96e071b2df46a7d445afbde8bf4380455b7bf143358810",
+   "error": null
+  },
+  {
+   "producto": "R24",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/unidad-estado-solido-kingston-480gb/p/740617263442",
+   "fecha": "2026-11-10T01:49:45+00:00",
+   "http": 200,
+   "bytes": 1194023,
+   "sha256": "177f82266389473f810ada8aecf57efd33e3554d274c37083f228e7ba24f069a",
+   "error": null
+  },
+  {
+   "producto": "R24",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/126882445/kingston-SSD-Unidad-de-estado-solido-A400-480GB-25%E2%80%9D/126882447",
+   "fecha": "2026-11-10T02:05:51+00:00",
+   "http": 200,
+   "bytes": 1083057,
+   "sha256": "cba2f2b9a633801497d1e53342cdf2ced3137e3205f85b30db29c7d8e9ec8187",
+   "error": null
+  },
+  {
+   "producto": "R25",
+   "tienda": "A1",
+   "url": "https://www.alkosto.com/unidad-estado-solido-kingston-240gb/p/740617261219",
+   "fecha": "2026-11-10T01:49:48+00:00",
+   "http": 200,
+   "bytes": 1300918,
+   "sha256": "21ce51bc41afe787a15235271626d8f405af884316d4c692a233837d8d3d3e03",
+   "error": null
+  },
+  {
+   "producto": "R25",
+   "tienda": "A2",
+   "url": "https://www.ktronix.com/unidad-estado-solido-kingston-240gb/p/740617261219",
+   "fecha": "2026-11-10T01:49:51+00:00",
+   "http": 200,
+   "bytes": 1559962,
+   "sha256": "75882697c204c4dd31d9600931cd6508010fd632badc5ae77a4652d8ebf9dd81",
+   "error": null
+  },
+  {
+   "producto": "R25",
+   "tienda": "A3",
+   "url": "https://www.falabella.com.co/falabella-co/product/126882427/kingston-SSD-Unidad-de-estado-solido-A400-240GB-25%E2%80%9D/126882428",
+   "fecha": "2026-11-10T02:06:00+00:00",
+   "http": 200,
+   "bytes": 1240463,
+   "sha256": "80bd698d77ea5ede44cc413ce800316454ce2b537b4b82eaec5fcd372017f716",
+   "error": null
+  }
+ ]
+}

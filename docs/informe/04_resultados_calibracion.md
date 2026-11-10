@@ -56,3 +56,26 @@ DeepSeek Flash.
 
 **Subconjunto de E3.** Antes de ver los resultados de la calibración se congelaron 30 tareas, la mitad de cada
 categoría (6, 6, 8, 6 y 4), elegidas al azar con semilla fija.
+
+**Calibración v2: esquema obligatorio en el intérprete.** La tercera versión aplicó al intérprete y al confirmador
+del emparejamiento el mismo esquema de campos obligatorios que la v1 aplicó al extractor, más un reintento ante
+salida no analizable con degradación controlada si el reintento también falla. La necesidad sin restricciones ni
+presupuesto bajó de 19 a 3 de las 27 tareas con criterios; las tres restantes son consultas que en efecto no
+fijan cifras (por ejemplo, «Algo de Apple para trabajar, que sea portátil»), o cuyo único criterio es un atributo
+que el intérprete no tradujo.
+
+| Versión | Cambio | M2 global | Específica | Más barato | Restricciones | Vaga | Sin respuesta | Costo medio por tarea | Latencia p50 |
+|---|---|---|---|---|---|---|---|---|---|
+| v0 | Línea base | 86,7 % [75,8–93,1] (52/60) | 12/12 | 12/12 | 12/15 | 7/12 | 9/9 | US$0,0135 | 146 s |
+| v1 | Extractor con campos obligatorios | 81,7 % [70,1–89,4] (49/60) | 12/12 | 11/12 | 13/15 | 5/12 | 8/9 | US$0,0148 | 179 s |
+| v2 | Intérprete y confirmador con campos obligatorios | 90,0 % [79,9–95,3] (54/60) | 12/12 | 12/12 | 14/15 | 7/12 | 9/9 | US$0,0156 | 161 s |
+
+Los intervalos de las tres versiones se solapan: con 60 tareas, la mejora de v1 a v2 es compatible con el ruido de
+muestreo, aunque coincide en dirección con el mecanismo observado (la necesidad recupera sus restricciones). La
+recuperación de las restricciones expuso un defecto que antes no se ejercitaba: una restricción de orden sobre una
+categoría (`resolucion >= 4K`) se comparaba como número; la tarea afectada se repitió tras corregirlo.
+
+De los seis fallos de la v2, cinco ocurren en tareas vagas. En cuatro, el intérprete propone la restricción
+correcta pero escribe un valor no normalizable (`'،27'`, `'، 1000'`, `'،8,'`, `'true / activa / sí'`) y la
+restricción se descarta; en los demás, traduce la necesidad a otro atributo (memoria en lugar de almacenamiento) o
+no la traduce. La normalización tolerante de esos valores se mide en la calibración v3.

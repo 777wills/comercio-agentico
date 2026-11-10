@@ -14,13 +14,22 @@ import re
 from typing import Any, Literal
 
 from langchain_core.messages import HumanMessage, SystemMessage
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, PrivateAttr, field_validator
 
 from comercio_agentico.emparejamiento import Emparejador, texto_producto
-from comercio_agentico.esquema import AtributoComparable, PerfilCategoria, RestriccionDura
+from comercio_agentico.esquema import (
+    AtributoComparable,
+    PerfilCategoria,
+    RestriccionDura,
+    _todos_obligatorios,
+    restriccion_canonica,
+)
+from comercio_agentico.modelos import invocar_estructurado
 
 
 class RestriccionAtributo(BaseModel):
+    model_config = ConfigDict(json_schema_extra=_todos_obligatorios)
+
     atributo: str = Field(description="Nombre canónico del atributo del perfil.")
     operador: Literal[">=", "<=", "=="]
     valor: str = Field(description="Número en la unidad canónica, o la categoría (p. ej. 4K).")
@@ -44,7 +53,12 @@ class RestriccionAtributo(BaseModel):
 
 class Necesidad(BaseModel):
     """Campos en el orden en que el modelo debe pensarlos: primero los criterios, al final la
-    identificación del producto (un esquema corto y plano lo siguen mejor los modelos baratos)."""
+    identificación del producto (un esquema corto y plano lo siguen mejor los modelos baratos).
+    Todos los campos son obligatorios en el esquema que ve el modelo (D69)."""
+
+    model_config = ConfigDict(json_schema_extra=_todos_obligatorios)
+    # Fuera del esquema: la interpretación falló y esta necesidad es la mínima (D69).
+    _degradada: bool = PrivateAttr(default=False)
 
     tipo_producto: str | None = Field(default=None, description="Una de las categorías del perfil.")
     marca: str | None = None
@@ -70,6 +84,10 @@ class Necesidad(BaseModel):
     def _cero_es_nulo(cls, valor: float | None) -> float | None:
         return valor if valor else None
 
+    @property
+    def degradada(self) -> bool:
+        return self._degradada
+
     def restricciones_duras(self, perfil: PerfilCategoria) -> list[RestriccionDura]:
         """Lleva cada restricción al nombre y la unidad canónicos del perfil; descarta las que no
         reconoce."""
@@ -80,9 +98,7 @@ class Necesidad(BaseModel):
                 valor = r.valor_canonico(atributo)
             except (KeyError, ValueError):
                 continue
-            duras.append(
-                RestriccionDura(atributo=atributo.nombre, operador=r.operador, valor=valor)
-            )
+            duras.append(restriccion_canonica(atributo, r.operador, valor))
         return duras
 
 
@@ -126,7 +142,8 @@ async def interpretar(
     perfil: PerfilCategoria,
     config: dict | None = None,
 ) -> Necesidad:
-    """``estructurado`` es ``obtener_extractor(modelo, Necesidad)``."""
+    """``estructurado`` es ``obtener_extractor(modelo, Necesidad)``. Nunca falla por una salida
+    inválida del modelo: reintenta una vez y, si no, devuelve una necesidad mínima marcada."""
     candidatos = emparejador.candidatos([consulta])[0]
     categorias, atributos = _formato_perfil(perfil)
     lista = "\n".join(f"- {c.id}: {texto_producto(c)}" for c in candidatos)
@@ -134,8 +151,14 @@ async def interpretar(
         SystemMessage(INSTRUCCIONES.format(categorias=categorias, atributos=atributos)),
         HumanMessage(f"Consulta: {consulta}\n\nCandidatos del catálogo:\n{lista}"),
     ]
-    salida = await estructurado.ainvoke(mensajes, config=config)
-    necesidad = Necesidad.model_validate(salida) if isinstance(salida, dict) else salida
+    salida = await invocar_estructurado(estructurado, mensajes, config)
+    if salida is None:
+        # Degradación controlada: sin criterios, pero los identificadores escritos en la consulta
+        # todavía se resuelven abajo; la propuesta advierte que la necesidad está incompleta.
+        necesidad = Necesidad()
+        necesidad._degradada = True
+    else:
+        necesidad = Necesidad.model_validate(salida) if isinstance(salida, dict) else salida
 
     validos = {c.id for c in candidatos}
     if necesidad.producto_id not in validos:

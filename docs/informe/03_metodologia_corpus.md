@@ -76,3 +76,56 @@ La coherencia del corpus se verifica con pruebas automáticas que no requieren r
   precios informales del chat convertidos de vuelta a número y respuestas del servidor MCP);
 - la regeneración desde el catálogo reproduce la verdad y el PDF;
 - la respuesta de cada tarea es la que se deriva de la verdad.
+
+## 3.z Corpus A: tiendas colombianas reales reconstruidas a partir de hechos
+
+El corpus A aporta validez externa: las mismas consultas del corpus B, ahora sobre datos publicados por tiendas
+colombianas de electrónica. La selección de tiendas siguió tres filtros sucesivos: el archivo robots.txt, los
+términos de uso del sitio y la respuesta técnica a un cliente identificable.
+
+| Tienda | robots.txt (fichas de producto) | Términos de uso | Respuesta técnica | Decisión |
+|---|---|---|---|---|
+| Alkosto | Permitidas | Prohíben copiar o reproducir el contenido sin autorización escrita | HTTP 200; microdatos `Product`; EAN en la URL | A1 |
+| Ktronix | Permitidas | Igual que Alkosto (mismo titular) | Igual que Alkosto | A2 |
+| Falabella | Permitidas | Prohíben reproducir o duplicar el contenido sin consentimiento escrito | HTTP 200; JSON-LD `Product` | A3 |
+| Éxito | Permitidas (`ai-train=no`) | Sin cláusula sobre acceso automatizado | HTTP 429 de Cloudflare a todo cliente que no sea navegador | Excluida |
+| Olímpica | Permitidas | La cláusula 2.4.1 prohíbe "spiders" y "site copiers" | HTTP 200 | Excluida |
+
+Las tres tiendas viables permiten el rastreo en robots.txt pero prohíben la copia de su contenido. Por eso el
+corpus no conserva páginas: conserva **hechos**. Un robot identificado con la dirección del repositorio leyó una
+sola vez, el 9 de noviembre de 2026, 75 fichas de producto (25 productos en las tres tiendas), con robots.txt
+respetado y una pausa aleatoria de 4 a 8 segundos entre peticiones a la misma tienda. De cada ficha se extrajeron,
+de forma determinista, los datos estructurados de schema.org (microdatos y JSON-LD, con `extruct`) y la suma
+SHA-256 del HTML leído; el HTML se descartó. El manifiesto (`corpus/a_real/manifest.json`) registra URL, fecha,
+código HTTP, tamaño y suma de cada lectura.
+
+Las tiendas que navega el agente se **reconstruyen** a partir de esos hechos con la estructura de datos de cada
+sitio, sin textos descriptivos, imágenes ni diseño de la tienda: microdatos `Product`/`Offer` en A1 y A2, y en A3
+un bloque JSON-LD con dos ofertas sin etiqueta junto a tres precios visibles (normal tachado, precio de internet y
+precio con la tarjeta de la tienda). Una prueba automática verifica la fidelidad estructural: el mismo extractor
+que leyó la tienda real obtiene de la reconstruida la misma sintaxis, el mismo título, el mismo precio y la misma
+disponibilidad.
+
+Las tiendas reales introducen tres dificultades que el corpus sintético no tenía:
+
+- **Ausencia de identificadores.** Ninguna de las 25 fichas de Falabella publica GTIN (`gtin13: "null"`); el
+  emparejamiento con ella depende del nombre del producto.
+- **Precios condicionados.** Falabella publica en JSON-LD dos ofertas sin indicar cuál exige su tarjeta de crédito;
+  los datos internos de la página las etiquetan (`eventPrice`, `cmrPrice`, `normalPrice`). La verdad usa el menor
+  precio no tachado disponible para cualquier comprador.
+- **Productos parecidos.** El cruce por nombre entre sitemaps propuso, para 8 de los 25 productos, una ficha de
+  Falabella que resultó ser otro producto (iPhone 15 frente a iPhone 15 Plus; Zenbook S16 de 16 GB frente al de
+  32 GB). Esas fichas se conservan como distractores reales. La equivalencia se decidió título contra título
+  (`equivalencias.yaml`): 6 iguales, 8 distintos y 1 dudoso, tratado como distinto.
+
+Alkosto y Ktronix, del mismo titular, publican el mismo precio para los 24 productos comunes; constituyen dos
+fuentes independientes en la lectura, pero no en el precio. El catálogo de referencia del corpus A (24 productos)
+toma el EAN de la URL de Alkosto (los UPC de 12 dígitos se completan a GTIN-13) y solo los atributos que el título
+publica de forma explícita. Las 20 tareas (6 de producto específico, 5 de menor precio, 5 con restricciones y 4
+sin respuesta) obtienen su respuesta con la misma función que el corpus B. Entre las de producto específico, dos
+solo tienen existencias en Falabella y una de ellas tiene un precio menor que exige la tarjeta de la tienda; entre
+las sin respuesta, una tiene todo agotado mientras Falabella ofrece, en existencia, un producto parecido.
+
+La página de Falabella incluye un arreglo de precios por cada variante del producto (por ejemplo, por color), y el
+primero no corresponde siempre a la variante publicada en el JSON-LD. El recolector toma el arreglo cuyos precios
+contienen las dos ofertas del JSON-LD; con esa regla, las 14 fichas con oferta son coherentes entre ambas fuentes.

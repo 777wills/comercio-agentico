@@ -19,10 +19,11 @@ from typing import Any, Protocol
 
 import numpy as np
 from langchain_core.messages import HumanMessage, SystemMessage
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from comercio_agentico.corpus_b.catalogo import ProductoCatalogo
-from comercio_agentico.esquema import Oferta
+from comercio_agentico.esquema import Oferta, _todos_obligatorios
+from comercio_agentico.modelos import invocar_estructurado
 
 MODELO_EMBEDDINGS = "intfloat/multilingual-e5-small"  # MIT, 118 M parámetros, CPU
 
@@ -71,6 +72,8 @@ def texto_oferta(o: Oferta) -> str:
 
 
 class Decision(BaseModel):
+    model_config = ConfigDict(json_schema_extra=_todos_obligatorios)
+
     oferta: int = Field(description="Número de la oferta.")
     producto_id: str | None = Field(
         description="ID del candidato que es exactamente el mismo producto, o null si ninguno."
@@ -78,6 +81,8 @@ class Decision(BaseModel):
 
 
 class Decisiones(BaseModel):
+    model_config = ConfigDict(json_schema_extra=_todos_obligatorios)
+
     decisiones: list[Decision] = Field(default_factory=list)
 
 
@@ -146,9 +151,12 @@ class Emparejador:
             prompt = "\n\n".join(
                 _bloque(n, t, c) for n, (t, c) in enumerate(zip(textos, listas, strict=True))
             )
-            salida = await confirmador.ainvoke(
-                [SystemMessage(INSTRUCCIONES_CONFIRMAR), HumanMessage(prompt)], config=config
+            salida = await invocar_estructurado(
+                confirmador, [SystemMessage(INSTRUCCIONES_CONFIRMAR), HumanMessage(prompt)], config
             )
+            # Si la salida no parsea ni al reintentar, las ofertas quedan sin emparejar (y la
+            # propuesta lo advierte con la alerta de emparejamiento dudoso).
+            salida = Decisiones() if salida is None else salida
             decisiones = Decisiones.model_validate(salida) if isinstance(salida, dict) else salida
             for d in decisiones.decisiones:
                 if 0 <= d.oferta < len(pendientes):

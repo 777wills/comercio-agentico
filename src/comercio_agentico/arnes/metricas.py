@@ -483,11 +483,16 @@ def cargar_corrida(ruta: Path) -> list[dict]:
     return [json.loads(x) for x in texto.splitlines() if x.strip()]
 
 
-def informe(ruta: str | Path, directorio: Path | None = None) -> Path:
+def informe(
+    ruta: str | Path,
+    directorio: Path | None = None,
+    tareas: list[Tarea] | None = None,
+    verdad: dict | None = None,
+) -> Path:
     """Calcula las métricas de una corrida y escribe ``metricas.md``, ``metricas.json`` y PNG."""
     ruta = Path(ruta)
     filas = cargar_corrida(ruta)
-    m = calcular(filas)
+    m = calcular(filas, tareas, verdad)
     directorio = directorio or DIR_INFORMES / nombre_corrida(ruta)
     directorio.mkdir(parents=True, exist_ok=True)
     (directorio / "metricas.json").write_text(

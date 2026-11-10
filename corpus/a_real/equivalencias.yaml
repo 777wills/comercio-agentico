@@ -1,0 +1,17 @@
+# ¿La ficha de Falabella (A3) es el mismo producto que la de Alkosto/Ktronix (A1/A2, mismo EAN)?
+# Criterio del corpus B: misma marca, modelo y variante (memoria, capacidad, tamaño); el color no
+# cuenta. Revisado título contra título sobre los hechos del 9-nov-2026. Falabella no publica GTIN.
+igual: [R03, R08, R12, R13, R14, R17]
+distinto:  # producto parecido pero distinto: queda como distractor real en A3
+  R01: "iPhone 16e 512 GB frente a 128 GB"
+  R02: "iPhone 15 frente a iPhone 15 Plus"
+  R04: "Lenovo Yoga 7 frente a ThinkPad X1 Yoga Gen7"
+  R06: "Zenbook S16 UM5606GA 16 GB frente a UM5606WA 32 GB"
+  R07: "Aspire Spin 14 Core Ultra 5 16 GB frente a Core 3 8 GB"
+  R09: "IdeaPad Slim 5 AMD frente a Snapdragon X1P"
+  R10: "IdeaPad 5 2 en 1 OLED frente a IdeaPad Ryzen 7 5700U 2 TB"
+  R11: "Samsung ViewFinity D700 de 32 frente a 27 pulgadas"
+dudoso:  # revisión humana pendiente; mientras tanto se trata como distinto
+  R25: "Alkosto no publica el modelo (Kingston 240GB); Falabella dice A400 240GB"
+excluido:
+  R15: "Alkosto y Ktronix ya no publican la ficha (sin datos de producto)"

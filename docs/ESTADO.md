@@ -2,18 +2,21 @@
 
 ## Siguiente sesión
 
-**S04 — Corpus A real** (jue 12 / vie 13-nov; ver `docs/PLAN.md`, sección S04), **precedida por la corrección
-del intérprete y la calibración v2** (D69). S03 se cerró el 9-nov, con tres días de adelanto.
+**Cierre de S04 (D74, D75) y luego S05 — E3** (`docs/PLAN.md`, sección S05). S04 se cerró el 9-nov, con tres días
+de adelanto.
 
 Siguiente paso exacto:
-1. Aplicar `_todos_obligatorios` (de `esquema.py`) a `Necesidad` y `RestriccionAtributo`
-   (`agente/interpretacion.py`) y a `Decisiones` (`emparejamiento.py`). Agregar en `interpretar()` un reintento
-   ante `OutputParserException` (JSON truncado) y, si falla de nuevo, una necesidad mínima con alerta. Pruebas sin
-   red de ambos caminos. Revisar con Context7 el manejo de errores de `with_structured_output`.
-2. `make corpus-b-servir` y `make calibracion` (~US$0,9, ~45 min; las corridas v0 y v1 ya tienen sufijo, así
-   que la v2 no se reanuda sobre ellas). Renombrar la nueva a `_v2` al terminar. Comparar v0 → v1 → v2 en `docs/informe/04_resultados_calibracion.md`. Meta: la necesidad vacía en 19/27 debe
-   bajar a casi 0; revisar las tareas vagas.
-3. Seguir con S04.
+1. **D74:** en `agente/lectura.py` (`abrir_pagina`), extraer con `extruct` los microdatos y el JSON-LD
+   `Product`/`Offer` del HTML (`resultado.html` de crawl4ai) y agregarlos al `Documento` como bloque de texto
+   («Datos estructurados de la página: …»), en el plano de datos. Revisar con Context7 si crawl4ai expone el HTML
+   en `CrawlResult`. Pruebas sin red con una ficha reconstruida A1 y una A3. Luego `make corpus-a-servir` y
+   `make corpus-a-correr` (~US$0,36), y renombrar a `_v1`. Meta: la disponibilidad deja de ser «desconocida».
+2. **D75:** normalización tolerante en `RestriccionAtributo.valor_canonico` (primera cifra del texto; «sí», «true»,
+   «activa» = verdadero), con pruebas de los valores reales de la v2 (`'،27'`, `'، 1000'`, `'،8,'`,
+   `'true / activa / sí'`). Luego `make corpus-b-servir` y `make calibracion` (~US$0,9) y renombrar a `_v3`.
+   Comparar v0 → v3 en `docs/informe/04_resultados_calibracion.md`.
+3. Pedir a Wills la revisión de R25 en `corpus/a_real/equivalencias.yaml` (dudoso).
+4. Seguir con S05 (E3) sobre la versión v3. Recargar Anthropic antes de correr Sonnet.
 
 ## Presupuesto de modelos
 
@@ -21,7 +24,7 @@ Siguiente paso exacto:
 |---|---|
 | Presupuesto total | 300,00 |
 | Créditos comprados | 50,00 (Anthropic 30 + OpenRouter 20), 9-nov |
-| Gastado acumulado | ~2,20 (S00: ~0,26; S01: 0,024; S02: ~0,18; S03: 1,74 en DeepSeek Flash: dos calibraciones de 60 tareas, 0,81 + 0,89, y sondeos de diagnóstico por menos de US$0,01). OpenRouter informa 2,009 de uso total sobre US$20 al cierre de S03 |
+| Gastado acumulado | ~3,52 (S00: ~0,26; S01: 0,024; S02: ~0,18; S03: 1,74; S04: ~1,32 en DeepSeek Flash: calibración v2 0,923 + repetición de B029 0,016, prueba de humo del corpus A 0,019 y corrida del corpus A 0,361). OpenRouter informaba 2,009 de uso al cierre de S03 |
 
 Costo medido el 9-nov (S00) de una extracción estructurada típica (página con 12 ofertas, 1500–3500 tokens de
 entrada, `json_schema`): Flash 0,0015 · Haiku 0,0016 · DeepSeek Pro 0,006 · Sonnet 0,025 · Kimi 0,032 ·
@@ -47,6 +50,26 @@ largas que la de prueba (recalibrar en S03 con el arnés), y Opus queda cerca de
 El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un subproceso.
 
 ## Bitácora
+
+### 9-nov-2026 — Corrección del intérprete (D69, D71) y S04 Corpus A real
+- `invocar_estructurado` (reintento ante JSON inválido o truncado y degradación controlada con la alerta
+  `interpretacion_incompleta`); esquemas con todos los campos obligatorios en `Necesidad`, `RestriccionAtributo`,
+  `Decision` y `Decisiones`. Context7 confirmó que, sin `include_raw`, el parser lanza la excepción.
+- **Calibración v2** (`..._v2.jsonl.gz`): M2 54/60 = 90,0 % [79,9–95,3] (v1 81,7 %), necesidad vacía 3/27 (v1
+  19/27), US$0,0156 por tarea, p50 161 s. B029 abortó con `float("4K")` (restricción de orden sobre categoría): se
+  corrigió (D71) y se repitió la tarea. Cinco de los seis fallos son tareas vagas; cuatro por valores con basura
+  (D75).
+- Corpus A (D70, D72): robots.txt y términos de 5 tiendas; Éxito (429 de Cloudflare) y Olímpica (TyC 2.4.1)
+  excluidas; Alkosto, Ktronix y Falabella prohíben copiar contenido, así que se guardan hechos y se reconstruyen las
+  tiendas. 75 fichas leídas (crawl4ai HTTP + `extruct`), 24 productos, 61 ofertas, 70 páginas, 20 tareas.
+  Hallazgos: Falabella sin GTIN, precio CMR condicionado, un arreglo de precios por variante, 8 distractores, Alkosto
+  y Ktronix con precios idénticos. El `llms.txt` de Alkosto trae «Instrucciones para el modelo de lenguaje»
+  comerciales: evidencia real para S06.
+- **Corpus A, línea base** (`2026-11-09_corpus_a_flash_v0`): M2 8/20 = 40,0 % [21,9–61,3]; recolección 33/33;
+  emparejamiento con Falabella correcto. Causa: la lectura Markdown pierde los datos schema.org, donde las tiendas
+  publican la disponibilidad (D74).
+- Arnés por corpus (`corpus: a|b`, D73). Dependencia nueva: extruct. 11 pruebas nuevas (94 en total); Ruff limpio.
+- Informe: sección 3.z de `03_metodologia_corpus.md`, v2 en `04_resultados_calibracion.md`, `04_resultados_corpus_a.md`.
 
 ### 9-nov-2026 — S03 Arnés de evaluación y Streamlit mínimo
 - `arnes/correr.py`: configuración YAML (`configs/calibracion_flash.yaml`), 4 tareas en paralelo con un semáforo
@@ -146,7 +169,8 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 - Informe primario de la CCCE (primer trimestre de 2026), si se cita en el informe.
 - Verificación exhaustiva de las referencias del plan de trabajo antes de reutilizarlas (S10).
 - Recargar ~US$40 en Anthropic antes de Sonnet en S05 (Wills).
-- Corrección del intérprete y calibración v2 (D69), antes de S04.
+- Revisión de R25 en `corpus/a_real/equivalencias.yaml` (Wills).
+- Usar el `llms.txt` de Alkosto (instrucciones dirigidas al LLM) como caso real en S06.
 - Referencias de Wilson (1927) y Efron (1979) para los intervalos: verificar en la fuente primaria en S10.
 - Comprobar que el arnés soporta la concurrencia con Kimi y Opus (límite de tasa) antes de E3.
 - Año de la conferencia de ReAct (versión de ICLR, arXiv:2210.03629) por confirmar en S10.

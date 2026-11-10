@@ -328,3 +328,69 @@ Qué comparar (también en `resultados/informes/<corrida>/metricas.md` y sus PNG
 
 No vuelve a llamar al modelo: solo relee el JSONL. En git se guarda comprimido (`.jsonl.gz`); el `.jsonl` sin comprimir queda solo en la máquina, para reanudar corridas. Rehacer la calibración completa (`make calibracion`) cuesta
 ~US$1 y no hace falta para revisar los resultados.
+
+## S04 — Corrección del intérprete (D69) y corpus A real (9-nov)
+
+### Qué se construyó y por qué
+
+| Componente | Qué hace | Concepto de IA / decisión |
+|---|---|---|
+| `modelos.py` (`invocar_estructurado`) | Llamada con salida estructurada que reintenta una vez si el JSON llega inválido o truncado y, si vuelve a fallar, devuelve `None`. | **Degradación controlada:** DeepInfra no restringe la decodificación al esquema; una salida rota no debe tumbar la tarea. |
+| `agente/interpretacion.py` y `emparejamiento.py` | Esquemas de `Necesidad`, `RestriccionAtributo`, `Decision` y `Decisiones` con todos los campos obligatorios. Si la interpretación falla, queda una necesidad mínima (los GTIN de la consulta siguen resolviéndose) y la propuesta lleva la alerta `interpretacion_incompleta`. | El mismo arreglo que D66 hizo en el extractor: un modelo barato omite lo opcional. En v1 la necesidad salía vacía en 19 de 27 tareas. |
+| `esquema.py` (`restriccion_canonica`) | `resolucion >= QHD` pasa a ser «en [QHD, 4K, 8K]» y `cumple()` ya no lanza error ante un orden entre textos (D71). | Lo destapó la propia corrección: al recuperar sus restricciones, el intérprete pidió `>= 4K`. |
+| `corpus_a/recolectar.py` | Robot identificable (crawl4ai en modo HTTP, robots.txt respetado, 4–8 s entre peticiones) que lee 75 fichas de Alkosto, Ktronix y Falabella y guarda **solo hechos** (`extruct`: microdatos y JSON-LD) más el SHA-256 del HTML, que se descarta. | **Crawling responsable:** los términos de las tres tiendas prohíben copiar su contenido (D70). |
+| `corpus_a/construir.py` | Desde los hechos genera el catálogo (24 productos, EAN de la URL), la verdad y las tres tiendas reconstruidas con la estructura de cada sitio. | **Fidelidad estructural sin copia:** una prueba verifica que el extractor lee igual la tienda real y la reconstruida. |
+| `corpus_a/tareas.py` → `tareas/tareas_a.jsonl` | 20 tareas con su respuesta, calculada con la misma función del corpus B. | Validez externa: mismas preguntas, datos de tiendas reales. |
+| `arnes/correr.py` (`corpus: a`) | El arnés toma de la configuración el corpus (fuentes, catálogo, tareas, verdad) (D73). | Mismo agente y mismas métricas en ambos corpus. |
+
+### Cómo probarlo
+
+**1. Pruebas completas — costo US$0 (sin red)**
+
+```bash
+make check          # lint + formato + 94 pruebas (83 anteriores + 5 de D69/D71 + 6 del corpus A)
+```
+
+Pruebas nuevas que vale la pena leer: `tests/test_agente.py::test_interprete_degrada_con_alerta_y_conserva_el_gtin_de_la_consulta`
+(un modelo simulado que siempre devuelve JSON truncado) y
+`tests/test_corpus_a.py::test_la_tienda_reconstruida_conserva_la_estructura_de_la_original`.
+
+**2. Reconstruir el corpus A desde los hechos — costo US$0 (sin red)**
+
+```bash
+make corpus-a       # catálogo, verdad, 70 páginas y 20 tareas; imprime la respuesta de cada tarea
+```
+
+Debe ver `{'productos': 24, 'ofertas': 61, 'paginas': 70}` y la lista A001–A020. Las tareas A002 y A003 las gana
+A3 (Falabella): Alkosto y Ktronix tienen el monitor agotado. A003 vale COP 899.900 y no COP 869.900, porque este
+último exige la tarjeta CMR. A017–A020 son abstenciones.
+
+**3. Navegar las tiendas reconstruidas — costo US$0 (sin red externa)**
+
+```bash
+make corpus-a-servir    # deje esta terminal abierta
+```
+
+Abra `http://127.0.0.1:8802/a3/r13.html` y vea los tres precios (tachado, internet y CMR). Con "ver código fuente"
+encontrará el JSON-LD con dos ofertas sin etiqueta: es lo que el agente tiene que desambiguar. Compare con
+`http://127.0.0.1:8802/a1/r13.html` (microdatos, agotado).
+
+**4. Ver los hechos y las decisiones de equivalencia — costo US$0**
+
+```bash
+cat corpus/a_real/equivalencias.yaml     # 6 iguales, 8 distintos (distractores), 1 dudoso: R25
+head -c 1500 corpus/a_real/manifest.json # agente de usuario, pausa y SHA-256 de cada lectura
+```
+
+**5. Una tarea del corpus A con el agente real — costo < US$0,02 (requiere el paso 3)**
+
+```bash
+uv run python -m comercio_agentico.arnes.correr --config configs/corpus_a_flash.yaml --solo A003 \
+  --salida /tmp/a003.jsonl
+```
+
+Una línea con `ACIERTO` o `fallo`, costo y segundos. El tope por tarea es US$0,10 (`tope_usd` de la
+configuración).
+
+**No ejecute sin necesidad** `make corpus-a-recolectar`: vuelve a leer las 75 fichas reales (US$0 en modelos, pero
+hace 75 peticiones a las tiendas y cambia los hechos, y con ellos la verdad).

@@ -1,0 +1,18 @@
+# Registro de fuentes del corpus A: tiendas colombianas reconstruidas a partir de hechos públicos del
+# 9-nov-2026 (D70). `make corpus-a-servir` las sirve en :8802. Plano de control (configuración).
+fuentes:
+  - id: A1
+    nombre: Alkosto
+    tipo_fuente: web_schema
+    herramienta: abrir_pagina
+    url: http://127.0.0.1:8802/a1/index.html
+  - id: A2
+    nombre: Ktronix
+    tipo_fuente: web_schema
+    herramienta: abrir_pagina
+    url: http://127.0.0.1:8802/a2/index.html
+  - id: A3
+    nombre: Falabella
+    tipo_fuente: web_schema
+    herramienta: abrir_pagina
+    url: http://127.0.0.1:8802/a3/index.html

@@ -17,9 +17,11 @@ from typing import Any, Literal
 
 from dotenv import load_dotenv
 from langchain_core.callbacks import BaseCallbackHandler
+from langchain_core.exceptions import OutputParserException
 from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import AIMessage
 from langchain_core.outputs import ChatGeneration, LLMResult
+from pydantic import ValidationError
 
 Plataforma = Literal["anthropic", "openrouter"]
 
@@ -242,3 +244,20 @@ def obtener_extractor(nombre: str, esquema: type, *, include_raw: bool = False, 
     return obtener_modelo(nombre, **kwargs).with_structured_output(
         esquema, method="json_schema", include_raw=include_raw
     )
+
+
+async def invocar_estructurado(
+    estructurado: Any, mensajes: list, config: dict | None = None, intentos: int = 2
+) -> Any | None:
+    """Llamada con salida estructurada que tolera JSON inválido o truncado.
+
+    Algunos proveedores de OpenRouter (DeepInfra) no restringen la decodificación al esquema, así
+    que la salida puede no parsear. Se reintenta y, si sigue fallando, se devuelve ``None`` para
+    que quien llama degrade de forma controlada en vez de abortar la tarea.
+    """
+    for _ in range(intentos):
+        try:
+            return await estructurado.ainvoke(mensajes, config=config)
+        except (OutputParserException, ValidationError):
+            continue
+    return None

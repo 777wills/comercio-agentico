@@ -188,7 +188,7 @@ def test_abstencion_explica_el_motivo(necesidad, fragmento):
         ("RAM", 16, 16.0),
         ("almacenamiento", "1 TB", 1024.0),
         ("peso", "1500 g", 1.5),
-        ("resolucion", "uhd", "4K"),
+        ("resolucion", "uhd", ["4K", "8K"]),  # categoría ordenada: >= es un tramo
     ],
 )
 def test_restricciones_se_llevan_a_unidad_canonica(atributo, valor, esperado):
@@ -302,3 +302,65 @@ def test_limitado_reintenta_ante_429_y_no_ante_otros_errores(monkeypatch):
     assert asyncio.run(correr(llm)) == "ok" and llm.llamadas == 3
     with pytest.raises(ValueError):
         asyncio.run(correr(Intermitente(ValueError(), 1)))
+
+
+# --------------------------------------------------------------------------------------------------
+# Intérprete y confirmador ante salidas inválidas (D69)
+
+
+def _json_truncado(_mensajes):
+    from langchain_core.exceptions import OutputParserException
+
+    raise OutputParserException('Invalid json output: {"tipo_producto": "portatil", "restri')
+
+
+def test_esquemas_del_interprete_y_del_confirmador_tienen_todo_obligatorio():
+    for modelo in (Necesidad, RestriccionAtributo, Decision, Decisiones):
+        esquema = modelo.model_json_schema()
+        assert set(esquema["required"]) == set(esquema["properties"]), modelo.__name__
+    assert "_degradada" not in Necesidad.model_json_schema()["properties"]
+
+
+def test_interprete_reintenta_si_el_json_llega_truncado():
+    from comercio_agentico.agente.interpretacion import interpretar
+
+    buena = Necesidad(tipo_producto="portatil", presupuesto_max=3_000_000)
+    llm = Doble(_json_truncado, buena)
+    necesidad = asyncio.run(interpretar("un portátil", llm, EMPAREJADOR, PERFIL))
+    assert len(llm.vistos) == 2
+    assert necesidad.presupuesto_max == 3_000_000 and not necesidad.degradada
+
+
+def test_interprete_degrada_con_alerta_y_conserva_el_gtin_de_la_consulta():
+    from comercio_agentico.agente.interpretacion import interpretar
+
+    gtin = PRODUCTOS["C11"].gtin
+    llm = Doble(_json_truncado)
+    necesidad = asyncio.run(interpretar(f"precio del {gtin}", llm, EMPAREJADOR, PERFIL))
+    assert len(llm.vistos) == 2
+    assert necesidad.degradada and necesidad.producto_id == "C11"
+    propuesta = proponer("x", necesidad, [], PERFIL, PRODUCTOS, [], "doble", 0.0)
+    assert "interpretacion_incompleta" in {a.tipo for a in propuesta.alertas}
+
+
+def test_confirmador_que_falla_deja_las_ofertas_sin_emparejar():
+    informal = oferta("P5", "C11", 1_000_000).model_copy(
+        update={"gtin": None, "mpn": None, "titulo": "tablet samsung 64"}
+    )
+    r = asyncio.run(EMPAREJADOR.emparejar([informal], Doble(_json_truncado)))
+    assert r[0].producto_catalogo is None
+
+
+def test_restriccion_de_categoria_ordenada_no_rompe_la_seleccion():
+    """Calibración v2: el intérprete pidió resolucion >= 4K y cumple() intentaba float('4K')."""
+    n = Necesidad(
+        tipo_producto="monitor",
+        restricciones=[
+            RestriccionAtributo(atributo="resolucion", operador=">=", valor="QHD"),
+            RestriccionAtributo(atributo="tipo_panel", operador=">=", valor="IPS"),
+        ],
+    )
+    resolucion, panel = n.restricciones_duras(PERFIL)
+    assert resolucion.operador == "en" and resolucion.valor == ["QHD", "4K", "8K"]
+    assert resolucion.cumple("4K") and not resolucion.cumple("FHD")
+    assert panel.operador == "==" and panel.cumple("IPS")

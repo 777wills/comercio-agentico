@@ -65,7 +65,7 @@ class LoteProductos(BaseModel):
 class ProductoCatalogo(ProductoGenerado):
     """Producto validado del catálogo de referencia."""
 
-    id: str = Field(pattern=r"^C\d{2}$")
+    id: str = Field(pattern=r"^[CR]\d{2}$")  # C: corpus B · R: corpus A (tiendas reales)
     categoria: Categoria
     gtin: str
 

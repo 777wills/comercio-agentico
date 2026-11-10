@@ -343,6 +343,13 @@ def proponer(
         key=lambda o: (o.costo_total, o.proveedor),
     )
     alertas = [Alerta(tipo="fuente_no_disponible", mensaje=e) for e in errores]
+    if necesidad.degradada:
+        alertas.append(
+            Alerta(
+                tipo="interpretacion_incompleta",
+                mensaje="La consulta no se pudo formalizar; se buscó sin criterios de filtro.",
+            )
+        )
     sueltas = sum(o.producto_catalogo is None for o in ofertas)
     if sueltas:
         alertas.append(

@@ -1,0 +1,9 @@
+# Corrida del corpus A (S04): tiendas reales reconstruidas, modelo barato, separación de planos (C1).
+nombre: corpus_a_flash
+corpus: a
+modelo: deepseek-flash
+separacion_planos: true
+max_llamadas: 14
+tope_usd: 0.10
+concurrencia_tareas: 4
+concurrencia_llm: 6

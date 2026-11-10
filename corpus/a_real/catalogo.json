@@ -1,0 +1,421 @@
+{
+ "fecha_hechos": "9-nov-2026",
+ "productos": [
+  {
+   "marca": "Apple",
+   "modelo": "iPhone 16e 512GB 5G Blanco",
+   "mpn": "",
+   "titulo": "iPhone 16e 512GB 5G Blanco",
+   "precio_referencia_cop": 3999010,
+   "atributos": {
+    "almacenamiento": 512
+   },
+   "alias_comercial": "iPhone 16e 512GB 5G Blanco",
+   "alias_pdf": "IPHONE 16E 512GB 5G BLANCO",
+   "alias_mensaje": "iphone 16e 512gb 5g blanco",
+   "id": "R01",
+   "categoria": "celular",
+   "gtin": "0195950051971"
+  },
+  {
+   "marca": "Apple",
+   "modelo": "iPhone 15 256 GB 5G Azul",
+   "mpn": "",
+   "titulo": "iPhone 15 256 GB 5G Azul",
+   "precio_referencia_cop": 5139010,
+   "atributos": {
+    "almacenamiento": 256
+   },
+   "alias_comercial": "iPhone 15 256 GB 5G Azul",
+   "alias_pdf": "IPHONE 15 256 GB 5G AZUL",
+   "alias_mensaje": "iphone 15 256 gb 5g azul",
+   "id": "R02",
+   "categoria": "celular",
+   "gtin": "0195949037351"
+  },
+  {
+   "marca": "Apple",
+   "modelo": "iPhone 15 128 GB 5G Azul",
+   "mpn": "",
+   "titulo": "iPhone 15 128 GB 5G Azul",
+   "precio_referencia_cop": 3299010,
+   "atributos": {
+    "almacenamiento": 128
+   },
+   "alias_comercial": "iPhone 15 128 GB 5G Azul",
+   "alias_pdf": "IPHONE 15 128 GB 5G AZUL",
+   "alias_mensaje": "iphone 15 128 gb 5g azul",
+   "id": "R03",
+   "categoria": "celular",
+   "gtin": "0195949036453"
+  },
+  {
+   "marca": "Lenovo",
+   "modelo": "LENOVO Yoga 7 14\" Pulgadas Táctil OLED",
+   "mpn": "",
+   "titulo": "Computador Portátil 2 en 1 LENOVO Yoga 7 14\" Pulgadas Táctil OLED - AMD Ryzen 7 IA - RAM 32GB - Disco SSD 1TB - Beige",
+   "precio_referencia_cop": 10599000,
+   "atributos": {
+    "tamano_pantalla": 14.0,
+    "memoria_ram": 32,
+    "almacenamiento": 1024,
+    "procesador": "Ryzen 7"
+   },
+   "alias_comercial": "Computador Portátil 2 en 1 LENOVO Yoga 7 14\" Pulgadas Táctil OLED - AMD Ryzen 7 IA - RAM 32GB - Disco SSD 1TB - Beige",
+   "alias_pdf": "COMPUTADOR PORTÁTIL 2 EN 1 LENOVO YOGA 7 14\" PULGADAS TÁCTIL OLED - AMD RYZEN 7 IA - RAM 32GB - DISCO SSD 1TB - BEIGE",
+   "alias_mensaje": "computador portátil 2 en 1 lenovo yoga 7 14\" pulgadas táctil oled - amd ryzen 7 ia - ram 32gb - disco ssd 1tb - beige",
+   "id": "R04",
+   "categoria": "portatil",
+   "gtin": "0828143742126"
+  },
+  {
+   "marca": "Asus",
+   "modelo": "ASUS Zenbook A 14\" Pulgadas OLED UX3407QA",
+   "mpn": "",
+   "titulo": "Computador Portátil ASUS Zenbook A 14\" Pulgadas OLED UX3407QA - Snapdragon X1 - RAM 16GB - Disco SSD 1TB - Gris",
+   "precio_referencia_cop": 4549050,
+   "atributos": {
+    "tamano_pantalla": 14.0,
+    "memoria_ram": 16,
+    "almacenamiento": 1024
+   },
+   "alias_comercial": "Computador Portátil ASUS Zenbook A 14\" Pulgadas OLED UX3407QA - Snapdragon X1 - RAM 16GB - Disco SSD 1TB - Gris",
+   "alias_pdf": "COMPUTADOR PORTÁTIL ASUS ZENBOOK A 14\" PULGADAS OLED UX3407QA - SNAPDRAGON X1 - RAM 16GB - DISCO SSD 1TB - GRIS",
+   "alias_mensaje": "computador portátil asus zenbook a 14\" pulgadas oled ux3407qa - snapdragon x1 - ram 16gb - disco ssd 1tb - gris",
+   "id": "R05",
+   "categoria": "portatil",
+   "gtin": "4711636618038"
+  },
+  {
+   "marca": "Asus",
+   "modelo": "ASUS Zenbook S 16\" Pulgadas OLED UM5606GA",
+   "mpn": "",
+   "titulo": "Computador Portátil ASUS Zenbook S 16\" Pulgadas OLED UM5606GA - Ryzen 9 IA - RAM 16GB - Disco SSD 1TB - Negro",
+   "precio_referencia_cop": 6949050,
+   "atributos": {
+    "tamano_pantalla": 16.0,
+    "memoria_ram": 16,
+    "almacenamiento": 1024,
+    "procesador": "Ryzen 9"
+   },
+   "alias_comercial": "Computador Portátil ASUS Zenbook S 16\" Pulgadas OLED UM5606GA - Ryzen 9 IA - RAM 16GB - Disco SSD 1TB - Negro",
+   "alias_pdf": "COMPUTADOR PORTÁTIL ASUS ZENBOOK S 16\" PULGADAS OLED UM5606GA - RYZEN 9 IA - RAM 16GB - DISCO SSD 1TB - NEGRO",
+   "alias_mensaje": "computador portátil asus zenbook s 16\" pulgadas oled um5606ga - ryzen 9 ia - ram 16gb - disco ssd 1tb - negro",
+   "id": "R06",
+   "categoria": "portatil",
+   "gtin": "4711636573771"
+  },
+  {
+   "marca": "Acer",
+   "modelo": "ACER ASPIRE SPIN 14\" Pulgadas 56AW",
+   "mpn": "",
+   "titulo": "Computador Portátil 2 en 1 ACER ASPIRE SPIN 14\" Pulgadas 56AW - Intel Core Ultra 5 - RAM 16GB - Disco SSD 512GB - Plateado",
+   "precio_referencia_cop": 2499030,
+   "atributos": {
+    "tamano_pantalla": 14.0,
+    "memoria_ram": 16,
+    "almacenamiento": 512,
+    "procesador": "Intel Core Ultra 5"
+   },
+   "alias_comercial": "Computador Portátil 2 en 1 ACER ASPIRE SPIN 14\" Pulgadas 56AW - Intel Core Ultra 5 - RAM 16GB - Disco SSD 512GB - Plateado",
+   "alias_pdf": "COMPUTADOR PORTÁTIL 2 EN 1 ACER ASPIRE SPIN 14\" PULGADAS 56AW - INTEL CORE ULTRA 5 - RAM 16GB - DISCO SSD 512GB - PLATEADO",
+   "alias_mensaje": "computador portátil 2 en 1 acer aspire spin 14\" pulgadas 56aw - intel core ultra 5 - ram 16gb - disco ssd 512gb - plateado",
+   "id": "R07",
+   "categoria": "portatil",
+   "gtin": "4711474847188"
+  },
+  {
+   "marca": "Asus",
+   "modelo": "ASUS Zenbook S14 OLED 14\" Pulgadas Ux5406SA Táctil",
+   "mpn": "",
+   "titulo": "Computador Portátil ASUS Zenbook S14 OLED 14\" Pulgadas Ux5406SA Táctil - Intel Core Ultra 7 258V - RAM 32GB - Disco SSD 1 TB SSD - Gris",
+   "precio_referencia_cop": 5999050,
+   "atributos": {
+    "tamano_pantalla": 14.0,
+    "memoria_ram": 32,
+    "almacenamiento": 1024,
+    "procesador": "Intel Core Ultra 7 258V"
+   },
+   "alias_comercial": "Computador Portátil ASUS Zenbook S14 OLED 14\" Pulgadas Ux5406SA Táctil - Intel Core Ultra 7 258V - RAM 32GB - Disco SSD 1 TB SSD - Gris",
+   "alias_pdf": "COMPUTADOR PORTÁTIL ASUS ZENBOOK S14 OLED 14\" PULGADAS UX5406SA TÁCTIL - INTEL CORE ULTRA 7 258V - RAM 32GB - DISCO SSD 1 TB SSD - GRIS",
+   "alias_mensaje": "computador portátil asus zenbook s14 oled 14\" pulgadas ux5406sa táctil - intel core ultra 7 258v - ram 32gb - disco ssd 1 tb ssd - gris",
+   "id": "R08",
+   "categoria": "portatil",
+   "gtin": "4711387654477"
+  },
+  {
+   "marca": "Lenovo",
+   "modelo": "LENOVO IdeaPad Slim 5 14\" Pulgadas OLED",
+   "mpn": "",
+   "titulo": "Computador Portátil LENOVO IdeaPad Slim 5 14\" Pulgadas OLED - AMD Ryzen 5 IA - RAM 16GB - Disco SSD 512GB - Gris",
+   "precio_referencia_cop": 6299000,
+   "atributos": {
+    "tamano_pantalla": 14.0,
+    "memoria_ram": 16,
+    "almacenamiento": 512,
+    "procesador": "Ryzen 5"
+   },
+   "alias_comercial": "Computador Portátil LENOVO IdeaPad Slim 5 14\" Pulgadas OLED - AMD Ryzen 5 IA - RAM 16GB - Disco SSD 512GB - Gris",
+   "alias_pdf": "COMPUTADOR PORTÁTIL LENOVO IDEAPAD SLIM 5 14\" PULGADAS OLED - AMD RYZEN 5 IA - RAM 16GB - DISCO SSD 512GB - GRIS",
+   "alias_mensaje": "computador portátil lenovo ideapad slim 5 14\" pulgadas oled - amd ryzen 5 ia - ram 16gb - disco ssd 512gb - gris",
+   "id": "R09",
+   "categoria": "portatil",
+   "gtin": "0199276793454"
+  },
+  {
+   "marca": "Lenovo",
+   "modelo": "LENOVO Ideapad 5",
+   "mpn": "",
+   "titulo": "Computador Portátil 2 en 1 LENOVO Ideapad 5 - 14\" Pulgadas Táctil OLED - AMD Ryzen 7 IA - RAM 16GB - Disco SSD 512GB - Azul",
+   "precio_referencia_cop": 4699070,
+   "atributos": {
+    "tamano_pantalla": 14.0,
+    "memoria_ram": 16,
+    "almacenamiento": 512,
+    "procesador": "Ryzen 7"
+   },
+   "alias_comercial": "Computador Portátil 2 en 1 LENOVO Ideapad 5 - 14\" Pulgadas Táctil OLED - AMD Ryzen 7 IA - RAM 16GB - Disco SSD 512GB - Azul",
+   "alias_pdf": "COMPUTADOR PORTÁTIL 2 EN 1 LENOVO IDEAPAD 5 - 14\" PULGADAS TÁCTIL OLED - AMD RYZEN 7 IA - RAM 16GB - DISCO SSD 512GB - AZUL",
+   "alias_mensaje": "computador portátil 2 en 1 lenovo ideapad 5 - 14\" pulgadas táctil oled - amd ryzen 7 ia - ram 16gb - disco ssd 512gb - azul",
+   "id": "R10",
+   "categoria": "portatil",
+   "gtin": "0199276735805"
+  },
+  {
+   "marca": "Samsung",
+   "modelo": "SAMSUNG 32\" Pulgadas ViewFinity D700 4K Plano Negro",
+   "mpn": "",
+   "titulo": "Monitor SAMSUNG 32\" Pulgadas ViewFinity D700 4K Plano Negro",
+   "precio_referencia_cop": 1459930,
+   "atributos": {
+    "tamano_pantalla": 32.0,
+    "resolucion": "4K"
+   },
+   "alias_comercial": "Monitor SAMSUNG 32\" Pulgadas ViewFinity D700 4K Plano Negro",
+   "alias_pdf": "MONITOR SAMSUNG 32\" PULGADAS VIEWFINITY D700 4K PLANO NEGRO",
+   "alias_mensaje": "monitor samsung 32\" pulgadas viewfinity d700 4k plano negro",
+   "id": "R11",
+   "categoria": "monitor",
+   "gtin": "0887276836881"
+  },
+  {
+   "marca": "Kalley",
+   "modelo": "KALLEY Gamer 27\" Pulgadas M27G180 FHD Plano Negro",
+   "mpn": "",
+   "titulo": "Monitor KALLEY Gamer 27\" Pulgadas M27G180 FHD Plano Negro",
+   "precio_referencia_cop": 659900,
+   "atributos": {
+    "tamano_pantalla": 27.0,
+    "resolucion": "FHD"
+   },
+   "alias_comercial": "Monitor KALLEY Gamer 27\" Pulgadas M27G180 FHD Plano Negro",
+   "alias_pdf": "MONITOR KALLEY GAMER 27\" PULGADAS M27G180 FHD PLANO NEGRO",
+   "alias_mensaje": "monitor kalley gamer 27\" pulgadas m27g180 fhd plano negro",
+   "id": "R12",
+   "categoria": "monitor",
+   "gtin": "7705946478267"
+  },
+  {
+   "marca": "Acer",
+   "modelo": "ACER Gamer 27\" Pulgadas ED270 FHD Curvo Negro",
+   "mpn": "",
+   "titulo": "Monitor ACER Gamer 27\" Pulgadas ED270 FHD Curvo Negro",
+   "precio_referencia_cop": 1199900,
+   "atributos": {
+    "tamano_pantalla": 27.0,
+    "resolucion": "FHD"
+   },
+   "alias_comercial": "Monitor ACER Gamer 27\" Pulgadas ED270 FHD Curvo Negro",
+   "alias_pdf": "MONITOR ACER GAMER 27\" PULGADAS ED270 FHD CURVO NEGRO",
+   "alias_mensaje": "monitor acer gamer 27\" pulgadas ed270 fhd curvo negro",
+   "id": "R13",
+   "categoria": "monitor",
+   "gtin": "4711474686466"
+  },
+  {
+   "marca": "Hp",
+   "modelo": "HP OMEN Gamer 31.5\" Pulgadas 32C QHD Curvo Negro",
+   "mpn": "",
+   "titulo": "Monitor HP OMEN Gamer 31.5\" Pulgadas 32C QHD Curvo Negro",
+   "precio_referencia_cop": 1149900,
+   "atributos": {
+    "tamano_pantalla": 31.5,
+    "resolucion": "QHD"
+   },
+   "alias_comercial": "Monitor HP OMEN Gamer 31.5\" Pulgadas 32C QHD Curvo Negro",
+   "alias_pdf": "MONITOR HP OMEN GAMER 31.5\" PULGADAS 32C QHD CURVO NEGRO",
+   "alias_mensaje": "monitor hp omen gamer 31.5\" pulgadas 32c qhd curvo negro",
+   "id": "R14",
+   "categoria": "monitor",
+   "gtin": "0197029618238"
+  },
+  {
+   "marca": "Esenses",
+   "modelo": "ESENSES Inalámbricos Bluetooth On Ear HP-1000 Cancelación de Ruido Negro",
+   "mpn": "",
+   "titulo": "Audífonos ESENSES Inalámbricos Bluetooth On Ear HP-1000 Cancelación de Ruido Negro",
+   "precio_referencia_cop": 129900,
+   "atributos": {
+    "inalambrico": true,
+    "cancelacion_ruido": true
+   },
+   "alias_comercial": "Audífonos ESENSES Inalámbricos Bluetooth On Ear HP-1000 Cancelación de Ruido Negro",
+   "alias_pdf": "AUDÍFONOS ESENSES INALÁMBRICOS BLUETOOTH ON EAR HP-1000 CANCELACIÓN DE RUIDO NEGRO",
+   "alias_mensaje": "audífonos esenses inalámbricos bluetooth on ear hp-1000 cancelación de ruido negro",
+   "id": "R16",
+   "categoria": "audifonos",
+   "gtin": "7707409109343"
+  },
+  {
+   "marca": "Kalley",
+   "modelo": "KALLEY Alámbricos Over Ear Gaming K-KGA1 Negros",
+   "mpn": "",
+   "titulo": "Audífonos de Diadema KALLEY Alámbricos Over Ear Gaming K-KGA1 Negros",
+   "precio_referencia_cop": 54900,
+   "atributos": {
+    "inalambrico": false
+   },
+   "alias_comercial": "Audífonos de Diadema KALLEY Alámbricos Over Ear Gaming K-KGA1 Negros",
+   "alias_pdf": "AUDÍFONOS DE DIADEMA KALLEY ALÁMBRICOS OVER EAR GAMING K-KGA1 NEGROS",
+   "alias_mensaje": "audífonos de diadema kalley alámbricos over ear gaming k-kga1 negros",
+   "id": "R17",
+   "categoria": "audifonos",
+   "gtin": "7705946893664"
+  },
+  {
+   "marca": "Playstation",
+   "modelo": "PLAYSTATION PS5 Inalámbricos Bluetooth Over Ear Gaming Pulse Elite Blanco",
+   "mpn": "",
+   "titulo": "Audífonos de Diadema PLAYSTATION PS5 Inalámbricos Bluetooth Over Ear Gaming Pulse Elite Blanco",
+   "precio_referencia_cop": 548900,
+   "atributos": {
+    "inalambrico": true
+   },
+   "alias_comercial": "Audífonos de Diadema PLAYSTATION PS5 Inalámbricos Bluetooth Over Ear Gaming Pulse Elite Blanco",
+   "alias_pdf": "AUDÍFONOS DE DIADEMA PLAYSTATION PS5 INALÁMBRICOS BLUETOOTH OVER EAR GAMING PULSE ELITE BLANCO",
+   "alias_mensaje": "audífonos de diadema playstation ps5 inalámbricos bluetooth over ear gaming pulse elite blanco",
+   "id": "R18",
+   "categoria": "audifonos",
+   "gtin": "0711719598268"
+  },
+  {
+   "marca": "Kingston",
+   "modelo": "Micro SD KINGSTON Canvas Select Plus 256GB + Adaptador Clase 10",
+   "mpn": "",
+   "titulo": "Memoria Micro SD KINGSTON Canvas Select Plus 256GB + Adaptador Clase 10",
+   "precio_referencia_cop": 209900,
+   "atributos": {
+    "almacenamiento": 256,
+    "tipo_almacenamiento": "microSD"
+   },
+   "alias_comercial": "Memoria Micro SD KINGSTON Canvas Select Plus 256GB + Adaptador Clase 10",
+   "alias_pdf": "MEMORIA MICRO SD KINGSTON CANVAS SELECT PLUS 256GB + ADAPTADOR CLASE 10",
+   "alias_mensaje": "memoria micro sd kingston canvas select plus 256gb + adaptador clase 10",
+   "id": "R19",
+   "categoria": "almacenamiento",
+   "gtin": "0740617348507"
+  },
+  {
+   "marca": "Kingston",
+   "modelo": "Micro SD KINGSTON Canvas Select Plus 128GB + Adaptador Clase 10",
+   "mpn": "",
+   "titulo": "Memoria Micro SD KINGSTON Canvas Select Plus 128GB + Adaptador Clase 10",
+   "precio_referencia_cop": 129900,
+   "atributos": {
+    "almacenamiento": 128,
+    "tipo_almacenamiento": "microSD"
+   },
+   "alias_comercial": "Memoria Micro SD KINGSTON Canvas Select Plus 128GB + Adaptador Clase 10",
+   "alias_pdf": "MEMORIA MICRO SD KINGSTON CANVAS SELECT PLUS 128GB + ADAPTADOR CLASE 10",
+   "alias_mensaje": "memoria micro sd kingston canvas select plus 128gb + adaptador clase 10",
+   "id": "R20",
+   "categoria": "almacenamiento",
+   "gtin": "0740617348453"
+  },
+  {
+   "marca": "Kingston",
+   "modelo": "Micro SD KINGSTON Canvas Select Plus 64GB + Adaptador Clase 10",
+   "mpn": "",
+   "titulo": "Memoria Micro SD KINGSTON Canvas Select Plus 64GB + Adaptador Clase 10",
+   "precio_referencia_cop": 69900,
+   "atributos": {
+    "almacenamiento": 64,
+    "tipo_almacenamiento": "microSD"
+   },
+   "alias_comercial": "Memoria Micro SD KINGSTON Canvas Select Plus 64GB + Adaptador Clase 10",
+   "alias_pdf": "MEMORIA MICRO SD KINGSTON CANVAS SELECT PLUS 64GB + ADAPTADOR CLASE 10",
+   "alias_mensaje": "memoria micro sd kingston canvas select plus 64gb + adaptador clase 10",
+   "id": "R21",
+   "categoria": "almacenamiento",
+   "gtin": "0740617348408"
+  },
+  {
+   "marca": "Kingston",
+   "modelo": "Estado Solido Externo SSD KINGSTON XS1000 1TB Negro",
+   "mpn": "",
+   "titulo": "Disco Estado Solido Externo SSD KINGSTON XS1000 1TB Negro",
+   "precio_referencia_cop": 989900,
+   "atributos": {
+    "almacenamiento": 1024,
+    "tipo_almacenamiento": "SSD"
+   },
+   "alias_comercial": "Disco Estado Solido Externo SSD KINGSTON XS1000 1TB Negro",
+   "alias_pdf": "DISCO ESTADO SOLIDO EXTERNO SSD KINGSTON XS1000 1TB NEGRO",
+   "alias_mensaje": "disco estado solido externo ssd kingston xs1000 1tb negro",
+   "id": "R22",
+   "categoria": "almacenamiento",
+   "gtin": "0740617338515"
+  },
+  {
+   "marca": "Kingston",
+   "modelo": "USB KINGSTON 128 GB Datatraveler Exodia M DTXM",
+   "mpn": "",
+   "titulo": "Memoria USB KINGSTON 128 GB Datatraveler Exodia M DTXM",
+   "precio_referencia_cop": 129900,
+   "atributos": {
+    "almacenamiento": 128,
+    "tipo_almacenamiento": "USB"
+   },
+   "alias_comercial": "Memoria USB KINGSTON 128 GB Datatraveler Exodia M DTXM",
+   "alias_pdf": "MEMORIA USB KINGSTON 128 GB DATATRAVELER EXODIA M DTXM",
+   "alias_mensaje": "memoria usb kingston 128 gb datatraveler exodia m dtxm",
+   "id": "R23",
+   "categoria": "almacenamiento",
+   "gtin": "0740617326376"
+  },
+  {
+   "marca": "Kingston",
+   "modelo": "Estado Solido KINGSTON 480GB",
+   "mpn": "",
+   "titulo": "Unidad Estado Solido KINGSTON 480GB",
+   "precio_referencia_cop": 609900,
+   "atributos": {
+    "almacenamiento": 480,
+    "tipo_almacenamiento": "SSD"
+   },
+   "alias_comercial": "Unidad Estado Solido KINGSTON 480GB",
+   "alias_pdf": "UNIDAD ESTADO SOLIDO KINGSTON 480GB",
+   "alias_mensaje": "unidad estado solido kingston 480gb",
+   "id": "R24",
+   "categoria": "almacenamiento",
+   "gtin": "0740617263442"
+  },
+  {
+   "marca": "Kingston",
+   "modelo": "Estado Solido KINGSTON 240GB",
+   "mpn": "",
+   "titulo": "Unidad Estado Solido KINGSTON 240GB",
+   "precio_referencia_cop": 229900,
+   "atributos": {
+    "almacenamiento": 240,
+    "tipo_almacenamiento": "SSD"
+   },
+   "alias_comercial": "Unidad Estado Solido KINGSTON 240GB",
+   "alias_pdf": "UNIDAD ESTADO SOLIDO KINGSTON 240GB",
+   "alias_mensaje": "unidad estado solido kingston 240gb",
+   "id": "R25",
+   "categoria": "almacenamiento",
+   "gtin": "0740617261219"
+  }
+ ]
+}
