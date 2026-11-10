@@ -12,6 +12,9 @@
   **C3** excluye después del emparejamiento las ofertas con precio atípico (``defensa.py``).
 - ``proponer``: determinista. Aplica las restricciones duras del perfil y de la necesidad y elige el
   menor costo total (precio + envío). Si nada cumple, se abstiene y explica por qué.
+- **N3** (opcional, ``verificar=True``): antes de proponer, cada oferta candidata se lee de nuevo
+  de su fragmento por una ruta independiente (``verificacion.py``). Política ``abstener`` (D102):
+  si la oferta ganadora no queda verificada, se abstiene; ``excluir``: elige solo entre verificadas.
 
 Límites por tarea: ``max_llamadas`` de herramientas y el tope de gasto de ``RegistroCosto``.
 """
@@ -55,6 +58,7 @@ from comercio_agentico.modelos import (
     obtener_extractor,
     obtener_modelo,
 )
+from comercio_agentico.verificacion import MODELO_VERIFICADOR, SegundasLecturas, verificar_ofertas
 
 log = logging.getLogger("comercio_agentico.agente")
 
@@ -62,6 +66,7 @@ MAX_LLAMADAS = 14
 MAX_TEXTO_C0 = 12_000  # caracteres de texto crudo por herramienta en C0
 Configuracion = Literal["C0", "C1", "C2", "C3"]
 CONFIGURACIONES: tuple[str, ...] = ("C0", "C1", "C2", "C3")
+PoliticaN3 = Literal["abstener", "excluir"]
 
 
 # --------------------------------------------------------------------------------------------------
@@ -177,6 +182,8 @@ class Contexto:
     costo: RegistroCosto
     configuracion: Configuracion = "C1"
     clasificador: Any = None  # C2 y C3: ClasificadorInyeccion o un doble con `puntuar`
+    verificar: bool = False  # N3
+    politica_n3: PoliticaN3 = "abstener"
     max_llamadas: int = MAX_LLAMADAS
     concurrencia_llm: int = 3
     _llm: dict[str, Any] = field(default_factory=dict)
@@ -212,6 +219,10 @@ class Contexto:
                     llm = obtener_extractor(self.modelo, Necesidad, **sin_reintentos)
                 case "confirmador":
                     llm = obtener_extractor(self.modelo, Decisiones, **sin_reintentos)
+                case "verificador":
+                    llm = obtener_extractor(
+                        MODELO_VERIFICADOR, ListaOfertas, include_raw=True, **sin_reintentos
+                    )
                 case _:
                     raise KeyError(rol)
             if self._semaforo is None:
@@ -449,6 +460,57 @@ def proponer(
     )
 
 
+def proponer_con_n3(
+    consulta: str,
+    necesidad: Necesidad,
+    ofertas: list[Oferta],
+    perfil: PerfilCategoria,
+    productos: dict[str, ProductoCatalogo],
+    errores: list[str],
+    modelo: str,
+    costo_usd: float,
+    alertas_defensa: Sequence[Alerta] = (),
+    politica: PoliticaN3 = "abstener",
+) -> PropuestaCompra:
+    """``proponer`` sobre ofertas ya marcadas por N3, con la política de D102."""
+    alertas = list(alertas_defensa)
+    if politica == "excluir":
+        verificadas = [o for o in ofertas if o.verificacion == "verificada"]
+        excluidas = len(ofertas) - len(verificadas)
+        if excluidas:
+            alertas.append(
+                Alerta(
+                    tipo="sin_verificar",
+                    mensaje=f"N3: se excluyeron {excluidas} ofertas que una segunda lectura no "
+                    "confirmó.",
+                )
+            )
+        return proponer(
+            consulta, necesidad, verificadas, perfil, productos, errores, modelo, costo_usd, alertas
+        )
+    p = proponer(
+        consulta, necesidad, ofertas, perfil, productos, errores, modelo, costo_usd, alertas
+    )
+    if p.abstencion or p.recomendada is None:
+        return p
+    ganadora = p.ofertas[p.recomendada]
+    if ganadora.verificacion == "verificada":
+        return p
+    motivo = (
+        f"La oferta de menor costo ({ganadora.titulo[:60]}, {ganadora.proveedor}) no se pudo "
+        f"confirmar con una segunda lectura de su fuente ({ganadora.verificacion})."
+    )
+    alerta = Alerta(tipo="sin_verificar", mensaje=motivo, oferta=p.recomendada)
+    return p.model_copy(
+        update={
+            "abstencion": True,
+            "recomendada": None,
+            "motivo_abstencion": motivo,
+            "alertas": [*p.alertas, alerta],
+        }
+    )
+
+
 # --------------------------------------------------------------------------------------------------
 # Grafo
 
@@ -536,16 +598,30 @@ def construir_grafo(ctx: Contexto):
             alertas += atipicas
             for a in atipicas:
                 log.info("  ⚠ C3 %s", a.mensaje)
-        propuesta = proponer(
+        argumentos = (
             estado["consulta"],
             estado["necesidad"],
             ofertas,
             ctx.perfil,
             productos,
             estado.get("errores", []),
-            ctx.modelo,
-            ctx.costo.costo_total,
-            alertas,
+        )
+        if not ctx.verificar:
+            propuesta = proponer(*argumentos, ctx.modelo, ctx.costo.costo_total, alertas)
+            return {"propuesta": propuesta}
+        # Solo las candidatas: las que ya incumplen la necesidad no pueden ganar.
+        candidatas = [
+            o
+            for o in ofertas
+            if motivo_descarte(o, estado["necesidad"], ctx.perfil, productos) is None
+        ]
+        lecturas = SegundasLecturas(ctx.llm("verificador"), ctx.config)
+        verificaciones = await verificar_ofertas(candidatas, lecturas)
+        for o, v in zip(candidatas, verificaciones, strict=True):
+            if v.estado != "verificada":
+                log.info("  ⚠ N3 %s %s: %s %s", o.proveedor, o.titulo[:40], v.estado, v.campos)
+        propuesta = proponer_con_n3(
+            *argumentos, ctx.modelo, ctx.costo.costo_total, alertas, ctx.politica_n3
         )
         return {"propuesta": propuesta}
 
@@ -588,6 +664,8 @@ async def preguntar(
     separacion_planos: bool = True,
     configuracion: Configuracion | None = None,
     clasificador: Any = None,
+    verificar: bool = False,
+    politica_n3: PoliticaN3 = "abstener",
     max_llamadas: int = MAX_LLAMADAS,
     tope_usd: float | None = None,
     registro: RegistroFuentes | None = None,
@@ -623,6 +701,8 @@ async def preguntar(
             costo=costo,
             configuracion=configuracion,
             clasificador=clasificador,
+            verificar=verificar,
+            politica_n3=politica_n3,
             max_llamadas=max_llamadas,
             _semaforo=semaforo_llm,
         )

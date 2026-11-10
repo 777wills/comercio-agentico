@@ -645,3 +645,61 @@ Imprime la tabla de detección y falsos positivos de los tres clasificadores y g
 
 `make e2-utilidad` (~US$1,8) y `make e2-ataques` (~US$3,7, tope 3,8) requieren `make corpus-b-servir` en otra
 terminal y créditos de OpenRouter. Si se interrumpen, el mismo comando reanuda sin repetir gasto.
+
+## S08 — N3 verificación y E1 (10-nov)
+
+### Qué se construyó y por qué
+
+- `src/comercio_agentico/verificacion.py`: **N3**. Lee de nuevo el fragmento de la procedencia por una ruta
+  independiente: un parser del JSON de P1 y del bloque schema.org de P2 y del corpus A, o Claude Haiku 5.5 con un
+  prompt propio cuando no hay estructura o es ambigua. Compara precio, envío, disponibilidad, plazo y GTIN (D101).
+- `agente/grafo.py`: el nodo opcional `verificar`, apagado por defecto, verifica las ofertas candidatas antes de
+  proponer. Con la política `abstener`, el agente se abstiene si la ganadora no queda confirmada; con `excluir`,
+  elige solo entre ofertas verificadas. En la línea de comandos: `--verificar` y `--politica-n3`.
+- `arnes/e1.py`: **E1 por reproducción pareada** (D99). Sobre las corridas ya pagadas (calibración v3 y corpus A v1),
+  regenera cada fragmento leyendo el corpus, comprueba su SHA-256 y decide con y sin N3. Escribe
+  `resultados/informes/e1/`.
+
+### Cómo probarlo
+
+**1. Pruebas sin red — costo US$0**
+
+```bash
+uv run pytest tests/test_verificacion.py tests/test_agente.py -q
+make check
+```
+
+Deben pasar todas (159 en el repositorio). `test_verificacion.py` comprueba que la ruta determinista coincide con la
+verdad del corpus en todas las fichas de P1 y P2, que un JSON-LD con dos precios sin etiqueta se considera ambiguo y
+pasa al LLM, la correspondencia escalonada y las dos políticas. `test_agente.py` corre el grafo con un verificador
+simulado: si la segunda lectura confirma el precio, recomienda; si no, se abstiene.
+
+**2. Recalcular E1 con las lecturas guardadas — costo US$0**
+
+```bash
+make corpus-b-servir     # en una terminal
+make corpus-a-servir     # en otra
+make e1
+```
+
+Regenera los fragmentos leyendo los dos corpus (sin LLM), usa las segundas lecturas guardadas en
+`resultados/e1/segundas_lecturas.jsonl` y reescribe `resultados/informes/e1/e1.md`, `e1.json`, `e1_seleccion.png`
+y `verificaciones.jsonl`. **Qué debe ver:** «Control de reproducción 100 % (60/60)» y «(20/20)», coincidencia de
+SHA-256 del 100 %, la misma M2 en las tres políticas y M1 de verificadas por encima de la de no verificadas en ambos
+corpus. Si la terminal se corta por la salida de crawl4ai, lance el comando con
+`systemd-run --user --unit=e1 --working-directory=$PWD -p StandardOutput=append:/tmp/e1.log uv run python -m comercio_agentico.arnes.e1 --solo-analisis`
+y lea `/tmp/e1.log`.
+
+**3. Una consulta con N3 activo — < US$0,03 (Flash para el agente + Haiku para N3); requiere `make corpus-b-servir`**
+
+```bash
+uv run python -m comercio_agentico.preguntar --tareas B013 --verificar --tope 0.10
+```
+
+En el cuadro comparativo cada oferta muestra `N3 verificada`, `N3 discrepancia` o `N3 sin_contraparte`; el registro
+muestra con `⚠ N3` las que no se confirmaron. Para ver la otra política, agregue `--politica-n3 excluir`.
+
+**4. Volver a pagar las segundas lecturas — no es una prueba manual rutinaria**
+
+`make e1-lecturas` solo llama a Haiku por los fragmentos que falten en `resultados/e1/segundas_lecturas.jsonl` (hoy
+ninguno, así que cuesta US$0). Si se borra ese archivo, rehacerlas cuesta ~US$0,02 de Anthropic.

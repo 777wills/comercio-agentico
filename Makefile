@@ -5,7 +5,7 @@
 SHELL := /bin/bash
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo corpus-a-recolectar corpus-a corpus-a-servir corpus-a-correr humo candidatos app arnes-simulado calibracion e3 e3-frontera e2-ataques e2-ataques-simulado e2-utilidad e2 jev metricas
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo corpus-a-recolectar corpus-a corpus-a-servir corpus-a-correr humo candidatos app arnes-simulado calibracion e3 e3-frontera e2-ataques e2-ataques-simulado e2-utilidad e2 jev e1 e1-lecturas metricas
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
@@ -92,6 +92,12 @@ e2: ## E2: curva seguridad-utilidad, Pareto, codo y control limpio con las corri
 
 jev: ## Compara el clasificador de C2 con Jev (TypeSafe) en 68 fragmentos (< US$0,01; requiere TYPESAFE_API_KEY)
 	uv run python -m comercio_agentico.ataques.comparar_jev
+
+e1: ## E1: N3 por reproducción pareada con las lecturas guardadas (US$0; requiere corpus-b-servir y corpus-a-servir)
+	uv run python -m comercio_agentico.arnes.e1 --solo-analisis
+
+e1-lecturas: ## E1: segunda lectura de los fragmentos que falten con Haiku (~US$0,02; requiere corpus B y A servidos)
+	uv run python -m comercio_agentico.arnes.e1
 
 metricas: ## Recalcula métricas de una corrida: make metricas CORRIDA=resultados/corridas/<archivo>.jsonl (US$0)
 	uv run python -m comercio_agentico.arnes.metricas $(CORRIDA)

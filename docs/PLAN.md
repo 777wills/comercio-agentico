@@ -282,13 +282,15 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
 
 **Objetivo:** medir el aporte de la verificación.
 
-- [ ] N3: re-extracción por una ruta independiente sobre el fragmento guardado en la procedencia (otro prompt y otro
+- [x] N3: re-extracción por una ruta independiente sobre el fragmento guardado en la procedencia (otro prompt y otro
       modelo, o el parser determinista de JSON-LD cuando exista). Si las rutas discrepan, la oferta se marca como no
-      verificada y se declara.
-- [ ] E1: con y sin N3 (y con y sin N1 si se implementa) sobre corpus B y A: M1, M2, M4 (cobertura vs. exactitud
-      sobre lo cubierto) y M6.
-- [ ] N1 solo si hay tiempo: lector de JSON-LD (trivial) y, si una tienda lo permite, API pública de catálogo VTEX.
-      Si no, queda propuesto.
+      verificada y se declara. (10-nov, D100–D101: parser de JSON/schema.org + Haiku 5.5; nodo opcional `verificar`
+      del grafo, D104.)
+- [x] E1: con y sin N3 (y con y sin N1 si se implementa) sobre corpus B y A: M1, M2, M4 (cobertura vs. exactitud
+      sobre lo cubierto) y M6. (10-nov, reproducción pareada D99: N3 no cambia ninguna decisión; M1 verificadas 97 %
+      frente a 76 % en B y 91 % frente a 42 % en A; US$0,0213.)
+- [x] N1 solo si hay tiempo: lector de JSON-LD (trivial) y, si una tienda lo permite, API pública de catálogo VTEX.
+      Si no, queda propuesto. (**Propuesto**, D104; `06_hoja_de_ruta.md`.)
 
 **Terminado cuando:** tabla de E1 con y sin verificación y su lectura de predicción selectiva.
 **Informe:** `04_resultados_e1.md`.
@@ -298,7 +300,8 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
 **Objetivo:** el agente expuesto como servicio, listo para el frontend (D81, D82, D83).
 
 - [ ] Refactor menor del agente (D91): `Contexto`/`preguntar` aceptan los tres booleanos de capa y el umbral
-      del clasificador de forma independiente; `configuracion` C0–C3 pasa a ser un atajo que los fija.
+      del clasificador de forma independiente; `configuracion` C0–C3 pasa a ser un atajo que los fija. N3 ya es un
+      booleano propio (`verificar`, D104).
 - [ ] Context7 para FastAPI (SSE), SQLAlchemy y el cliente de OpenRouter antes de escribir código.
 - [ ] `src/comercio_agentico/api/`: `POST /api/consultas` (consulta, corpus A/B, configuración de defensa, modelo;
       la clave de OpenRouter llega en una cabecera y no se guarda ni se registra), `GET /api/consultas/{id}/eventos`
@@ -366,7 +369,7 @@ corrida siguiendo el README.
       arte, metodología, resultados, discusión (incluye ética, legal y seguridad, citando el ensayo de Ética como
       base), conclusiones, hoja de ruta (lo propuesto: E4, N1/ACP/UCP/AP2, más proveedores de modelos en CotIA además de
       OpenRouter, autohospedaje de pesos abiertos, descubrimiento abierto de proveedores, IPAC como servicio, catálogo de
-      referencia gestionado con pgvector, D97) y referencias.
+      referencia gestionado con pgvector, D98) y referencias.
 - [ ] Verificar cada referencia y cifra contra la fuente primaria; unificar la edición de OWASP; descargar el informe
       primario de la CCCE si se cita.
 - [ ] Revisión de metacomentario y de registro académico.

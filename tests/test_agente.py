@@ -270,7 +270,11 @@ class ClasificadorPermisivo:
 
 
 def correr_grafo(
-    separacion: bool = True, configuracion: str | None = None, precio=2_765_000, clasificador=None
+    separacion: bool = True,
+    configuracion: str | None = None,
+    precio=2_765_000,
+    clasificador=None,
+    precio_n3: float | None = None,
 ):
     planificador = Doble(
         AIMessage(
@@ -297,12 +301,21 @@ def correr_grafo(
         costo=RegistroCosto(1.0),
         configuracion=configuracion or ("C1" if separacion else "C0"),
         clasificador=clasificador or ClasificadorDoble(),
+        verificar=precio_n3 is not None,
     )
     ctx._llm = {
         "interprete": Doble(Necesidad(producto_mencionado="Samsung M8 64GB", producto_id="C11")),
         "planificador": planificador,
         "extractor": Doble({"parsed": ListaOfertas(ofertas=[extraida]), "raw": None}),
         "confirmador": Doble(Decisiones(decisiones=[Decision(oferta=0, producto_id="C11")])),
+        "verificador": Doble(
+            {
+                "parsed": ListaOfertas(
+                    ofertas=[extraida.model_copy(update={"precio": precio_n3 or precio})]
+                ),
+                "raw": None,
+            }
+        ),
     }
     final = asyncio.run(
         construir_grafo(ctx).ainvoke(
@@ -358,6 +371,20 @@ def test_grafo_c2_no_verifica_precios():
         configuracion="C2", precio=900_000, clasificador=ClasificadorPermisivo()
     )
     assert not any(a.tipo == "precio_atipico" for a in final["propuesta"].alertas)
+
+
+def test_grafo_n3_confirma_o_se_abstiene_segun_la_segunda_lectura():
+    final, _, _ = correr_grafo(precio_n3=2_765_000)
+    p = final["propuesta"]
+    assert not p.abstencion and p.ofertas[p.recomendada].verificacion == "verificada"
+    final, _, _ = correr_grafo(precio_n3=2_756_000)
+    p = final["propuesta"]
+    assert p.abstencion and any(a.tipo == "sin_verificar" for a in p.alertas)
+
+
+def test_grafo_sin_n3_no_llama_al_verificador():
+    final, _, _ = correr_grafo()
+    assert final["propuesta"].ofertas[0].verificacion is None
 
 
 def test_limitado_reintenta_ante_429_y_no_ante_otros_errores(monkeypatch):

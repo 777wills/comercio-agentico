@@ -139,6 +139,9 @@ class Oferta(OfertaExtraida):
         default=None,
         description="ID del catálogo de referencia; lo escribe el emparejamiento, nunca el LLM.",
     )
+    verificacion: Literal["verificada", "discrepancia", "sin_contraparte"] | None = Field(
+        default=None, description="Resultado de N3; null si no se verificó."
+    )
 
     @property
     def proveedor(self) -> str:

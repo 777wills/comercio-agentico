@@ -2,20 +2,38 @@
 
 ## Siguiente sesión
 
-**S08 — N3 verificación, E1 y N1 opcional.** S07 quedó terminada: E2 tiene su curva con intervalos, la lectura
-por clase y ubicación y el borrador `docs/informe/04_resultados_e2.md`. La comparación con Jev (D80) también está
-hecha (D97).
+**S09a — CotIA (1/3): API FastAPI + SSE + PostgreSQL + llave propia.** S08 quedó terminada: N3 existe (módulo
+`verificacion.py` y nodo opcional del grafo) y E1 tiene su tabla de predicción selectiva y el borrador
+`docs/informe/04_resultados_e1.md`. Vamos tres días por delante (S08 estaba para el 13-nov).
 
 Siguiente paso exacto:
-1. Proponer a Wills el diseño de N3 (re-extracción independiente sobre `procedencia.fragmento_original`: otro prompt
-   y otro modelo, o el parser determinista de JSON-LD) y el de E1 (con y sin N3 en corpus B y A: M1, M2, M4, M6),
-   con su costo estimado, antes de correr. Fijar el diseño en DECISIONES antes de ver datos, como D96.
-2. OpenRouter: quedan ~US$6,7 de 20 (tras S07). E1 con dos corpus probablemente requiere recargar; estimarlo y
-   preguntar a Wills.
-3. **Corridas largas: una a la vez y con `systemd-run --user`** (ver `MEMORIA_CLAUDE_CODE.md` §6): con dos corridas
-   simultáneas el OOM killer cerró VS Code dos veces en S07.
-4. Pendientes abiertos para Wills: si corre el opcional de S07 (C0 y C3 con un segundo modelo, ~US$1,2) y qué
-   configuración trae CotIA por defecto (la evidencia apoya C1 como mínimo; C2/C3 sin costo medible).
+1. Leer en `docs/PLAN.md` la sección S09a y proponer a Wills el plan en 3–5 líneas. Context7 para FastAPI (SSE),
+   SQLAlchemy y el cliente de OpenRouter antes de escribir código.
+2. Refactor D91: tres booleanos de capa + umbral; `verificar` (N3) ya es un booleano propio (D104).
+3. **Corridas largas: una a la vez y con `systemd-run --user`** (`MEMORIA_CLAUDE_CODE.md` §6). Las salidas de
+   crawl4ai desbordan la terminal del editor y la cortan con ^C aunque se redirijan: lanzar con `systemd-run`.
+4. Pendientes abiertos para Wills: (a) si corre el opcional de S07 (C0 y C3 con un segundo modelo, ~US$1,2);
+   (b) qué configuración trae CotIA por defecto (la evidencia apoya C1 como mínimo; C2/C3 sin costo medible);
+   (c) cómo presenta CotIA a N3: la evidencia de E1 favorece un indicador por oferta antes que la abstención por
+   defecto (D104 fijó `abstener` como política del nodo).
+
+**Hecho el 10-nov (S08, N3 y E1), con pruebas:**
+- **N3** (`src/comercio_agentico/verificacion.py`, D100–D101): segunda lectura del fragmento de la procedencia por
+  el parser (JSON de P1 y schema.org de P2/corpus A; ambiguo → LLM) o por Claude Haiku 5.5 con prompt propio; caché
+  por SHA-256; correspondencia GTIN → enlace → título ≥ 0,8; estados verificada / discrepancia / sin_contraparte.
+  Nodo opcional en el grafo (`verificar=True`, `--verificar`, `--politica-n3 abstener|excluir`) que solo verifica
+  las ofertas candidatas. `Oferta.verificacion` nuevo (no cambia el esquema que ve el LLM).
+- **E1 (D99, D102, D103)** por reproducción pareada sobre calibración v3 (B, 60) y corpus A v1 (20): 110/110
+  fragmentos reproducen su SHA-256; control sin N3 = acierto original 80/80. **N3 no cambia ninguna decisión**: M2 B
+  58/60, A 19/20 en las tres políticas; las 65 ganadoras quedaron verificadas. **Señal de calidad por oferta:** M1
+  verificadas 97,2 % frente a no verificadas 76,0 % (B) y 90,5 % frente a 42,2 % (A). Detector: precisión ~46 %,
+  sensibilidad 33 % (B) y 64 % (A); los falsos negativos de B son plazos de agotados que Flash y Haiku omiten por
+  igual (errores correlacionados). Ruta determinista: 0 discrepancias en 339 ofertas. M6: US$0,008 por tarea sin
+  caché, Haiku p50 4–5 s. Gasto real: **US$0,0213** (Anthropic, 15 lecturas con Haiku).
+- Código: `arnes/e1.py` (`make e1` US$0, `make e1-lecturas`), 13 pruebas nuevas (11 en `tests/test_verificacion.py` y
+  2 en `test_agente.py`): **159 pruebas**, Ruff limpio. Evidencia: `resultados/informes/e1/` (md, json, PNG,
+  `verificaciones.jsonl`) y `resultados/e1/segundas_lecturas.jsonl`.
+- N1 queda propuesto (D104) en `docs/informe/06_hoja_de_ruta.md` (6.y, junto con N3 dirigida y N3 bajo ataque).
 
 **Hecho el 10-nov (S07, E2), con pruebas:**
 - **E2 (D96):** 240 ejecuciones atacadas + 120 benignas, 0 errores, US$5,35. Utilidad C0–C3: 93,3 / 93,3 / 96,7 /
@@ -51,7 +69,7 @@ Siguiente paso exacto:
 |---|---|
 | Presupuesto total | 300,00 |
 | Créditos comprados | 55,00 (Anthropic 30 + OpenRouter 20, 9-nov; TypeSafe 5, 10-nov, el mínimo que acepta, para la comparación con Jev de D80). Anthropic: US$29,83 disponibles y US$0,17 gastados (consola, 9-nov 21:43) |
-| Gastado acumulado | ~14,99 (S07: ~5,57 = matriz de ataque 3,4454 + utilidad benigna 1,9011 + Jev ~0,0015 + ~0,22 perdidos en dos cierres de VS Code; S06-bis arnés: 0,2327 humo C0/C3 en dos pasadas, 0,1473 + 0,0854; S06: 0,015 prueba de humo C3 + clasificadores a US$0; S00: ~0,26; S01: 0,024; S02: ~0,18; S03: 1,74; S04: ~1,32; S05: ~5,7 = corpus A v1 0,361 + calibración v3 0,919 + E3 Flash 1,371 + E3 Haiku 1,528 + corrida parcial de Flash descartada 1,312 + ~0,2 de llamadas perdidas en la suspensión). OpenRouter: ~13,3 de 20 usados tras S07 (~6,7 disponibles). TypeSafe: ~US$0,002 de 5. Anthropic: ~US$28,3 disponibles tras Haiku |
+| Gastado acumulado | ~15,01 (S08: 0,0213 = segunda lectura de N3 con Haiku en 15 fragmentos; S07: ~5,57 = matriz de ataque 3,4454 + utilidad benigna 1,9011 + Jev ~0,0015 + ~0,22 perdidos en dos cierres de VS Code; S06-bis arnés: 0,2327 humo C0/C3 en dos pasadas, 0,1473 + 0,0854; S06: 0,015 prueba de humo C3 + clasificadores a US$0; S00: ~0,26; S01: 0,024; S02: ~0,18; S03: 1,74; S04: ~1,32; S05: ~5,7 = corpus A v1 0,361 + calibración v3 0,919 + E3 Flash 1,371 + E3 Haiku 1,528 + corrida parcial de Flash descartada 1,312 + ~0,2 de llamadas perdidas en la suspensión). OpenRouter: ~13,3 de 20 usados tras S07 (~6,7 disponibles). TypeSafe: ~US$0,002 de 5. Anthropic: ~US$28,3 disponibles tras Haiku (S08 usó US$0,02 más) |
 
 Costo medido el 9-nov (S00) de una extracción estructurada típica (página con 12 ofertas, 1500–3500 tokens de
 entrada, `json_schema`): Flash 0,0015 · Haiku 0,0016 · DeepSeek Pro 0,006 · Sonnet 0,025 · Kimi 0,032 ·
@@ -78,8 +96,16 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 
 ## Bitácora
 
+### 10-nov-2026 — S08: N3 y E1 (VS Code · Opus 5.5)
+- Diseño acordado con Wills y fijado antes de ver datos: D99–D104 (reproducción pareada sobre calibración v3 y
+  corpus A v1; ruta híbrida determinista + Haiku 5.5; campos que deciden la compra; abstención como política
+  principal; N3 como nodo opcional del grafo; N1 propuesto). Tope: US$1 Anthropic, US$0 OpenRouter.
+- Resultados en «Hecho el 10-nov (S08)». Gasto US$0,0213 (Anthropic).
+- Incidente menor: la terminal del editor cortó la primera corrida con ^C por desbordamiento (salida de crawl4ai);
+  se relanzó con `systemd-run --user --unit=s08-e1` y reanudó sin repetir lecturas.
+
 ### 10-nov-2026 — Hoja de ruta: catálogo gestionado (VS Code · Opus 5.5)
-- D97: en producción, `catalogo.json` se reemplaza por un catálogo por empresa en PostgreSQL con embeddings
+- D98: en producción, `catalogo.json` se reemplaza por un catálogo por empresa en PostgreSQL con embeddings
   persistidos en pgvector e indexación incremental; los experimentos conservan el archivo congelado. Borrador en
   `docs/informe/06_hoja_de_ruta.md`. Sin cambios de código. Gasto: US$0.
 

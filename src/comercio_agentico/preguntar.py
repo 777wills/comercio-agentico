@@ -86,9 +86,10 @@ def imprimir(r: Resultado) -> None:
     for i, o in enumerate(p.ofertas):
         marca = "→" if i == p.recomendada else " "
         envio = "?" if o.costo_envio is None else pesos(o.costo_envio)
+        n3 = f"  N3 {o.verificacion}" if o.verificacion else ""
         print(
             f" {marca} {o.proveedor} {o.producto_catalogo}  {pesos(o.costo_total):>12}  "
-            f"(envío {envio}, {o.disponibilidad})  {o.titulo[:55]}"
+            f"(envío {envio}, {o.disponibilidad})  {o.titulo[:55]}{n3}"
         )
         pr = o.procedencia
         print(f"      procedencia: {pr.consulta}  sha256 {pr.suma_verificacion[:12]}")
@@ -109,6 +110,8 @@ async def principal(args: argparse.Namespace) -> None:
         "modelo": args.modelo,
         "separacion_planos": not args.c0,
         "configuracion": args.configuracion,
+        "verificar": args.verificar,
+        "politica_n3": args.politica_n3,
         "max_llamadas": args.max_llamadas,
         "tope_usd": args.tope,
         "emparejador": emparejador,
@@ -159,6 +162,17 @@ def main() -> None:
         help="Defensa N4 (prevalece sobre --c0): C2 añade el clasificador, C3 además el precio",
     )
     parser.add_argument("--max-llamadas", type=int, default=MAX_LLAMADAS)
+    parser.add_argument(
+        "--verificar",
+        action="store_true",
+        help="N3: segunda lectura independiente de las ofertas candidatas (Haiku o parser)",
+    )
+    parser.add_argument(
+        "--politica-n3",
+        choices=["abstener", "excluir"],
+        default="abstener",
+        help="Con --verificar: abstenerse si la ganadora no se confirma o excluir no confirmadas",
+    )
     parser.add_argument("--tope", type=float, default=None, help="Tope de US$ por tarea")
     parser.add_argument("--salida", help="Archivo JSONL donde anexar los resultados")
     parser.add_argument("--silencioso", action="store_true", help="Sin registro de avance")
