@@ -292,6 +292,8 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
 
 **Objetivo:** el agente expuesto como servicio, listo para el frontend (D81, D82, D83).
 
+- [ ] Refactor menor del agente (D91): `Contexto`/`preguntar` aceptan los tres booleanos de capa y el umbral
+      del clasificador de forma independiente; `configuracion` C0–C3 pasa a ser un atajo que los fija.
 - [ ] Context7 para FastAPI (SSE), SQLAlchemy y el cliente de OpenRouter antes de escribir código.
 - [ ] `src/comercio_agentico/api/`: `POST /api/consultas` (consulta, corpus A/B, configuración de defensa, modelo;
       la clave de OpenRouter llega en una cabecera y no se guarda ni se registra), `GET /api/consultas/{id}/eventos`
@@ -320,6 +322,8 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
       laboratorio de ataques (C0 frente a C3); panel de resultados; historial.
 - [ ] **Gasto acumulado de la sesión del visitante** (suma del costo de sus consultas con su clave, nº de consultas
       y total; D90), además del costo por consulta.
+- [ ] **Panel de defensas** (D91): interruptor por capa (separación, clasificador, precio) + presets C0–C3 + umbral
+      del clasificador con aviso; marca «exploratorio» fuera de C0–C3. Enganchado al laboratorio de ataques.
 - [ ] Diseño responsivo; sin clave se navega todo y la consulta pide configurarla.
 - [ ] Compilación estática servida por FastAPI.
 
