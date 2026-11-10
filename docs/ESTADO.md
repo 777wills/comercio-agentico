@@ -2,25 +2,38 @@
 
 ## Siguiente sesión
 
-**S06 — N4 defensa y suite adversarial** (`docs/PLAN.md`, sección S06; fecha objetivo 11-nov). S05 se cerró el
-10-nov, con tres días de adelanto. El plan se reprogramó ese día: Streamlit se reemplaza por el producto **CotIA**
-(SvelteKit + FastAPI + PostgreSQL, llave propia de OpenRouter; D81–D84) en tres sesiones, S09a–c (14–16-nov).
+**S06-bis (tarea manual de Wills) + S07 — E2 curva seguridad-utilidad.** S06 se trabajó el 10-nov: la parte
+**defensiva y de medición** quedó construida, probada e integrada (C0–C3, clasificador de C2 elegido con evidencia,
+C3 de precio, `ataques/mapeo.md`). **Pendiente, a cargo de Wills:** redactar y plantar las 20 cargas de ataque
+(`docs/PLAN.md`, sección **S06-bis** al final, con esquema, reglas de seguridad y un prompt copiable). El asistente
+no puede redactar ni integrar cargas de inyección; esa autoría es de Wills. Sin las cargas no corre E2 (S07), que
+es el resultado estrella.
 
 Siguiente paso exacto:
-1. Verificar con Context7 y en la fuente primaria la taxonomía MITRE pertinente (ATLAS) y OWASP LLM01 (versión
-   vigente) antes de escribir `ataques/mapeo.md`.
-2. Diseñar las 20 cargas (5 clases × 4 ubicaciones) con su predicado de éxito verificable por programa; usar el
-   `llms.txt` de Alkosto como caso real documentado.
-3. Elegir el clasificador de inyección de Hugging Face para C2 (licencia permisiva y **sin acceso restringido**
-   en el Hub, para que cualquiera que clone el repositorio público o despliegue la demo lo descargue sin pedir
-   permiso; tamaño, latencia en el i5-1240P sin GPU, RAM) y proponerlo a Wills con opciones antes de integrarlo. Compararlo con Jev a nivel de fragmentos (D80):
-   API oficial `api.typesafe.ai` con `TYPESAFE_API_KEY` del `.env` (Wills crea la cuenta en console.typesafe.ai;
-   **no** usar `thejevai.com`, el dominio de una guía comunitaria sin empresa identificada). Incluir la variante
-   adaptativa de «política falsificada» y fragmentos limpios en español. Leer antes el recetario oficial de
-   *guardrails* y la referencia de la API (docs.typesafe.ai).
-4. Dejar una variante del corpus B con una inyección plantada lista para el laboratorio de ataques de CotIA (D83).
-5. Prueba de humo: 1 carga por clase en C0 y C3, con DeepSeek Flash (modelo base, D79).
-6. Corridas largas: lanzarlas con `systemd-inhibit --what=sleep` (el equipo se suspendió a mitad de E3).
+1. **Wills:** escribir los 20 textos en `ataques/cargas.yaml` siguiendo S06-bis, y lanzar el prompt de esa sección
+   en una sesión enfocada para construir el arnés de plantado y los predicados, correr la prueba de humo (1 carga
+   por clase en C0 y C3, Flash, < US$0,15) y medir M5.
+2. Con M5 disponible, S07: curva seguridad-utilidad C0–C3 (utilidad = M2 benigno; seguridad = 1 − M5),
+   frontera de Pareto y codo, costo y latencia por capa.
+3. Pendiente aún sin hacer de S06: comparación del clasificador de C2 con **Jev** a nivel de fragmentos (D80),
+   API oficial `api.typesafe.ai` con `TYPESAFE_API_KEY` del `.env`. Requiere las cargas escritas (se comparan los
+   mismos fragmentos). Se hace junto con S06-bis o en S07.
+4. Dejar una variante del corpus con inyección plantada para el laboratorio de CotIA (D83): sale del arnés de
+   plantado de S06-bis.
+5. Corridas largas: lanzarlas con `systemd-inhibit --what=sleep` (el equipo se suspendió a mitad de E3).
+
+**Hecho el 10-nov (parte defensiva de S06), con pruebas:**
+- **C0–C3 integradas en el agente** (`agente/defensa.py`, grafo y arnés). C2: clasificador por ventanas que retira
+  las marcadas antes de extraer. C3: excluye precios atípicos (banda de catálogo y mediana). `--configuracion C0..C3`.
+- **Clasificador de C2 elegido con evidencia** (D85): Horizon-Labs Guard (small), 0/47 falsos positivos en español,
+  p50 192 ms en CPU. El producto permite elegir entre los dos validados (D86). Evidencia en
+  `resultados/clasificadores/`; reproducible con `python -m comercio_agentico.ataques.elegir_clasificador`.
+- `ataques/mapeo.md`: OWASP LLM01:2025, OWASP Agentic 2026 (ASI01/ASI02) y MITRE **ATLAS** v2026.10, verificados
+  en la fuente. **La taxonomía MITRE pertinente es ATLAS** (pendiente resuelto).
+- Prueba de humo real: B013 benigno en C3 con Flash = ACIERTO, US$0,0151; el stack defensivo completo corre.
+- Borrador `docs/informe/03_metodologia_seguridad.md`. 14 pruebas nuevas (126 en total); Ruff limpio.
+- **Convención nueva (pedido de Wills):** cada laboratorio guarda evidencia versionada en `resultados/` y un
+  borrador de sección en `docs/informe/`, para el informe y la presentación.
 
 ## Presupuesto de modelos
 
@@ -28,7 +41,7 @@ Siguiente paso exacto:
 |---|---|
 | Presupuesto total | 300,00 |
 | Créditos comprados | 55,00 (Anthropic 30 + OpenRouter 20, 9-nov; TypeSafe 5, 10-nov, el mínimo que acepta, para la comparación con Jev de D80). Anthropic: US$29,83 disponibles y US$0,17 gastados (consola, 9-nov 21:43) |
-| Gastado acumulado | ~9,2 (S00: ~0,26; S01: 0,024; S02: ~0,18; S03: 1,74; S04: ~1,32; S05: ~5,7 = corpus A v1 0,361 + calibración v3 0,919 + E3 Flash 1,371 + E3 Haiku 1,528 + corrida parcial de Flash descartada 1,312 + ~0,2 de llamadas perdidas en la suspensión). OpenRouter: 7,46 de 20 usados (10-nov). Anthropic: ~US$28,3 disponibles tras Haiku |
+| Gastado acumulado | ~9,2 (S06: 0,015 prueba de humo C3 + clasificadores a US$0; S00: ~0,26; S01: 0,024; S02: ~0,18; S03: 1,74; S04: ~1,32; S05: ~5,7 = corpus A v1 0,361 + calibración v3 0,919 + E3 Flash 1,371 + E3 Haiku 1,528 + corrida parcial de Flash descartada 1,312 + ~0,2 de llamadas perdidas en la suspensión). OpenRouter: ~7,48 de 20 usados (10-nov). Anthropic: ~US$28,3 disponibles tras Haiku |
 
 Costo medido el 9-nov (S00) de una extracción estructurada típica (página con 12 ofertas, 1500–3500 tokens de
 entrada, `json_schema`): Flash 0,0015 · Haiku 0,0016 · DeepSeek Pro 0,006 · Sonnet 0,025 · Kimi 0,032 ·

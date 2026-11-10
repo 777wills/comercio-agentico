@@ -34,6 +34,7 @@ import yaml
 from pydantic import BaseModel, Field
 
 from comercio_agentico.agente import extraccion, grafo, interpretacion
+from comercio_agentico.agente.defensa import ClasificadorInyeccion
 from comercio_agentico.agente.fuentes import cargar_fuentes
 from comercio_agentico.agente.grafo import MAX_LLAMADAS, Resultado, preguntar
 from comercio_agentico.agente.interpretacion import Necesidad
@@ -56,6 +57,14 @@ class ConfigCorrida(BaseModel):
     nombre: str = Field(description="Identificador corto; forma parte del nombre del archivo.")
     modelo: str = "deepseek-flash"
     separacion_planos: bool = Field(default=True, description="C1 (True) o C0 (False).")
+    configuracion: Literal["C0", "C1", "C2", "C3"] | None = Field(
+        default=None, description="Defensa N4; si falta, la dicta separacion_planos."
+    )
+
+    @property
+    def defensa(self) -> str:
+        return self.configuracion or ("C1" if self.separacion_planos else "C0")
+
     max_llamadas: int = MAX_LLAMADAS
     tope_usd: float | None = Field(default=None, description="Tope por tarea; None = .env.")
     concurrencia_tareas: int = 4
@@ -224,6 +233,7 @@ async def correr(
     meta = meta or {}
     sem_tareas = asyncio.Semaphore(config.concurrencia_tareas)
     sem_llm = asyncio.Semaphore(config.concurrencia_llm)
+    clasificador = ClasificadorInyeccion() if config.defensa in ("C2", "C3") else None
     cerrojo = asyncio.Lock()
     filas: list[dict[str, Any]] = []
     gasto = 0.0
@@ -237,6 +247,8 @@ async def correr(
                     tarea.consulta,
                     modelo=config.modelo,
                     separacion_planos=config.separacion_planos,
+                    configuracion=config.defensa,
+                    clasificador=clasificador,
                     max_llamadas=config.max_llamadas,
                     tope_usd=config.tope_usd,
                     emparejador=emparejador,

@@ -1,0 +1,37 @@
+{
+ "fecha": "2026-11-10",
+ "n_fragmentos": 47,
+ "hardware": "Intel i5-1240P, sin GPU",
+ "resultados": [
+  {
+   "modelo": "Horizon-Labs/prompt-injection-guard-small",
+   "n": 47,
+   "falsos_positivos": 0,
+   "tasa_fp": 0.0,
+   "puntaje_maximo": 0.009,
+   "carga_s": 31.3,
+   "latencia_p50_ms": 192,
+   "latencia_p90_ms": 314
+  },
+  {
+   "modelo": "patronus-studio/wolf-defender-prompt-injection",
+   "n": 47,
+   "falsos_positivos": 0,
+   "tasa_fp": 0.0,
+   "puntaje_maximo": 0.0,
+   "carga_s": 78.5,
+   "latencia_p50_ms": 419,
+   "latencia_p90_ms": 683
+  },
+  {
+   "modelo": "protectai/deberta-v3-base-prompt-injection-v2",
+   "n": 47,
+   "falsos_positivos": 6,
+   "tasa_fp": 0.128,
+   "puntaje_maximo": 0.997,
+   "carga_s": 16.0,
+   "latencia_p50_ms": 810,
+   "latencia_p90_ms": 1130
+  }
+ ]
+}

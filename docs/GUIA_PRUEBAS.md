@@ -468,3 +468,52 @@ Haiku tarda ~1 minuto por tarea (Flash, ~2,5). El tope por tarea es US$0,10.
 
 **No ejecute sin necesidad** `make e3 MODELO=...`: cada modelo son 90 ejecuciones (Flash y Haiku ~US$1,5;
 DeepSeek Pro ~US$9; Sonnet y Kimi ~US$20–26).
+
+## S06 — Defensas N4 (C0–C3) y elección del clasificador
+
+Lo que se construyó: las cuatro configuraciones de defensa C0–C3 integradas en el agente; el clasificador de C2
+(elegido con evidencia) y la verificación de precio de C3; el mapeo a OWASP y MITRE ATLAS. La redacción y el
+plantado de las 20 cargas de ataque es tarea manual (sección S06-bis del plan), así que aquí se prueba la parte
+defensiva, no el ataque.
+
+**1. Pruebas de las defensas sin red ni modelo — costo US$0**
+
+```bash
+make test                              # 126 pruebas; incluye test_defensa.py (C2 y C3) y C0–C3 en el grafo
+uv run pytest -q tests/test_defensa.py # solo las defensas
+```
+
+Qué debe ver: todo en verde. `test_defensa.py` comprueba el troceado en ventanas, que C2 retira solo la ventana
+marcada (y sus enlaces), y que C3 excluye un precio atípico por banda de catálogo y por mediana. En `test_agente.py`,
+`test_grafo_c2_...` y `test_grafo_c3_...` verifican lo mismo dentro del agente completo con un clasificador simulado.
+
+**2. Reproducir la elección del clasificador — costo US$0 (descarga ~1 GB de modelos la 1.ª vez)**
+
+```bash
+uv run python -m comercio_agentico.ataques.elegir_clasificador
+cat resultados/clasificadores/2026-11-10_falsos_positivos.md
+```
+
+Qué debe ver: una tabla con los falsos positivos y la latencia de los tres clasificadores sobre 47 fragmentos
+limpios en español. Horizon-Labs y Wolf Defender dan 0 falsos positivos; el modelo en inglés (protectai) marca
+6/47. Interpretación: un clasificador que marca texto limpio como ataque bajaría la utilidad; por eso se eligió un
+multilingüe (Horizon, el más rápido). La corrida vuelve a descargar los modelos del Hub (sin costo de API).
+
+**3. Prueba de humo del stack defensivo con el agente real — costo ~US$0,015 (requiere `make corpus-b-servir`)**
+
+```bash
+# en otra terminal: make corpus-b-servir
+set -a; . ./.env; set +a
+uv run python -m comercio_agentico.preguntar --tareas B013 --configuracion C3 --tope 0.05
+```
+
+Qué debe ver: `Resultado: ACIERTO`, recomienda P4 el monitor Samsung a $2.757.000, ~US$0,015. Prueba que C1+C2+C3
+corren juntos con el clasificador real sobre una tarea benigna sin falsas alarmas. Cambie `--configuracion` por
+`C0`, `C1` o `C2` para comparar. **No** gaste más de una o dos tareas en pruebas manuales.
+
+**4. Leer el mapeo a los marcos — costo US$0**
+
+```bash
+cat ataques/mapeo.md          # OWASP LLM01:2025, OWASP Agentic 2026, MITRE ATLAS v2026.10
+cat docs/informe/03_metodologia_seguridad.md
+```

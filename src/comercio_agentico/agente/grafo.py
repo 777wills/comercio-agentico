@@ -8,6 +8,8 @@
   **Separación de planos (C1):** al planificador vuelven solo ofertas estructuradas y URL del mismo
   sitio, nunca el texto del proveedor. Con ``separacion_planos=False`` (C0) recibe el texto crudo.
 - ``emparejar``: GTIN/MPN exacto o embeddings + confirmación del LLM (D15); quita duplicados.
+- Defensas (N4): **C2** filtra cada fragmento con un clasificador de inyección antes del extractor;
+  **C3** excluye después del emparejamiento las ofertas con precio atípico (``defensa.py``).
 - ``proponer``: determinista. Aplica las restricciones duras del perfil y de la necesidad y elige el
   menor costo total (precio + envío). Si nada cumple, se abstiene y explica por qué.
 
@@ -22,14 +24,16 @@ import logging
 import operator
 import time
 import unicodedata
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from typing import Annotated, Any, TypedDict
+from typing import Annotated, Any, Literal, TypedDict
 
 from langchain_core.messages import AIMessage, AnyMessage, HumanMessage, SystemMessage, ToolMessage
 from langchain_core.tools import tool
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
 
+from comercio_agentico.agente.defensa import ClasificadorInyeccion, filtrar, verificar_precios
 from comercio_agentico.agente.extraccion import extraer_ofertas
 from comercio_agentico.agente.fuentes import RegistroFuentes, cargar_fuentes
 from comercio_agentico.agente.interpretacion import Necesidad, interpretar
@@ -56,6 +60,8 @@ log = logging.getLogger("comercio_agentico.agente")
 
 MAX_LLAMADAS = 14
 MAX_TEXTO_C0 = 12_000  # caracteres de texto crudo por herramienta en C0
+Configuracion = Literal["C0", "C1", "C2", "C3"]
+CONFIGURACIONES: tuple[str, ...] = ("C0", "C1", "C2", "C3")
 
 
 # --------------------------------------------------------------------------------------------------
@@ -153,6 +159,7 @@ class Estado(TypedDict, total=False):
     messages: Annotated[list[AnyMessage], add_messages]
     ofertas: Annotated[list[Oferta], operator.add]
     errores: Annotated[list[str], operator.add]
+    alertas: Annotated[list[Alerta], operator.add]  # de las defensas (C2)
     llamadas: int
     ofertas_finales: list[Oferta]  # emparejadas y sin duplicados (sin reductor: se reemplaza)
     propuesta: PropuestaCompra
@@ -168,11 +175,24 @@ class Contexto:
     emparejador: Emparejador
     perfil: PerfilCategoria
     costo: RegistroCosto
-    separacion_planos: bool = True
+    configuracion: Configuracion = "C1"
+    clasificador: Any = None  # C2 y C3: ClasificadorInyeccion o un doble con `puntuar`
     max_llamadas: int = MAX_LLAMADAS
     concurrencia_llm: int = 3
     _llm: dict[str, Any] = field(default_factory=dict)
     _semaforo: asyncio.Semaphore | None = None
+
+    @property
+    def separacion_planos(self) -> bool:
+        return self.configuracion != "C0"
+
+    @property
+    def filtra_inyeccion(self) -> bool:
+        return self.configuracion in ("C2", "C3")
+
+    @property
+    def verifica_precios(self) -> bool:
+        return self.configuracion == "C3"
 
     @property
     def config(self) -> dict:
@@ -216,7 +236,24 @@ def resumen_oferta(o: Oferta) -> dict[str, Any]:
     return {k: v for k, v in datos.items() if v is not None}
 
 
-async def ejecutar_herramienta(ctx: Contexto, llamada: dict) -> tuple[ToolMessage, list[Oferta]]:
+async def filtrar_documento(ctx: Contexto, doc: Documento) -> tuple[Documento, list[Alerta]]:
+    """C2: retira del fragmento las ventanas que el clasificador marca como inyección."""
+    f = await asyncio.to_thread(filtrar, doc.texto, doc.enlaces, ctx.clasificador)
+    if not f.retiradas:
+        return doc, []
+    log.info("  ⚠ C2 retiró %d de %d ventanas de %s", f.retiradas, f.total, doc.consulta)
+    alerta = Alerta(
+        tipo="posible_inyeccion",
+        mensaje=f"{doc.fuente.id}: se retiraron {f.retiradas} de {f.total} ventanas de "
+        f"{doc.consulta} (puntaje máximo {f.puntaje_max:.2f}).",
+    )
+    limpio = Documento(fuente=doc.fuente, consulta=doc.consulta, texto=f.texto, enlaces=f.enlaces)
+    return limpio, [alerta]
+
+
+async def ejecutar_herramienta(
+    ctx: Contexto, llamada: dict
+) -> tuple[ToolMessage, list[Oferta], list[Alerta]]:
     nombre, args = llamada["name"], llamada.get("args", {})
     inicio = time.perf_counter()
     try:
@@ -230,6 +267,9 @@ async def ejecutar_herramienta(ctx: Contexto, llamada: dict) -> tuple[ToolMessag
                 doc = await ctx.lector.consultar_mcp(args.get("texto", ""), args.get("familia"))
             case _:
                 raise ValueError(f"Herramienta desconocida: {nombre}")
+        alertas: list[Alerta] = []
+        if ctx.filtra_inyeccion:
+            doc, alertas = await filtrar_documento(ctx, doc)
         ofertas = await extraer_ofertas(
             doc,
             ctx.llm("extractor"),
@@ -242,7 +282,7 @@ async def ejecutar_herramienta(ctx: Contexto, llamada: dict) -> tuple[ToolMessag
     except Exception as error:  # la fuente caída no tumba la tarea: se informa al planificador
         contenido = json.dumps({"error": f"{type(error).__name__}: {error}"}, ensure_ascii=False)
         log.info("  ✗ %s(%s): %s", nombre, args, error)
-        return ToolMessage(contenido, tool_call_id=llamada["id"], status="error"), []
+        return ToolMessage(contenido, tool_call_id=llamada["id"], status="error"), [], []
 
     log.info(
         "  · %s(%s) → %d ofertas en %.0f s",
@@ -265,7 +305,7 @@ async def ejecutar_herramienta(ctx: Contexto, llamada: dict) -> tuple[ToolMessag
         enlaces = "\n".join(doc.enlaces)
         contenido = f"Proveedor {doc.fuente.id}, {doc.consulta}:\n{doc.texto[:MAX_TEXTO_C0]}"
         contenido += f"\n\nEnlaces:\n{enlaces}" if enlaces else ""
-    return ToolMessage(contenido, tool_call_id=llamada["id"]), ofertas
+    return ToolMessage(contenido, tool_call_id=llamada["id"]), ofertas, alertas
 
 
 # --------------------------------------------------------------------------------------------------
@@ -337,12 +377,14 @@ def proponer(
     errores: list[str],
     modelo: str,
     costo_usd: float,
+    alertas_defensa: Sequence[Alerta] = (),
 ) -> PropuestaCompra:
     validas = sorted(
         (o for o in ofertas if motivo_descarte(o, necesidad, perfil, productos) is None),
         key=lambda o: (o.costo_total, o.proveedor),
     )
     alertas = [Alerta(tipo="fuente_no_disponible", mensaje=e) for e in errores]
+    alertas += list(alertas_defensa)
     if necesidad.degradada:
         alertas.append(
             Alerta(
@@ -413,6 +455,7 @@ def proponer(
 
 def construir_grafo(ctx: Contexto):
     productos = {p.id: p for p in ctx.emparejador.catalogo}
+    referencias = {p.id: float(p.precio_referencia_cop) for p in ctx.emparejador.catalogo}
 
     async def nodo_interpretar(estado: Estado) -> dict:
         necesidad = await interpretar(
@@ -446,18 +489,19 @@ def construir_grafo(ctx: Contexto):
         restantes = ctx.max_llamadas - estado.get("llamadas", 0)
         permitidas, excedidas = llamadas[:restantes], llamadas[restantes:]
         resultados = await asyncio.gather(*(ejecutar_herramienta(ctx, c) for c in permitidas))
-        mensajes = [m for m, _ in resultados] + [
+        mensajes = [m for m, _, _ in resultados] + [
             ToolMessage("Límite de llamadas alcanzado.", tool_call_id=c["id"], status="error")
             for c in excedidas
         ]
         errores = [
             f"{c['name']}({c.get('args')}): {m.content}"
-            for c, (m, _) in zip(permitidas, resultados, strict=True)
+            for c, (m, _, _) in zip(permitidas, resultados, strict=True)
             if m.status == "error"
         ]
         return {
             "messages": mensajes,
-            "ofertas": [o for _, ofs in resultados for o in ofs],
+            "ofertas": [o for _, ofs, _ in resultados for o in ofs],
+            "alertas": [a for _, _, als in resultados for a in als],
             "errores": errores,
             "llamadas": estado.get("llamadas", 0) + len(permitidas),
         }
@@ -486,15 +530,22 @@ def construir_grafo(ctx: Contexto):
         return {"ofertas_finales": unicas}
 
     async def nodo_proponer(estado: Estado) -> dict:
+        ofertas, alertas = estado["ofertas_finales"], list(estado.get("alertas", []))
+        if ctx.verifica_precios:
+            ofertas, atipicas = verificar_precios(ofertas, referencias)
+            alertas += atipicas
+            for a in atipicas:
+                log.info("  ⚠ C3 %s", a.mensaje)
         propuesta = proponer(
             estado["consulta"],
             estado["necesidad"],
-            estado["ofertas_finales"],
+            ofertas,
             ctx.perfil,
             productos,
             estado.get("errores", []),
             ctx.modelo,
             ctx.costo.costo_total,
+            alertas,
         )
         return {"propuesta": propuesta}
 
@@ -535,6 +586,8 @@ async def preguntar(
     *,
     modelo: str = "deepseek-flash",
     separacion_planos: bool = True,
+    configuracion: Configuracion | None = None,
+    clasificador: Any = None,
     max_llamadas: int = MAX_LLAMADAS,
     tope_usd: float | None = None,
     registro: RegistroFuentes | None = None,
@@ -547,7 +600,14 @@ async def preguntar(
 
     ``semaforo_llm`` permite que varias tareas en paralelo compartan un único límite de llamadas
     simultáneas al LLM (el arnés lo usa); si falta, cada tarea crea el suyo.
+
+    ``configuracion`` (C0–C3) prevalece sobre ``separacion_planos``, que se conserva por
+    compatibilidad (True = C1, False = C0). En C2 y C3, ``clasificador`` permite compartir un
+    único modelo cargado entre tareas; si falta, se crea uno.
     """
+    configuracion = configuracion or ("C1" if separacion_planos else "C0")
+    if configuracion in ("C2", "C3") and clasificador is None:
+        clasificador = ClasificadorInyeccion()
     inicio = time.perf_counter()
     registro = registro or cargar_fuentes()
     perfil = perfil or cargar_perfil(RUTA_PERFIL)
@@ -561,7 +621,8 @@ async def preguntar(
             emparejador=emparejador,
             perfil=perfil,
             costo=costo,
-            separacion_planos=separacion_planos,
+            configuracion=configuracion,
+            clasificador=clasificador,
             max_llamadas=max_llamadas,
             _semaforo=semaforo_llm,
         )

@@ -299,7 +299,9 @@ def calcular(
     verdad = verdad or cargar_verdad()
     meta = {k: filas[0].get(k) for k in ("corrida", "modelo", "version_prompt", "hash_corpus")}
     meta["commit"] = sorted({f.get("commit") for f in filas if f.get("commit")})
-    meta["separacion_planos"] = (filas[0].get("config") or {}).get("separacion_planos")
+    cfg = filas[0].get("config") or {}
+    meta["separacion_planos"] = cfg.get("separacion_planos")
+    meta["configuracion"] = cfg.get("configuracion")
     return {
         "meta": meta,
         "M1": m1_extraccion(filas, verdad, tareas_por_id),
@@ -328,7 +330,7 @@ def _num(b: dict, formato: str) -> str:
 
 def a_markdown(m: dict[str, Any]) -> str:
     me, m1, m2, m3, m4, m6 = m["meta"], m["M1"], m["M2"], m["M3"], m["M4"], m["M6"]
-    plano = {True: "C1", False: "C0"}.get(me["separacion_planos"], "?")
+    plano = me.get("configuracion") or {True: "C1", False: "C0"}.get(me["separacion_planos"], "?")
     lineas = [
         f"# Métricas de la corrida `{me['corrida']}`",
         "",

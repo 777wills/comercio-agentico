@@ -244,7 +244,7 @@ def test_sin_duplicados_prefiere_la_ficha_al_listado():
 
 class LectorDoble:
     async def leer_documento(self, url):
-        return doc("P5", f"monitor samsung m8 64gb a 2.765.000. {SECRETO}", url)
+        return doc("P5", f"monitor samsung m8 64gb a 2.765.000.\n{SECRETO}", url)
 
     async def abrir_pagina(self, url):
         raise OSError("caída simulada")
@@ -253,7 +253,25 @@ class LectorDoble:
         return doc("P1", "[]", "mcp://P1/buscar_productos")
 
 
-def correr_grafo(separacion: bool):
+class ClasificadorDoble:
+    """Marca como inyección toda ventana que contiene SECRETO."""
+
+    umbral = 0.5
+
+    def puntuar(self, textos):
+        return [0.99 if SECRETO in t else 0.01 for t in textos]
+
+
+class ClasificadorPermisivo:
+    umbral = 0.5
+
+    def puntuar(self, textos):
+        return [0.0 for _ in textos]
+
+
+def correr_grafo(
+    separacion: bool = True, configuracion: str | None = None, precio=2_765_000, clasificador=None
+):
     planificador = Doble(
         AIMessage(
             "",
@@ -266,7 +284,7 @@ def correr_grafo(separacion: bool):
     )
     extraida = OfertaExtraida(
         titulo="monitor samsung m8 64gb",
-        precio=2_765_000,
+        precio=precio,
         costo_envio=10_000,
         disponibilidad="en_stock",
     )
@@ -277,7 +295,8 @@ def correr_grafo(separacion: bool):
         emparejador=EMPAREJADOR,
         perfil=PERFIL,
         costo=RegistroCosto(1.0),
-        separacion_planos=separacion,
+        configuracion=configuracion or ("C1" if separacion else "C0"),
+        clasificador=clasificador or ClasificadorDoble(),
     )
     ctx._llm = {
         "interprete": Doble(Necesidad(producto_mencionado="Samsung M8 64GB", producto_id="C11")),
@@ -291,11 +310,12 @@ def correr_grafo(separacion: bool):
         )
     )
     vistos = " ".join(str(m.content) for ms in planificador.vistos for m in ms)
-    return final, vistos
+    extractor = " ".join(str(m.content) for ms in ctx._llm["extractor"].vistos for m in ms)
+    return final, vistos, extractor
 
 
 def test_grafo_c1_el_planificador_no_ve_texto_del_proveedor():
-    final, vistos = correr_grafo(separacion=True)
+    final, vistos, _ = correr_grafo(separacion=True)
     p = final["propuesta"]
     assert not p.abstencion and p.ofertas[0].proveedor == "P5"
     assert p.ofertas[0].procedencia.fragmento_original.endswith(SECRETO)  # se guarda para auditar
@@ -306,8 +326,38 @@ def test_grafo_c1_el_planificador_no_ve_texto_del_proveedor():
 
 
 def test_grafo_c0_el_planificador_recibe_el_texto_crudo():
-    _, vistos = correr_grafo(separacion=False)
+    _, vistos, _ = correr_grafo(separacion=False)
     assert SECRETO in vistos
+
+
+def test_grafo_c2_retira_la_ventana_marcada_antes_del_extractor():
+    final, vistos, extractor = correr_grafo(configuracion="C2")
+    assert SECRETO not in vistos + extractor  # ni el extractor ni el planificador la ven
+    alertas = [a for a in final["propuesta"].alertas if a.tipo == "posible_inyeccion"]
+    assert len(alertas) == 1 and "P5" in alertas[0].mensaje
+
+
+def test_grafo_c1_el_extractor_si_ve_la_ventana_que_c2_retiraria():
+    _, vistos, extractor = correr_grafo(configuracion="C1")
+    # C1 la aísla del planificador, pero el extractor la lee
+    assert SECRETO not in vistos and SECRETO in extractor
+
+
+def test_grafo_c3_excluye_el_precio_atipico_y_se_abstiene():
+    # ~0,3 × la referencia de C11; el clasificador no marca nada para aislar C3
+    final, _, _ = correr_grafo(
+        configuracion="C3", precio=900_000, clasificador=ClasificadorPermisivo()
+    )
+    p = final["propuesta"]
+    assert p.abstencion
+    assert any(a.tipo == "precio_atipico" for a in p.alertas)
+
+
+def test_grafo_c2_no_verifica_precios():
+    final, _, _ = correr_grafo(
+        configuracion="C2", precio=900_000, clasificador=ClasificadorPermisivo()
+    )
+    assert not any(a.tipo == "precio_atipico" for a in final["propuesta"].alertas)
 
 
 def test_limitado_reintenta_ante_429_y_no_ante_otros_errores(monkeypatch):

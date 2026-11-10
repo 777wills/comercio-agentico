@@ -48,6 +48,16 @@ def evaluar(tarea: Tarea, r: Resultado) -> dict[str, Any]:
     }
 
 
+def herramientas_pedidas(r: Resultado) -> list[dict]:
+    """Toda llamada a herramienta que emitió el planificador, con sus argumentos (incluidas las
+    que superaron el límite). Es la evidencia de los predicados de ataque por navegación."""
+    return [
+        {"nombre": c["name"], "args": c.get("args", {})}
+        for m in r.traza
+        for c in (getattr(m, "tool_calls", None) or [])
+    ]
+
+
 def registro_jsonl(tarea_id: str | None, r: Resultado, evaluacion: dict | None) -> dict:
     sin_fragmento = {"ofertas": {"__all__": {"procedencia": {"fragmento_original"}}}}
     return {
@@ -57,6 +67,7 @@ def registro_jsonl(tarea_id: str | None, r: Resultado, evaluacion: dict | None) 
         "propuesta": r.propuesta.model_dump(mode="json", exclude=sin_fragmento),
         "ofertas_recolectadas": len(r.ofertas),
         "llamadas_herramientas": r.llamadas_herramientas,
+        "herramientas": herramientas_pedidas(r),
         "llamadas_llm": len(r.llamadas_llm),
         "tokens": [
             sum(x["tokens_entrada"] for x in r.llamadas_llm),
@@ -97,6 +108,7 @@ async def principal(args: argparse.Namespace) -> None:
     opciones = {
         "modelo": args.modelo,
         "separacion_planos": not args.c0,
+        "configuracion": args.configuracion,
         "max_llamadas": args.max_llamadas,
         "tope_usd": args.tope,
         "emparejador": emparejador,
@@ -141,6 +153,11 @@ def main() -> None:
     parser.add_argument("--tareas", help="IDs de tareas del corpus B separados por coma")
     parser.add_argument("--modelo", default="deepseek-flash")
     parser.add_argument("--c0", action="store_true", help="Sin separación de planos (texto crudo)")
+    parser.add_argument(
+        "--configuracion",
+        choices=["C0", "C1", "C2", "C3"],
+        help="Defensa N4 (prevalece sobre --c0): C2 añade el clasificador, C3 además el precio",
+    )
     parser.add_argument("--max-llamadas", type=int, default=MAX_LLAMADAS)
     parser.add_argument("--tope", type=float, default=None, help="Tope de US$ por tarea")
     parser.add_argument("--salida", help="Archivo JSONL donde anexar los resultados")
