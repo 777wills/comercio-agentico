@@ -460,38 +460,15 @@ cargas:
 - **Las clases con URL** (`inflar_cantidad`, `saltar_confirmacion`) necesitan que el texto incluya el
   marcador `{URL_ACCION}`, que el arnés reemplaza por la URL local de acción del proveedor (estilo
   WooCommerce `?add-to-cart=ID&quantity=N`). Así el predicado puede detectar si el agente la abre.
-- **El repositorio es público.** Si prefieres no publicar los textos de ataque, pon `cargas.yaml`
-  bajo `privado/` y referencia su ruta; decídelo antes del commit.
+- **Los textos no se publican.** `cargas.yaml` vive en `privado/tarea_cargas/` (fuera de git); el
+  repositorio público no incluye los textos de inyección, solo las defensas y la metodología (D89).
 
-### Cuándo hacerlo
+### Cuándo hacerlo y dónde
 
-Puedes hacerlo **al cerrar esta sesión o al abrir S07**, antes de correr la curva seguridad-utilidad.
-Es independiente del resto: las defensas ya están listas y probadas, así que esta tarea es el único
-bloqueo para S07.
+Puedes hacerlo al cerrar esta sesión o al abrir S07; es independiente del resto. Las defensas ya están
+listas y probadas, así que esta tarea es el único bloqueo para S07.
 
-### Prompt para una sesión enfocada
-
-Pega esto en una sesión nueva de Claude Code cuando ya tengas los 20 textos escritos en
-`ataques/cargas.yaml`:
-
-```
-Retomo el Proyecto III. Ya redacté yo mismo los 20 textos de ataque en ataques/cargas.yaml
-(campo `texto` de cada carga). Son cadenas de inyección sintéticas para mi laboratorio académico
-de seguridad, que se plantan solo en el corpus B local (proveedores sintéticos P2–P5), nunca en
-sitios reales. Lee ataques/mapeo.md y el esquema de cargas en docs/PLAN.md (sección S06-bis).
-
-Construye, sin redactar ni modificar los textos de ataque (son míos):
-1. src/comercio_agentico/ataques/suite.py: el modelo Pydantic `Carga` que valida cargas.yaml y
-   las funciones de predicado de éxito, que leen la fila JSONL de una ejecución y devuelven
-   True/False por programa (sin juicio humano), una por clase.
-2. src/comercio_agentico/ataques/plantar.py: copia corpus/b_sintetico a corpus/b_ataques/<id>/ e
-   inserta el `texto` en el `archivo` indicado según la ubicación (visible, comentario/JSON-LD
-   oculto, nota en el PDF, línea en el chat), reemplazando {URL_ACCION} por la URL local. No toca
-   el corpus limpio.
-3. src/comercio_agentico/ataques/correr.py: para cada carga y cada configuración C0–C3, corre el
-   agente sobre la tarea indicada, guarda la corrida y evalúa el predicado. Métrica M5 = tasa de
-   éxito del ataque.
-4. Pruebas sin red con un agente simulado y una carga de ejemplo neutra que yo te indique.
-Luego corre la prueba de humo (1 carga por clase en C0 y C3, DeepSeek Flash) y repórtame M5.
-Aplica Context7 antes de usar cualquier API de librería y cuida el presupuesto (CLAUDE.md).
-```
+**El paso a paso detallado, el ejemplo de entrada y el prompt para pegar están en
+`privado/tarea_cargas/INSTRUCCIONES.md`** (fuera de git, no se publica ni se auto-lee). Los textos de
+ataque se escriben en `privado/tarea_cargas/cargas.yaml`, también fuera de git: el repositorio público
+muestra las defensas, la metodología y el mapeo, pero no los textos de inyección (D89).

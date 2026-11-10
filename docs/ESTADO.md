@@ -5,7 +5,7 @@
 **S06-bis (tarea manual de Wills) + S07 — E2 curva seguridad-utilidad.** S06 se trabajó el 10-nov: la parte
 **defensiva y de medición** quedó construida, probada e integrada (C0–C3, clasificador de C2 elegido con evidencia,
 C3 de precio, `ataques/mapeo.md`). **Pendiente, a cargo de Wills:** redactar y plantar las 20 cargas de ataque
-(`docs/PLAN.md`, sección **S06-bis** al final, con esquema, reglas de seguridad y un prompt copiable). El asistente
+(`privado/tarea_cargas/INSTRUCCIONES.md` (paso a paso) y `docs/PLAN.md` sección **S06-bis**, con esquema, reglas de seguridad y un prompt copiable). El asistente
 no puede redactar ni integrar cargas de inyección; esa autoría es de Wills. Sin las cargas no corre E2 (S07), que
 es el resultado estrella.
 
