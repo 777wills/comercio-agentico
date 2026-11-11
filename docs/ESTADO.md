@@ -16,9 +16,9 @@ Siguiente paso exacto:
    flujo SSE se abre solo con el id; la clave va solo en `POST /api/consultas`.
 3. **Corridas largas: una a la vez y con `systemd-run --user`** (`MEMORIA_CLAUDE_CODE.md` §6). La terminal del
    editor corta con ^C cualquier comando de más de ~45 s: esperar en pasos cortos y leer los registros.
-4. Pendientes abiertos para Wills: (a) si corre el opcional de S07 (C0 y C3 con un segundo modelo, ~US$1,2);
-   (c) cómo presenta CotIA a N3 (indicador por oferta o abstención; D104 fijó `abstener` en el nodo y la API acepta
-   `politica_n3`). El pendiente (b) quedó resuelto con D106 (C2 por defecto).
+4. Pendiente abierto para Wills: (c) cómo presenta CotIA a N3 (indicador por oferta o abstención; D104 fijó
+   `abstener` en el nodo y la API acepta `politica_n3`). (b) se resolvió con D106 (C2 por defecto) y (a) con D108
+   (E2 con Haiku, ya corrido).
 5. Hallazgo para la hoja de ruta: el intérprete convierte «64 GB» de una consulta libre en una restricción de
    almacenamiento y el agente se abstiene. No se corrige ahora porque cambia la huella de prompt de E1–E3.
 
@@ -93,7 +93,7 @@ Siguiente paso exacto:
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Presupuesto total  | 300,00                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | Créditos comprados | 75,00 (Anthropic 30 + OpenRouter 20, 9-nov; TypeSafe 5, 10-nov, el mínimo que acepta, para la comparación con Jev de D80; OpenRouter 20 más, 10-nov, S09a). Anthropic: US$29,83 disponibles y US$0,17 gastados (consola, 9-nov 21:43)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| Gastado acumulado  | ~15,39 (S09a: 0,3745 = humo de la lista curada 0,3443 + punta a punta 0,0302, todo OpenRouter; S08: 0,0213 = segunda lectura de N3 con Haiku en 15 fragmentos; S07: ~5,57 = matriz de ataque 3,4454 + utilidad benigna 1,9011 + Jev ~0,0015 + ~0,22 perdidos en dos cierres de VS Code; S06-bis arnés: 0,2327 humo C0/C3 en dos pasadas, 0,1473 + 0,0854; S06: 0,015 prueba de humo C3 + clasificadores a US$0; S00: ~0,26; S01: 0,024; S02: ~0,18; S03: 1,74; S04: ~1,32; S05: ~5,7 = corpus A v1 0,361 + calibración v3 0,919 + E3 Flash 1,371 + E3 Haiku 1,528 + corrida parcial de Flash descartada 1,312 + ~0,2 de llamadas perdidas en la suspensión). OpenRouter: **saldo real US$21,26** (consola, 10-nov tras S09a; de US$40 cargados). La suma de costos por llamada (~13,7) queda corta frente a la consola: comisiones de compra y llamadas perdidas en cierres no registradas. TypeSafe: ~US$0,002 de 5. Anthropic: **saldo real US$28,25** (consola, 10-nov antes de D108; US$1,76 gastados en el mes) |
+| Gastado acumulado  | ~17,36 (D108 E2 con Haiku: 1,9716 Anthropic; S09a: 0,3745 = humo de la lista curada 0,3443 + punta a punta 0,0302, todo OpenRouter; S08: 0,0213 = segunda lectura de N3 con Haiku en 15 fragmentos; S07: ~5,57 = matriz de ataque 3,4454 + utilidad benigna 1,9011 + Jev ~0,0015 + ~0,22 perdidos en dos cierres de VS Code; S06-bis arnés: 0,2327 humo C0/C3 en dos pasadas, 0,1473 + 0,0854; S06: 0,015 prueba de humo C3 + clasificadores a US$0; S00: ~0,26; S01: 0,024; S02: ~0,18; S03: 1,74; S04: ~1,32; S05: ~5,7 = corpus A v1 0,361 + calibración v3 0,919 + E3 Flash 1,371 + E3 Haiku 1,528 + corrida parcial de Flash descartada 1,312 + ~0,2 de llamadas perdidas en la suspensión). OpenRouter: **saldo real US$21,26** (consola, 10-nov tras S09a; de US$40 cargados). La suma de costos por llamada (~13,7) queda corta frente a la consola: comisiones de compra y llamadas perdidas en cierres no registradas. TypeSafe: ~US$0,002 de 5. Anthropic: **saldo real US$28,25** (consola, 10-nov antes de D108; US$1,76 gastados en el mes) |
 
 Costo medido el 9-nov (S00) de una extracción estructurada típica (página con 12 ofertas, 1500–3500 tokens de
 entrada, `json_schema`): Flash 0,0015 · Haiku 0,0016 · DeepSeek Pro 0,006 · Sonnet 0,025 · Kimi 0,032 ·
@@ -119,6 +119,16 @@ largas que la de prueba (recalibrar en S03 con el arnés), y Opus queda cerca de
 El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un subproceso.
 
 ## Bitácora
+
+### 10-nov-2026 — Opcional de S07: E2 con Claude Haiku 5.5 (VS Code · Opus 5.5)
+- D108 fijada con Wills antes de correr: 20 cargas × C0 y C3 × 3 repeticiones con Haiku por Anthropic directo,
+  solo M5, tope US$2,50. 120 ejecuciones, 0 errores, **US$1,9716** (Anthropic; saldo esperado ~US$26,3).
+- **M5 Haiku: C0 0/60 y C3 0/60 [0; 6,0 %]**: la suite no vulnera a Haiku ni sin defensas (efecto suelo). A20, A04 y
+  A09, que vulneraron a Flash en C0, no prosperaron. Acierto bajo ataque 90,0 % (C0) y 88,3 % (C3); p50 ~53 s.
+- Informe: sección «Segundo modelo» y «Alcance» en `04_resultados_e2.md`. Evidencia:
+  `resultados/ataques/2026-11-10_suite_ataques_haiku*`.
+- Incidente: al guardar en VS Code archivos que el agente había dejado abiertos, se perdieron D108 y los saldos
+  reales de `ESTADO.md`; se restauraron y se fijaron en el commit `1f5b146`.
 
 ### 10-nov-2026 — S09a: API de CotIA, SSE y persistencia (VS Code · Opus 5.5)
 

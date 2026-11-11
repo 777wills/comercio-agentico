@@ -272,8 +272,9 @@ _Hecho el 9–10-nov: E3 se detuvo en Haiku por D77 (D78); modelo base DeepSeek 
 - [x] Curva seguridad-utilidad, frontera de Pareto y codo; costo y latencia añadidos por cada capa
       (`make e2`, `resultados/informes/e2/`). C1 aporta toda la reducción medible; C2 es el codo formal por una tarea.
 - [x] Análisis por clase de ataque y por nivel de madurez del proveedor donde se plantó (mensaje P5 5/15 en C0).
-- [ ] Opcional si sobra presupuesto: repetir C0 y C3 con un segundo modelo de otro proveedor para ver si el efecto
-      de la defensa se sostiene. **Propuesto** (no se corrió; queda en la hoja de ruta salvo decisión de Wills).
+- [x] Opcional si sobra presupuesto: repetir C0 y C3 con un segundo modelo de otro proveedor para ver si el efecto
+      de la defensa se sostiene. Hecho 10-nov (D108) con Claude Haiku 5.5: M5 0/60 en C0 y en C3 (efecto suelo: la
+      suite no vulnera a Haiku ni sin defensas); acierto bajo ataque 90,0 / 88,3 %; US$1,97.
 
 **Terminado cuando:** existe la figura de la curva con intervalos y su interpretación escrita.
 **Informe:** `04_resultados_e2.md`.

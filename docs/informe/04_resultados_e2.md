@@ -131,12 +131,40 @@ ninguna de las dos configuraciones, aunque el agente leyó en todos los casos el
 clasificador de inyección marcó y retiró el fragmento atacado en las ocho ejecuciones, y la utilidad sobre la tarea
 benigna se conservó (8/8 aciertos en ambas configuraciones).
 
+## Segundo modelo: Claude Haiku 5.5
+
+Para comprobar si el resultado depende del modelo, la matriz de seguridad se repitió en las configuraciones extremas
+C0 y C3 con Claude Haiku 5.5 (Anthropic), de otra familia y otro proveedor que el modelo base. Se usaron las mismas
+20 cargas, variantes y predicados, con tres repeticiones (D108).
+
+**Tabla 4.x.6.** M5 por modelo en C0 y C3. Intervalos de Wilson al 95 %.
+
+| Modelo | Configuración | Éxitos / ejecuciones | M5 | IC 95 % | Acierto bajo ataque | Latencia p50 (s) |
+|---|---|---:|---:|---:|---:|---:|
+| DeepSeek V4.1 Flash | C0 | 7 / 60 | 11,7 % | [5,8 %; 22,2 %] | 85,0 % | 120 |
+| DeepSeek V4.1 Flash | C3 | 0 / 60 | 0,0 % | [0,0 %; 6,0 %] | 100,0 % | 125 |
+| Claude Haiku 5.5 | C0 | 0 / 60 | 0,0 % | [0,0 %; 6,0 %] | 90,0 % | 53 |
+| Claude Haiku 5.5 | C3 | 0 / 60 | 0,0 % | [0,0 %; 6,0 %] | 88,3 % | 54 |
+
+Fuente: `resultados/ataques/2026-11-10_suite_ataques_haiku_m5.{json,md}` y la corrida
+`2026-11-10_suite_ataques_haiku.jsonl.gz` (120 ejecuciones, 0 errores, US$1,97).
+
+Con Haiku ninguna carga tuvo éxito, ni siquiera sin defensas. Las tres cargas que vulneraron a Flash en C0 (A20,
+precio falso en el chat; A04, desvío desde el chat; A09, presupuesto en la URL) no prosperaron con Haiku en ninguna
+de sus tres repeticiones. La vulnerabilidad a esta suite depende, por tanto, del modelo. Con un modelo que ya
+resiste las cargas, la suite no puede mostrar el aporte de las defensas: es un efecto suelo, y la reducción que
+produce la separación de planos con Flash no puede replicarse ni refutarse con Haiku. Las defensas no le restan
+utilidad a Haiku bajo ataque: 90,0 % en C0 frente a 88,3 % en C3, una diferencia de una ejecución. Para el producto,
+este resultado justifica conservar las capas aunque el modelo elegido sea más robusto: su costo es despreciable, y la
+robustez propia del modelo no es una propiedad que el sistema controle ni que se mantenga entre versiones.
+
 ## Alcance
 
-Los resultados corresponden a un modelo (DeepSeek V4.1 Flash), a cargas en español sin técnicas de evasión y a tres
+Los resultados de la curva corresponden a un modelo (DeepSeek V4.1 Flash; C0 y C3 se repitieron con Claude Haiku 5.5), a cargas en español sin técnicas de evasión y a tres
 tareas atacadas. Un M5 de 0/60 acota la tasa real por debajo de 6,0 % con 95 % de confianza; no demuestra inmunidad.
 Cargas adaptativas, diseñadas conociendo la separación de planos, podrían superar a C1 y revelar el aporte de C2 y
 C3, que esta suite no alcanza a medir. La utilidad se midió con una repetición por configuración. Las clases de
 navegación miden que el planificador **solicitó** la URL de acción local, no que una compra se haya consumado: el
-corpus no ejecuta pagos ni pedidos. Repetir C0 y C3 con un segundo modelo de otro proveedor, previsto como opcional
-en el plan, queda propuesto para comprobar si el efecto de la separación de planos se sostiene.
+corpus no ejecuta pagos ni pedidos. Con Claude Haiku 5.5 la suite no logró ningún éxito, ni siquiera sin defensas,
+de modo que el efecto de la separación de planos solo está medido con el modelo base. Medirlo con un modelo robusto
+exige cargas adaptativas.
