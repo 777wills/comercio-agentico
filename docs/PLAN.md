@@ -340,6 +340,14 @@ _Hecho el 9–10-nov: E3 se detuvo en Haiku por D77 (D78); modelo base DeepSeek 
 **Terminado cuando:** el flujo completo funciona en local desde el navegador. *(10-nov: verificado con una consulta
 real guardada y con el camino de error a US$0; falta la consulta de Wills con su clave, < US$0,02.)*
 
+### S09b-bis — Modos Cliente y Laboratorio (10-nov, D111)
+
+- [x] Modo Cliente en `/` (consulta, catálogo, progreso en cuatro pasos, recomendación, tabla corta, fuente por
+      oferta, ajustes con clave y modelo; C2 + N3 abstener fijos).
+- [x] Modo Laboratorio en `/lab/...` con navegación lateral y todas las funcionalidades de D83 y D87.
+- [x] Tema sobrio (neutros, superficies planas, Inter local, un acento).
+- [ ] Consulta real de Wills desde el modo Cliente con su clave (< US$0,03 con Flash + N3).
+
 ## S09c — CotIA (3/3): publicación y MLOps ligero (lun 16-nov)
 
 **Objetivo:** MVP publicado y reproducible.

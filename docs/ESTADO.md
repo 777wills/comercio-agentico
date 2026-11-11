@@ -2,22 +2,38 @@
 
 ## Siguiente sesión
 
-**S09c — CotIA (3/3): publicación y MLOps ligero.** S09b quedó hecha: el frontend SvelteKit en modo oscuro corre
-servido por la API, con todas las secciones de D83 y D87. Vamos cinco días por delante (S09b estaba para el 15-nov).
+**S09c — CotIA (3/3): publicación y MLOps ligero.** S09b-bis quedó hecha: CotIA tiene dos modos (D111), Cliente en
+`/` y Laboratorio en `/lab`. Vamos cinco días por delante (S09c está para el 16-nov).
 
 Siguiente paso exacto:
 
-1. **Antes de S09c, Wills prueba una consulta real desde el navegador con su clave** (Flash, < US$0,02; guía
-   `docs/GUIA_PRUEBAS.md`, sección S09b). Es lo único que falta para el criterio de terminado de S09b.
+1. **Antes de S09c, Wills prueba una cotización real desde el modo Cliente con su clave** (Flash + N3, < US$0,03;
+   guía `docs/GUIA_PRUEBAS.md`, sección S09b-bis, paso 4). Si la prueba la hace el agente, abre CotIA en Chrome con
+   la extensión y Wills pega la clave (memoria, sección 8). Es lo único que falta para el criterio de terminado de
+   S09b.
 2. Leer en `docs/PLAN.md` la sección S09c y proponer el plan. Elegir la plataforma con datos oficiales verificados
    (RAM para Chromium, embeddings y clasificador: ~2 GB por consulta; PostgreSQL gestionado; costo; dominio).
 3. `Dockerfile` de un solo contenedor: etapa Node ≥ 22.17 (SvelteKit 3.2 lo exige) que compila `web/` y etapa Python
    que copia `web/build`; `corpus/b_ataques/` se regenera en la imagen con `python -m comercio_agentico.ataques.plantar`.
 4. CI: `make web` (npm ci + check + build) junto a Ruff y pytest.
-5. Pendientes abiertos: ninguno de decisión (c se cerró con D110). Hallazgo para la hoja de ruta (sigue): el
-   intérprete convierte «64 GB» de una consulta libre en una restricción de almacenamiento y el agente se abstiene.
+5. Pendientes abiertos: ninguno de decisión. Hallazgo para la hoja de ruta (sigue): el intérprete convierte «64 GB» de
+   una consulta libre en una restricción de almacenamiento y el agente se abstiene. Sin verificar: el modo Cliente en
+   ancho de teléfono (Chrome no aceptó el cambio de tamaño de ventana; la tabla tiene desplazamiento horizontal).
 6. Operación local: `make bd`, `make web` (una vez) y `make api`; para desarrollar la interfaz, `make web-dev` (:5173,
    redirige `/api` a :8000). Node con nvm: `source ~/.nvm/nvm.sh && nvm use 22`.
+
+**Hecho el 10-nov (S09b-bis, dos modos de CotIA; Claude Code · Opus 5.5), con pruebas:**
+
+- **D111**: modo **Cliente** en `web/src/routes/(cliente)/` (`/`, `/consulta/[id]`, `/mis-consultas`). Consulta con
+  catálogo «Tiendas colombianas» (A) / «Proveedores de prueba» (B), progreso en cuatro pasos, recomendación
+  destacada, tabla corta, fuente por oferta, sello N3 y alertas en lenguaje de compra. Ajustes en diálogo (clave y
+  modelo). Perfil fijo C2 + N3 abstener (`opcionesCliente()`).
+- Modo **Laboratorio** en `web/src/routes/lab/` con barra lateral: las pantallas de S09b, movidas sin cambios
+  funcionales (rutas con prefijo `/lab`); la consulta perdió el titular y las tarjetas decorativas.
+- Tema sobrio: neutros sin tinte, superficies planas, Inter local (`@fontsource-variable/inter`), un acento.
+- svelte-check 0 errores; build correcto; revisado en Chrome (portada, Ajustes, cotización A20 en ambos modos,
+  `/lab` y `/lab/ataques`). Backend sin cambios: siguen 175 pruebas. Gasto: **US$0**.
+- Informe: párrafo de los dos modos en la sección «Interfaz» de `docs/informe/03_metodologia_producto.md`.
 
 **Hecho el 10-nov (S09b, frontend de CotIA), con pruebas:**
 

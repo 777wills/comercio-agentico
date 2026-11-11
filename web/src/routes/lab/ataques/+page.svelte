@@ -127,7 +127,7 @@
 					</div>
 					<div class="flex flex-wrap gap-2">
 						<Button disabled={enviando} onclick={correr}><Swords /> Correr C0 y C3</Button>
-						<Button variant="outline" href="/corpus?carga={carga.carga}"><Eye /> Ver la página atacada</Button>
+						<Button variant="outline" href="/lab/corpus?carga={carga.carga}"><Eye /> Ver la página atacada</Button>
 					</div>
 					<p class="text-xs text-muted-foreground">
 						Son dos consultas con su clave (≈ 2 × el costo del modelo elegido); corren una tras otra.

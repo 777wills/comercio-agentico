@@ -46,7 +46,7 @@
 										{new Date(c.creada).toLocaleString('es-CO')}
 									</Table.Cell>
 									<Table.Cell class="max-w-80">
-										<a href="/consultas/{c.id}" class="block truncate hover:text-primary" title={c.consulta}>
+										<a href="/lab/consultas/{c.id}" class="block truncate hover:text-primary" title={c.consulta}>
 											{#if c.carga}<Badge variant="destructive" class="mr-1">{c.carga}</Badge>{/if}
 											{c.consulta}
 										</a>
@@ -63,7 +63,7 @@
 				</div>
 			{:else}
 				<p class="text-sm text-muted-foreground">
-					Aún no hay consultas en esta visita. <a href="/" class="underline">Haga la primera</a>.
+					Aún no hay consultas en esta visita. <a href="/lab" class="underline">Haga la primera</a>.
 				</p>
 			{/if}
 		</Card.Content>

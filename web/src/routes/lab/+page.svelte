@@ -44,7 +44,7 @@
 				config.clave,
 				config.visitante
 			);
-			await goto(`/consultas/${r.id}`);
+			await goto(`/lab/consultas/${r.id}`);
 		} catch (e) {
 			toast.error(e instanceof ErrorApi ? e.message : 'No se pudo crear la consulta.');
 		} finally {
@@ -53,14 +53,12 @@
 	}
 </script>
 
-<section class="mx-auto max-w-3xl space-y-6">
-	<div class="space-y-2 pt-4 text-center">
-		<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">
-			Cotice entre proveedores heterogéneos, <span class="text-primary">con procedencia</span>
-		</h1>
-		<p class="text-muted-foreground">
-			Un agente lee tiendas web, un catálogo MCP, una lista de precios en PDF y un chat de WhatsApp;
-			extrae las ofertas, las empareja y recomienda —o se abstiene— con la fuente de cada cifra.
+<section class="max-w-3xl space-y-6">
+	<div>
+		<h1 class="text-2xl font-semibold tracking-tight">Consulta</h1>
+		<p class="text-sm text-muted-foreground">
+			Consulta con todos los controles del experimento: corpus, modelo, capas de defensa y N3 (se
+			cambian en Configuración). Muestra los eventos del agente y la procedencia completa.
 		</p>
 	</div>
 
@@ -104,7 +102,7 @@
 				{/await}
 				<Badge variant="outline">Defensas {config.configuracion}</Badge>
 				{#if config.verificar}<Badge variant="outline">N3 · {config.politica_n3}</Badge>{/if}
-				<a href="/configuracion" class="inline-flex items-center gap-1 hover:text-foreground">
+				<a href="/lab/configuracion" class="inline-flex items-center gap-1 hover:text-foreground">
 					<Settings class="size-3" /> cambiar
 				</a>
 				<Button
@@ -118,33 +116,11 @@
 			{#if !config.clave}
 				<p class="text-xs text-amber-400">
 					Puede navegar todo CotIA sin clave; para ejecutar una consulta, configure su clave de
-					OpenRouter en <a class="underline" href="/configuracion">Configuración</a>. La clave no se
+					OpenRouter en <a class="underline" href="/lab/configuracion">Configuración</a>. La clave no se
 					guarda en el servidor.
 				</p>
 			{/if}
 		</Card.Content>
 	</Card.Root>
 
-	<div class="grid gap-3 text-sm sm:grid-cols-3">
-		<Card.Root>
-			<Card.Header><Card.Title class="text-sm">Separación de planos</Card.Title></Card.Header>
-			<Card.Content class="text-xs text-muted-foreground">
-				Lo que dicen las páginas es dato, nunca instrucción: el planificador no ve el texto de los
-				proveedores.
-			</Card.Content>
-		</Card.Root>
-		<Card.Root>
-			<Card.Header><Card.Title class="text-sm">Procedencia por dato</Card.Title></Card.Header>
-			<Card.Content class="text-xs text-muted-foreground">
-				Cada precio lleva su fragmento original y su SHA-256; N3 lo relee por otra ruta.
-			</Card.Content>
-		</Card.Root>
-		<Card.Root>
-			<Card.Header><Card.Title class="text-sm">Abstención justificada</Card.Title></Card.Header>
-			<Card.Content class="text-xs text-muted-foreground">
-				Si nada cumple la necesidad o la evidencia no alcanza, el agente lo dice en lugar de
-				inventar.
-			</Card.Content>
-		</Card.Root>
-	</div>
-</section>
+	</section>

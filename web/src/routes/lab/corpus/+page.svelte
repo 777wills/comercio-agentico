@@ -114,7 +114,7 @@
 								<Badge variant="outline">{CLASES[ataque.clase]}</Badge>
 								<Badge variant="outline">{UBICACIONES[ataque.ubicacion]}</Badge>
 								<span class="font-mono text-xs text-muted-foreground">{ataque.archivo}</span>
-								<Button size="sm" variant="outline" class="ml-auto" href="/laboratorio">
+								<Button size="sm" variant="outline" class="ml-auto" href="/lab/ataques">
 									<Swords /> Probarla en el laboratorio
 								</Button>
 							</div>

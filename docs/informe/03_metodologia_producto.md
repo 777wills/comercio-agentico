@@ -86,7 +86,19 @@ la misma API, de modo que el producto sigue siendo un solo proceso y un solo con
 componentes de shadcn-svelte sobre bits-ui, en modo oscuro (D109). Sin clave se puede recorrer todo el producto; solo
 la ejecución de consultas la exige.
 
-- **Consulta.** El visitante escribe una necesidad en lenguaje natural o parte de un ejemplo por tipo de tarea, sobre
+La interfaz se organiza en dos modos con rutas separadas (D111). El **modo Cliente** (`/`) está pensado para el
+usuario final: una caja de consulta con ejemplos, un selector de catálogo con nombres de negocio («Tiendas
+colombianas» para el corpus A y «Proveedores de prueba» para el B), un progreso resumido en cuatro pasos (entender la
+necesidad, consultar proveedores, comparar ofertas y recomendar), la recomendación o la abstención en un bloque
+destacado, una tabla corta con el costo total con envío, el plazo y la disponibilidad, y el texto original de la
+fuente de cada oferta. Las alertas se traducen a lenguaje de compra y solo aparecen si existen. El cliente solo
+configura su clave y el modelo; las defensas quedan fijas en C2 (D106) con verificación N3 y política de abstención
+(D110), y un sello marca las ofertas cuyo precio confirmó la segunda lectura. El **modo Laboratorio** (`/lab`), con
+navegación lateral, conserva el instrumental completo del experimento que se describe a continuación. La dirección
+visual es sobria en ambos modos: neutros oscuros sin tinte, superficies planas, una sola tipografía (Inter) y un solo
+color de acento.
+
+- **Consulta (laboratorio).** El visitante escribe una necesidad en lenguaje natural o parte de un ejemplo por tipo de tarea, sobre
   el corpus B (proveedores sintéticos) o el corpus A (tiendas reconstruidas). Mientras el agente trabaja, una línea de
   tiempo muestra cada evento SSE: la necesidad formalizada, las herramientas que pide el planificador, las ofertas
   extraídas por proveedor y las alertas de defensa. La propuesta final presenta el cuadro comparativo (precio, envío,

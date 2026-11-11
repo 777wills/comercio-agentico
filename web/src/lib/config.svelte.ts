@@ -117,3 +117,21 @@ class Visita {
 }
 
 export const visita = new Visita();
+
+/**
+ * Perfil fijo del modo Cliente (D111): C2 (D106) + N3 con política abstener (D110).
+ * El cliente solo elige clave, modelo y catálogo; el resto no se muestra.
+ */
+export function opcionesCliente() {
+	const [s, k, p] = PRESETS.C2;
+	return {
+		modelo: config.modelo,
+		defensas: { separacion_planos: s, clasificador: k, precio: p, umbral: UMBRAL_INFORME },
+		clasificador: 'Horizon-Labs/prompt-injection-guard-small',
+		verificar: true,
+		politica_n3: 'abstener' as const
+	};
+}
+
+/** Diálogo de ajustes del modo Cliente: se abre desde el encabezado o al intentar cotizar sin clave. */
+export const ajustes = $state({ abierto: false });
