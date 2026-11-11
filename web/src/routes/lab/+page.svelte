@@ -2,7 +2,8 @@
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
 	import { crearConsulta, ErrorApi } from '#lib/api.js';
-	import { config } from '#lib/config.svelte.js';
+	import { config, fuentes } from '#lib/config.svelte.js';
+	import Fuentes from '#lib/components/Fuentes.svelte';
 	import { catalogo, ejemplos } from '#lib/datos.js';
 	import * as Card from '#lib/components/ui/card/index.js';
 	import * as Tabs from '#lib/components/ui/tabs/index.js';
@@ -66,10 +67,25 @@
 		<Card.Content class="space-y-4">
 			<Tabs.Root bind:value={config.corpus}>
 				<Tabs.List class="w-full">
-					<Tabs.Trigger value="b">Corpus B · proveedores sintéticos (P1–P5)</Tabs.Trigger>
-					<Tabs.Trigger value="a">Corpus A · tiendas colombianas reconstruidas</Tabs.Trigger>
+					<Tabs.Trigger value="vivo">En vivo · tiendas reales</Tabs.Trigger>
+					<Tabs.Trigger value="a">Corpus A · reconstruidas</Tabs.Trigger>
+					<Tabs.Trigger value="b">Corpus B · sintéticos (P1–P5)</Tabs.Trigger>
 				</Tabs.List>
 			</Tabs.Root>
+			<button
+				type="button"
+				class="text-xs text-muted-foreground hover:text-foreground"
+				onclick={() => (fuentes.panel = true)}
+			>
+				Lista blanca: {fuentes.lista ? fuentes.activas(config.corpus) : '…'} fuentes activas en este
+				grupo · editar
+			</button>
+			{#if config.corpus === 'vivo'}
+				<p class="text-xs text-amber-400">
+					En vivo la comparación es abierta (sin catálogo de referencia) y C3 no aplica. Es una
+					demostración: no tiene cifras en el informe.
+				</p>
+			{/if}
 
 			<Textarea
 				bind:value={consulta}
@@ -83,7 +99,7 @@
 
 			{#await ej then ejs}
 				<div class="flex flex-wrap gap-2">
-					{#each ejs[config.corpus] as e (e.categoria)}
+					{#each config.corpus === 'vivo' ? [] : ejs[config.corpus] as e (e.categoria)}
 						<button
 							type="button"
 							class="rounded-full border px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
@@ -124,3 +140,5 @@
 	</Card.Root>
 
 	</section>
+
+<Fuentes />

@@ -37,7 +37,7 @@ class PeticionConsulta(BaseModel):
         max_length=500,
         description="Consulta en lenguaje natural; en el laboratorio se usa la tarea de la carga.",
     )
-    corpus: Literal["b", "a"] = "b"
+    corpus: Literal["b", "a", "vivo"] = "b"  # vivo: tiendas reales y fuentes del visitante
     carga: str | None = Field(
         default=None,
         pattern=r"^A(?:0[1-9]|1[0-9]|20)$",
@@ -64,6 +64,19 @@ class PeticionConsulta(BaseModel):
             "verificar": self.verificar,
             "politica_n3": self.politica_n3,
         }
+
+
+class CambioFuente(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    activa: bool
+
+
+class NuevaUrl(BaseModel):
+    model_config = ConfigDict(extra="forbid", str_strip_whitespace=True)
+
+    url: str = Field(min_length=8, max_length=500)
+    nombre: str | None = Field(default=None, max_length=120)
 
 
 class ConsultaCreada(BaseModel):

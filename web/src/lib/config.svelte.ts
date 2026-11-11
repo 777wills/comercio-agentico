@@ -1,5 +1,5 @@
 // Configuración del visitante (D82, D86, D91, D110). Solo vive en este navegador.
-import { obtener, type Defensas, type Resumen } from './api';
+import { fuentesApi, obtener, type Defensas, type Grupo, type ListaBlanca, type Resumen } from './api';
 
 export const PRESETS: Record<string, [boolean, boolean, boolean]> = {
 	C0: [false, false, false],
@@ -19,7 +19,7 @@ type Guardada = {
 	defensas: Defensas;
 	verificar: boolean;
 	politica_n3: 'abstener' | 'excluir';
-	corpus: 'a' | 'b';
+	corpus: Grupo;
 	recordar: boolean;
 };
 
@@ -44,7 +44,7 @@ class Config {
 	});
 	verificar = $state(false);
 	politica_n3 = $state<'abstener' | 'excluir'>('abstener');
-	corpus = $state<'a' | 'b'>('b');
+	corpus = $state<Grupo>('vivo'); // D113: arranca el grupo en vivo
 	visitante: string;
 
 	/** C0–C3 si las capas coinciden con un punto medido en E2; si no, «exploratorio». */
@@ -135,3 +135,40 @@ export function opcionesCliente() {
 
 /** Diálogo de ajustes del modo Cliente: se abre desde el encabezado o al intentar cotizar sin clave. */
 export const ajustes = $state({ abierto: false });
+
+/** Lista blanca del visitante (D113), compartida por el modo Cliente y el Laboratorio. */
+class Fuentes {
+	lista = $state<ListaBlanca | null>(null);
+	ocupado = $state(false);
+	panel = $state(false);
+	#api = () => fuentesApi(config.visitante);
+
+	grupo(id: Grupo) {
+		return this.lista?.grupos.find((g) => g.id === id);
+	}
+	activas(id: Grupo) {
+		return this.grupo(id)?.fuentes.filter((f) => f.activa).length ?? 0;
+	}
+	/** ID → nombre, para mostrar el proveedor de las ofertas de fuentes propias (U…). */
+	nombres(): Record<string, string> {
+		return Object.fromEntries(
+			(this.lista?.grupos ?? []).flatMap((g) => g.fuentes.map((f) => [f.id, f.nombre]))
+		);
+	}
+	async #hacer(accion: (api: ReturnType<typeof fuentesApi>) => Promise<ListaBlanca>) {
+		this.ocupado = true;
+		try {
+			this.lista = await accion(this.#api());
+		} finally {
+			this.ocupado = false;
+		}
+	}
+	cargar = () => this.#hacer((a) => a.listar());
+	activar = (id: string, activa: boolean) => this.#hacer((a) => a.activar(id, activa));
+	agregarUrl = (url: string, nombre?: string) => this.#hacer((a) => a.agregarUrl(url, nombre));
+	agregarPdf = (archivo: File) => this.#hacer((a) => a.agregarPdf(archivo));
+	eliminar = (id: string) => this.#hacer((a) => a.eliminar(id));
+	restablecer = () => this.#hacer((a) => a.restablecer());
+}
+
+export const fuentes = new Fuentes();

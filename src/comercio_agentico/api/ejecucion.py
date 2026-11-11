@@ -125,7 +125,12 @@ class Traductor:
                 return {
                     "etapa": "emparejamiento",
                     "ofertas": len(finales),
-                    "emparejadas": sum(o.producto_catalogo is not None for o in finales),
+                    # Con catálogo: emparejadas; en la comparación abierta: las que cumplen.
+                    "emparejadas": sum(
+                        o.producto_catalogo is not None
+                        or (o.grupo is not None and o.descarte is None)
+                        for o in finales
+                    ),
                 }
             case "proponer":
                 p = upd["propuesta"]
@@ -184,6 +189,7 @@ class Servicio:
         self._variantes: dict[str, Any] = {}
         self._clasificadores: dict[str, Any] = {}
         self._cerrojo = asyncio.Lock()
+        self.fuentes: Any = None  # FuentesVisitante; la asigna crear_app (D113)
 
     # ----------------------------------------------------------------------------------------------
 
@@ -236,13 +242,21 @@ class Servicio:
                 )
             )
         self.progresos[id_consulta] = Progreso()
-        tarea = asyncio.create_task(self._correr(id_consulta, peticion, consulta, carga, clave))
+        tarea = asyncio.create_task(
+            self._correr(id_consulta, peticion, consulta, carga, clave, visitante)
+        )
         self.tareas.add(tarea)
         tarea.add_done_callback(self.tareas.discard)
         return id_consulta
 
     async def _correr(
-        self, id_consulta: str, peticion: PeticionConsulta, consulta: str, carga: Any, clave: str
+        self,
+        id_consulta: str,
+        peticion: PeticionConsulta,
+        consulta: str,
+        carga: Any,
+        clave: str,
+        visitante: str = "",
     ) -> None:
         prog = self.progresos[id_consulta]
         inicio = time.perf_counter()
@@ -259,9 +273,23 @@ class Servicio:
                         "configuracion": defensas.configuracion or "exploratorio",
                     }
                 )
-                registro, emparejador = await self.recursos(peticion.corpus)
+                abierta = peticion.corpus == "vivo"
+                # En vivo no hay catálogo propio: el del corpus B sirve al intérprete y al
+                # codificador de embeddings; la comparación no lo exige (D113).
+                registro, emparejador = await self.recursos("b" if abierta else peticion.corpus)
+                documentos: dict[str, str] = {}
                 if carga is not None:
                     registro = await self.variante(carga)
+                elif self.fuentes is not None and abierta:
+                    registro, documentos = await asyncio.to_thread(
+                        self.fuentes.registro, visitante, "vivo"
+                    )
+                elif self.fuentes is not None:  # corpus congelado sin las que desactivó
+                    fuera = await asyncio.to_thread(self.fuentes.inactivas, visitante)
+                    if fuera and hasattr(registro, "fuentes"):
+                        activas = [f for f in registro.fuentes if f.id not in fuera]
+                        registro = registro.model_copy(update={"fuentes": activas})
+                extra = {"abierta": True, "documentos": documentos} if abierta else {}
                 traductor = Traductor()
 
                 async def al_avanzar(nodo: str, upd: dict[str, Any]) -> None:
@@ -283,6 +311,7 @@ class Servicio:
                     al_avanzar=al_avanzar,
                     registro=registro,
                     emparejador=emparejador,
+                    **extra,
                 )
             fila = registro_jsonl(None, r, None)
             detalle: dict[str, Any] = {
@@ -297,6 +326,21 @@ class Servicio:
                 )
             }
             detalle["configuracion"] = defensas.configuracion or "exploratorio"
+            # Ofertas finales con su grupo y motivo de descarte: el laboratorio muestra por qué
+            # cada una quedó fuera (comparación abierta) o con qué producto se emparejó.
+            detalle["ofertas_finales"] = [
+                {
+                    "proveedor": o.proveedor,
+                    "titulo": o.titulo,
+                    "precio": o.precio,
+                    "costo_envio": o.costo_envio,
+                    "producto_catalogo": o.producto_catalogo,
+                    "grupo": o.grupo,
+                    "descarte": o.descarte,
+                    "verificacion": o.verificacion,
+                }
+                for o in r.ofertas
+            ]
             fin: dict[str, Any] = {"etapa": "fin", "estado": "terminada"}
             if carga is not None:
                 from comercio_agentico.ataques.suite import evaluar_exito

@@ -2,25 +2,47 @@
 
 ## Siguiente sesión
 
-**S09c — CotIA (3/3): publicación y MLOps ligero.** S09b-bis quedó hecha: CotIA tiene dos modos (D111), Cliente en
-`/` y Laboratorio en `/lab`. Vamos cinco días por delante (S09c está para el 16-nov).
+**S09c — CotIA (3/3): publicación y MLOps ligero.** S09b-ter quedó hecha el 11-nov: consulta en vivo en tiendas
+reales y lista blanca editable por visitante (D112–D115). Seguimos ~4 días por delante (S09c está para el 16-nov).
 
 Siguiente paso exacto:
 
-1. **Antes de S09c, Wills prueba una cotización real desde el modo Cliente con su clave** (Flash + N3, < US$0,03;
-   guía `docs/GUIA_PRUEBAS.md`, sección S09b-bis, paso 4). Si la prueba la hace el agente, abre CotIA en Chrome con
-   la extensión y Wills pega la clave (memoria, sección 8). Es lo único que falta para el criterio de terminado de
-   S09b.
-2. Leer en `docs/PLAN.md` la sección S09c y proponer el plan. Elegir la plataforma con datos oficiales verificados
-   (RAM para Chromium, embeddings y clasificador: ~2 GB por consulta; PostgreSQL gestionado; costo; dominio).
-3. `Dockerfile` de un solo contenedor: etapa Node ≥ 22.17 (SvelteKit 3.2 lo exige) que compila `web/` y etapa Python
-   que copia `web/build`; `corpus/b_ataques/` se regenera en la imagen con `python -m comercio_agentico.ataques.plantar`.
-4. CI: `make web` (npm ci + check + build) junto a Ruff y pytest.
-5. Pendientes abiertos: ninguno de decisión. Hallazgo para la hoja de ruta (sigue): el intérprete convierte «64 GB» de
-   una consulta libre en una restricción de almacenamiento y el agente se abstiene. Sin verificar: el modo Cliente en
-   ancho de teléfono (Chrome no aceptó el cambio de tamaño de ventana; la tabla tiene desplazamiento horizontal).
-6. Operación local: `make bd`, `make web` (una vez) y `make api`; para desarrollar la interfaz, `make web-dev` (:5173,
-   redirige `/api` a :8000). Node con nvm: `source ~/.nvm/nvm.sh && nvm use 22`.
+1. Leer en `docs/PLAN.md` la sección S09c y proponer el plan. Elegir plataforma con datos oficiales verificados
+   (RAM: ~2 GB por consulta con Chromium, embeddings y clasificador; PostgreSQL gestionado; costo; dominio). El modo
+   en vivo exige salida a internet desde el contenedor.
+2. `Dockerfile` (etapa Node ≥ 22.17 que compila `web/` + etapa Python); `corpus/b_ataques/` se regenera en la imagen.
+3. CI: `make web` + Ruff + pytest.
+4. Pendientes: **D114** (clave de Anthropic, en el plan, sin construir); **D115 b** (medir la proporción de ventanas
+   que C2 retira en páginas reales para el informe); la interfaz aún no muestra `detalle.ofertas_finales` (motivo de
+   descarte por oferta) en el laboratorio. Hallazgo que sigue: «64 GB» en consulta libre → restricción de
+   almacenamiento.
+5. Operación local: `make bd`, `make web`; la API corre como unidad de usuario `cotia-api`
+   (`systemctl --user restart cotia-api`, registro en `/tmp/cotia-api.log`). Wills dejó su clave «recordada» en Chrome
+   para la prueba: pulsar «Olvidar» en Ajustes.
+
+**Hecho el 11-nov (S09b-ter, consulta en vivo y lista blanca; Claude Code · Opus 5.5), con pruebas:**
+
+- **Tiendas en vivo (D112):** Alkosto, Ktronix, Falabella, Samsung Colombia y Panamericana, tras sondear robots.txt,
+  respuesta a robots y términos de uso (aptas 5; condicionales iShop y Clevercel; no aptas Mercado Libre, Éxito,
+  Olímpica y Lenovo). `agente/web_abierta.py`: bloqueo de SSRF (solo direcciones públicas), robots.txt por sitio,
+  pausa de 2 s por sitio, agente de usuario `ComercioAgenticoBot/0.1`, recorte centrado en líneas con precio y
+  enlaces con prioridad a fichas; crawl4ai con `scan_full_page` y espera para el contenido por JavaScript; bloque
+  schema.org sin campos largos. Nada de esto toca el corpus congelado.
+- **Lista blanca por visitante (D113):** tabla `fuentes_visitante`, rutas `/api/fuentes` (listar, activar, agregar
+  URL, subir PDF ≤ 5 MB con texto y SHA-256, eliminar, restablecer). Panel «Fuentes» en Cliente y Laboratorio; en la
+  portada del cliente solo queda el botón «N fuentes» (pedido de Wills).
+- **Comparación abierta (D113, D115 a):** `agente/comparacion_abierta.py` — pistas por GTIN y embeddings, juez con
+  salida estructurada, reglas deterministas; «desconocida» compite con aviso. El planificador en vivo solo ve las
+  herramientas con fuentes. Cerrojo para un solo Chromium por tarea (corrige `TargetClosedError` en paralelo).
+- **Prueba real (clave de Wills en Chrome):** Galaxy A56 → abstención correcta (Alkosto y Ktronix venden el A57; la
+  ficha de Falabella perdía el precio por la descripción HTML, ya corregido); Galaxy A57 → **Falabella $1.599.900,
+  envío $0, verificada por N3**, frente a Samsung $1.999.900; 65 ofertas, descartes razonables. C2 retiró hasta 21 de
+  26 ventanas de una ficha real (D115 b).
+- **195 pruebas** (20 nuevas en `tests/test_vivo.py`), Ruff limpio, svelte-check 0 errores. **Gasto: US$0,1119**
+  (OpenRouter: 0,0487 + 0,0632).
+- **Incidente:** el 11-nov a las 06:16 algo externo a la sesión reformateó archivos de `web/` y recreó el
+  `+page.svelte` raíz de S09b (conflicto de rutas). Se apartaron el duplicado y `utils.ts.new` (idénticos al historial)
+  en el scratchpad de la sesión; el reformateo de `vite.config.ts`, `api.ts` y `datos.ts` se conservó.
 
 **Hecho el 10-nov (S09b-bis, dos modos de CotIA; Claude Code · Opus 5.5), con pruebas:**
 
@@ -122,7 +144,7 @@ Siguiente paso exacto:
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Presupuesto total  | 300,00                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | Créditos comprados | 75,00 (Anthropic 30 + OpenRouter 20, 9-nov; TypeSafe 5, 10-nov, el mínimo que acepta, para la comparación con Jev de D80; OpenRouter 20 más, 10-nov, S09a). Anthropic: US$29,83 disponibles y US$0,17 gastados (consola, 9-nov 21:43)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| Gastado acumulado  | ~17,36 (D108 E2 con Haiku: 1,9716 Anthropic; S09a: 0,3745 = humo de la lista curada 0,3443 + punta a punta 0,0302, todo OpenRouter; S08: 0,0213 = segunda lectura de N3 con Haiku en 15 fragmentos; S07: ~5,57 = matriz de ataque 3,4454 + utilidad benigna 1,9011 + Jev ~0,0015 + ~0,22 perdidos en dos cierres de VS Code; S06-bis arnés: 0,2327 humo C0/C3 en dos pasadas, 0,1473 + 0,0854; S06: 0,015 prueba de humo C3 + clasificadores a US$0; S00: ~0,26; S01: 0,024; S02: ~0,18; S03: 1,74; S04: ~1,32; S05: ~5,7 = corpus A v1 0,361 + calibración v3 0,919 + E3 Flash 1,371 + E3 Haiku 1,528 + corrida parcial de Flash descartada 1,312 + ~0,2 de llamadas perdidas en la suspensión). OpenRouter: **saldo real US$21,26** (consola, 10-nov tras S09a; de US$40 cargados). La suma de costos por llamada (~13,7) queda corta frente a la consola: comisiones de compra y llamadas perdidas en cierres no registradas. TypeSafe: ~US$0,002 de 5. Anthropic: **saldo real US$28,25** (consola, 10-nov antes de D108; US$1,76 gastados en el mes) |
+| Gastado acumulado  | ~17,47 (S09b-ter: 0,1119 = dos consultas en vivo con Flash + N3, OpenRouter; D108 E2 con Haiku: 1,9716 Anthropic; S09a: 0,3745 = humo de la lista curada 0,3443 + punta a punta 0,0302, todo OpenRouter; S08: 0,0213 = segunda lectura de N3 con Haiku en 15 fragmentos; S07: ~5,57 = matriz de ataque 3,4454 + utilidad benigna 1,9011 + Jev ~0,0015 + ~0,22 perdidos en dos cierres de VS Code; S06-bis arnés: 0,2327 humo C0/C3 en dos pasadas, 0,1473 + 0,0854; S06: 0,015 prueba de humo C3 + clasificadores a US$0; S00: ~0,26; S01: 0,024; S02: ~0,18; S03: 1,74; S04: ~1,32; S05: ~5,7 = corpus A v1 0,361 + calibración v3 0,919 + E3 Flash 1,371 + E3 Haiku 1,528 + corrida parcial de Flash descartada 1,312 + ~0,2 de llamadas perdidas en la suspensión). OpenRouter: **saldo real US$21,26** (consola, 10-nov tras S09a; de US$40 cargados). La suma de costos por llamada (~13,7) queda corta frente a la consola: comisiones de compra y llamadas perdidas en cierres no registradas. TypeSafe: ~US$0,002 de 5. Anthropic: **saldo real US$28,25** (consola, 10-nov antes de D108; US$1,76 gastados en el mes) |
 
 Costo medido el 9-nov (S00) de una extracción estructurada típica (página con 12 ofertas, 1500–3500 tokens de
 entrada, `json_schema`): Flash 0,0015 · Haiku 0,0016 · DeepSeek Pro 0,006 · Sonnet 0,025 · Kimi 0,032 ·
@@ -154,8 +176,8 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 - Decisiones con Wills: D109 (shadcn-svelte + Tailwind v4 sobre SvelteKit con adapter-static) y D110 (N3 por
   oferta y política elegible; cierra el pendiente c).
 - Tropiezos de herramientas, resueltos: SvelteKit 3.2 exige Node ≥ 22.17 (se instaló 22.23 con nvm y se fijó en
-  `web/.nvmrc`); `shadcn-svelte init` pide un *preset* interactivo, así que se siguió la instalación manual oficial;
-  SvelteKit 3 usa *subpath imports* `#lib/...` con extensión; los componentes nuevos usan variantes `data-open`,
+  `web/.nvmrc`); `shadcn-svelte init` pide un _preset_ interactivo, así que se siguió la instalación manual oficial;
+  SvelteKit 3 usa _subpath imports_ `#lib/...` con extensión; los componentes nuevos usan variantes `data-open`,
   `data-active`, `data-horizontal`… que bits-ui 2.20 no emite (expone `data-state` y `data-orientation`): se
   declararon como `@custom-variant` en `layout.css`.
 - Resultados en «Hecho el 10-nov (S09b)». Gasto de la sesión: **US$0** (la prueba con clave inventada falla en la

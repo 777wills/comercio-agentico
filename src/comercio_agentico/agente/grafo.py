@@ -36,6 +36,7 @@ from langchain_core.tools import tool
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
 
+from comercio_agentico.agente.comparacion_abierta import Juicios, comparar, proponer_abierto
 from comercio_agentico.agente.defensa import (
     ClasificadorInyeccion,
     Defensas,
@@ -193,6 +194,7 @@ class Contexto:
     modelo_verificador: str = MODELO_VERIFICADOR
     clave_openrouter: str | None = field(default=None, repr=False)  # CotIA: la del visitante
     max_llamadas: int = MAX_LLAMADAS
+    abierta: bool = False  # D113: fuentes en vivo o del visitante, comparación sin catálogo
     concurrencia_llm: int = 3
     _llm: dict[str, Any] = field(default_factory=dict)
     _semaforo: asyncio.Semaphore | None = None
@@ -221,7 +223,14 @@ class Contexto:
                 sin_reintentos["clave_openrouter"] = self.clave_openrouter
             match rol:
                 case "planificador":
-                    llm = obtener_modelo(self.modelo, **sin_reintentos).bind_tools(HERRAMIENTAS)
+                    # En vivo solo se ofrecen las herramientas que tienen fuentes (sin MCP, p. ej.);
+                    # el corpus congelado conserva las tres, como en los experimentos.
+                    herramientas = [
+                        h for h in HERRAMIENTAS if self.registro.por_herramienta(h.name)
+                    ]
+                    llm = obtener_modelo(self.modelo, **sin_reintentos).bind_tools(
+                        herramientas if self.abierta and herramientas else HERRAMIENTAS
+                    )
                 case "extractor":
                     llm = obtener_extractor(
                         self.modelo, ListaOfertas, include_raw=True, **sin_reintentos
@@ -230,6 +239,8 @@ class Contexto:
                     llm = obtener_extractor(self.modelo, Necesidad, **sin_reintentos)
                 case "confirmador":
                     llm = obtener_extractor(self.modelo, Decisiones, **sin_reintentos)
+                case "juez":
+                    llm = obtener_extractor(self.modelo, Juicios, **sin_reintentos)
                 case "verificador":
                     llm = obtener_extractor(
                         self.modelo_verificador, ListaOfertas, include_raw=True, **sin_reintentos
@@ -484,8 +495,9 @@ def proponer_con_n3(
     costo_usd: float,
     alertas_defensa: Sequence[Alerta] = (),
     politica: PoliticaN3 = "abstener",
+    proponer_fn=proponer,
 ) -> PropuestaCompra:
-    """``proponer`` sobre ofertas ya marcadas por N3, con la política de D102."""
+    """``proponer`` (o ``proponer_abierto``) sobre ofertas ya marcadas por N3 (política D102)."""
     alertas = list(alertas_defensa)
     if politica == "excluir":
         verificadas = [o for o in ofertas if o.verificacion == "verificada"]
@@ -498,10 +510,10 @@ def proponer_con_n3(
                     "confirmó.",
                 )
             )
-        return proponer(
+        return proponer_fn(
             consulta, necesidad, verificadas, perfil, productos, errores, modelo, costo_usd, alertas
         )
-    p = proponer(
+    p = proponer_fn(
         consulta, necesidad, ofertas, perfil, productos, errores, modelo, costo_usd, alertas
     )
     if p.abstencion or p.recomendada is None:
@@ -592,6 +604,21 @@ def construir_grafo(ctx: Contexto):
         previas = sin_duplicados(
             estado.get("ofertas", []), lambda o: (o.proveedor, _normalizar(o.titulo))
         )
+        if ctx.abierta:
+            comparadas = await comparar(
+                previas,
+                estado["necesidad"],
+                ctx.perfil,
+                ctx.llm("juez"),
+                ctx.emparejador.codificar,
+                ctx.config,
+            )
+            log.info(
+                "comparación abierta: %d de %d ofertas cumplen",
+                sum(o.descarte is None for o in comparadas),
+                len(comparadas),
+            )
+            return {"ofertas_finales": sin_duplicados(comparadas, lambda o: (o.proveedor, o.grupo))}
         emparejadas = await ctx.emparejador.emparejar(previas, ctx.llm("confirmador"), ctx.config)
         log.info(
             "emparejamiento: %d de %d ofertas con producto del catálogo",
@@ -606,7 +633,8 @@ def construir_grafo(ctx: Contexto):
 
     async def nodo_proponer(estado: Estado) -> dict:
         ofertas, alertas = estado["ofertas_finales"], list(estado.get("alertas", []))
-        if ctx.verifica_precios:
+        proponer_fn = proponer_abierto if ctx.abierta else proponer
+        if ctx.verifica_precios and not ctx.abierta:  # C3 necesita el precio de catálogo
             ofertas, atipicas = verificar_precios(ofertas, referencias)
             alertas += atipicas
             for a in atipicas:
@@ -620,13 +648,17 @@ def construir_grafo(ctx: Contexto):
             estado.get("errores", []),
         )
         if not ctx.verificar:
-            propuesta = proponer(*argumentos, ctx.modelo, ctx.costo.costo_total, alertas)
+            propuesta = proponer_fn(*argumentos, ctx.modelo, ctx.costo.costo_total, alertas)
             return {"propuesta": propuesta}
         # Solo las candidatas: las que ya incumplen la necesidad no pueden ganar.
         candidatas = [
             o
             for o in ofertas
-            if motivo_descarte(o, estado["necesidad"], ctx.perfil, productos) is None
+            if (
+                o.descarte is None
+                if ctx.abierta
+                else motivo_descarte(o, estado["necesidad"], ctx.perfil, productos) is None
+            )
         ]
         lecturas = SegundasLecturas(ctx.llm("verificador"), ctx.config)
         verificaciones = await verificar_ofertas(candidatas, lecturas)
@@ -634,7 +666,7 @@ def construir_grafo(ctx: Contexto):
             if v.estado != "verificada":
                 log.info("  ⚠ N3 %s %s: %s %s", o.proveedor, o.titulo[:40], v.estado, v.campos)
         propuesta = proponer_con_n3(
-            *argumentos, ctx.modelo, ctx.costo.costo_total, alertas, ctx.politica_n3
+            *argumentos, ctx.modelo, ctx.costo.costo_total, alertas, ctx.politica_n3, proponer_fn
         )
         return {"propuesta": propuesta}
 
@@ -690,6 +722,8 @@ async def preguntar(
     emparejador: Emparejador | None = None,
     perfil: PerfilCategoria | None = None,
     semaforo_llm: asyncio.Semaphore | None = None,
+    abierta: bool = False,
+    documentos: dict[str, str] | None = None,
 ) -> Resultado:
     """Responde una consulta.
 
@@ -712,7 +746,7 @@ async def preguntar(
     perfil = perfil or cargar_perfil(RUTA_PERFIL)
     emparejador = emparejador or Emparejador(catalogo or cargar_catalogo())
     costo = RegistroCosto(tope_usd)
-    async with Lector(registro) as lector:
+    async with Lector(registro, documentos=documentos) as lector:
         ctx = Contexto(
             modelo=modelo,
             lector=lector,
@@ -727,6 +761,7 @@ async def preguntar(
             modelo_verificador=modelo_verificador,
             clave_openrouter=clave_openrouter,
             max_llamadas=max_llamadas,
+            abierta=abierta,
             _semaforo=semaforo_llm,
         )
         grafo = construir_grafo(ctx)

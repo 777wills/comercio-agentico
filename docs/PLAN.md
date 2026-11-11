@@ -337,8 +337,8 @@ _Hecho el 9–10-nov: E3 se detuvo en Haiku por D77 (D78); modelo base DeepSeek 
 - [x] Diseño responsivo; sin clave se navega todo y la consulta pide configurarla.
 - [x] Compilación estática servida por FastAPI.
 
-**Terminado cuando:** el flujo completo funciona en local desde el navegador. *(10-nov: verificado con una consulta
-real guardada y con el camino de error a US$0; falta la consulta de Wills con su clave, < US$0,02.)*
+**Terminado cuando:** el flujo completo funciona en local desde el navegador. _(10-nov: verificado con una consulta
+real guardada y con el camino de error a US$0; falta la consulta de Wills con su clave, < US$0,02.)_
 
 ### S09b-bis — Modos Cliente y Laboratorio (10-nov, D111)
 
@@ -347,6 +347,21 @@ real guardada y con el camino de error a US$0; falta la consulta de Wills con su
 - [x] Modo Laboratorio en `/lab/...` con navegación lateral y todas las funcionalidades de D83 y D87.
 - [x] Tema sobrio (neutros, superficies planas, Inter local, un acento).
 - [ ] Consulta real de Wills desde el modo Cliente con su clave (< US$0,03 con Flash + N3).
+
+### S09b-ter — Consulta en vivo y lista blanca editable (11-nov, D112, D113)
+
+- [x] Tiendas en vivo (Alkosto, Ktronix, Falabella, Samsung Colombia, Panamericana) con salvaguardas: SSRF,
+      robots.txt, pausa por sitio, recorte centrado en precios y prioridad de enlaces a fichas.
+- [x] Lista blanca por visitante en PostgreSQL: ver, activar, agregar URL y PDF, eliminar y restablecer
+      (`/api/fuentes`); panel «Fuentes» en el modo Cliente y en el Laboratorio.
+- [x] Comparación abierta: pistas por GTIN y embeddings, juez con salida estructurada y reglas deterministas.
+- [x] Consulta en vivo real con la clave de Wills (Flash + N3): A56 se abstuvo (solo Falabella lo vende); tras
+      los ajustes, A57 recomendó Falabella $1.599.900 verificada. US$0,1119 en las dos.
+- [ ] **Clave de Anthropic como alternativa a la de OpenRouter (D114).** El proveedor se reconoce por el prefijo
+      de la clave (`sk-ant-` o `sk-or-`); con la de Anthropic solo se ofrecen los modelos Claude de la lista
+      curada (hoy Haiku 5.5) y N3 lee con Haiku directo. El costo se calcula por tokens × tabla de precios
+      (`costo_fuente = "tabla"`), porque Anthropic no devuelve el costo por llamada; la interfaz lo marca como
+      estimado.
 
 ## S09c — CotIA (3/3): publicación y MLOps ligero (lun 16-nov)
 

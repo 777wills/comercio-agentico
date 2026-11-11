@@ -10,6 +10,7 @@ agrupar el historial y el gasto de la visita (D90).
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import re
@@ -21,7 +22,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Annotated, Any
 
-from fastapi import Depends, FastAPI, Header, HTTPException, Request, status
+from fastapi import Depends, FastAPI, Form, Header, HTTPException, Request, UploadFile, status
 from fastapi.responses import FileResponse
 from fastapi.sse import EventSourceResponse, ServerSentEvent
 from sqlalchemy import func, select, text
@@ -32,11 +33,20 @@ from comercio_agentico.api.bd import ConsultaBD, crear_motor, fabrica_sesiones
 from comercio_agentico.api.catalogo import RUTA_LISTA, cargar_lista
 from comercio_agentico.api.ejecucion import Saturado, Servicio
 from comercio_agentico.api.esquemas import (
+    CambioFuente,
     ConsultaCreada,
     DetalleConsulta,
     Historial,
+    NuevaUrl,
     PeticionConsulta,
     ResumenConsulta,
+)
+from comercio_agentico.api.fuentes_visitante import (
+    MAX_BYTES_PDF,
+    MAX_PDFS,
+    MAX_URLS,
+    FuenteInvalida,
+    FuentesVisitante,
 )
 from comercio_agentico.corpus_b import RAIZ
 
@@ -125,6 +135,14 @@ def _ejemplos() -> dict[str, Any]:
     }
 
 
+def _fuentes_base(corpus: str) -> Any:
+    """Registro congelado de un corpus, sin cargar embeddings (para listar la lista blanca)."""
+    from comercio_agentico.agente.fuentes import cargar_fuentes
+    from comercio_agentico.arnes.correr import recursos_corpus
+
+    return cargar_fuentes(recursos_corpus(corpus)["fuentes"])
+
+
 def fuente_eventos(id_consulta: str, request: Request) -> Any:
     """En curso: su ``Progreso``; terminada: los eventos guardados. Corre antes del flujo SSE."""
     servicio: Servicio = request.app.state.servicio
@@ -150,6 +168,7 @@ def crear_app(
     sesiones = fabrica_sesiones(motor)
     servicio = servicio or Servicio(sesiones)
     servicio.sesiones = sesiones
+    fuentes = servicio.fuentes = servicio.fuentes or FuentesVisitante(sesiones, _fuentes_base)
 
     @asynccontextmanager
     async def ciclo(_: FastAPI):
@@ -192,6 +211,9 @@ def crear_app(
             )
         elif peticion.consulta:
             consulta = peticion.consulta
+            registro, _ = fuentes.registro(visitante, peticion.corpus)
+            if not registro.fuentes:
+                raise HTTPException(422, "No hay fuentes activas en ese grupo; active alguna.")
         else:
             raise HTTPException(422, "Escriba una consulta o elija una carga del laboratorio.")
         try:
@@ -199,6 +221,63 @@ def crear_app(
         except Saturado as error:
             raise HTTPException(429, str(error)) from None
         return ConsultaCreada(id=id_consulta, eventos=f"/api/consultas/{id_consulta}/eventos")
+
+    # ----------------------------------------------------------------------------------------------
+    # Lista blanca por visitante (D113)
+
+    def _listado(visitante: str) -> dict[str, Any]:
+        return {
+            "grupos": fuentes.listar(visitante),
+            "limites": {"urls": MAX_URLS, "pdfs": MAX_PDFS, "mb_pdf": MAX_BYTES_PDF // 2**20},
+        }
+
+    @app.get("/api/fuentes")
+    def listar_fuentes(visitante: Visitante) -> dict[str, Any]:
+        return _listado(visitante)
+
+    @app.patch("/api/fuentes/{fuente_id}")
+    def cambiar_fuente(fuente_id: str, cambio: CambioFuente, visitante: Visitante) -> dict:
+        try:
+            fuentes.activar(visitante, fuente_id, cambio.activa)
+        except KeyError:
+            raise HTTPException(404, "Fuente inexistente.") from None
+        return _listado(visitante)
+
+    @app.post("/api/fuentes/url", status_code=status.HTTP_201_CREATED)
+    def agregar_url(nueva: NuevaUrl, visitante: Visitante) -> dict[str, Any]:
+        try:
+            fuentes.agregar_url(visitante, nueva.url, nueva.nombre)
+        except FuenteInvalida as error:
+            raise HTTPException(422, str(error)) from None
+        return _listado(visitante)
+
+    @app.post("/api/fuentes/pdf", status_code=status.HTTP_201_CREATED)
+    async def agregar_pdf(
+        archivo: UploadFile,
+        visitante: Visitante,
+        nombre: Annotated[str | None, Form(max_length=120)] = None,
+    ) -> dict[str, Any]:
+        datos = await archivo.read(MAX_BYTES_PDF + 1)
+        try:
+            await asyncio.to_thread(
+                fuentes.agregar_pdf, visitante, nombre or archivo.filename or "", datos
+            )
+        except FuenteInvalida as error:
+            raise HTTPException(422, str(error)) from None
+        return await asyncio.to_thread(_listado, visitante)
+
+    @app.delete("/api/fuentes/{fuente_id}")
+    def eliminar_fuente(fuente_id: str, visitante: Visitante) -> dict[str, Any]:
+        try:
+            fuentes.eliminar(visitante, fuente_id)
+        except KeyError:
+            raise HTTPException(404, "Solo se pueden eliminar las fuentes propias.") from None
+        return _listado(visitante)
+
+    @app.post("/api/fuentes/restablecer")
+    def restablecer_fuentes(visitante: Visitante) -> dict[str, Any]:
+        fuentes.restablecer(visitante)
+        return _listado(visitante)
 
     @app.get("/api/consultas/{id_consulta}/eventos", response_class=EventSourceResponse)
     async def eventos(

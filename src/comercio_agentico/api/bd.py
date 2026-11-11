@@ -10,7 +10,7 @@ import os
 from datetime import UTC, datetime
 from typing import Any
 
-from sqlalchemy import JSON, DateTime, Float, String, Text, create_engine
+from sqlalchemy import JSON, Boolean, DateTime, Float, String, Text, create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 from sqlalchemy.pool import StaticPool
@@ -39,6 +39,30 @@ class ConsultaBD(Base):
     costo_usd: Mapped[float] = mapped_column(Float, default=0.0)
     segundos: Mapped[float | None] = mapped_column(Float)
     error: Mapped[str | None] = mapped_column(Text)
+    creada: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=lambda: datetime.now(UTC)
+    )
+
+
+class FuenteVisitanteBD(Base):
+    """Lista blanca por visitante (D113).
+
+    ``tipo`` = ``pref`` (activa o desactiva una fuente por defecto, ``fuente_id``), ``url`` (tienda
+    que agregó el visitante) o ``pdf`` (documento que subió; se guarda el texto extraído y su
+    SHA-256, no el archivo).
+    """
+
+    __tablename__ = "fuentes_visitante"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    visitante: Mapped[str] = mapped_column(String(36), index=True)
+    tipo: Mapped[str] = mapped_column(String(4))
+    fuente_id: Mapped[str] = mapped_column(String(16))
+    nombre: Mapped[str] = mapped_column(String(120))
+    url: Mapped[str] = mapped_column(Text)
+    texto: Mapped[str | None] = mapped_column(Text)
+    sha256: Mapped[str | None] = mapped_column(String(64))
+    activa: Mapped[bool] = mapped_column(Boolean, default=True)
     creada: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(UTC)
     )

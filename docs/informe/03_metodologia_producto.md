@@ -120,3 +120,28 @@ color de acento.
   sesión de la pestaña, salvo que pida recordarla); el modelo de la lista curada, con su costo medido y su evidencia de
   desempeño; las capas de defensa con los presets C0–C3, el umbral del clasificador con aviso de modo exploratorio y la
   elección entre los dos clasificadores validados (D86); la verificación N3, y el gasto acumulado de la visita (D90).
+
+## Consulta en vivo y fuentes del usuario
+
+Además del corpus congelado, CotIA consulta tiendas reales de una lista blanca: Alkosto, Ktronix, Falabella, Samsung
+Colombia y Panamericana. La lista se eligió el 11-nov-2026 tras revisar el robots.txt de cada sitio, su respuesta a un
+cliente automatizado y sus términos de uso (D112). El visitante ve la lista completa, la activa o desactiva por
+fuente y le agrega tiendas propias (URL) y listas de precios en PDF; sus cambios se guardan por visitante y no
+afectan a los demás (D113). Del PDF se conservan el texto extraído y su SHA-256, no el archivo, y no se calculan
+embeddings del documento: una lista de precios es corta y se necesita completa.
+
+La lectura de internet abierta añade salvaguardas que el corpus no necesita: solo se abren direcciones públicas
+(prevención de SSRF), se respeta el robots.txt con un agente de usuario identificable, se espera entre peticiones a un
+mismo sitio y se recorta cada página a las líneas cercanas a un precio, porque el menú de navegación ocupa el inicio
+del texto. Como la mayoría de los productos reales no está en el catálogo de referencia, las ofertas se emparejan
+entre sí: el GTIN y la similitud de embeddings del título sugieren grupos, y un juez con salida estructurada confirma
+el grupo de cada oferta y si cumple la necesidad; presupuesto, plazo y disponibilidad se revisan con reglas
+deterministas. La disponibilidad no informada no descarta la oferta, pero la marca (D115).
+
+El modo en vivo es una demostración sin cifras en el informe: sus resultados cambian con los precios y no son
+reproducibles. En una consulta por el Samsung Galaxy A57 de 256 GB, el agente recorrió las cinco tiendas, recolectó
+65 ofertas y recomendó la de Falabella por $1.599.900 con envío gratis, confirmada por la segunda lectura de N3, frente
+a la misma referencia en Samsung por $1.999.900 (US$0,063, 379 s). La prueba dejó un hallazgo de validez externa: el
+clasificador de inyección de C2, sin falsos positivos en los 47 fragmentos limpios del corpus, retiró hasta 21 de 26
+ventanas de una ficha real de Falabella y 19 de 35 de la portada de Alkosto. El texto comercial real, con llamados a
+la acción y promociones, se parece a una instrucción más que el texto sintético.

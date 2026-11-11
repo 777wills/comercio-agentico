@@ -18,6 +18,7 @@ from comercio_agentico.esquema import TipoFuente
 
 RUTA_FUENTES_B = RAIZ / "fuentes" / "corpus_b.yaml"
 Herramienta = Literal["abrir_pagina", "leer_documento", "consultar_mcp"]
+Origen = Literal["corpus", "vivo", "usuario"]
 
 
 class Fuente(BaseModel):
@@ -26,6 +27,13 @@ class Fuente(BaseModel):
     tipo_fuente: TipoFuente
     herramienta: Herramienta
     url: str
+    # corpus: copia congelada servida en local. vivo y usuario: internet abierta, con las
+    # salvaguardas de `web_abierta` (D112).
+    origen: Origen = "corpus"
+
+    @property
+    def abierta(self) -> bool:
+        return self.origen != "corpus"
 
     @property
     def prefijo(self) -> str:
@@ -50,3 +58,19 @@ class RegistroFuentes(BaseModel):
 def cargar_fuentes(ruta: str | Path = RUTA_FUENTES_B) -> RegistroFuentes:
     with Path(ruta).open(encoding="utf-8") as archivo:
         return RegistroFuentes.model_validate(yaml.safe_load(archivo))
+
+
+# Tiendas reales de la lista blanca por defecto (D112; sondeo de robots.txt, respuesta y términos
+# del 11-nov-2026). La URL es el punto de entrada; el agente sigue enlaces del mismo sitio.
+TIENDAS_EN_VIVO: list[Fuente] = [
+    Fuente(
+        id=i, nombre=n, tipo_fuente="web_schema", herramienta="abrir_pagina", url=u, origen="vivo"
+    )
+    for i, n, u in (
+        ("V1", "Alkosto", "https://www.alkosto.com/"),
+        ("V2", "Ktronix", "https://www.ktronix.com/"),
+        ("V3", "Falabella", "https://www.falabella.com.co/falabella-co"),
+        ("V4", "Samsung Colombia", "https://www.samsung.com/co/"),
+        ("V5", "Panamericana", "https://www.panamericana.com.co/"),
+    )
+]

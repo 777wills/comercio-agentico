@@ -11,6 +11,7 @@ Todo lo que devuelve este módulo es contenido de terceros (plano de datos).
 
 from __future__ import annotations
 
+import asyncio
 import io
 import json
 import os
@@ -21,6 +22,7 @@ import httpx
 from pypdf import PdfReader
 
 from comercio_agentico.agente.fuentes import Fuente, RegistroFuentes
+from comercio_agentico.agente.web_abierta import AGENTE_USUARIO, Cortesia, recortar
 
 os.environ.setdefault("CRAWL4AI_NO_CLOUD_NOTICE", "1")
 
@@ -28,7 +30,19 @@ MAX_DATOS_ESTRUCTURADOS = 6_000  # caracteres del bloque schema.org por página
 TIPOS_SCHEMA = ("Product", "Offer", "ProductGroup")
 
 
-def datos_estructurados(html: str, url: str) -> str:
+CAMPOS_LARGOS = ("description", "review", "image", "aggregateRating", "isRelatedTo", "isSimilarTo")
+
+
+def _sin_campos_largos(objeto: Any) -> Any:
+    """Quita textos largos (descripciones en HTML, reseñas) que agotan el tope sin dar precio."""
+    if isinstance(objeto, dict):
+        return {k: _sin_campos_largos(v) for k, v in objeto.items() if k not in CAMPOS_LARGOS}
+    if isinstance(objeto, list):
+        return [_sin_campos_largos(v) for v in objeto]
+    return objeto
+
+
+def datos_estructurados(html: str, url: str, ligero: bool = False) -> str:
     """Texto con los objetos schema.org de producto u oferta de la página; vacío si no hay.
 
     Es contenido del proveedor como cualquier otro (plano de datos): no se interpreta aquí.
@@ -47,6 +61,8 @@ def datos_estructurados(html: str, url: str) -> str:
     ]
     if not objetos:
         return ""
+    if ligero:  # solo en la web abierta: el corpus congelado conserva su lectura de D74
+        objetos = [_sin_campos_largos(o) for o in objetos]
     cuerpo = json.dumps(objetos, ensure_ascii=False, separators=(",", ":"))
     if len(cuerpo) > MAX_DATOS_ESTRUCTURADOS:
         cuerpo = cuerpo[:MAX_DATOS_ESTRUCTURADOS] + " …(recortado)"
@@ -71,15 +87,25 @@ class Lector:
     Uso: ``async with Lector(registro) as lector: doc = await lector.abrir_pagina(url)``.
     """
 
-    def __init__(self, registro: RegistroFuentes, max_resultados_mcp: int = 8) -> None:
+    def __init__(
+        self,
+        registro: RegistroFuentes,
+        max_resultados_mcp: int = 8,
+        documentos: dict[str, str] | None = None,
+    ) -> None:
         self.registro = registro
         self.max_resultados_mcp = max_resultados_mcp
+        # PDF que subió el visitante (D113): URL interna ``pdf://<sha256>`` → texto ya extraído.
+        self.documentos = documentos or {}
+        self._cortesia: Cortesia | None = None
+        self._arranque = asyncio.Lock()  # varias lecturas en paralelo: un solo Chromium
         self._cache: dict[str, Documento] = {}
         self._crawler: Any = None
         self._http: httpx.AsyncClient | None = None
 
     async def __aenter__(self) -> Lector:
-        self._http = httpx.AsyncClient(timeout=30)
+        self._http = httpx.AsyncClient(timeout=30, headers={"User-Agent": AGENTE_USUARIO})
+        self._cortesia = Cortesia(self._http)
         return self
 
     async def __aexit__(self, *exc: object) -> None:
@@ -98,19 +124,35 @@ class Lector:
         if url in self._cache:
             return self._cache[url]
         fuente = self._fuente(url)
+        if fuente.abierta:
+            assert self._cortesia is not None, "Use Lector como administrador de contexto"
+            await self._cortesia.permitir(url)
         from crawl4ai import AsyncWebCrawler, BrowserConfig, CacheMode, CrawlerRunConfig
 
-        if self._crawler is None:  # Chromium arranca solo si la tarea abre alguna página
-            self._crawler = AsyncWebCrawler(config=BrowserConfig(headless=True, verbose=False))
-            await self._crawler.__aenter__()
+        async with self._arranque:  # Chromium arranca solo si la tarea abre alguna página
+            if self._crawler is None:
+                crawler = AsyncWebCrawler(config=BrowserConfig(headless=True, verbose=False))
+                await crawler.__aenter__()
+                self._crawler = crawler
         resultado = await self._crawler.arun(
-            url, config=CrawlerRunConfig(cache_mode=CacheMode.BYPASS, verbose=False)
+            url,
+            config=CrawlerRunConfig(
+                cache_mode=CacheMode.BYPASS,
+                verbose=False,
+                user_agent=AGENTE_USUARIO,
+                # Tiendas reales: los productos llegan por JavaScript y con carga diferida.
+                **(
+                    {"scan_full_page": True, "scroll_delay": 0.3, "delay_before_return_html": 2.0}
+                    if fuente.abierta
+                    else {}
+                ),
+            ),
         )
         if not resultado.success:
             raise OSError(f"No se pudo abrir {url}: {resultado.error_message}")
         markdown = resultado.markdown
         texto = getattr(markdown, "raw_markdown", None) or str(markdown)
-        texto = datos_estructurados(resultado.html or "", url) + texto
+        texto = datos_estructurados(resultado.html or "", url, ligero=fuente.abierta) + texto
         enlaces = sorted(
             {
                 e["href"]
@@ -119,6 +161,8 @@ class Lector:
             }
             - {url}
         )
+        if fuente.abierta:
+            texto, enlaces = recortar(texto, enlaces)
         doc = Documento(fuente=fuente, consulta=url, texto=texto, enlaces=enlaces)
         self._cache[url] = doc
         return doc
@@ -127,7 +171,16 @@ class Lector:
         if url in self._cache:
             return self._cache[url]
         fuente = self._fuente(url)
+        if url in self.documentos:  # PDF del visitante: ya validado y extraído al subirlo
+            doc = Documento(
+                fuente=fuente, consulta=url, texto=recortar(self.documentos[url], [])[0]
+            )
+            self._cache[url] = doc
+            return doc
         assert self._http is not None, "Use Lector como administrador de contexto"
+        if fuente.abierta:
+            assert self._cortesia is not None
+            await self._cortesia.permitir(url)
         respuesta = await self._http.get(url)
         respuesta.raise_for_status()
         es_pdf = url.lower().endswith(".pdf") or "pdf" in respuesta.headers.get("content-type", "")
@@ -136,6 +189,8 @@ class Lector:
             texto = "\n".join(pagina.extract_text() or "" for pagina in lector.pages)
         else:
             texto = respuesta.content.decode("utf-8", errors="replace")
+        if fuente.abierta:
+            texto = recortar(texto, [])[0]
         doc = Documento(fuente=fuente, consulta=url, texto=texto)
         self._cache[url] = doc
         return doc

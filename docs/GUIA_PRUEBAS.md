@@ -786,16 +786,16 @@ está completo, cuesta US$0. `uv run python -m comercio_agentico.api.catalogo` (
 
 ### Qué se construyó y por qué
 
-| Componente | Qué hace | Concepto de IA / decisión |
-| --- | --- | --- |
-| `web/` (SvelteKit 3.2, adapter-static, Tailwind v4, shadcn-svelte) | Aplicación de página única en modo oscuro, compilada a `web/build` y servida por la API. | D81 y D109: un solo proceso y un solo contenedor. |
-| `web/src/lib/api.ts` | Tipos del contrato y cliente: `POST /api/consultas` con la clave en cabecera y `EventSource` para el SSE (se cierra en `fin` para que no reconecte y repita). | La clave viaja solo al crear la consulta (D82). |
-| `web/src/lib/config.svelte.ts` | Configuración del visitante con *runes* de Svelte 5: clave (en `sessionStorage` salvo «recordar»), modelo, capas, umbral, clasificador, N3 y política. Calcula si la combinación es C0–C3 o «exploratorio». | D91 y D110. |
-| `Ejecucion.svelte` | Línea de tiempo en vivo de los eventos SSE: necesidad formalizada, herramientas que pide el planificador, ofertas por proveedor, alertas y veredicto del ataque. | Hace legible el ciclo ReAct del agente (planificar ⇄ herramientas). |
-| `Propuesta.svelte` | Cuadro comparativo con la oferta recomendada resaltada, estado N3 por oferta y procedencia desplegable (fuente, consulta, modelo, fecha, SHA-256 y fragmento original). | Procedencia por dato: toda cifra es auditable. |
-| Rutas `/`, `/consultas/[id]`, `/laboratorio`, `/corpus`, `/resultados`, `/historial`, `/configuracion` | Las funcionalidades de D83 y D87. | El laboratorio y el visor muestran la tesis en vivo. |
-| `api/corpus.py` y dos rutas nuevas | Índice del corpus y archivos servidos por lista blanca; HTML con CSP `sandbox` dentro de un `iframe sandbox=""`. | Una página atacada no ejecuta nada en el navegador del visitante. |
-| `app.frontend()` en `api/app.py`; `make web`, `make web-dev` | FastAPI sirve la compilación; las rutas `/api` tienen prioridad. | |
+| Componente                                                                                             | Qué hace                                                                                                                                                                                                    | Concepto de IA / decisión                                           |
+| ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `web/` (SvelteKit 3.2, adapter-static, Tailwind v4, shadcn-svelte)                                     | Aplicación de página única en modo oscuro, compilada a `web/build` y servida por la API.                                                                                                                    | D81 y D109: un solo proceso y un solo contenedor.                   |
+| `web/src/lib/api.ts`                                                                                   | Tipos del contrato y cliente: `POST /api/consultas` con la clave en cabecera y `EventSource` para el SSE (se cierra en `fin` para que no reconecte y repita).                                               | La clave viaja solo al crear la consulta (D82).                     |
+| `web/src/lib/config.svelte.ts`                                                                         | Configuración del visitante con _runes_ de Svelte 5: clave (en `sessionStorage` salvo «recordar»), modelo, capas, umbral, clasificador, N3 y política. Calcula si la combinación es C0–C3 o «exploratorio». | D91 y D110.                                                         |
+| `Ejecucion.svelte`                                                                                     | Línea de tiempo en vivo de los eventos SSE: necesidad formalizada, herramientas que pide el planificador, ofertas por proveedor, alertas y veredicto del ataque.                                            | Hace legible el ciclo ReAct del agente (planificar ⇄ herramientas). |
+| `Propuesta.svelte`                                                                                     | Cuadro comparativo con la oferta recomendada resaltada, estado N3 por oferta y procedencia desplegable (fuente, consulta, modelo, fecha, SHA-256 y fragmento original).                                     | Procedencia por dato: toda cifra es auditable.                      |
+| Rutas `/`, `/consultas/[id]`, `/laboratorio`, `/corpus`, `/resultados`, `/historial`, `/configuracion` | Las funcionalidades de D83 y D87.                                                                                                                                                                           | El laboratorio y el visor muestran la tesis en vivo.                |
+| `api/corpus.py` y dos rutas nuevas                                                                     | Índice del corpus y archivos servidos por lista blanca; HTML con CSP `sandbox` dentro de un `iframe sandbox=""`.                                                                                            | Una página atacada no ejecuta nada en el navegador del visitante.   |
+| `app.frontend()` en `api/app.py`; `make web`, `make web-dev`                                           | FastAPI sirve la compilación; las rutas `/api` tienen prioridad.                                                                                                                                            |                                                                     |
 
 ### Cómo probarlo
 
@@ -845,14 +845,14 @@ navegador, o en `/consultas/fb424985-1904-4f6c-9b77-7d137579b358`.
 
 ### Qué se construyó y por qué
 
-| Componente | Qué hace | Concepto de IA / decisión |
-| --- | --- | --- |
-| `web/src/routes/(cliente)/` | Modo Cliente: `/` (consulta y catálogo), `/consulta/[id]` (cuatro pasos y resultado), `/mis-consultas`. | Producto mínimo para el usuario final (D111). |
-| `config.svelte.ts` → `opcionesCliente()` | Perfil fijo del cliente: C2 + N3 con política abstener, clasificador Horizon-Labs. | Valor por defecto seguro: el usuario no configura la defensa (D106, D110). |
-| `Ajustes.svelte` | Diálogo con la clave de OpenRouter y el modelo. | Llave propia (D82). |
-| `ResultadoCliente.svelte` | Recomendación destacada, tabla corta, sello «precio confirmado» (N3) y texto original de la fuente; alertas en lenguaje de compra. | Procedencia por dato, presentada para quien compra. |
-| `web/src/routes/lab/` y su `+layout.svelte` | Modo Laboratorio con barra lateral: todas las pantallas de S09b con el prefijo `/lab`. | Instrumental del experimento para el jurado (D83, D87). |
-| `routes/layout.css` | Tema sobrio: neutros, superficies planas, Inter local, un acento. | |
+| Componente                                  | Qué hace                                                                                                                           | Concepto de IA / decisión                                                  |
+| ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `web/src/routes/(cliente)/`                 | Modo Cliente: `/` (consulta y catálogo), `/consulta/[id]` (cuatro pasos y resultado), `/mis-consultas`.                            | Producto mínimo para el usuario final (D111).                              |
+| `config.svelte.ts` → `opcionesCliente()`    | Perfil fijo del cliente: C2 + N3 con política abstener, clasificador Horizon-Labs.                                                 | Valor por defecto seguro: el usuario no configura la defensa (D106, D110). |
+| `Ajustes.svelte`                            | Diálogo con la clave de OpenRouter y el modelo.                                                                                    | Llave propia (D82).                                                        |
+| `ResultadoCliente.svelte`                   | Recomendación destacada, tabla corta, sello «precio confirmado» (N3) y texto original de la fuente; alertas en lenguaje de compra. | Procedencia por dato, presentada para quien compra.                        |
+| `web/src/routes/lab/` y su `+layout.svelte` | Modo Laboratorio con barra lateral: todas las pantallas de S09b con el prefijo `/lab`.                                             | Instrumental del experimento para el jurado (D83, D87).                    |
+| `routes/layout.css`                         | Tema sobrio: neutros, superficies planas, Inter local, un acento.                                                                  |                                                                            |
 
 Las rutas de S09b cambiaron: `/laboratorio` → `/lab/ataques`, `/corpus` → `/lab/corpus`, `/resultados` →
 `/lab/resultados`, `/historial` → `/lab/historial`, `/configuracion` → `/lab/configuracion` y `/consultas/[id]` →
@@ -894,3 +894,56 @@ En Ajustes ponga una clave inventada (`sk-or-v1-prueba-000000`), pulse un ejempl
 En Ajustes ponga su clave y elija DeepSeek V4.1 Flash; catálogo «Proveedores de prueba»; ejemplo del más barato.
 Corre en C2 + N3: en 1–3 minutos debe ver la recomendación y, junto al proveedor de las ofertas verificadas, la
 insignia de «precio confirmado». El costo de la consulta aparece al pie del resultado.
+
+## S09b-ter — Consulta en vivo y lista blanca editable (11-nov, D112–D115)
+
+### Qué se construyó y por qué
+
+| Componente | Qué hace | Concepto de IA / decisión |
+| --- | --- | --- |
+| `agente/web_abierta.py` | Bloqueo de SSRF, robots.txt por sitio, pausa por sitio, recorte centrado en precios y prioridad de enlaces a fichas. | Lectura responsable de internet abierta (D112). |
+| `agente/comparacion_abierta.py` | Pistas por GTIN y embeddings, juez con salida estructurada, reglas deterministas, `proponer_abierto`. | Emparejamiento entre ofertas sin catálogo (D113, D115). |
+| `api/fuentes_visitante.py`, `/api/fuentes` | Lista blanca por visitante: activar, agregar URL o PDF, eliminar, restablecer. | Cambios aislados por visitante (D113). |
+| `Fuentes.svelte` | Panel de la lista blanca en Cliente y Laboratorio. | |
+
+### Cómo probarlo
+
+**1. Pruebas sin red — US$0**
+
+```bash
+uv run pytest tests/test_vivo.py -q     # SSRF, robots.txt, recorte, comparación abierta, API de fuentes, PDF
+```
+
+**2. La lista blanca en el navegador — US$0**
+
+`make bd && make web`, luego `systemctl --user restart cotia-api` (o `make api`). En <http://localhost:8000> pulse
+«5 fuentes»: debe ver tres grupos y, en «Tiendas en vivo», las cinco tiendas con su interruptor. Pruebe:
+
+- Agregar `http://127.0.0.1:8800/` → «apunta a una dirección no pública» (bloqueo de SSRF).
+- Subir un PDF con texto (cualquier lista de precios) → aparece con su huella SHA-256; eliminarlo con la papelera.
+- Desactivar todas las tiendas y enviar una consulta → se abre el panel para que active alguna.
+- «Restablecer la lista por defecto» → todas activas y sin fuentes propias.
+
+**3. Lectura de una tienda real, sin LLM — US$0**
+
+```bash
+uv run python - <<'PY'
+import asyncio
+from comercio_agentico.agente.fuentes import TIENDAS_EN_VIVO, RegistroFuentes
+from comercio_agentico.agente.lectura import Lector
+async def main():
+    async with Lector(RegistroFuentes(fuentes=TIENDAS_EN_VIVO)) as l:
+        d = await l.abrir_pagina("https://www.alkosto.com/celulares-samsung-galaxy-a/c/celulares-samsung-galaxy-a")
+        print(len(d.texto), "caracteres;", len(d.enlaces), "enlaces"); print(d.texto[:800])
+asyncio.run(main())
+PY
+```
+
+Debe ver líneas con modelos Galaxy y sus precios (el menú ya no ocupa el texto).
+
+**4. Una consulta en vivo — ≈ US$0,06 con DeepSeek Flash + N3**
+
+En Ajustes, su clave y Flash; en «5 fuentes», grupo «Tiendas en vivo»; ejemplo «El Samsung Galaxy A57 de 256 GB más
+barato con envío». Tarda 5–7 minutos. El 11-nov recomendó Falabella ($1.599.900, envío $0, verificada) frente a
+Samsung ($1.999.900). Los precios cambian: el resultado de hoy puede ser otro. En el Laboratorio, la misma consulta
+muestra las alertas de C2 (texto retirado en páginas reales, D115 b).

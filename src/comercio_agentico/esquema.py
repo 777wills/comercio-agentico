@@ -142,6 +142,13 @@ class Oferta(OfertaExtraida):
     verificacion: Literal["verificada", "discrepancia", "sin_contraparte"] | None = Field(
         default=None, description="Resultado de N3; null si no se verificó."
     )
+    # Comparación abierta (D113): fuentes en vivo y del visitante, sin catálogo de referencia.
+    grupo: int | None = Field(
+        default=None, description="Grupo de ofertas del mismo producto; lo escribe la comparación."
+    )
+    descarte: str | None = Field(
+        default=None, description="Por qué la oferta no cumple la necesidad; null si cumple."
+    )
 
     @property
     def proveedor(self) -> str:

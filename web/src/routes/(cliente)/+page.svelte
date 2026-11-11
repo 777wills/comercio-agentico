@@ -2,8 +2,10 @@
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
 	import { crearConsulta, ErrorApi } from '#lib/api.js';
-	import { ajustes, config, opcionesCliente } from '#lib/config.svelte.js';
+	import { onMount } from 'svelte';
+	import { ajustes, config, fuentes, opcionesCliente } from '#lib/config.svelte.js';
 	import { ejemplos } from '#lib/datos.js';
+	import Fuentes from '#lib/components/Fuentes.svelte';
 	import ArrowUp from '@lucide/svelte/icons/arrow-up';
 
 	let consulta = $state('');
@@ -11,15 +13,23 @@
 	const ej = ejemplos();
 	const listo = $derived(consulta.trim().length >= 3 && !enviando);
 
-	const CATALOGOS = [
-		['a', 'Tiendas colombianas'],
-		['b', 'Proveedores de prueba']
-	] as const;
+	// En vivo no hay tareas con respuesta conocida: ejemplos genéricos de compra.
+	const EJEMPLOS_VIVO = [
+		'Un portátil con 16 GB de RAM y 512 GB de SSD por menos de 3 millones',
+		'El Samsung Galaxy A57 de 256 GB más barato con envío',
+		'Audífonos inalámbricos con cancelación de ruido por menos de 600 mil pesos'
+	];
+	onMount(() => fuentes.cargar().catch(() => {}));
+	const activas = $derived(fuentes.activas(config.corpus));
 
 	async function enviar() {
 		if (!listo) return;
 		if (!config.clave) {
 			ajustes.abierto = true;
+			return;
+		}
+		if (fuentes.lista && activas === 0) {
+			fuentes.panel = true;
 			return;
 		}
 		enviando = true;
@@ -67,15 +77,12 @@
 			}}
 		></textarea>
 		<div class="flex items-center gap-1 px-1">
-			{#each CATALOGOS as [valor, nombre] (valor)}
-				<button
-					type="button"
-					class="rounded-full px-3 py-1 text-xs transition-colors {config.corpus === valor
-						? 'bg-secondary text-foreground'
-						: 'text-muted-foreground hover:text-foreground'}"
-					onclick={() => (config.corpus = valor)}>{nombre}</button
-				>
-			{/each}
+			<button
+				type="button"
+				class="rounded-full px-3 py-1 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+				onclick={() => (fuentes.panel = true)}
+				>{fuentes.lista ? `${activas} ${activas === 1 ? 'fuente' : 'fuentes'}` : 'Fuentes'}</button
+			>
 			<button
 				type="submit"
 				aria-label="Cotizar"
@@ -98,15 +105,17 @@
 
 	{#await ej then ejs}
 		<ul class="mt-10 space-y-1">
-			{#each ejs[config.corpus].slice(0, 3) as e (e.categoria)}
+			{#each config.corpus === 'vivo' ? EJEMPLOS_VIVO : ejs[config.corpus].slice(0, 3).map((e) => e.consulta) as texto (texto)}
 				<li>
 					<button
 						type="button"
 						class="w-full truncate rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground"
-						onclick={() => (consulta = e.consulta)}>{e.consulta}</button
+						onclick={() => (consulta = texto)}>{texto}</button
 					>
 				</li>
 			{/each}
 		</ul>
 	{/await}
 </section>
+
+<Fuentes />
