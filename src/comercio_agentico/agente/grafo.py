@@ -27,7 +27,7 @@ import logging
 import operator
 import time
 import unicodedata
-from collections.abc import Sequence
+from collections.abc import Awaitable, Callable, Sequence
 from dataclasses import dataclass, field
 from typing import Annotated, Any, Literal, TypedDict
 
@@ -36,7 +36,12 @@ from langchain_core.tools import tool
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
 
-from comercio_agentico.agente.defensa import ClasificadorInyeccion, filtrar, verificar_precios
+from comercio_agentico.agente.defensa import (
+    ClasificadorInyeccion,
+    Defensas,
+    filtrar,
+    verificar_precios,
+)
 from comercio_agentico.agente.extraccion import extraer_ofertas
 from comercio_agentico.agente.fuentes import RegistroFuentes, cargar_fuentes
 from comercio_agentico.agente.interpretacion import Necesidad, interpretar
@@ -67,6 +72,7 @@ MAX_TEXTO_C0 = 12_000  # caracteres de texto crudo por herramienta en C0
 Configuracion = Literal["C0", "C1", "C2", "C3"]
 CONFIGURACIONES: tuple[str, ...] = ("C0", "C1", "C2", "C3")
 PoliticaN3 = Literal["abstener", "excluir"]
+AlAvanzar = Callable[[str, dict], Awaitable[None]]
 
 
 # --------------------------------------------------------------------------------------------------
@@ -180,10 +186,12 @@ class Contexto:
     emparejador: Emparejador
     perfil: PerfilCategoria
     costo: RegistroCosto
-    configuracion: Configuracion = "C1"
+    defensas: Defensas = field(default_factory=Defensas)
     clasificador: Any = None  # C2 y C3: ClasificadorInyeccion o un doble con `puntuar`
     verificar: bool = False  # N3
     politica_n3: PoliticaN3 = "abstener"
+    modelo_verificador: str = MODELO_VERIFICADOR
+    clave_openrouter: str | None = field(default=None, repr=False)  # CotIA: la del visitante
     max_llamadas: int = MAX_LLAMADAS
     concurrencia_llm: int = 3
     _llm: dict[str, Any] = field(default_factory=dict)
@@ -191,15 +199,15 @@ class Contexto:
 
     @property
     def separacion_planos(self) -> bool:
-        return self.configuracion != "C0"
+        return self.defensas.separacion_planos
 
     @property
     def filtra_inyeccion(self) -> bool:
-        return self.configuracion in ("C2", "C3")
+        return self.defensas.clasificador
 
     @property
     def verifica_precios(self) -> bool:
-        return self.configuracion == "C3"
+        return self.defensas.precio
 
     @property
     def config(self) -> dict:
@@ -207,7 +215,10 @@ class Contexto:
 
     def llm(self, rol: str) -> Any:
         if rol not in self._llm:
-            sin_reintentos = {"max_retries": 0}  # los reintentos los hace `Limitado`
+            # Los reintentos los hace `Limitado`.
+            sin_reintentos: dict[str, Any] = {"max_retries": 0}
+            if self.clave_openrouter is not None:
+                sin_reintentos["clave_openrouter"] = self.clave_openrouter
             match rol:
                 case "planificador":
                     llm = obtener_modelo(self.modelo, **sin_reintentos).bind_tools(HERRAMIENTAS)
@@ -221,7 +232,7 @@ class Contexto:
                     llm = obtener_extractor(self.modelo, Decisiones, **sin_reintentos)
                 case "verificador":
                     llm = obtener_extractor(
-                        MODELO_VERIFICADOR, ListaOfertas, include_raw=True, **sin_reintentos
+                        self.modelo_verificador, ListaOfertas, include_raw=True, **sin_reintentos
                     )
                 case _:
                     raise KeyError(rol)
@@ -249,7 +260,9 @@ def resumen_oferta(o: Oferta) -> dict[str, Any]:
 
 async def filtrar_documento(ctx: Contexto, doc: Documento) -> tuple[Documento, list[Alerta]]:
     """C2: retira del fragmento las ventanas que el clasificador marca como inyección."""
-    f = await asyncio.to_thread(filtrar, doc.texto, doc.enlaces, ctx.clasificador)
+    f = await asyncio.to_thread(
+        filtrar, doc.texto, doc.enlaces, ctx.clasificador, ctx.defensas.umbral
+    )
     if not f.retiradas:
         return doc, []
     log.info("  ⚠ C2 retiró %d de %d ventanas de %s", f.retiradas, f.total, doc.consulta)
@@ -663,9 +676,13 @@ async def preguntar(
     modelo: str = "deepseek-flash",
     separacion_planos: bool = True,
     configuracion: Configuracion | None = None,
+    defensas: Defensas | None = None,
     clasificador: Any = None,
     verificar: bool = False,
     politica_n3: PoliticaN3 = "abstener",
+    modelo_verificador: str = MODELO_VERIFICADOR,
+    clave_openrouter: str | None = None,
+    al_avanzar: AlAvanzar | None = None,
     max_llamadas: int = MAX_LLAMADAS,
     tope_usd: float | None = None,
     registro: RegistroFuentes | None = None,
@@ -679,12 +696,16 @@ async def preguntar(
     ``semaforo_llm`` permite que varias tareas en paralelo compartan un único límite de llamadas
     simultáneas al LLM (el arnés lo usa); si falta, cada tarea crea el suyo.
 
-    ``configuracion`` (C0–C3) prevalece sobre ``separacion_planos``, que se conserva por
-    compatibilidad (True = C1, False = C0). En C2 y C3, ``clasificador`` permite compartir un
-    único modelo cargado entre tareas; si falta, se crea uno.
+    ``defensas`` (capas independientes, D91) prevalece sobre ``configuracion`` (C0–C3), que
+    prevalece sobre ``separacion_planos`` (compatibilidad: True = C1, False = C0). Con el
+    clasificador activo, ``clasificador`` permite compartir un único modelo cargado entre tareas;
+    si falta, se crea uno.
+
+    ``al_avanzar(nodo, actualizacion)`` recibe la salida de cada nodo del grafo a medida que
+    termina (progreso en vivo de CotIA).
     """
-    configuracion = configuracion or ("C1" if separacion_planos else "C0")
-    if configuracion in ("C2", "C3") and clasificador is None:
+    defensas = defensas or Defensas.de(configuracion or ("C1" if separacion_planos else "C0"))
+    if defensas.clasificador and clasificador is None:
         clasificador = ClasificadorInyeccion()
     inicio = time.perf_counter()
     registro = registro or cargar_fuentes()
@@ -699,18 +720,29 @@ async def preguntar(
             emparejador=emparejador,
             perfil=perfil,
             costo=costo,
-            configuracion=configuracion,
+            defensas=defensas,
             clasificador=clasificador,
             verificar=verificar,
             politica_n3=politica_n3,
+            modelo_verificador=modelo_verificador,
+            clave_openrouter=clave_openrouter,
             max_llamadas=max_llamadas,
             _semaforo=semaforo_llm,
         )
         grafo = construir_grafo(ctx)
+        final: dict[str, Any] = {}
         try:
-            final = await grafo.ainvoke(
-                {"consulta": consulta}, config={"recursion_limit": 4 * max_llamadas + 10}
-            )
+            async for parte in grafo.astream(
+                {"consulta": consulta},
+                config={"recursion_limit": 4 * max_llamadas + 10},
+                stream_mode=["updates", "values"],
+                version="v2",
+            ):
+                if parte["type"] == "values":
+                    final = parte["data"]
+                elif al_avanzar is not None:
+                    for nodo, actualizacion in parte["data"].items():
+                        await al_avanzar(nodo, actualizacion or {})
         except CostoExcedido as error:
             propuesta = PropuestaCompra(
                 consulta=consulta,

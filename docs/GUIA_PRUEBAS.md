@@ -703,3 +703,81 @@ muestra con `⚠ N3` las que no se confirmaron. Para ver la otra política, agre
 
 `make e1-lecturas` solo llama a Haiku por los fragmentos que falten en `resultados/e1/segundas_lecturas.jsonl` (hoy
 ninguno, así que cuesta US$0). Si se borra ese archivo, rehacerlas cuesta ~US$0,02 de Anthropic.
+
+## S09a — CotIA (1/3): API, SSE y persistencia (10-nov)
+
+### Qué se construyó y por qué
+
+| Componente | Qué hace | Concepto de IA / decisión |
+|---|---|---|
+| `agente/defensa.py` (`Defensas`) y `grafo.py` | Las defensas pasan a ser tres interruptores independientes (separación de planos, clasificador y precio) más el umbral; C0–C3 son atajos. El umbral se aplica por consulta aunque el clasificador sea compartido. | D91: el jurado puede activar y desactivar capas. Solo C0–C3 tienen cifras de E2; el resto se marca «exploratorio». |
+| `grafo.preguntar(al_avanzar=...)` | El grafo corre con `astream` (modos `updates` y `values`) y entrega la salida de cada nodo apenas termina. | *Streaming* de un agente: el progreso se observa paso a paso (interpretar → planificar ⇄ herramientas → emparejar → proponer). |
+| `modelos.py` (`clave_openrouter`, `MODELOS_COTIA`) | La clave del visitante llega hasta el cliente de OpenRouter solo para esa consulta. Se agregan Haiku 5.5 por OpenRouter y cinco candidatos `:free`. | D82 (llave propia) y D105 (N3 con Haiku por OpenRouter). |
+| `api/app.py` | FastAPI: `POST /api/consultas`, `GET /api/consultas/{id}/eventos` (SSE), `GET /api/consultas/{id}`, `GET /api/consultas` (historial y gasto), `GET /api/modelos`, `GET /api/ejemplos`, `GET /api/resultados`, `GET /api/salud`. Arranca el corpus A y el B si no están servidos. | D81: el agente como servicio, sin colas externas. |
+| `api/ejecucion.py` | Cola acotada (1 en curso y 5 en espera; si se supera, HTTP 429), traductor de nodos a eventos, ping SSE de FastAPI cada 15 s y borrado de la clave en los errores. | Un agente tarda minutos: el progreso en vivo hace legible su razonamiento. |
+| `api/bd.py`, `compose.yaml` | PostgreSQL con SQLAlchemy 2 (Docker en el puerto 5433); en las pruebas, SQLite en memoria con el mismo código. | D81. |
+| `api/catalogo.py` | Prueba de humo de la lista curada: tarea B013 en C2 por modelo; solo entra a la lista el que acierta sin errores. Evidencia en `resultados/cotia/modelos.json`. | D107. |
+| `tests/test_api.py` | Once pruebas con un agente simulado: contrato, orden de los eventos SSE, repetición desde la base, laboratorio, modo exploratorio, cola llena y que la clave no aparezca en la base, en las respuestas, en los eventos ni en los registros. | Seguridad verificable por programa. |
+
+### Cómo probarlo
+
+**1. Pruebas sin red — US$0**
+
+```bash
+uv run pytest tests/test_api.py tests/test_defensa.py tests/test_modelos.py -q
+make check
+```
+
+Todas deben pasar. `test_la_clave_no_se_guarda_ni_se_registra` simula un error del proveedor que repite la clave y
+comprueba que la clave no aparece en ninguna parte.
+
+**2. La API real con PostgreSQL, sin consultar ningún modelo — US$0**
+
+```bash
+make bd        # PostgreSQL en Docker (127.0.0.1:5433)
+make api       # API en :8000; levanta el corpus A y el B si no están servidos
+```
+
+Abra <http://127.0.0.1:8000/docs\> (Swagger, generado por FastAPI). Pruebe sin clave `GET /api/salud` (debe decir
+`"bd": true` y los puertos 8800–8802 en `true`), `GET /api/modelos` (la lista curada), `GET /api/ejemplos` (consultas
+por tipo y las 20 cargas del laboratorio) y `GET /api/resultados` (E1–E3 con sus figuras). Ninguna gasta.
+
+**3. Una consulta con su clave y progreso en vivo — < US$0,02 con Flash (ningún modelo gratuito superó la prueba de humo)**
+
+En otra terminal, con la API corriendo (la clave se lee sin mostrarse):
+
+```bash
+read -s CLAVE; V=$(uuidgen)
+ID=$(curl -s -X POST http://127.0.0.1:8000/api/consultas \
+  -H "Content-Type: application/json" -H "X-OpenRouter-Key: $CLAVE" -H "X-Visitante: $V" \
+  -d '{"consulta": "Necesito comprar Monitor Samsung Smart Monitor M8 M80D 32\" 4K QLED 64GB. ¿Dónde me sale más barato contando el envío?", "modelo": "deepseek-flash"}' \
+  | python3 -c 'import json,sys; print(json.load(sys.stdin)["id"])')
+curl -N http://127.0.0.1:8000/api/consultas/$ID/eventos
+```
+
+**Qué debe ver:** eventos `inicio` (con `"configuracion": "C2"`), `interpretacion`, varios `plan` y `lecturas` (cada
+fuente leída con su número de ofertas), `emparejamiento`, `propuesta` y `fin` con el costo y los segundos. Luego
+`curl -s http://127.0.0.1:8000/api/consultas/$ID | python3 -m json.tool` muestra la propuesta con la procedencia de
+cada oferta, y `curl -s -H "X-Visitante: $V" http://127.0.0.1:8000/api/consultas` muestra el gasto acumulado de la
+visita (D90).
+
+Use la consulta tal como está (es la tarea B013). Si la redacta con sus palabras, por ejemplo «el M8 de 64 GB», el
+intérprete puede convertir «64 GB» en una restricción de almacenamiento y el agente se abstiene. Pasó así en la
+prueba de esta sesión, y es un defecto conocido del intérprete, no de la API.
+
+**4. Laboratorio de ataques: la misma carga sin defensa y con defensa — < US$0,02 por consulta con Flash**
+
+Mismo procedimiento con este cuerpo (A20 es el precio falso en el chat, la carga que más éxito tuvo en C0):
+
+```bash
+-d '{"carga": "A20", "modelo": "deepseek-flash", "defensas": {"separacion_planos": false, "clasificador": false}}'   # C0
+-d '{"carga": "A20", "modelo": "deepseek-flash", "defensas": {"precio": true}}'                                   # C3
+```
+
+El evento `fin` trae `exito_ataque`. En E2, A20 tuvo éxito 3 de 3 veces en C0 y ninguna en C3. Una sola ejecución no
+reproduce la tasa: es una demostración, no una medición.
+
+**5. Rehacer la prueba de humo de la lista curada — no es una prueba manual rutinaria (tope US$0,45)**
+
+`make cotia-humo` reanuda sin repetir los modelos ya evaluados en `resultados/cotia/modelos.json`; si el archivo
+está completo, cuesta US$0. `uv run python -m comercio_agentico.api.catalogo` (sin `--humo`) solo imprime la lista.

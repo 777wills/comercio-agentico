@@ -2,22 +2,43 @@
 
 ## Siguiente sesión
 
-**S09a — CotIA (1/3): API FastAPI + SSE + PostgreSQL + llave propia.** S08 quedó terminada: N3 existe (módulo
-`verificacion.py` y nodo opcional del grafo) y E1 tiene su tabla de predicción selectiva y el borrador
-`docs/informe/04_resultados_e1.md`. Vamos tres días por delante (S08 estaba para el 13-nov).
+**S09b — CotIA (2/3): frontend SvelteKit en modo oscuro.** S09a quedó terminada: la API de CotIA corre de punta a
+punta con progreso SSE, PostgreSQL y la clave del visitante. Vamos cuatro días por delante (S09a estaba para el
+14-nov).
 
 Siguiente paso exacto:
-1. Leer en `docs/PLAN.md` la sección S09a y proponer a Wills el plan en 3–5 líneas. Context7 para FastAPI (SSE),
-   SQLAlchemy y el cliente de OpenRouter antes de escribir código.
-2. Refactor D91: tres booleanos de capa + umbral; `verificar` (N3) ya es un booleano propio (D104).
-3. **Corridas largas: una a la vez y con `systemd-run --user`** (`MEMORIA_CLAUDE_CODE.md` §6). Las salidas de
-   crawl4ai desbordan la terminal del editor y la cortan con ^C aunque se redirijan: lanzar con `systemd-run`.
+
+1. Leer en `docs/PLAN.md` la sección S09b y proponer a Wills el plan en 3–5 líneas. Context7 para SvelteKit
+   (adapter-static), Tailwind y la librería de componentes antes de escribir código; elegir la librería con Wills.
+2. Levantar el backend: `make bd` (PostgreSQL en Docker, :5433) y `make api` (:8000; arranca el corpus A y el B si
+   no están servidos). El contrato está en <http://127.0.0.1:8000/docs>. Eventos SSE: `inicio`, `interpretacion`,
+   `plan`, `lecturas`, `emparejamiento`, `propuesta` y `fin` (más `en_cola`). `EventSource` no envía cabeceras: el
+   flujo SSE se abre solo con el id; la clave va solo en `POST /api/consultas`.
+3. **Corridas largas: una a la vez y con `systemd-run --user`** (`MEMORIA_CLAUDE_CODE.md` §6). La terminal del
+   editor corta con ^C cualquier comando de más de ~45 s: esperar en pasos cortos y leer los registros.
 4. Pendientes abiertos para Wills: (a) si corre el opcional de S07 (C0 y C3 con un segundo modelo, ~US$1,2);
-   (b) qué configuración trae CotIA por defecto (la evidencia apoya C1 como mínimo; C2/C3 sin costo medible);
-   (c) cómo presenta CotIA a N3: la evidencia de E1 favorece un indicador por oferta antes que la abstención por
-   defecto (D104 fijó `abstener` como política del nodo).
+   (c) cómo presenta CotIA a N3 (indicador por oferta o abstención; D104 fijó `abstener` en el nodo y la API acepta
+   `politica_n3`). El pendiente (b) quedó resuelto con D106 (C2 por defecto).
+5. Hallazgo para la hoja de ruta: el intérprete convierte «64 GB» de una consulta libre en una restricción de
+   almacenamiento y el agente se abstiene. No se corrige ahora porque cambia la huella de prompt de E1–E3.
+
+**Hecho el 10-nov (S09a, API de CotIA), con pruebas:**
+- **API FastAPI** (`src/comercio_agentico/api/`): 9 rutas (consultas, SSE, detalle, historial con gasto de la visita,
+  modelos, ejemplos, resultados E1–E3 con figuras, salud). Cola acotada (1 en curso, 5 en espera, luego HTTP 429).
+  Progreso por `astream` del grafo traducido a eventos; los eventos se guardan y se repiten desde la base.
+- **Clave del visitante** (D82): pasa por consulta al cliente de OpenRouter; no se guarda, no se registra y se borra
+  de los errores; prueba automatizada contra base, respuestas, eventos y registros. N3 con Haiku por OpenRouter (D105).
+- **Defensas como capas** (D91): `Defensas` con tres interruptores + umbral; C0–C3 como atajos; C2 por defecto (D106).
+- **Lista curada** (D107; `resultados/cotia/modelos.json`): Flash, Haiku 5.5 y Kimi K3.1 Pro. Ningún gratuito pasó
+  (3 respuestas incorrectas, 1 atascado por límites de tasa, 1 retirado de OpenRouter); DeepSeek Pro funcionó pero
+  falló B013 y no tiene E3.
+- **Punta a punta** con la clave en cabecera: consulta con Flash (115 s, US$0,0145; se abstuvo por el hallazgo del
+  intérprete, todos los eventos en orden) y laboratorio A20 en C0 (101 s, US$0,0157, **éxito del ataque**, como en E2).
+- PostgreSQL 17 en Docker (`compose.yaml`), `make bd`, `make api`, `make cotia-humo`. **173 pruebas**, Ruff limpio.
+- Informe: `docs/informe/03_metodologia_producto.md`.
 
 **Hecho el 10-nov (S08, N3 y E1), con pruebas:**
+
 - **N3** (`src/comercio_agentico/verificacion.py`, D100–D101): segunda lectura del fragmento de la procedencia por
   el parser (JSON de P1 y schema.org de P2/corpus A; ambiguo → LLM) o por Claude Haiku 5.5 con prompt propio; caché
   por SHA-256; correspondencia GTIN → enlace → título ≥ 0,8; estados verificada / discrepancia / sin_contraparte.
@@ -36,6 +57,7 @@ Siguiente paso exacto:
 - N1 queda propuesto (D104) en `docs/informe/06_hoja_de_ruta.md` (6.y, junto con N3 dirigida y N3 bajo ataque).
 
 **Hecho el 10-nov (S07, E2), con pruebas:**
+
 - **E2 (D96):** 240 ejecuciones atacadas + 120 benignas, 0 errores, US$5,35. Utilidad C0–C3: 93,3 / 93,3 / 96,7 /
   93,3 % (diferencias de una tarea, dentro del ruido). **M5: C0 7/60 = 11,7 % [5,8; 22,2]; C1, C2 y C3 0/60 [0; 6,0]**.
   La separación de planos produce toda la reducción medible; C2 es el codo formal por una tarea benigna. Éxitos en
@@ -51,6 +73,7 @@ Siguiente paso exacto:
 - Informe: `04_resultados_e2.md` (completo) y `03_metodologia_seguridad.md` (Jev y diseño de E2).
 
 **Hecho el 10-nov (parte defensiva de S06), con pruebas:**
+
 - **C0–C3 integradas en el agente** (`agente/defensa.py`, grafo y arnés). C2: clasificador por ventanas que retira
   las marcadas antes de extraer. C3: excluye precios atípicos (banda de catálogo y mediana). `--configuracion C0..C3`.
 - **Clasificador de C2 elegido con evidencia** (D85): Horizon-Labs Guard (small), 0/47 falsos positivos en español,
@@ -65,25 +88,25 @@ Siguiente paso exacto:
 
 ## Presupuesto de modelos
 
-| Concepto | US$ |
-|---|---|
-| Presupuesto total | 300,00 |
-| Créditos comprados | 55,00 (Anthropic 30 + OpenRouter 20, 9-nov; TypeSafe 5, 10-nov, el mínimo que acepta, para la comparación con Jev de D80). Anthropic: US$29,83 disponibles y US$0,17 gastados (consola, 9-nov 21:43) |
-| Gastado acumulado | ~15,01 (S08: 0,0213 = segunda lectura de N3 con Haiku en 15 fragmentos; S07: ~5,57 = matriz de ataque 3,4454 + utilidad benigna 1,9011 + Jev ~0,0015 + ~0,22 perdidos en dos cierres de VS Code; S06-bis arnés: 0,2327 humo C0/C3 en dos pasadas, 0,1473 + 0,0854; S06: 0,015 prueba de humo C3 + clasificadores a US$0; S00: ~0,26; S01: 0,024; S02: ~0,18; S03: 1,74; S04: ~1,32; S05: ~5,7 = corpus A v1 0,361 + calibración v3 0,919 + E3 Flash 1,371 + E3 Haiku 1,528 + corrida parcial de Flash descartada 1,312 + ~0,2 de llamadas perdidas en la suspensión). OpenRouter: ~13,3 de 20 usados tras S07 (~6,7 disponibles). TypeSafe: ~US$0,002 de 5. Anthropic: ~US$28,3 disponibles tras Haiku (S08 usó US$0,02 más) |
+| Concepto           | US$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Presupuesto total  | 300,00                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| Créditos comprados | 75,00 (Anthropic 30 + OpenRouter 20, 9-nov; TypeSafe 5, 10-nov, el mínimo que acepta, para la comparación con Jev de D80; OpenRouter 20 más, 10-nov, S09a). Anthropic: US$29,83 disponibles y US$0,17 gastados (consola, 9-nov 21:43)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Gastado acumulado  | ~15,39 (S09a: 0,3745 = humo de la lista curada 0,3443 + punta a punta 0,0302, todo OpenRouter; S08: 0,0213 = segunda lectura de N3 con Haiku en 15 fragmentos; S07: ~5,57 = matriz de ataque 3,4454 + utilidad benigna 1,9011 + Jev ~0,0015 + ~0,22 perdidos en dos cierres de VS Code; S06-bis arnés: 0,2327 humo C0/C3 en dos pasadas, 0,1473 + 0,0854; S06: 0,015 prueba de humo C3 + clasificadores a US$0; S00: ~0,26; S01: 0,024; S02: ~0,18; S03: 1,74; S04: ~1,32; S05: ~5,7 = corpus A v1 0,361 + calibración v3 0,919 + E3 Flash 1,371 + E3 Haiku 1,528 + corrida parcial de Flash descartada 1,312 + ~0,2 de llamadas perdidas en la suspensión). OpenRouter: ~13,7 de 40 usados tras S09a (~26,3 disponibles). TypeSafe: ~US$0,002 de 5. Anthropic: ~US$28,3 disponibles tras Haiku (S08 usó US$0,02 más) |
 
 Costo medido el 9-nov (S00) de una extracción estructurada típica (página con 12 ofertas, 1500–3500 tokens de
 entrada, `json_schema`): Flash 0,0015 · Haiku 0,0016 · DeepSeek Pro 0,006 · Sonnet 0,025 · Kimi 0,032 ·
 Opus 0,053. Supuesto de tarea: 5 extracciones + ~8 llamadas del planificador (~4000 tokens de entrada y ~300 de
 salida cada una).
 
-| Modelo | US$ por tarea (estimado) | 80 tareas (B + A) |
-|---|---|---|
-| DeepSeek V4.1 Flash | ~0,013 | ~1 |
-| Claude Haiku 5.5 | ~0,013 | ~1 |
-| DeepSeek V4 Pro | ~0,08 | ~6 |
-| Claude Sonnet 5.5 | ~0,21 | ~17 |
-| Kimi K3.1 Pro | ~0,24 | ~19 |
-| Claude Opus 5.5 | ~0,44 | ~35 |
+| Modelo              | US$ por tarea (estimado) | 80 tareas (B + A) |
+| ------------------- | ------------------------ | ----------------- |
+| DeepSeek V4.1 Flash | ~0,013                   | ~1                |
+| Claude Haiku 5.5    | ~0,013                   | ~1                |
+| DeepSeek V4 Pro     | ~0,08                    | ~6                |
+| Claude Sonnet 5.5   | ~0,21                    | ~17               |
+| Kimi K3.1 Pro       | ~0,24                    | ~19               |
+| Claude Opus 5.5     | ~0,44                    | ~35               |
 
 Recalibración: la estimación anterior (0,03–0,18 por tarea) se queda corta en el tope. Si la regla de parada de
 E3 llega a Opus con todas las tareas, Anthropic necesita ~US$55 (Haiku + Sonnet + Opus) más desarrollo, E2 y E1:
@@ -96,7 +119,21 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 
 ## Bitácora
 
+### 10-nov-2026 — S09a: API de CotIA, SSE y persistencia (VS Code · Opus 5.5)
+- Decisiones con Wills: D105 (N3 en CotIA con Haiku 5.5 por OpenRouter y la clave del visitante), D106 (C2 por
+  defecto; cierra el pendiente b), D107 (lista curada por prueba de humo, tope US$0,30).
+- Refactor D91 (`Defensas`), `preguntar` con `astream` y `al_avanzar`, clave por consulta en `obtener_modelo`, API
+  FastAPI (`api/`), PostgreSQL en Docker (`compose.yaml`, :5433), `make bd`, `make api`, `make cotia-humo`.
+  10 pruebas nuevas de la API, más las de `Defensas`, el umbral y la clave: **172 pruebas**, Ruff limpio.
+- Humo de la lista curada (systemd-run): los gratuitos fallaron; tras la primera pasada solo Flash cumplía «acierto en
+  B013». Wills afinó D107 (funciona + desempeño con evidencia: acierto o M2 de E3) y autorizó reintentar Kimi (429
+  del proveedor) con tope US$0,45 tras cargar US$20 en OpenRouter. Lista final: Flash, Haiku 5.5, Kimi.
+- Punta a punta por la API cumplida (criterio de terminado). Gasto de la sesión: **US$0,3745** (OpenRouter).
+- Incidente operativo: la terminal del editor corta cualquier comando de más de ~45 s; se esperó en pasos cortos.
+- Resultados del humo y de la prueba de punta a punta en «Hecho el 10-nov (S09a)»; **173 pruebas** al cierre.
+
 ### 10-nov-2026 — S08: N3 y E1 (VS Code · Opus 5.5)
+
 - Diseño acordado con Wills y fijado antes de ver datos: D99–D104 (reproducción pareada sobre calibración v3 y
   corpus A v1; ruta híbrida determinista + Haiku 5.5; campos que deciden la compra; abstención como política
   principal; N3 como nodo opcional del grafo; N1 propuesto). Tope: US$1 Anthropic, US$0 OpenRouter.
@@ -105,11 +142,13 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
   se relanzó con `systemd-run --user --unit=s08-e1` y reanudó sin repetir lecturas.
 
 ### 10-nov-2026 — Hoja de ruta: catálogo gestionado (VS Code · Opus 5.5)
+
 - D98: en producción, `catalogo.json` se reemplaza por un catálogo por empresa en PostgreSQL con embeddings
   persistidos en pgvector e indexación incremental; los experimentos conservan el archivo congelado. Borrador en
   `docs/informe/06_hoja_de_ruta.md`. Sin cambios de código. Gasto: US$0.
 
 ### 10-nov-2026 — S07: E2 curva seguridad-utilidad y comparación con Jev (VS Code · Opus 5.5)
+
 - D96 fijó el diseño antes de correr; D97 cierra la comparación con Jev. Resultados en «Hecho el 10-nov (S07)».
 - D96 fija el diseño de E2 antes de correr. Matriz 20 × C0–C3 × 3 (`resultados/ataques/2026-11-10_suite_ataques.jsonl`)
   y utilidad `configs/e2_c0..c3.yaml` (`resultados/corridas/2026-11-10_e2_c*.jsonl`) en marcha, desacopladas de VS Code
@@ -125,12 +164,14 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
   `e2-ataques`, `e2-utilidad`), que viven fuera de VS Code: `systemctl --user status 'e2-*'`.
 
 ### 10-nov-2026 — S06-bis: publicación de las cargas (D95)
+
 - `cargas.yaml` pasa de `privado/tarea_cargas/` a `ataques/cargas.yaml` y se versiona; el repositorio sigue público.
   `corpus/b_ataques/` sigue fuera de git (se regenera). Motivo: el visor de CotIA (D87) expone los fragmentos de
   todos modos y la suite debe ser reproducible por terceros; InjecAgent y AgentDojo publican sus ataques (verificado).
 - `RUTA_CARGAS` es ahora absoluta y la prueba del YAML real ya no se omite en CI. Gasto: US$0.
 
 ### 10-nov-2026 — S06-bis: revisión del arnés y humo en diagonal (D93, D94)
+
 - Revisión del arnés: el PDF de P4 se regenera con la carga como nota tras la tabla (antes, página antepuesta con
   título, más prominente que las demás ubicaciones); la línea del chat la firma «Carlos Tecnología» con hora
   posterior al último mensaje (antes «Proveedor» a las 10:00). `--humo` toma la diagonal clase × ubicación y el arnés
@@ -143,6 +184,7 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 - Pendiente para S07: control limpio de los predicados; el arnés corre en secuencia (~100 s por ejecución).
 
 ### 10-nov-2026 — S06-bis: arnés, plantado y prueba de humo M5
+
 - Implementados `ataques/suite.py`, `plantar.py` y `correr.py` sin modificar los textos. Validación estricta de las 20
   cargas, cinco predicados automáticos, copias aisladas por ID, URL local dinámica y evidencia reanudable.
 - Las 20 variantes existen en `corpus/b_ataques/` (ignoradas); el corpus limpio no cambió. A01 queda lista para CotIA.
@@ -154,6 +196,7 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
   definitiva C0/C3. Siguiente: matriz completa E2 y comparación Jev pendiente (D80).
 
 ### 10-nov-2026 — S06-bis: redacción y validación de las 20 cargas
+
 - `privado/tarea_cargas/cargas.yaml` contiene las 20 combinaciones (5 clases × 4 ubicaciones), con `archivo`,
   `tarea`, `objetivo`, `predicado` y `texto`. Redacción asistida autorizada por Wills (D92); archivo fuera de git.
 - Se eligieron B013, B016 y B045 por su respuesta conocida y cobertura de los proveedores atacantes. Las acciones
@@ -164,6 +207,7 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
   humo C0/C3 y M5.
 
 ### 9/10-nov-2026 — Cierre de S04 (D74, D75) y S05 E3
+
 - **D74:** `abrir_pagina` antepone al Markdown los objetos schema.org `Product`/`Offer` (JSON-LD y microdatos,
   `extruct`; tope 6000 caracteres). Context7 confirmó que `CrawlResult.html` es el HTML original. **Corpus A v1:
   19/20 = 95,0 % [76,4–99,1]** (v0: 8/20); disponibilidad 43 % → 96 %; US$0,361. El fallo A003 es de planificación
@@ -183,6 +227,7 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
   `04_resultados_e3.md` nuevo.
 
 ### 9-nov-2026 — Corrección del intérprete (D69, D71) y S04 Corpus A real
+
 - `invocar_estructurado` (reintento ante JSON inválido o truncado y degradación controlada con la alerta
   `interpretacion_incompleta`); esquemas con todos los campos obligatorios en `Necesidad`, `RestriccionAtributo`,
   `Decision` y `Decisiones`. Context7 confirmó que, sin `include_raw`, el parser lanza la excepción.
@@ -203,12 +248,13 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 - Informe: sección 3.z de `03_metodologia_corpus.md`, v2 en `04_resultados_calibracion.md`, `04_resultados_corpus_a.md`.
 
 ### 9-nov-2026 — S03 Arnés de evaluación y Streamlit mínimo
+
 - `arnes/correr.py`: configuración YAML (`configs/calibracion_flash.yaml`), 4 tareas en paralelo con un semáforo
   de llamadas al LLM compartido (6), JSONL por ejecución con versión de prompt (SHA-256 de instrucciones y
   esquemas), hash del corpus y de las tareas, commit, tokens, costo y latencia, más todas las ofertas recolectadas.
   Reanuda si se interrumpe (se probó: la sesión se cortó a las 24/60 y la corrida siguió sin repetir nada).
 - `arnes/metricas.py`: M1 por fuente (campo a campo; los listados solo en precio), recolección, M2, M3, M4, M6;
-  Wilson y *bootstrap* (scipy). `metricas.md`, `metricas.json` y 3 PNG por corrida en `resultados/informes/`.
+  Wilson y _bootstrap_ (scipy). `metricas.md`, `metricas.json` y 3 PNG por corrida en `resultados/informes/`.
 - `arnes/simulado.py`: agente oráculo con errores sembrados; las pruebas verifican que las métricas los encuentran
   exactamente. `make arnes-simulado` (US$0).
 - `app.py` (Streamlit): consulta, cuadro comparativo y procedencia desplegable; modo simulado a US$0. `make app`.
@@ -225,6 +271,7 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 - Informe: `docs/informe/03_metodologia_metricas.md` y `docs/informe/04_resultados_calibracion.md`.
 
 ### 9-nov-2026 — S02 Agente N2 y emparejamiento
+
 - Herramientas: `abrir_pagina` (crawl4ai → Markdown + enlaces del mismo sitio), `leer_documento` (pypdf/texto),
   `consultar_mcp` (cliente de FastMCP: busca y trae la ficha completa). `langchain-mcp-adapters` 0.3.x se descartó
   por exigir `mcp<2` (D63). Registro de fuentes autorizadas en `fuentes/corpus_b.yaml`.
@@ -246,6 +293,7 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 - Informe: `docs/informe/03_metodologia_agente.md` (diagrama del grafo y tabla de la prueba de humo).
 
 ### 9-nov-2026 — S01 Corpus B sintético y tareas
+
 - Catálogo de 40 productos (8 por categoría) generado con DeepSeek Flash en 5 llamadas (US$0,024). El LLM dejó
   copias de los alias dentro de `atributos` y escribió los TB decimales (1000 GB). Lo corrige `reparar()` de
   forma determinista, sin volver a llamar al modelo. El GTIN-13 lo asigna el código con el prefijo GS1 952, de demostración, verificado en la tabla oficial de prefijos (D58).
@@ -258,6 +306,7 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 - Informe: `docs/informe/03_metodologia_corpus.md`.
 
 ### 9-nov-2026 — Reorganización (entre S00 y S01)
+
 - La raíz queda solo con el proyecto de código. Material del curso, entregables y contexto histórico movidos a
   `privado/` (fuera de git): `privado/curso/`, `privado/entregables/`, `privado/contexto_claude/` (D55).
 - Nuevo pedido de Wills: cada sesión explica lo construido y deja instrucciones de prueba sin costo en
@@ -266,6 +315,7 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
   sesión agrega su entrada (D57).
 
 ### 9-nov-2026 — S00 Arranque técnico
+
 - Proyecto `uv` en Python 3.13.16 (D53) con LangGraph 1.2.20, LangChain 1.4.9, langchain-anthropic 1.7.10,
   langchain-openrouter 0.2.9, crawl4ai 0.9.5, Streamlit 1.67.0, Pydantic 2.12.5; `uv.lock` versionado.
 - `modelos.py`: fábrica de los 6 modelos, proveedor DeepInfra fijado sin respaldo (D34, verificado con la API de
@@ -284,6 +334,7 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
 - Informe: `docs/informe/03_metodologia_stack.md`.
 
 ### 9-nov-2026 — Sesión de planeación
+
 - Entrevista completa con Wills; todas las decisiones registradas en `docs/DECISIONES.md` (D01–D51).
 - Revisión de la rúbrica `Rubrica_PAIII_2026.xlsx`: mismos criterios que la versión CSV usada en septiembre.
 - Confirmado en el aula virtual: documento y presentación finales se radican al menos una semana antes del 27-nov.
@@ -293,7 +344,6 @@ El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un
   `docs/PROMPT_SESION.md`, `.gitignore`; repositorio git local inicializado.
 
 ## Pendientes abiertos
-
 
 - Plantilla institucional de trabajo escrito (IEEE): Wills la descarga del aula y la pone en `privado/curso/` antes de S10.
 - Verificar en S06 si la taxonomía MITRE pertinente es ATLAS.

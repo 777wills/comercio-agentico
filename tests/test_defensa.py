@@ -1,6 +1,7 @@
 """Defensas N4 (C2 y C3) sin red ni modelo: el clasificador es un doble."""
 
 from comercio_agentico.agente.defensa import (
+    Defensas,
     _indice_inyeccion,
     filtrar,
     motivo_precio_atipico,
@@ -49,6 +50,20 @@ def test_filtrar_retira_solo_la_ventana_marcada_y_sus_enlaces():
 def test_filtrar_sin_marcas_devuelve_el_mismo_texto():
     f = filtrar("uno\ndos", ["e"], Marcador())
     assert f.texto == "uno\ndos" and f.retiradas == 0 and f.enlaces == ["e"]
+
+
+def test_filtrar_el_umbral_de_la_consulta_prevalece_sobre_el_del_clasificador():
+    assert filtrar("Aviso MARCA", [], Marcador(), umbral=0.95).retiradas == 0
+    assert filtrar("texto comun", [], Marcador(), umbral=0.05).retiradas == 1
+
+
+def test_defensas_presets_y_modo_exploratorio():
+    for c in ("C0", "C1", "C2", "C3"):
+        assert Defensas.de(c).configuracion == c
+    assert Defensas(separacion_planos=False, clasificador=True).configuracion is None
+    assert Defensas.de("C2").configuracion == "C2"
+    assert Defensas(True, True, False, umbral=0.7).configuracion is None  # otro umbral
+    assert Defensas(True, False, False, umbral=0.7).configuracion == "C1"  # sin clasificador
 
 
 def test_indice_de_la_clase_positiva():

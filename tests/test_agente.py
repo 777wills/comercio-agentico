@@ -9,6 +9,7 @@ import numpy as np
 import pytest
 from langchain_core.messages import AIMessage, ToolMessage
 
+from comercio_agentico.agente.defensa import Defensas
 from comercio_agentico.agente.extraccion import a_ofertas, extraer_ofertas, validar_por_oferta
 from comercio_agentico.agente.fuentes import cargar_fuentes
 from comercio_agentico.agente.grafo import Contexto, construir_grafo, proponer, sin_duplicados
@@ -299,7 +300,7 @@ def correr_grafo(
         emparejador=EMPAREJADOR,
         perfil=PERFIL,
         costo=RegistroCosto(1.0),
-        configuracion=configuracion or ("C1" if separacion else "C0"),
+        defensas=Defensas.de(configuracion or ("C1" if separacion else "C0")),
         clasificador=clasificador or ClasificadorDoble(),
         verificar=precio_n3 is not None,
     )

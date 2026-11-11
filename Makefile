@@ -5,7 +5,7 @@
 SHELL := /bin/bash
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo corpus-a-recolectar corpus-a corpus-a-servir corpus-a-correr humo candidatos app arnes-simulado calibracion e3 e3-frontera e2-ataques e2-ataques-simulado e2-utilidad e2 jev e1 e1-lecturas metricas
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo corpus-a-recolectar corpus-a corpus-a-servir corpus-a-correr humo candidatos app arnes-simulado calibracion e3 e3-frontera e2-ataques e2-ataques-simulado e2-utilidad e2 jev e1 e1-lecturas metricas bd api cotia-humo
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
@@ -101,6 +101,15 @@ e1-lecturas: ## E1: segunda lectura de los fragmentos que falten con Haiku (~US$
 
 metricas: ## Recalcula métricas de una corrida: make metricas CORRIDA=resultados/corridas/<archivo>.jsonl (US$0)
 	uv run python -m comercio_agentico.arnes.metricas $(CORRIDA)
+
+bd: ## CotIA: PostgreSQL local en Docker (:5433) (US$0)
+	docker compose up -d bd
+
+api: ## CotIA: API en :8000; arranca el corpus A/B si no está servido (US$0 hasta que se consulta)
+	uv run uvicorn comercio_agentico.api.app:crear_app --factory --port 8000
+
+cotia-humo: ## CotIA: prueba de humo de la lista curada de modelos (tope US$0,45; requiere corpus-b-servir)
+	uv run python -m comercio_agentico.api.catalogo --humo
 
 test: ## Ejecuta las pruebas
 	uv run pytest

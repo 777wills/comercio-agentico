@@ -37,6 +37,7 @@ class ConfigModelo:
     precio_salida: float  # US$ por millón de tokens
     proveedor: str | None = None  # slug del endpoint en OpenRouter (D32)
     nivel: str = ""
+    muestreo: bool = True  # OpenRouter: envía temperatura y esfuerzo de razonamiento
 
 
 # Orden de costo de D31. Precios del 9-nov-2026, US$ por millón de tokens
@@ -78,6 +79,39 @@ MODELOS: dict[str, ConfigModelo] = {
 }
 
 
+# Candidatos de CotIA que no están en E3; todos por OpenRouter con la clave del visitante (D82,
+# D105, D107). Precios del catálogo público de OpenRouter el 10-nov-2026.
+MODELOS_COTIA: dict[str, ConfigModelo] = {
+    m.nombre: m
+    for m in [
+        # Claude 5.5 rechaza `temperature` y no se le activa el razonamiento (D60).
+        ConfigModelo(
+            "haiku-or",
+            "openrouter",
+            "anthropic/claude-haiku-5.5",
+            0.10,
+            0.50,
+            nivel="económico",
+            muestreo=False,
+        ),
+        ConfigModelo("nemotron-free", "openrouter", "nvidia/nemotron-3.5-super-vl:free", 0, 0),
+        ConfigModelo("dots-free", "openrouter", "dots-studio/dots-3-note-preview:free", 0, 0),
+        ConfigModelo("xing-free", "openrouter", "xingchen-agi/xing4.0-29b-a4b:free", 0, 0),
+        ConfigModelo("lfm3-free", "openrouter", "liquid/lfm-3-1.7b:free", 0, 0),
+        ConfigModelo("lfm25-free", "openrouter", "liquid/lfm-2.5-2.6b:free", 0, 0),
+    ]
+}
+
+
+def ficha(nombre: str) -> ConfigModelo:
+    if nombre in MODELOS:
+        return MODELOS[nombre]
+    if nombre in MODELOS_COTIA:
+        return MODELOS_COTIA[nombre]
+    opciones = ", ".join([*MODELOS, *MODELOS_COTIA])
+    raise KeyError(f"Modelo desconocido: {nombre!r}. Opciones: {opciones}")
+
+
 ESFUERZO_RAZONAMIENTO = "low"  # D60: condición uniforme del agente en los seis modelos
 MAX_TOKENS_SALIDA = 8000  # corta generaciones desbocadas (un modelo barato puede repetir sin fin)
 TIEMPO_MAXIMO_S = 120
@@ -88,18 +122,21 @@ def obtener_modelo(
     *,
     temperatura: float | None = 0.0,
     razonamiento: str | None = ESFUERZO_RAZONAMIENTO,
+    clave_openrouter: str | None = None,
     **kwargs: Any,
 ) -> BaseChatModel:
     """Devuelve el modelo de chat de LangChain para el nombre corto dado (p. ej. ``"haiku"``).
 
     La temperatura y el esfuerzo de razonamiento solo se aplican a los modelos de OpenRouter; a
     Claude 5.5 no se le activa el pensamiento extendido (D60). ``razonamiento=None`` deja el valor
-    por defecto del modelo.
+    por defecto del modelo. ``clave_openrouter`` (CotIA, D82) reemplaza la del ``.env``.
     """
     load_dotenv()
-    if nombre not in MODELOS:
-        raise KeyError(f"Modelo desconocido: {nombre!r}. Opciones: {', '.join(MODELOS)}")
-    cfg = MODELOS[nombre]
+    cfg = ficha(nombre)
+    if clave_openrouter is not None:
+        if cfg.plataforma != "openrouter":
+            raise ValueError(f"{nombre} no se sirve por OpenRouter")
+        kwargs["api_key"] = clave_openrouter
 
     if cfg.plataforma == "anthropic":
         # Claude 5.5 rechaza `temperature`; la variabilidad se mide con corridas repetidas (D42).
@@ -111,19 +148,18 @@ def obtener_modelo(
 
     from langchain_openrouter import ChatOpenRouter
 
-    if temperatura is not None:
+    if temperatura is not None and cfg.muestreo:
         kwargs.setdefault("temperature", temperatura)
-    if razonamiento is not None:
+    if razonamiento is not None and cfg.muestreo:
         kwargs.setdefault("reasoning", {"effort": razonamiento})
     kwargs.setdefault("max_tokens", MAX_TOKENS_SALIDA)
     kwargs.setdefault("timeout", TIEMPO_MAXIMO_S * 1000)  # milisegundos en el SDK de OpenRouter
+    proveedor: dict[str, Any] = {"require_parameters": True}
+    if cfg.proveedor:
+        proveedor |= {"order": [cfg.proveedor], "allow_fallbacks": False}
     return ChatOpenRouter(
         model=cfg.id_modelo,
-        openrouter_provider={
-            "order": [cfg.proveedor],
-            "allow_fallbacks": False,
-            "require_parameters": True,
-        },
+        openrouter_provider=proveedor,
         app_title="comercio-agentico",
         **kwargs,
     )
@@ -131,7 +167,7 @@ def obtener_modelo(
 
 def nombre_por_id(id_modelo: str) -> str | None:
     """Traduce el identificador que devuelve la API al nombre corto (tolera sufijos de versión)."""
-    for cfg in MODELOS.values():
+    for cfg in [*MODELOS.values(), *MODELOS_COTIA.values()]:
         if id_modelo == cfg.id_modelo or id_modelo.startswith(cfg.id_modelo):
             return cfg.nombre
     return None
@@ -139,7 +175,7 @@ def nombre_por_id(id_modelo: str) -> str | None:
 
 def costo_estimado(nombre: str, tokens_entrada: int, tokens_salida: int) -> float:
     """Costo en US$ según la tabla de precios (sin descuentos de caché)."""
-    cfg = MODELOS[nombre]
+    cfg = ficha(nombre)
     return (tokens_entrada * cfg.precio_entrada + tokens_salida * cfg.precio_salida) / 1_000_000
 
 
@@ -207,7 +243,7 @@ class RegistroCosto(BaseCallbackHandler):
 
         if "cost" in meta:
             costo, fuente = float(meta["cost"]), "api"
-        elif nombre in MODELOS:
+        elif nombre in MODELOS or nombre in MODELOS_COTIA:
             costo, fuente = costo_estimado(nombre, entrada, salida), "tabla"
         else:
             costo, fuente = 0.0, "tabla"
@@ -221,7 +257,7 @@ class RegistroCosto(BaseCallbackHandler):
             costo_fuente=fuente,
             # OpenRouter no siempre informa el proveedor; con allow_fallbacks=False es el fijado.
             proveedor=meta.get("provider")
-            or (MODELOS[nombre].proveedor if nombre in MODELOS else None)
+            or (ficha(nombre).proveedor if nombre in MODELOS or nombre in MODELOS_COTIA else None)
             or meta.get("model_provider"),
         )
         with self._lock:

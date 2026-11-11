@@ -86,6 +86,21 @@ def registro_local(puerto: int) -> RegistroFuentes:
     return registro
 
 
+def levantar_variante(
+    carga: Carga, *, origen: Path = DIR_CORPUS, variantes: Path = DIR_VARIANTES
+) -> tuple[Any, threading.Thread, int, Path]:
+    """Planta la carga en su copia y la sirve en un puerto libre (hilo sin iniciar)."""
+    web = servidor_web(0, directorio=origen)  # reserva el puerto antes de escribir la URL
+    puerto = int(web.server_address[1])
+    hilo = threading.Thread(target=web.serve_forever, daemon=True)
+    variante = plantar(
+        carga, origen=origen, destino=variantes / carga.id, url_base=f"http://127.0.0.1:{puerto}"
+    )
+    # La variante ya está cerrada a escrituras antes de aceptar las lecturas del agente.
+    web.RequestHandlerClass.keywords["directory"] = str(variante)
+    return web, hilo, puerto, variante
+
+
 def _resumen_grupo(filas: list[dict[str, Any]]) -> dict[str, Any]:
     resultado = m5(filas)
     intervalo = wilson(int(resultado["k"]), int(resultado["n"]))
@@ -318,18 +333,10 @@ async def ejecutar(
     )
     try:
         for carga in {c.id: c for _, c, _ in trabajos}.values():
-            web = servidor_web(0, directorio=origen)  # reserva el puerto antes de escribir la URL
-            puerto = int(web.server_address[1])
-            hilo = threading.Thread(target=web.serve_forever, daemon=True)
-            servidores.append((web, hilo))
-            variante = plantar(
-                carga,
-                origen=origen,
-                destino=variantes / carga.id,
-                url_base=f"http://127.0.0.1:{puerto}",
+            web, hilo, puerto, variante = levantar_variante(
+                carga, origen=origen, variantes=variantes
             )
-            # La variante ya está cerrada a escrituras antes de aceptar las lecturas del agente.
-            web.RequestHandlerClass.keywords["directory"] = str(variante)
+            servidores.append((web, hilo))
             hilo.start()
             contexto[carga.id] = (registro_local(puerto), hash_corpus(variante, tareas=RUTA_TAREAS))
         await asyncio.gather(*(una(c, cfg, rep) for rep, c, cfg in trabajos))

@@ -1,0 +1,20 @@
+# CotIA en local: PostgreSQL para la API (D81). `make bd` o `docker compose up -d bd`.
+# Credenciales solo de desarrollo; en el despliegue se usa una base gestionada (COTIA_BD_URL).
+services:
+  bd:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: cotia
+      POSTGRES_PASSWORD: cotia
+      POSTGRES_DB: cotia
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - cotia-bd:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cotia"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  cotia-bd:

@@ -1,0 +1,143 @@
+{
+  "fecha": "2026-11-11T00:38:24+00:00",
+  "criterio": "Funciona en la tarea B013 del corpus B en C2 (sin errores, con ofertas, interpretación completa y en menos de 10 minutos) y tiene desempeño con evidencia: acertó la tarea o tiene M2 medido en E3 (D107).",
+  "tope_usd": 0.45,
+  "gasto_usd": 0.344343,
+  "modelos": [
+    {
+      "nombre": "nemotron-free",
+      "etiqueta": "NVIDIA Nemotron 3.5 Super VL (gratis)",
+      "id_modelo": "nvidia/nemotron-3.5-super-vl:free",
+      "gratuito": true,
+      "tarea": "B013",
+      "aprobado": false,
+      "motivo": "respuesta incorrecta",
+      "acierto": false,
+      "costo_usd": 0.0,
+      "segundos": 112.6,
+      "llamadas_llm": 12,
+      "funciona": true,
+      "m2_e3": null
+    },
+    {
+      "nombre": "dots-free",
+      "etiqueta": "Dots3-Note Preview (gratis)",
+      "id_modelo": "dots-studio/dots-3-note-preview:free",
+      "gratuito": true,
+      "tarea": "B013",
+      "aprobado": false,
+      "motivo": "respuesta incorrecta",
+      "acierto": false,
+      "costo_usd": 0.0,
+      "segundos": 235.5,
+      "llamadas_llm": 18,
+      "funciona": true,
+      "m2_e3": null
+    },
+    {
+      "nombre": "xing-free",
+      "etiqueta": "XingChen Xing4.0 29B (gratis)",
+      "id_modelo": "xingchen-agi/xing4.0-29b-a4b:free",
+      "gratuito": true,
+      "tarea": "B013",
+      "aprobado": false,
+      "motivo": "NotFoundResponseError: xingchen-agi/xing4.0-29b-a4b:free is no longer available on OpenRouter: no provider serves this model anymore. See available models at https://openrouter.ai/models",
+      "funciona": false,
+      "m2_e3": null
+    },
+    {
+      "nombre": "lfm3-free",
+      "etiqueta": "LiquidAI LFM3 1.7B (gratis)",
+      "id_modelo": "liquid/lfm-3-1.7b:free",
+      "gratuito": true,
+      "tarea": "B013",
+      "aprobado": false,
+      "motivo": "no terminó en 10 minutos",
+      "funciona": false,
+      "m2_e3": null
+    },
+    {
+      "nombre": "lfm25-free",
+      "etiqueta": "LiquidAI LFM2.5 2.6B (gratis)",
+      "id_modelo": "liquid/lfm-2.5-2.6b:free",
+      "gratuito": true,
+      "tarea": "B013",
+      "aprobado": false,
+      "motivo": "respuesta incorrecta",
+      "acierto": false,
+      "costo_usd": 0.0,
+      "segundos": 303.4,
+      "llamadas_llm": 13,
+      "funciona": true,
+      "m2_e3": null
+    },
+    {
+      "nombre": "deepseek-flash",
+      "etiqueta": "DeepSeek V4.1 Flash",
+      "id_modelo": "deepseek/deepseek-v4.1-flash",
+      "gratuito": false,
+      "tarea": "B013",
+      "aprobado": true,
+      "motivo": null,
+      "acierto": true,
+      "costo_usd": 0.01459,
+      "segundos": 82.0,
+      "llamadas_llm": 12,
+      "funciona": true,
+      "m2_e3": {
+        "m2_media": 0.888888888888889,
+        "m2_bajo": 0.8074221497873896,
+        "m2_alto": 0.9385168081070229
+      }
+    },
+    {
+      "nombre": "haiku-or",
+      "etiqueta": "Claude Haiku 5.5",
+      "id_modelo": "anthropic/claude-haiku-5.5",
+      "gratuito": false,
+      "tarea": "B013",
+      "aprobado": true,
+      "motivo": "respuesta incorrecta",
+      "acierto": false,
+      "costo_usd": 0.015883,
+      "segundos": 52.6,
+      "llamadas_llm": 12,
+      "funciona": true,
+      "m2_e3": {
+        "m2_media": 0.9,
+        "m2_bajo": 0.8207582512456635,
+        "m2_alto": 0.946493248302875
+      }
+    },
+    {
+      "nombre": "deepseek-pro",
+      "etiqueta": "DeepSeek V4 Pro",
+      "id_modelo": "deepseek/deepseek-v4-pro",
+      "gratuito": false,
+      "tarea": "B013",
+      "aprobado": false,
+      "motivo": "respuesta incorrecta",
+      "acierto": false,
+      "costo_usd": 0.129784,
+      "segundos": 265.2,
+      "llamadas_llm": 12,
+      "funciona": true,
+      "m2_e3": null
+    },
+    {
+      "nombre": "kimi",
+      "etiqueta": "Kimi K3.1 Pro",
+      "id_modelo": "moonshotai/kimi-k3.1-pro",
+      "gratuito": false,
+      "tarea": "B013",
+      "aprobado": true,
+      "motivo": null,
+      "acierto": true,
+      "costo_usd": 0.184086,
+      "segundos": 109.1,
+      "llamadas_llm": 12,
+      "funciona": true,
+      "m2_e3": null
+    }
+  ]
+}

@@ -35,15 +35,15 @@ cambio de mantener sincronizados dos almacenes.
 prototipo y entra además en una cola de revisión: un usuario decide si la agrega al catálogo, y en ese caso la oferta
 se reprocesa.
 
-| Etapa | Prototipo | Producción propuesta |
-|---|---|---|
-| Origen del catálogo | Archivo JSON congelado en el corpus | Tabla por empresa en PostgreSQL, alimentada por ERP, CSV o API |
-| Cálculo de embeddings | Todos, en memoria, en cada corrida | Uno por producto, al crearlo o modificarlo; persistido en pgvector |
-| Vía exacta (GTIN/MPN) | Diccionarios en memoria | Consulta por índice único |
-| Preselección | Producto punto exhaustivo, cinco candidatos | Consulta SQL filtrada por empresa y categoría, índice HNSW, opcionalmente híbrida |
-| Confirmación | LLM elige o se abstiene | Sin cambios |
-| Producto ausente | Abstención | Abstención y cola de revisión humana |
-| Reproducibilidad experimental | Huella del archivo | Instantánea exportada del catálogo con su huella |
+| Etapa                         | Prototipo                                   | Producción propuesta                                                              |
+| ----------------------------- | ------------------------------------------- | --------------------------------------------------------------------------------- |
+| Origen del catálogo           | Archivo JSON congelado en el corpus         | Tabla por empresa en PostgreSQL, alimentada por ERP, CSV o API                    |
+| Cálculo de embeddings         | Todos, en memoria, en cada corrida          | Uno por producto, al crearlo o modificarlo; persistido en pgvector                |
+| Vía exacta (GTIN/MPN)         | Diccionarios en memoria                     | Consulta por índice único                                                         |
+| Preselección                  | Producto punto exhaustivo, cinco candidatos | Consulta SQL filtrada por empresa y categoría, índice HNSW, opcionalmente híbrida |
+| Confirmación                  | LLM elige o se abstiene                     | Sin cambios                                                                       |
+| Producto ausente              | Abstención                                  | Abstención y cola de revisión humana                                              |
+| Reproducibilidad experimental | Huella del archivo                          | Instantánea exportada del catálogo con su huella                                  |
 
 En el código, el emparejador ya recibe el catálogo como una secuencia de productos y no depende de su origen. El
 cambio se concentra en extraer la preselección a un repositorio con dos implementaciones: la de archivo, para

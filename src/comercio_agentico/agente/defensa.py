@@ -61,6 +61,39 @@ FRACCION_MEDIANA = 0.80
 
 
 # --------------------------------------------------------------------------------------------------
+# Capas activas (D91): tres interruptores independientes; C0–C3 son los puntos medidos en E2
+
+
+@dataclass(frozen=True)
+class Defensas:
+    separacion_planos: bool = True
+    clasificador: bool = False
+    precio: bool = False
+    umbral: float = UMBRAL_INYECCION
+
+    @classmethod
+    def de(cls, configuracion: str) -> Defensas:
+        separacion, clasificador, precio = PRESETS[configuracion]
+        return cls(separacion, clasificador, precio)
+
+    @property
+    def configuracion(self) -> str | None:
+        """C0–C3 si coincide con un preset medido (umbral del informe); si no, None."""
+        if self.umbral != UMBRAL_INYECCION and self.clasificador:
+            return None
+        capas = (self.separacion_planos, self.clasificador, self.precio)
+        return next((c for c, p in PRESETS.items() if p == capas), None)
+
+
+PRESETS: dict[str, tuple[bool, bool, bool]] = {
+    "C0": (False, False, False),
+    "C1": (True, False, False),
+    "C2": (True, True, False),
+    "C3": (True, True, True),
+}
+
+
+# --------------------------------------------------------------------------------------------------
 # C2: clasificador de inyección por ventanas
 
 
@@ -154,16 +187,20 @@ class Filtrado:
     puntajes: list[float] = field(default_factory=list)
 
 
-def filtrar(texto: str, enlaces: list[str], clasificador: Any) -> Filtrado:
+def filtrar(
+    texto: str, enlaces: list[str], clasificador: Any, umbral: float | None = None
+) -> Filtrado:
     """Retira las ventanas marcadas por el clasificador y los enlaces que solo aparecían en ellas.
 
     ``clasificador`` es cualquier objeto con ``puntuar(list[str]) -> list[float]`` y ``umbral``
-    (las pruebas usan un doble sin red ni modelo).
+    (las pruebas usan un doble sin red ni modelo). ``umbral`` reemplaza el del clasificador, que
+    se comparte entre consultas con umbrales distintos.
     """
+    umbral = clasificador.umbral if umbral is None else umbral
     partes = ventanas(texto)
     puntajes = clasificador.puntuar(partes)
-    limpias = [v for v, p in zip(partes, puntajes, strict=True) if p < clasificador.umbral]
-    marcadas = [v for v, p in zip(partes, puntajes, strict=True) if p >= clasificador.umbral]
+    limpias = [v for v, p in zip(partes, puntajes, strict=True) if p < umbral]
+    marcadas = [v for v, p in zip(partes, puntajes, strict=True) if p >= umbral]
     if not marcadas:
         return Filtrado(texto, enlaces, len(partes), 0, max(puntajes, default=0.0), puntajes)
     retirado, conservado = "\n".join(marcadas), "\n".join(limpias)

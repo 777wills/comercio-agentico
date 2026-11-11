@@ -299,22 +299,23 @@ Cumplido el 9-nov: Python 3.13 (D53), DeepInfra fijado (D34), `json_schema` (D35
 
 **Objetivo:** el agente expuesto como servicio, listo para el frontend (D81, D82, D83).
 
-- [ ] Refactor menor del agente (D91): `Contexto`/`preguntar` aceptan los tres booleanos de capa y el umbral
+- [x] Refactor menor del agente (D91): `Contexto`/`preguntar` aceptan los tres booleanos de capa y el umbral
       del clasificador de forma independiente; `configuracion` C0–C3 pasa a ser un atajo que los fija. N3 ya es un
       booleano propio (`verificar`, D104).
-- [ ] Context7 para FastAPI (SSE), SQLAlchemy y el cliente de OpenRouter antes de escribir código.
-- [ ] `src/comercio_agentico/api/`: `POST /api/consultas` (consulta, corpus A/B, configuración de defensa, modelo;
+- [x] Context7 para FastAPI (SSE), SQLAlchemy y el cliente de OpenRouter antes de escribir código.
+- [x] `src/comercio_agentico/api/`: `POST /api/consultas` (consulta, corpus A/B, configuración de defensa, modelo;
       la clave de OpenRouter llega en una cabecera y no se guarda ni se registra), `GET /api/consultas/{id}/eventos`
       (SSE: interpretación, cada fuente leída, extracción, emparejamiento, propuesta), `GET /api/consultas/{id}`,
       `GET /api/consultas` (historial del visitante anónimo), `GET /api/modelos` (lista curada con costo estimado),
       `GET /api/ejemplos`, `GET /api/resultados` (métricas y figuras de E1–E3), `GET /api/salud`.
-- [ ] Laboratorio: la consulta acepta C0 o C3 sobre la variante del corpus con inyección plantada (S06).
-- [ ] PostgreSQL con SQLAlchemy (consultas y propuestas); SQLite en memoria en las pruebas.
-- [ ] Lista curada de modelos: prueba de humo (una tarea) por modelo candidato de OpenRouter, incluidos `:free`.
-- [ ] Los proveedores del corpus B y las tiendas reconstruidas del corpus A arrancan con la API.
-- [ ] Pruebas sin red (agente simulado): contrato de la API, SSE, que la clave nunca aparece en registros ni en la base.
+- [x] Laboratorio: la consulta acepta C0 o C3 sobre la variante del corpus con inyección plantada (S06).
+- [x] PostgreSQL con SQLAlchemy (consultas y propuestas); SQLite en memoria en las pruebas.
+- [x] Lista curada de modelos: prueba de humo (una tarea) por modelo candidato de OpenRouter, incluidos `:free`.
+- [x] Los proveedores del corpus B y las tiendas reconstruidas del corpus A arrancan con la API.
+- [x] Pruebas sin red (agente simulado): contrato de la API, SSE, que la clave nunca aparece en registros ni en la base.
 
 **Terminado cuando:** una consulta de punta a punta por la API, con progreso SSE, usando una clave de OpenRouter.
+**Cumplido el 10-nov** (Flash, 115 s, US$0,0145; laboratorio A20 en C0 con éxito del ataque).
 
 ## S09b — CotIA (2/3): frontend (dom 15-nov)
 

@@ -38,6 +38,18 @@ def test_fabrica_construye_sin_red(monkeypatch):
     modelo = obtener_modelo("kimi")
     assert type(modelo).__name__ == "ChatOpenRouter"
     assert modelo.openrouter_provider["allow_fallbacks"] is False
+
+
+def test_clave_del_visitante_por_consulta(monkeypatch):
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    monkeypatch.setattr("comercio_agentico.modelos.load_dotenv", lambda: None)
+    modelo = obtener_modelo("haiku-or", clave_openrouter="sk-or-visitante")
+    assert modelo.openrouter_api_key.get_secret_value() == "sk-or-visitante"
+    assert "sk-or-visitante" not in repr(modelo)
+    assert "order" not in modelo.openrouter_provider  # sin proveedor fijado
+    assert modelo.temperature is None  # Claude 5.5 rechaza la temperatura (D60)
+    with pytest.raises(ValueError):
+        obtener_modelo("haiku", clave_openrouter="sk-or-visitante")  # Anthropic directo
     with pytest.raises(KeyError):
         obtener_modelo("gpt")
 
