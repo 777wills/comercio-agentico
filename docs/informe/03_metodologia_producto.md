@@ -8,12 +8,12 @@ colas.
 ## Progreso en vivo por eventos del servidor
 
 Una consulta tarda del orden de dos minutos, porque el planificador abre varias fuentes y cada fuente pasa por el
-extractor. Para que esa espera sea observable, el grafo de LangGraph se ejecuta en modo de *streaming*
+extractor. Para que esa espera sea observable, el grafo de LangGraph se ejecuta en modo de _streaming_
 (`astream`, modos `updates` y `values`): cada nodo (interpretar, planificar, herramientas, emparejar, proponer)
 entrega su actualización del estado en cuanto termina. Un traductor reduce cada actualización a un evento compacto:
 la necesidad formalizada, las herramientas que pidió el planificador, las fuentes leídas con su número de ofertas y
 las alertas de defensa, el emparejamiento con el catálogo y la propuesta. Los eventos llegan al navegador por
-*Server-Sent Events* (SSE), un canal HTTP unidireccional que no requiere WebSocket ni infraestructura adicional.
+_Server-Sent Events_ (SSE), un canal HTTP unidireccional que no requiere WebSocket ni infraestructura adicional.
 Cuando el agente pasa más de 15 s sin emitir eventos, el servidor envía un latido para que los intermediarios no
 cierren la conexión. Al terminar, la secuencia de eventos se guarda junto con la consulta y puede repetirse desde
 la base.
@@ -58,23 +58,23 @@ o tener M2 medido en E3. Una sola tarea mide mal el acierto: Claude Haiku 5.5, c
 en B013. Por eso el desempeño se toma de E3 cuando existe, y un modelo sin E3 debe acertar. La evidencia está en
 `resultados/cotia/modelos.json`.
 
-| Modelo (OpenRouter) | Funciona | Acierto en B013 | M2 en E3 | US$ | Segundos | En la lista |
-|---|---|---|---|---:|---:|---|
-| DeepSeek V4.1 Flash | sí | sí | 88,9 % | 0,0146 | 82 | sí |
-| Claude Haiku 5.5 | sí | no | 90,0 % | 0,0159 | 53 | sí |
-| Kimi K3.1 Pro | sí | sí | — | 0,1841 | 109 | sí |
-| DeepSeek V4 Pro | sí | no | — | 0,1298 | 265 | no |
-| NVIDIA Nemotron 3.5 Super VL (gratuito) | sí | no | — | 0 | 113 | no |
-| Dots3-Note Preview (gratuito) | sí | no | — | 0 | 236 | no |
-| LiquidAI LFM2.5 2.6B (gratuito) | sí | no | — | 0 | 303 | no |
-| LiquidAI LFM3 1.7B (gratuito) | no: límite de tasa, no terminó en 10 min | — | — | 0 | — | no |
-| XingChen Xing4.0 29B (gratuito) | no: retirado de OpenRouter | — | — | 0 | — | no |
+| Modelo (OpenRouter)                     | Funciona                                 | Acierto en B013 | M2 en E3 |    US$ | Segundos | En la lista |
+| --------------------------------------- | ---------------------------------------- | --------------- | -------- | -----: | -------: | ----------- |
+| DeepSeek V4.1 Flash                     | sí                                       | sí              | 88,9 %   | 0,0146 |       82 | sí          |
+| Claude Haiku 5.5                        | sí                                       | no              | 90,0 %   | 0,0159 |       53 | sí          |
+| Kimi K3.1 Pro                           | sí                                       | sí              | —        | 0,1841 |      109 | sí          |
+| DeepSeek V4 Pro                         | sí                                       | no              | —        | 0,1298 |      265 | no          |
+| NVIDIA Nemotron 3.5 Super VL (gratuito) | sí                                       | no              | —        |      0 |      113 | no          |
+| Dots3-Note Preview (gratuito)           | sí                                       | no              | —        |      0 |      236 | no          |
+| LiquidAI LFM2.5 2.6B (gratuito)         | sí                                       | no              | —        |      0 |      303 | no          |
+| LiquidAI LFM3 1.7B (gratuito)           | no: límite de tasa, no terminó en 10 min | —               | —        |      0 |        — | no          |
+| XingChen Xing4.0 29B (gratuito)         | no: retirado de OpenRouter               | —               | —        |      0 |        — | no          |
 
 Ningún modelo gratuito superó la prueba. Los tres que funcionaron eligieron mal en la tarea, y los gratuitos están
 sujetos a límites de tasa que hacen impredecible la latencia. La prueba costó US$0,3443 en total.
 
 ## Límites de operación
 
-Cada consulta ocupa del orden de 2 GB de memoria (clasificador, modelo de *embeddings* y navegador sin interfaz).
+Cada consulta ocupa del orden de 2 GB de memoria (clasificador, modelo de _embeddings_ y navegador sin interfaz).
 Por eso la API ejecuta una consulta a la vez y deja en cola hasta cinco más; por encima de ese límite responde con
 HTTP 429. Los dos valores son configurables según la memoria del despliegue (S09c).

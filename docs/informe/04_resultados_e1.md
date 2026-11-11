@@ -19,7 +19,7 @@ leer ese fragmento por una ruta que no comparte modo de falla con el extractor (
 Las dos lecturas se comparan en los campos que deciden la compra: precio y envío por igualdad exacta, disponibilidad,
 plazo y, cuando ambas rutas lo publican, el GTIN. La correspondencia entre las ofertas de las dos rutas es
 escalonada: primero GTIN, luego enlace de detalle y, por último, título con similitud ≥ 0,8. Cada oferta queda
-*verificada*, *en discrepancia* o *sin contraparte*.
+_verificada_, _en discrepancia_ o _sin contraparte_.
 
 **Políticas.** La principal se abstiene si la oferta ganadora no queda verificada. La secundaria excluye las
 ofertas no verificadas y elige la siguiente.
@@ -40,14 +40,14 @@ US$0,0213: se pagaron 15 lecturas con Haiku, y las 83 restantes las resolvió la
 **Tabla 4.y.1.** Éxito de tarea (M2), cobertura y exactitud sobre lo cubierto, con y sin N3. Intervalos de Wilson
 al 95 %. La cobertura se calcula sobre las tareas que tienen respuesta.
 
-| Corpus | Política | M2 | Cobertura | Exactitud sobre lo cubierto |
-|---|---|---:|---:|---:|
-| B (60) | Sin N3 | 58/60 = 96,7 % [88,6; 99,1] | 50/51 = 98,0 % [89,7; 99,7] | 49/50 = 98,0 % [89,5; 99,6] |
+| Corpus | Política           |                          M2 |                   Cobertura | Exactitud sobre lo cubierto |
+| ------ | ------------------ | --------------------------: | --------------------------: | --------------------------: |
+| B (60) | Sin N3             | 58/60 = 96,7 % [88,6; 99,1] | 50/51 = 98,0 % [89,7; 99,7] | 49/50 = 98,0 % [89,5; 99,6] |
 | B (60) | Con N3, abstención | 58/60 = 96,7 % [88,6; 99,1] | 50/51 = 98,0 % [89,7; 99,7] | 49/50 = 98,0 % [89,5; 99,6] |
-| B (60) | Con N3, exclusión | 58/60 = 96,7 % [88,6; 99,1] | 50/51 = 98,0 % [89,7; 99,7] | 49/50 = 98,0 % [89,5; 99,6] |
-| A (20) | Sin N3 | 19/20 = 95,0 % [76,4; 99,1] | 15/16 = 93,8 % [71,7; 98,9] | 15/15 = 100 % [79,6; 100] |
-| A (20) | Con N3, abstención | 19/20 = 95,0 % [76,4; 99,1] | 15/16 = 93,8 % [71,7; 98,9] | 15/15 = 100 % [79,6; 100] |
-| A (20) | Con N3, exclusión | 19/20 = 95,0 % [76,4; 99,1] | 15/16 = 93,8 % [71,7; 98,9] | 15/15 = 100 % [79,6; 100] |
+| B (60) | Con N3, exclusión  | 58/60 = 96,7 % [88,6; 99,1] | 50/51 = 98,0 % [89,7; 99,7] | 49/50 = 98,0 % [89,5; 99,6] |
+| A (20) | Sin N3             | 19/20 = 95,0 % [76,4; 99,1] | 15/16 = 93,8 % [71,7; 98,9] |   15/15 = 100 % [79,6; 100] |
+| A (20) | Con N3, abstención | 19/20 = 95,0 % [76,4; 99,1] | 15/16 = 93,8 % [71,7; 98,9] |   15/15 = 100 % [79,6; 100] |
+| A (20) | Con N3, exclusión  | 19/20 = 95,0 % [76,4; 99,1] | 15/16 = 93,8 % [71,7; 98,9] |   15/15 = 100 % [79,6; 100] |
 
 Fuente: `resultados/informes/e1/e1.{md,json}`, generados con `make e1` (lecturas en
 `resultados/e1/segundas_lecturas.jsonl`).
@@ -69,10 +69,10 @@ campo a campo frente a la verdad de referencia, con las reglas de la sección de
 
 **Tabla 4.y.2.** Estado de verificación y exactitud de extracción (M1) por estado.
 
-| Corpus | Ofertas (pares distintos) | Verificadas | Discrepancia | Sin contraparte | M1 verificadas | M1 no verificadas |
-|---|---:|---:|---:|---:|---:|---:|
-| B | 3706 (135) | 3484 | 201 | 21 | 97,2 % [96,9; 97,5] | 76,0 % [73,1; 78,7] |
-| A | 1104 (99) | 831 | 273 | 0 | 90,5 % [88,8; 92,0] | 42,2 % [37,1; 47,4] |
+| Corpus | Ofertas (pares distintos) | Verificadas | Discrepancia | Sin contraparte |      M1 verificadas |   M1 no verificadas |
+| ------ | ------------------------: | ----------: | -----------: | --------------: | ------------------: | ------------------: |
+| B      |                3706 (135) |        3484 |          201 |              21 | 97,2 % [96,9; 97,5] | 76,0 % [73,1; 78,7] |
+| A      |                 1104 (99) |         831 |          273 |               0 | 90,5 % [88,8; 92,0] | 42,2 % [37,1; 47,4] |
 
 Las ofertas que N3 no confirma son mucho menos exactas: 21 puntos menos en el corpus B y 48 en el A. Por ruta, la
 determinista no encontró **ninguna discrepancia** en los 339 casos que cubrió (P1, fichas de P2 y fichas del
@@ -89,10 +89,10 @@ leerse como optimistas.
 Si se considera N3 como un detector de errores (marcada = no verificada; error = algún campo de decisión distinto de
 la verdad), su precisión es moderada y su sensibilidad depende del corpus:
 
-| Corpus | VP | FP | FN | VN | Precisión | Sensibilidad |
-|---|---:|---:|---:|---:|---:|---:|
-| B | 101 | 119 | 206 | 3276 | 45,9 % [39,5; 52,5] | 32,9 % [27,9; 38,3] |
-| A | 125 | 148 | 69 | 762 | 45,8 % [40,0; 51,7] | 64,4 % [57,5; 70,8] |
+| Corpus |  VP |  FP |  FN |   VN |           Precisión |        Sensibilidad |
+| ------ | --: | --: | --: | ---: | ------------------: | ------------------: |
+| B      | 101 | 119 | 206 | 3276 | 45,9 % [39,5; 52,5] | 32,9 % [27,9; 38,3] |
+| A      | 125 | 148 |  69 |  762 | 45,8 % [40,0; 51,7] | 64,4 % [57,5; 70,8] |
 
 El análisis de los casos muestra tres mecanismos:
 
@@ -107,7 +107,7 @@ El análisis de los casos muestra tres mecanismos:
    pero la discrepancia que N3 señaló en ellos fue la disponibilidad. N3 acertó al marcarlas, aunque por un campo
    distinto del que estaba mal.
 
-Un análisis *post hoc*, restringido a las ofertas que pueden ganar (no agotadas según la verdad), muestra que en el
+Un análisis _post hoc_, restringido a las ofertas que pueden ganar (no agotadas según la verdad), muestra que en el
 corpus B N3 detectó los 4 errores de extracción que había (sensibilidad 4/4), con 11 falsas alarmas. En el corpus A
 quedan 49 errores sin detectar. La mayoría son del GTIN, que la ruta determinista no compara porque las tiendas lo
 etiquetan como `sku` (D74); los demás son casos en que el parser y el extractor coinciden entre sí y difieren de la

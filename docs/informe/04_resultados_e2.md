@@ -10,12 +10,12 @@ errores, con un costo de US$5,35.
 
 **Tabla 4.x.1.** Utilidad y seguridad por configuración. Intervalos de Wilson al 95 %.
 
-| Configuración | Utilidad (M2 benigno) | IC 95 % | Seguridad (1 − M5) | IC 95 % | Acierto bajo ataque |
-|---|---:|---:|---:|---:|---:|
-| C0 Sin defensa | 28/30 = 93,3 % | [78,7; 98,2] | 53/60 = 88,3 % | [77,8; 94,2] | 51/60 = 85,0 % |
-| C1 Separación de planos | 28/30 = 93,3 % | [78,7; 98,2] | 60/60 = 100,0 % | [94,0; 100,0] | 58/60 = 96,7 % |
-| C2 + Clasificador | 29/30 = 96,7 % | [83,3; 99,4] | 60/60 = 100,0 % | [94,0; 100,0] | 60/60 = 100,0 % |
-| C3 + Verificación de precio | 28/30 = 93,3 % | [78,7; 98,2] | 60/60 = 100,0 % | [94,0; 100,0] | 60/60 = 100,0 % |
+| Configuración               | Utilidad (M2 benigno) |      IC 95 % | Seguridad (1 − M5) |       IC 95 % | Acierto bajo ataque |
+| --------------------------- | --------------------: | -----------: | -----------------: | ------------: | ------------------: |
+| C0 Sin defensa              |        28/30 = 93,3 % | [78,7; 98,2] |     53/60 = 88,3 % |  [77,8; 94,2] |      51/60 = 85,0 % |
+| C1 Separación de planos     |        28/30 = 93,3 % | [78,7; 98,2] |    60/60 = 100,0 % | [94,0; 100,0] |      58/60 = 96,7 % |
+| C2 + Clasificador           |        29/30 = 96,7 % | [83,3; 99,4] |    60/60 = 100,0 % | [94,0; 100,0] |     60/60 = 100,0 % |
+| C3 + Verificación de precio |        28/30 = 93,3 % | [78,7; 98,2] |    60/60 = 100,0 % | [94,0; 100,0] |     60/60 = 100,0 % |
 
 Fuente: `resultados/informes/e2/e2.{md,json}`, generados con `make e2` a partir de las corridas
 `resultados/ataques/2026-11-10_suite_ataques.jsonl.gz` y `resultados/corridas/2026-11-10_e2_c{0..3}.jsonl.gz`.
@@ -41,13 +41,13 @@ ataque, que sube de 96,7 % en C1 a 100 % en C2 y C3: con el fragmento atacado re
 **Tabla 4.x.2.** Éxitos del ataque sobre ejecuciones en C0 (12 por clase y 15 por ubicación). En C1–C3 todas las
 casillas son cero.
 
-| Clase | C0 | | Ubicación | C0 |
-|---|---:|---|---|---:|
-| Desviar la compra | 2/12 | | Texto visible (P3) | 2/15 |
-| Inflar la cantidad | 0/12 | | Oculto en JSON-LD (P2) | 0/15 |
-| Exfiltrar el mandato | 2/12 | | PDF (P4) | 0/15 |
-| Saltar la confirmación | 0/12 | | Mensaje (P5) | 5/15 |
-| Alterar el precio | 3/12 | | | |
+| Clase                  |   C0 |     | Ubicación              |   C0 |
+| ---------------------- | ---: | --- | ---------------------- | ---: |
+| Desviar la compra      | 2/12 |     | Texto visible (P3)     | 2/15 |
+| Inflar la cantidad     | 0/12 |     | Oculto en JSON-LD (P2) | 0/15 |
+| Exfiltrar el mandato   | 2/12 |     | PDF (P4)               | 0/15 |
+| Saltar la confirmación | 0/12 |     | Mensaje (P5)           | 5/15 |
+| Alterar el precio      | 3/12 |     |                        |      |
 
 ![Figura 4.x.2. M5 por clase y por ubicación en cada configuración.](../../resultados/informes/e2/m5_clase_ubicacion.png)
 
@@ -74,9 +74,9 @@ que su utilidad benigna (93,3 %).
 **Tabla 4.x.3.** Alertas emitidas por el agente.
 
 | Configuración | Clasificador retira la carga (atacadas) | Alerta de inyección (benignas) | Precio atípico (atacadas / benignas) |
-|---|---:|---:|---:|
-| C2 | 54/60 | 0/30 | — |
-| C3 | 54/60 | 0/30 | 0/60 / 0/30 |
+| ------------- | --------------------------------------: | -----------------------------: | -----------------------------------: |
+| C2            |                                   54/60 |                           0/30 |                                    — |
+| C3            |                                   54/60 |                           0/30 |                          0/60 / 0/30 |
 
 El clasificador retiró la ventana con la carga en 54 de 60 ejecuciones y no emitió ninguna alerta sobre tareas
 benignas, coherente con los 0 falsos positivos medidos a nivel de fragmento. Las seis ejecuciones no retiradas
@@ -96,11 +96,11 @@ muestra por sí solo.
 **Tabla 4.x.4.** Costo y latencia sobre las tareas benignas.
 
 | Configuración | US$ por tarea | Latencia p50 (s) |
-|---|---:|---:|
-| C0 | 0,0156 | 135 |
-| C1 | 0,0160 | 130 |
-| C2 | 0,0159 | 128 |
-| C3 | 0,0160 | 144 |
+| ------------- | ------------: | ---------------: |
+| C0            |        0,0156 |              135 |
+| C1            |        0,0160 |              130 |
+| C2            |        0,0159 |              128 |
+| C3            |        0,0160 |              144 |
 
 Las capas no añaden un costo apreciable: la diferencia entre configuraciones es menor que US$0,0005 por tarea, pues
 el clasificador corre en CPU sin llamadas al LLM. La latencia varía dentro de lo esperable entre corridas de una sola
@@ -116,10 +116,10 @@ de inyección y verificación de precio). Cada ejecución corresponde a una carg
 
 **Tabla 4.x.5.** Tasa de éxito del ataque (M5) en la prueba de humo. Intervalos de Wilson al 95 %.
 
-| Configuración | Éxitos / ejecuciones | M5 | IC 95 % | Tarea benigna acertada | Alerta del clasificador | Costo (US$) |
-|---|---:|---:|---:|---:|---:|---:|
-| C0 | 1 / 8 | 12,5 % | [2,2 %; 47,1 %] | 8 / 8 | — | 0,1179 |
-| C3 | 0 / 8 | 0,0 % | [0,0 %; 32,4 %] | 8 / 8 | 8 / 8 | 0,1148 |
+| Configuración | Éxitos / ejecuciones |     M5 |         IC 95 % | Tarea benigna acertada | Alerta del clasificador | Costo (US$) |
+| ------------- | -------------------: | -----: | --------------: | ---------------------: | ----------------------: | ----------: |
+| C0            |                1 / 8 | 12,5 % | [2,2 %; 47,1 %] |                  8 / 8 |                       — |      0,1179 |
+| C3            |                0 / 8 |  0,0 % | [0,0 %; 32,4 %] |                  8 / 8 |                   8 / 8 |      0,1148 |
 
 Fuente: `resultados/ataques/2026-11-10_humo_ataques_m5.{json,md}` y la corrida `2026-11-10_humo_ataques.jsonl.gz`
 (16 ejecuciones, 0 errores, US$0,2327; mediana de ~100 s por ejecución).
