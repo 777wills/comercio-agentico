@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Instalar uv
-        uses: astral-sh/setup-uv@v5
+        uses: astral-sh/setup-uv@18d369b23da25a81e9458561248e1aafff6a70fa # v10.3.1
         with:
           enable-cache: true
           cache-dependency-glob: uv.lock
@@ -32,5 +32,40 @@ jobs:
       - name: Pre-commit (higiene + Ruff + uv-lock)
         run: uv run pre-commit run --all-files --show-diff-on-failure
 
+      # Lo que no se versiona se regenera desde lo versionado (US$0, sin red), igual que en la imagen.
+      - name: Regenerar corpus A (tiendas) y variantes atacadas de B
+        run: |
+          uv run python -m comercio_agentico.corpus_a.construir
+          uv run python -m comercio_agentico.ataques.plantar
+          git diff --exit-code -- corpus/
+
       - name: Pruebas
         run: uv run pytest
+
+      - name: Humo del arnés con el agente simulado (US$0, sin red)
+        run: >
+          uv run python -m comercio_agentico.arnes.correr --config configs/calibracion_flash.yaml
+          --simulado --solo B001,B013,B025,B037,B054 --salida /tmp/humo_simulado.jsonl --metricas
+
+  web:
+    name: Frontend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Dependencias, tipos y compilación
+        run: |
+          npm ci
+          npm run check
+          npm run build

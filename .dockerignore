@@ -1,0 +1,27 @@
+# Secretos y material privado nunca entran a la imagen
+.env
+.env.*
+privado/
+.claude/
+.playwright-mcp/
+.git/
+.github/
+.vscode/
+
+# Entornos y artefactos locales (la imagen los reconstruye)
+.venv/
+**/__pycache__/
+.pytest_cache/
+.ruff_cache/
+web/node_modules/
+web/build/
+web/.svelte-kit/
+corpus/b_ataques/
+corpus/a_real/sitio/
+corpus/a_real/copias/
+resultados/cache/
+resultados/corridas/
+resultados/ataques/
+*.docx
+*.pptx
+*.xlsx

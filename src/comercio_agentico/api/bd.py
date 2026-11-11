@@ -69,7 +69,9 @@ class FuenteVisitanteBD(Base):
 
 
 def crear_motor(url: str | None = None) -> Engine:
-    url = url or os.getenv("COTIA_BD_URL", URL_BD_LOCAL)
+    url = url or os.getenv("COTIA_BD_URL") or os.getenv("DATABASE_URL") or URL_BD_LOCAL
+    if url.startswith("postgresql://"):  # forma de las bases gestionadas (Railway); psycopg 3
+        url = "postgresql+psycopg://" + url.removeprefix("postgresql://")
     if url in ("sqlite://", "sqlite:///:memory:"):  # una sola conexión compartida entre hilos
         motor = create_engine(url, connect_args={"check_same_thread": False}, poolclass=StaticPool)
     else:

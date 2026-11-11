@@ -54,6 +54,26 @@ def test_clave_del_visitante_por_consulta(monkeypatch):
         obtener_modelo("gpt")
 
 
+def test_la_clave_del_visitante_no_llega_a_las_trazas(monkeypatch):
+    """Lo que vería LangSmith (D117): serialización, parámetros y metadatos de la llamada."""
+    from langchain_core.messages import HumanMessage
+    from langchain_core.outputs import ChatResult
+    from langchain_core.tracers.context import collect_runs
+
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    monkeypatch.setattr("comercio_agentico.modelos.load_dotenv", lambda: None)
+    clave = "sk-or-v1-visitante-secreta-0123456789"
+    modelo = obtener_modelo("deepseek-flash", clave_openrouter=clave)
+    respuesta = ChatResult(generations=[ChatGeneration(message=AIMessage(content="ok"))])
+    monkeypatch.setattr(type(modelo), "_generate", lambda *a, **k: respuesta)
+    with collect_runs() as recolector:
+        modelo.invoke([HumanMessage(content="Precio del Galaxy A57")])
+    (traza,) = recolector.traced_runs
+    volcado = traza.model_dump_json() + repr(traza.serialized) + repr(traza.extra)
+    assert "Galaxy A57" in volcado  # la traza sí registra la consulta
+    assert clave not in volcado
+
+
 def test_nombre_por_id_tolera_version():
     assert nombre_por_id("deepseek/deepseek-v4.1-flash-20260910") == "deepseek-flash"
     assert nombre_por_id("claude-opus-5-5") == "opus"

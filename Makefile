@@ -5,7 +5,7 @@
 SHELL := /bin/bash
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo corpus-a-recolectar corpus-a corpus-a-servir corpus-a-correr humo candidatos app arnes-simulado calibracion e3 e3-frontera e2-ataques e2-ataques-simulado e2-utilidad e2 jev e1 e1-lecturas metricas bd api web web-dev cotia-humo
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo corpus-a-recolectar corpus-a corpus-a-servir corpus-a-correr humo candidatos app arnes-simulado calibracion e3 e3-frontera e2-ataques e2-ataques-simulado e2-utilidad e2 jev e1 e1-lecturas metricas bd api web web-dev cotia-docker cotia-humo
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
@@ -113,6 +113,9 @@ web: ## CotIA: instala y compila el frontend SvelteKit a web/build, que sirve la
 
 web-dev: ## CotIA: frontend con recarga en caliente en :5173 (redirige /api a :8000; US$0)
 	cd web && npm run dev
+
+cotia-docker: ## CotIA: imagen de producción + PostgreSQL en Docker, en :8080 (US$0; la primera construcción tarda)
+	docker compose --profile app up -d --build
 
 cotia-humo: ## CotIA: prueba de humo de la lista curada de modelos (tope US$0,45; requiere corpus-b-servir)
 	uv run python -m comercio_agentico.api.catalogo --humo

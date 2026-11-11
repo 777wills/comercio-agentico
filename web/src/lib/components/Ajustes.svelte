@@ -68,6 +68,15 @@
 			{/await}
 		</div>
 
+		{#await cat then c}
+			{#if c.trazas}
+				<p class="text-xs text-muted-foreground">
+					Para diagnóstico, el servidor registra en LangSmith cada paso de la consulta (texto de la
+					consulta, páginas leídas y respuestas del modelo), nunca la clave. Se conserva 14 días.
+				</p>
+			{/if}
+		{/await}
+
 		<p class="text-xs text-muted-foreground">
 			En esta visita: {visita.total}
 			{visita.total === 1 ? 'consulta' : 'consultas'} · {usd(visita.gasto)}

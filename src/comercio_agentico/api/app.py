@@ -13,6 +13,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import os
 import re
 import socket
 import subprocess
@@ -339,6 +340,7 @@ def crear_app(
             "clasificadores": CLASIFICADORES,
             "clasificador_por_defecto": MODELO_CLASIFICADOR_DEFECTO,
             "defensas_por_defecto": "C2",
+            "trazas": os.getenv("LANGSMITH_TRACING", "").lower() == "true",  # D117
         }
 
     @app.get("/api/ejemplos")

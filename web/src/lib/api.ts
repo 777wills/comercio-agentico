@@ -113,6 +113,7 @@ export type Catalogo = {
     por_defecto: string | null;
     clasificadores: Record<string, Clasificador>;
     clasificador_por_defecto: string;
+    trazas: boolean;
 };
 
 export type Ejemplos = {
@@ -287,8 +288,14 @@ export const fuentesApi = (visitante: string) => {
             });
         },
         eliminar: (id: string) =>
-            obtener<ListaBlanca>(`/api/fuentes/${id}`, { method: "DELETE", headers: h }),
+            obtener<ListaBlanca>(`/api/fuentes/${id}`, {
+                method: "DELETE",
+                headers: h,
+            }),
         restablecer: () =>
-            obtener<ListaBlanca>("/api/fuentes/restablecer", { method: "POST", headers: h }),
+            obtener<ListaBlanca>("/api/fuentes/restablecer", {
+                method: "POST",
+                headers: h,
+            }),
     };
 };

@@ -16,5 +16,17 @@ services:
       interval: 5s
       retries: 10
 
+  # La misma imagen que se publica (D116): `make cotia-docker` y abrir http://127.0.0.1:8080
+  app:
+    build: .
+    environment:
+      COTIA_BD_URL: postgresql+psycopg://cotia:cotia@bd:5432/cotia
+    ports:
+      - "127.0.0.1:8080:8000"
+    depends_on:
+      bd:
+        condition: service_healthy
+    profiles: [app]
+
 volumes:
   cotia-bd:

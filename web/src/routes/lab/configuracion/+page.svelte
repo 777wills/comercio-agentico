@@ -55,6 +55,12 @@
 			<Card.Description>
 				CotIA no trae créditos propios: cada consulta se paga con su clave. Viaja por HTTPS solo al
 				crear la consulta; el servidor la usa en memoria y no la guarda ni la registra.
+				{#await cat then c}
+					{#if c.trazas}
+						Para diagnóstico, cada paso de la consulta (sin la clave) se registra en LangSmith
+						durante 14 días.
+					{/if}
+				{/await}
 			</Card.Description>
 		</Card.Header>
 		<Card.Content class="space-y-3">
