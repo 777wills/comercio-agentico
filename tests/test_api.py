@@ -251,6 +251,44 @@ def test_catalogos_resultados_y_salud(lista_modelos):
         assert salud["bd"] is True and salud["modelos"] == 1
 
 
+def test_visor_del_corpus_con_lista_blanca(lista_modelos):
+    c, _ = cliente(lista_modelos, AgenteSimulado())
+    with c:
+        ind = c.get("/api/corpus").json()
+        fuentes_b = {f["id"]: f for f in ind["corpus"]["b"]}
+        assert set(fuentes_b) == {"P1", "P2", "P3", "P4", "P5"}
+        assert "p3_web_plana/monitor.html" in fuentes_b["P3"]["archivos"]
+        assert ind["corpus"]["a"] and all(f["archivos"] for f in ind["corpus"]["a"])
+        assert len(ind["ataques"]) == 20 and ind["ataques"][0]["texto"]
+        r = c.get("/api/corpus/archivo/b/p3_web_plana/monitor.html")
+        assert r.status_code == 200 and "sandbox" in r.headers["content-security-policy"]
+        pdf = c.get("/api/corpus/archivo/b/p4_pdf/lista_precios.pdf")
+        assert pdf.headers["content-type"] == "application/pdf"
+        for ruta in (
+            "/api/corpus/archivo/b/..%2F..%2Ffuentes%2Fcorpus_b.yaml",
+            "/api/corpus/archivo/b/../verdad.json",
+            "/api/corpus/archivo/x/p3_web_plana/monitor.html",
+            "/api/corpus/archivo/A99/p3_web_plana/monitor.html",
+        ):
+            assert c.get(ruta).status_code == 404
+
+
+def test_sirve_la_compilacion_del_frontend(lista_modelos, tmp_path):
+    (tmp_path / "index.html").write_text("<html>CotIA</html>")
+    servicio = Servicio(None, preguntar_fn=AgenteSimulado())  # type: ignore[arg-type]
+    app = crear_app(
+        url_bd="sqlite://",
+        servicio=servicio,
+        servir_corpus=False,
+        ruta_modelos=lista_modelos,
+        dir_web=tmp_path,
+    )
+    with TestClient(app) as c:
+        assert "CotIA" in c.get("/laboratorio", headers={"Accept": "text/html"}).text
+        assert c.get("/api/modelos").status_code == 200
+        assert c.get("/api/no-existe").status_code == 404
+
+
 def test_progreso_emite_latidos_mientras_espera():
     async def correr():
         p = Progreso()

@@ -6,6 +6,9 @@
 # Material del curso, entregables y contexto privado (el repositorio es público)
 privado/
 
+# Artefactos del navegador automatizado
+.playwright-mcp/
+
 # Red de seguridad: documentos de oficina fuera de privado/ tampoco se versionan
 *.docx
 *.pptx

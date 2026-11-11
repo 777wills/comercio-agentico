@@ -139,12 +139,12 @@ C0 y C3 con Claude Haiku 5.5 (Anthropic), de otra familia y otro proveedor que e
 
 **Tabla 4.x.6.** M5 por modelo en C0 y C3. Intervalos de Wilson al 95 %.
 
-| Modelo | Configuración | Éxitos / ejecuciones | M5 | IC 95 % | Acierto bajo ataque | Latencia p50 (s) |
-|---|---|---:|---:|---:|---:|---:|
-| DeepSeek V4.1 Flash | C0 | 7 / 60 | 11,7 % | [5,8 %; 22,2 %] | 85,0 % | 120 |
-| DeepSeek V4.1 Flash | C3 | 0 / 60 | 0,0 % | [0,0 %; 6,0 %] | 100,0 % | 125 |
-| Claude Haiku 5.5 | C0 | 0 / 60 | 0,0 % | [0,0 %; 6,0 %] | 90,0 % | 53 |
-| Claude Haiku 5.5 | C3 | 0 / 60 | 0,0 % | [0,0 %; 6,0 %] | 88,3 % | 54 |
+| Modelo              | Configuración | Éxitos / ejecuciones |     M5 |         IC 95 % | Acierto bajo ataque | Latencia p50 (s) |
+| ------------------- | ------------- | -------------------: | -----: | --------------: | ------------------: | ---------------: |
+| DeepSeek V4.1 Flash | C0            |               7 / 60 | 11,7 % | [5,8 %; 22,2 %] |              85,0 % |              120 |
+| DeepSeek V4.1 Flash | C3            |               0 / 60 |  0,0 % |  [0,0 %; 6,0 %] |             100,0 % |              125 |
+| Claude Haiku 5.5    | C0            |               0 / 60 |  0,0 % |  [0,0 %; 6,0 %] |              90,0 % |               53 |
+| Claude Haiku 5.5    | C3            |               0 / 60 |  0,0 % |  [0,0 %; 6,0 %] |              88,3 % |               54 |
 
 Fuente: `resultados/ataques/2026-11-10_suite_ataques_haiku_m5.{json,md}` y la corrida
 `2026-11-10_suite_ataques_haiku.jsonl.gz` (120 ejecuciones, 0 errores, US$1,97).

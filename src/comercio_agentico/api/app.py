@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 import socket
 import subprocess
 import sys
@@ -26,6 +27,7 @@ from fastapi.sse import EventSourceResponse, ServerSentEvent
 from sqlalchemy import func, select, text
 
 from comercio_agentico.agente.defensa import CLASIFICADORES, MODELO_CLASIFICADOR_DEFECTO
+from comercio_agentico.api import corpus as visor
 from comercio_agentico.api.bd import ConsultaBD, crear_motor, fabrica_sesiones
 from comercio_agentico.api.catalogo import RUTA_LISTA, cargar_lista
 from comercio_agentico.api.ejecucion import Saturado, Servicio
@@ -42,6 +44,7 @@ log = logging.getLogger("comercio_agentico.api")
 
 PATRON_UUID = r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
 DIR_INFORMES = RAIZ / "resultados" / "informes"
+DIR_WEB = RAIZ / "web" / "build"
 EXPERIMENTOS = ("e1", "e2", "e3")
 SERVIDORES_CORPUS = {  # módulo → puertos que abre (los del registro de fuentes)
     "comercio_agentico.corpus_b.servir": (8800, 8801),
@@ -141,6 +144,7 @@ def crear_app(
     servicio: Servicio | None = None,
     servir_corpus: bool = True,
     ruta_modelos: Path = RUTA_LISTA,
+    dir_web: Path = DIR_WEB,
 ) -> FastAPI:
     motor = crear_motor(url_bd)
     sesiones = fabrica_sesiones(motor)
@@ -286,6 +290,24 @@ def crear_app(
             raise HTTPException(404)
         return FileResponse(disponibles[nombre], media_type="image/png")
 
+    # ----------------------------------------------------------------------------------------------
+    # Visor del corpus (D87)
+
+    @app.get("/api/corpus")
+    def corpus_indice() -> dict[str, Any]:
+        return visor.indice()
+
+    @app.get("/api/corpus/archivo/{origen}/{ruta:path}")
+    def corpus_archivo(origen: str, ruta: str) -> FileResponse:
+        if origen not in visor.DIR_CORPUS and not re.fullmatch(r"A(?:0[1-9]|1[0-9]|20)", origen):
+            raise HTTPException(404)
+        archivo = visor.lista_blanca(origen).get(ruta)  # sin rutas construidas por el cliente
+        if archivo is None:
+            raise HTTPException(404)
+        # El visor de PDF del navegador no abre en un documento con sandbox; el PDF lo genera fpdf2.
+        csp = {} if archivo.suffix == ".pdf" else {"Content-Security-Policy": visor.CSP_CORPUS}
+        return FileResponse(archivo, media_type=visor.TIPOS_MIME[archivo.suffix], headers=csp)
+
     @app.get("/api/salud")
     def salud() -> dict[str, Any]:
         try:
@@ -301,5 +323,8 @@ def crear_app(
             "consultas_activas": servicio.activas(),
             "modelos": len(aprobados()),
         }
+
+    if (dir_web / "index.html").exists():  # compilación de `web/` (npm run build)
+        app.frontend("/", directory=dir_web, fallback="index.html")
 
     return app

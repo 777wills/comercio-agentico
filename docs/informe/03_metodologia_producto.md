@@ -78,3 +78,33 @@ sujetos a límites de tasa que hacen impredecible la latencia. La prueba costó 
 Cada consulta ocupa del orden de 2 GB de memoria (clasificador, modelo de _embeddings_ y navegador sin interfaz).
 Por eso la API ejecuta una consulta a la vez y deja en cola hasta cinco más; por encima de ese límite responde con
 HTTP 429. Los dos valores son configurables según la memoria del despliegue (S09c).
+
+## Interfaz
+
+La interfaz es una aplicación de página única construida con SvelteKit, compilada a archivos estáticos y servida por
+la misma API, de modo que el producto sigue siendo un solo proceso y un solo contenedor (D81). Usa Tailwind CSS y
+componentes de shadcn-svelte sobre bits-ui, en modo oscuro (D109). Sin clave se puede recorrer todo el producto; solo
+la ejecución de consultas la exige.
+
+- **Consulta.** El visitante escribe una necesidad en lenguaje natural o parte de un ejemplo por tipo de tarea, sobre
+  el corpus B (proveedores sintéticos) o el corpus A (tiendas reconstruidas). Mientras el agente trabaja, una línea de
+  tiempo muestra cada evento SSE: la necesidad formalizada, las herramientas que pide el planificador, las ofertas
+  extraídas por proveedor y las alertas de defensa. La propuesta final presenta el cuadro comparativo (precio, envío,
+  costo total, plazo y disponibilidad), la recomendación o la abstención con su justificación, las alertas, el costo y
+  el tiempo. Cada oferta despliega su procedencia: fuente, consulta que la produjo, ruta de extracción y modelo, fecha,
+  SHA-256 y el fragmento original. Con la verificación activa, cada oferta muestra su estado N3 y la política
+  (abstenerse o excluir) se elige en la configuración (D110).
+- **Laboratorio de ataques.** El visitante elige una de las 20 cargas, ve su clase, ubicación, objetivo y texto, y
+  ejecuta la misma tarea en C0 y en C3 con su modelo. Cada lado muestra su progreso y su propuesta, junto con el
+  veredicto del predicado de éxito del ataque. Las cifras de M5 de E2 acompañan la comparación como referencia.
+- **Corpus.** Un visor muestra las fuentes del corpus B y del corpus A en su formato original (página web, PDF, chat,
+  catálogo MCP) y, para cada carga, la página limpia y la atacada lado a lado con el texto plantado resaltado en el
+  código fuente. Esto hace visible el caso de la ubicación oculta, que no aparece en la página renderizada pero sí en
+  el bloque JSON-LD que lee el agente (D87). Los archivos se sirven por lista blanca; las páginas HTML llevan una
+  política de seguridad de contenido con `sandbox` y se muestran en un marco aislado, sin scripts ni recursos externos.
+- **Resultados** presenta E1, E2 y E3 con sus intervalos de Wilson y figuras, leídos de la evidencia versionada.
+  **Historial** lista las consultas de la visita con su costo.
+- **Configuración** reúne lo que controla el visitante: la clave de OpenRouter, guardada solo en el navegador (en la
+  sesión de la pestaña, salvo que pida recordarla); el modelo de la lista curada, con su costo medido y su evidencia de
+  desempeño; las capas de defensa con los presets C0–C3, el umbral del clasificador con aviso de modo exploratorio y la
+  elección entre los dos clasificadores validados (D86); la verificación N3, y el gasto acumulado de la visita (D90).

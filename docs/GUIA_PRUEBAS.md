@@ -781,3 +781,62 @@ reproduce la tasa: es una demostración, no una medición.
 
 `make cotia-humo` reanuda sin repetir los modelos ya evaluados en `resultados/cotia/modelos.json`; si el archivo
 está completo, cuesta US$0. `uv run python -m comercio_agentico.api.catalogo` (sin `--humo`) solo imprime la lista.
+
+## S09b — CotIA (2/3): frontend (10-nov)
+
+### Qué se construyó y por qué
+
+| Componente | Qué hace | Concepto de IA / decisión |
+| --- | --- | --- |
+| `web/` (SvelteKit 3.2, adapter-static, Tailwind v4, shadcn-svelte) | Aplicación de página única en modo oscuro, compilada a `web/build` y servida por la API. | D81 y D109: un solo proceso y un solo contenedor. |
+| `web/src/lib/api.ts` | Tipos del contrato y cliente: `POST /api/consultas` con la clave en cabecera y `EventSource` para el SSE (se cierra en `fin` para que no reconecte y repita). | La clave viaja solo al crear la consulta (D82). |
+| `web/src/lib/config.svelte.ts` | Configuración del visitante con *runes* de Svelte 5: clave (en `sessionStorage` salvo «recordar»), modelo, capas, umbral, clasificador, N3 y política. Calcula si la combinación es C0–C3 o «exploratorio». | D91 y D110. |
+| `Ejecucion.svelte` | Línea de tiempo en vivo de los eventos SSE: necesidad formalizada, herramientas que pide el planificador, ofertas por proveedor, alertas y veredicto del ataque. | Hace legible el ciclo ReAct del agente (planificar ⇄ herramientas). |
+| `Propuesta.svelte` | Cuadro comparativo con la oferta recomendada resaltada, estado N3 por oferta y procedencia desplegable (fuente, consulta, modelo, fecha, SHA-256 y fragmento original). | Procedencia por dato: toda cifra es auditable. |
+| Rutas `/`, `/consultas/[id]`, `/laboratorio`, `/corpus`, `/resultados`, `/historial`, `/configuracion` | Las funcionalidades de D83 y D87. | El laboratorio y el visor muestran la tesis en vivo. |
+| `api/corpus.py` y dos rutas nuevas | Índice del corpus y archivos servidos por lista blanca; HTML con CSP `sandbox` dentro de un `iframe sandbox=""`. | Una página atacada no ejecuta nada en el navegador del visitante. |
+| `app.frontend()` en `api/app.py`; `make web`, `make web-dev` | FastAPI sirve la compilación; las rutas `/api` tienen prioridad. | |
+
+### Cómo probarlo
+
+Requisito una sola vez: Node ≥ 22.17 (`source ~/.nvm/nvm.sh && nvm use 22`).
+
+**1. Pruebas sin red — US$0**
+
+```bash
+uv run pytest tests/test_api.py -q      # incluye el visor (lista blanca) y el servido del frontend
+make web                                # npm ci + svelte-check (0 errores) + build
+```
+
+**2. El producto completo en el navegador, sin clave — US$0**
+
+```bash
+make bd && make web && make api
+```
+
+Abra <http://127.0.0.1:8000>. Sin clave debe poder recorrer todo: **Corpus** (en «Copia atacada», elija A02 y pase
+la columna «Atacada» a «Código fuente»: la carga aparece resaltada dentro del JSON-LD, invisible en la vista normal),
+**Resultados** (tablas de E1–E3 con sus intervalos y figuras), **Laboratorio** (las 20 cargas con su texto) y
+**Configuración** (presets C0–C3; al mover el umbral aparece «exploratorio»). El botón «Cotizar» avisa que falta la
+clave.
+
+**3. Camino de error, sin gastar — US$0**
+
+En Configuración, escriba una clave inventada (por ejemplo `sk-or-v1-prueba-000000`), vuelva a Consulta, elija «El
+más barato» y pulse «Cotizar». Debe ver «Inicio» y, a los pocos segundos, «OpenRouter rechazó la clave». La clave no
+aparece en el registro de la API. Pulse «Olvidar» al terminar.
+
+**4. Una consulta real desde el navegador — < US$0,02 con DeepSeek Flash**
+
+Ponga su clave de OpenRouter (mejor una exclusiva para CotIA, con límite de gasto bajo), modelo DeepSeek V4.1 Flash,
+defensas C2. En Consulta elija «El más barato» (tarea B013) y pulse «Cotizar». **Qué debe ver:** la línea de tiempo
+avanza en 1–2 minutos (interpretación, varios planes y lecturas, emparejamiento, propuesta) y luego el cuadro
+comparativo con la recomendación. Pulse el botón de la columna «Fuente» de una oferta para ver su fragmento original y
+su SHA-256. El contador de la cabecera suma la consulta y su costo.
+
+**5. Laboratorio, C0 frente a C3 — < US$0,04 con Flash (dos consultas)**
+
+En Laboratorio elija A20 (precio falso en el chat) y pulse «Correr C0 y C3». Las dos corren una tras otra. En E2,
+A20 tuvo éxito en C0 en 3 de 3 repeticiones y en ninguna en C3. Una sola ejecución es una demostración, no una
+medición. Sin gastar, la consulta A20 en C0 de S09a sigue en la base local: ábrala desde **Historial** si usa el mismo
+navegador, o en `/consultas/fb424985-1904-4f6c-9b77-7d137579b358`.

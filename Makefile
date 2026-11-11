@@ -5,7 +5,7 @@
 SHELL := /bin/bash
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo corpus-a-recolectar corpus-a corpus-a-servir corpus-a-correr humo candidatos app arnes-simulado calibracion e3 e3-frontera e2-ataques e2-ataques-simulado e2-utilidad e2 jev e1 e1-lecturas metricas bd api cotia-humo
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo corpus-a-recolectar corpus-a corpus-a-servir corpus-a-correr humo candidatos app arnes-simulado calibracion e3 e3-frontera e2-ataques e2-ataques-simulado e2-utilidad e2 jev e1 e1-lecturas metricas bd api web web-dev cotia-humo
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
@@ -105,8 +105,14 @@ metricas: ## Recalcula métricas de una corrida: make metricas CORRIDA=resultado
 bd: ## CotIA: PostgreSQL local en Docker (:5433) (US$0)
 	docker compose up -d bd
 
-api: ## CotIA: API en :8000; arranca el corpus A/B si no está servido (US$0 hasta que se consulta)
+api: ## CotIA: API en :8000 y frontend compilado (make web); arranca el corpus A/B si no está servido (US$0 hasta que se consulta)
 	uv run uvicorn comercio_agentico.api.app:crear_app --factory --port 8000
+
+web: ## CotIA: instala y compila el frontend SvelteKit a web/build, que sirve la API (Node ≥ 22.17; US$0)
+	cd web && npm ci && npm run check && npm run build
+
+web-dev: ## CotIA: frontend con recarga en caliente en :5173 (redirige /api a :8000; US$0)
+	cd web && npm run dev
 
 cotia-humo: ## CotIA: prueba de humo de la lista curada de modelos (tope US$0,45; requiere corpus-b-servir)
 	uv run python -m comercio_agentico.api.catalogo --humo

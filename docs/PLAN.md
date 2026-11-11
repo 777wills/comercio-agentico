@@ -322,22 +322,23 @@ _Hecho el 9–10-nov: E3 se detuvo en Haiku por D77 (D78); modelo base DeepSeek 
 
 **Objetivo:** interfaz moderna, profesional y en modo oscuro.
 
-- [ ] Context7 para SvelteKit (adapter-static), Tailwind y la librería de componentes elegida.
-- [ ] `web/`: inicio con la consulta y ejemplos; progreso en vivo; cuadro comparativo con procedencia desplegable por
+- [x] Context7 para SvelteKit (adapter-static), Tailwind y la librería de componentes elegida.
+- [x] `web/`: inicio con la consulta y ejemplos; progreso en vivo; cuadro comparativo con procedencia desplegable por
       celda; alertas, costo y tiempo; aviso de que no ejecuta pagos; selector de corpus A/B;
       laboratorio de ataques (C0 frente a C3); panel de resultados; historial.
-- [ ] **Configuración** (todo lo que el visitante controla, en un solo lugar): - **Clave de OpenRouter** del visitante, guardada solo en el navegador y enviada en cada petición; sin clave
+- [x] **Configuración** (todo lo que el visitante controla, en un solo lugar): - **Clave de OpenRouter** del visitante, guardada solo en el navegador y enviada en cada petición; sin clave
       se navega todo pero no se ejecutan consultas (D82). - **Modelo** de la lista curada, con su costo estimado por consulta (D82, `GET /api/modelos`). - **Clasificador de inyección**: elegir entre los dos validados (Horizon-Labs / Wolf Defender), con sus
       características (D86). - **Panel de defensas** (D91): interruptor por capa (separación, clasificador, precio) + presets C0–C3 +
       deslizador de umbral del clasificador con aviso; marca «exploratorio» fuera de C0–C3. - **Gasto acumulado de la sesión** del visitante (nº de consultas y total con su clave; D90).
-- [ ] **Visor del corpus congelado** (proveedores sintéticos del corpus B y tiendas reconstruidas del corpus A, con
+- [x] **Visor del corpus congelado** (proveedores sintéticos del corpus B y tiendas reconstruidas del corpus A, con
       sus formatos: web schema.org, web plana, PDF, chat, MCP; **y la copia atacada `corpus/b_ataques/<id>/` con, por
       página, qué carga(s) tiene plantada(s) —clase, ubicación y fragmento resaltado—, vista limpia/atacada lado a
       lado**; D87). Ligado al selector de corpus A/B.
-- [ ] Diseño responsivo; sin clave se navega todo y la consulta pide configurarla.
-- [ ] Compilación estática servida por FastAPI.
+- [x] Diseño responsivo; sin clave se navega todo y la consulta pide configurarla.
+- [x] Compilación estática servida por FastAPI.
 
-**Terminado cuando:** el flujo completo funciona en local desde el navegador.
+**Terminado cuando:** el flujo completo funciona en local desde el navegador. *(10-nov: verificado con una consulta
+real guardada y con el camino de error a US$0; falta la consulta de Wills con su clave, < US$0,02.)*
 
 ## S09c — CotIA (3/3): publicación y MLOps ligero (lun 16-nov)
 
