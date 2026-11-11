@@ -34,7 +34,7 @@ planos), y una suite de 20 cargas de inyección indirecta evalúa cuatro configu
 
 ## CotIA, el producto
 
-**URL pública:** _se publica en Railway (D116); la dirección se agrega aquí tras el despliegue._
+**URL pública:** <https://comercio-agentico-production-bf030669.up.railway.app> (Railway, D116).
 
 - **Modo Cliente** (`/`): consulta en lenguaje natural sobre proveedores de prueba (corpus B), tiendas colombianas
   reconstruidas (corpus A) o tiendas en vivo de una lista blanca; progreso en vivo, recomendación con su fuente y
@@ -93,14 +93,14 @@ Los costos son estimados con DeepSeek V4.1 Flash por OpenRouter. Los objetivos m
 corridas versionadas en `resultados/` sin llamar a ningún modelo. Las corridas con modelo necesitan `.env` y el
 corpus servido (`make corpus-b-servir`, y `make corpus-a-servir` para el corpus A).
 
-| Experimento | Corrida (costo) | Análisis (US$0) | Resultados |
-|---|---|---|---|
-| Arnés de prueba | `make arnes-simulado` (US$0, agente simulado) | — | — |
-| Calibración (corpus B, 60 tareas) | `make calibracion` (~US$1) | `make metricas CORRIDA=…` | [`resultados/informes/`](resultados/informes/) |
-| Corpus A (20 tareas reales) | `make corpus-a-correr` (~US$0,3) | `make metricas CORRIDA=…` | [`04_resultados_corpus_a.md`](docs/informe/04_resultados_corpus_a.md) |
-| E1: verificación N3 | `make e1-lecturas` (~US$0,02) | `make e1` | [`04_resultados_e1.md`](docs/informe/04_resultados_e1.md) |
-| E2: curva seguridad-utilidad | `make e2-ataques` (~US$3,7) y `make e2-utilidad` (~US$1,8) | `make e2` | [`04_resultados_e2.md`](docs/informe/04_resultados_e2.md) |
-| E3: comparación de modelos | `make e3 MODELO=flash` (~US$1,5 por modelo) | `make e3-frontera` | [`04_resultados_e3.md`](docs/informe/04_resultados_e3.md) |
+| Experimento                       | Corrida (costo)                                            | Análisis (US$0)           | Resultados                                                            |
+| --------------------------------- | ---------------------------------------------------------- | ------------------------- | --------------------------------------------------------------------- |
+| Arnés de prueba                   | `make arnes-simulado` (US$0, agente simulado)              | —                         | —                                                                     |
+| Calibración (corpus B, 60 tareas) | `make calibracion` (~US$1)                                 | `make metricas CORRIDA=…` | [`resultados/informes/`](resultados/informes/)                        |
+| Corpus A (20 tareas reales)       | `make corpus-a-correr` (~US$0,3)                           | `make metricas CORRIDA=…` | [`04_resultados_corpus_a.md`](docs/informe/04_resultados_corpus_a.md) |
+| E1: verificación N3               | `make e1-lecturas` (~US$0,02)                              | `make e1`                 | [`04_resultados_e1.md`](docs/informe/04_resultados_e1.md)             |
+| E2: curva seguridad-utilidad      | `make e2-ataques` (~US$3,7) y `make e2-utilidad` (~US$1,8) | `make e2`                 | [`04_resultados_e2.md`](docs/informe/04_resultados_e2.md)             |
+| E3: comparación de modelos        | `make e3 MODELO=flash` (~US$1,5 por modelo)                | `make e3-frontera`        | [`04_resultados_e3.md`](docs/informe/04_resultados_e3.md)             |
 
 `make help` lista todos los objetivos con su costo.
 
@@ -109,15 +109,18 @@ corpus servido (`make corpus-b-servir`, y `make corpus-a-servir` para el corpus 
 - **Plataforma (D116):** Railway, plan Hobby. Un servicio construido desde el `Dockerfile` de la raíz y PostgreSQL
   gestionado en el mismo proyecto. Variables del servicio:
 
-  | Variable | Valor |
-  |---|---|
-  | `DATABASE_URL` | `${{Postgres.DATABASE_URL}}` (referencia a la base del proyecto) |
-  | `LANGSMITH_TRACING` | `true` (opcional, trazas de D117) |
-  | `LANGSMITH_API_KEY` | clave de LangSmith (secreto) |
-  | `LANGSMITH_PROJECT` | `cotia` |
+    | Variable                      | Valor                                                            |
+    | ----------------------------- | ---------------------------------------------------------------- |
+    | `DATABASE_URL`                | `${{Postgres.DATABASE_URL}}` (referencia a la base del proyecto) |
+    | `LANGSMITH_TRACING`           | `true` (opcional, trazas de D117)                                |
+    | `LANGSMITH_ENDPOINT`          | `https://api.smith.langchain.com`                                |
+    | `LANGSMITH_API_KEY`           | clave de LangSmith (variable sellada)                            |
+    | `LANGSMITH_AGENT_ID`          | `cotia` (agente registrado en LangSmith)                         |
+    | `LANGSMITH_AGENT_ENVIRONMENT` | `production`                                                     |
 
-  El servicio **no** lleva claves de Anthropic ni de OpenRouter: cada consulta usa la del visitante. Comprobación
-  de salud en `/api/salud`.
+    El servicio **no** lleva claves de Anthropic ni de OpenRouter: cada consulta usa la del visitante. Comprobación
+    de salud en `/api/salud`; con «Wait for CI», Railway solo despliega los commits de `main` cuyo CI pasó.
+
 - **Integración continua:** GitHub Actions corre pre-commit (Ruff, higiene, `uv.lock`), regenera el corpus y
   comprueba que coincide con lo versionado, ejecuta las pruebas, una prueba de humo del arnés con el agente
   simulado y la verificación de tipos y compilación del frontend.

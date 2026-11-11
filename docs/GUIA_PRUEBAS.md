@@ -947,3 +947,63 @@ En Ajustes, su clave y Flash; en «5 fuentes», grupo «Tiendas en vivo»; ejemp
 barato con envío». Tarda 5–7 minutos. El 11-nov recomendó Falabella ($1.599.900, envío $0, verificada) frente a
 Samsung ($1.999.900). Los precios cambian: el resultado de hoy puede ser otro. En el Laboratorio, la misma consulta
 muestra las alertas de C2 (texto retirado en páginas reales, D115 b).
+
+## S09c — Publicación y MLOps ligero (11-nov, D116–D119)
+
+### Qué se construyó y por qué
+
+| Componente | Qué hace | Concepto / decisión |
+| --- | --- | --- |
+| `Dockerfile`, `.dockerignore` | Imagen única en tres etapas: frontend, dependencias con uv y final con Chromium y modelos horneados; corpus regenerado dentro; usuario sin privilegios. | Reproducibilidad; capas pesadas antes del código (D81, D116). |
+| `compose.yaml` (servicio `app`), `make cotia-docker` | La imagen de producción con PostgreSQL en local, en :8080. | Mismo artefacto en local y en producción (D118). |
+| `.github/workflows/ci.yml` | Pre-commit, corpus regenerado y comparado, pruebas, humo del arnés simulado y frontend. | Puerta de calidad: Railway solo despliega si pasa («Wait for CI»). |
+| Trazas LangSmith | Árbol de pasos del grafo por consulta; aviso en Ajustes; prueba de que la clave no se traza. | Observabilidad (D117). |
+| Avance por fuente | La consulta muestra cada página que lee y su estado. | D119. |
+| `tests/test_despliegue.py` | Comprueba que la imagen hornea los modelos que usa el agente. | La imagen corre sin acceso al Hub. |
+
+**URL pública:** <https://comercio-agentico-production-bf030669.up.railway.app> (con Serverless activo, la primera
+visita tras un rato sin uso puede tardar o dar un error 502: recargue).
+
+### Cómo probarlo
+
+**1. Pruebas y CI en local — US$0**
+
+```bash
+make check                                       # Ruff + formato + 197 pruebas
+uv run pytest tests/test_despliegue.py tests/test_modelos.py -q   # modelos horneados; la clave no llega a la traza
+```
+
+**2. La imagen de producción en local — US$0** (la primera construcción tarda ~5 min y ocupa 6 GB)
+
+```bash
+make cotia-docker                                # construye y levanta app + PostgreSQL
+curl -s http://127.0.0.1:8080/api/salud          # {"estado":"ok","bd":true,"corpus":{...},"modelos":3}
+```
+
+Abra <http://127.0.0.1:8080>: debe ver la portada con el ícono nuevo (etiqueta de precio con ✓) en la pestaña.
+Para detenerla: `docker compose --profile app down` (la base local sigue con `make bd`).
+
+**3. La versión publicada, sin consultar — US$0**
+
+```bash
+curl -s https://comercio-agentico-production-bf030669.up.railway.app/api/salud
+```
+
+Si el servicio estaba dormido, la primera respuesta puede tardar unos segundos.
+
+**4. Avance por fuente — US$0** (repite eventos guardados; requiere una consulta en vivo previa en la base local)
+
+Abra una consulta en vivo terminada en <http://localhost:8000/mis-consultas>: los eventos se repiten muy rápido. Para
+ver el avance real, haga la prueba 5.
+
+**5. Una consulta en producción — < US$0,02 con Flash** (corpus B) **o ≈ US$0,07** (tiendas en vivo)
+
+En Ajustes, su clave de OpenRouter y DeepSeek Flash; en «Fuentes», pestaña «Proveedores de prueba»; ejemplo «¿Dónde
+compro más barato…?». El 11-nov, B013 recomendó P4 ($2.732.000 + $25.000 de envío), igual que la verdad, en 100 s y
+US$0,019. En LangSmith (agente CotIA → Tracing) aparece la traza de la consulta; busque `sk-or`: no debe aparecer.
+Con «Tiendas en vivo», en «Consultando proveedores» se ven las páginas que se leen, con ✓ o ⚠.
+
+**6. Días de demostración (D118)**
+
+En Railway → `comercio-agentico` → Settings → Deploy, desactive **Serverless** esa mañana (redespliega en unos
+minutos), haga una consulta de calentamiento con Flash y, tras la demo, vuelva a activarlo.

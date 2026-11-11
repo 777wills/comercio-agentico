@@ -2,23 +2,47 @@
 
 ## Siguiente sesión
 
-**S09c — CotIA (3/3): publicación y MLOps ligero.** S09b-ter quedó hecha el 11-nov: consulta en vivo en tiendas
-reales y lista blanca editable por visitante (D112–D115). Seguimos ~4 días por delante (S09c está para el 16-nov).
+**S10 — Informe IEEE.** S09c quedó hecha el 11-nov (cinco días antes de lo previsto): CotIA publicada en
+<https://comercio-agentico-production-bf030669.up.railway.app>. S10 está para el 17–18-nov.
 
 Siguiente paso exacto:
 
-1. Leer en `docs/PLAN.md` la sección S09c y proponer el plan. Elegir plataforma con datos oficiales verificados
-   (RAM: ~2 GB por consulta con Chromium, embeddings y clasificador; PostgreSQL gestionado; costo; dominio). El modo
-   en vivo exige salida a internet desde el contenedor.
-2. `Dockerfile` (etapa Node ≥ 22.17 que compila `web/` + etapa Python); `corpus/b_ataques/` se regenera en la imagen.
-3. CI: `make web` + Ruff + pytest.
-4. Pendientes: **D114** (clave de Anthropic, en el plan, sin construir); **D115 b** (medir la proporción de ventanas
-   que C2 retira en páginas reales para el informe); la interfaz aún no muestra `detalle.ofertas_finales` (motivo de
-   descarte por oferta) en el laboratorio. Hallazgo que sigue: «64 GB» en consulta libre → restricción de
-   almacenamiento.
-5. Operación local: `make bd`, `make web`; la API corre como unidad de usuario `cotia-api`
-   (`systemctl --user restart cotia-api`, registro en `/tmp/cotia-api.log`). Wills dejó su clave «recordada» en Chrome
-   para la prueba: pulsar «Olvidar» en Ajustes.
+1. Leer en `docs/PLAN.md` la sección S10. Wills debe descargar la plantilla institucional del informe (IEEE) en
+   `privado/curso/`. No iniciar el ensamblaje sin su autorización explícita (entregable grande).
+2. Insumos: los borradores de `docs/informe/` (nuevo: `03_metodologia_operacion.md`) y la hoja de ruta.
+3. Pendientes de S09c: capturas y video corto de la demo para la presentación (con Wills, en producción y en día de
+   demo, D118); **D115 b** completo: contar también las páginas reales en las que C2 no retiró nada (dato preliminar:
+   101 de 323 ventanas en las 12 páginas con retiro); **D114** (clave de Anthropic) sigue sin construir; la interfaz
+   del laboratorio aún no muestra `detalle.ofertas_finales`.
+4. Operación (D118): desarrollo en local con `make cotia-docker` (:8080) o `make bd && make api`; Railway con
+   Serverless, salvo los días de demo (20 y 27-nov: desactivarlo esa mañana y hacer una consulta de calentamiento).
+   Capturas de LangSmith para el informe antes de que caduquen (14 días).
+
+**Hecho el 11-nov (S09c, publicación y MLOps ligero; VS Code · Opus 5.5), con pruebas:**
+
+- **Plataforma (D116):** Railway Hobby, tras comparar en páginas oficiales Railway, Cloud Run, Hugging Face Spaces y
+  Render. Servicio desde el `Dockerfile` + PostgreSQL gestionado por red privada; «Wait for CI»; salud en
+  `/api/salud`; variable de LangSmith sellada.
+- **Imagen:** `Dockerfile` en tres etapas (Node 22 → uv → final con Chromium y modelos horneados, `HF_HUB_OFFLINE=1`,
+  usuario sin privilegios), capas pesadas antes del código; corpus A y variantes atacadas regenerados dentro. 6 GB
+  (3,1 GB comprimida). `compose.yaml` con servicio `app` (`make cotia-docker`, :8080). `bd.py` acepta `DATABASE_URL`
+  (`postgresql://`). Probada en local: Chromium, embeddings y clasificador sin red.
+- **CI:** estaba en rojo desde S09b (faltaba `corpus/a_real/sitio` en GitHub). Ahora regenera el corpus y lo compara
+  con lo versionado, corre las pruebas, un humo del arnés simulado y un job del frontend. Verde.
+- **Trazas (D117):** LangSmith con direccionamiento por agente (`cotia`, `production`); aviso en Ajustes y
+  Configuración; prueba de que la clave no llega a la traza; en producción, `sk-or` no aparece en la traza.
+- **Avance por fuente (D119)** en el modo Cliente; el botón de fuentes nombra el grupo; ícono propio de CotIA.
+- **Humo en producción:** B013 con Flash → P4 $2.732.000 + $25.000, igual que la verdad, 5/5 ofertas verificadas por
+  N3, US$0,0190, 100 s. En vivo, HP del corpus B (ficticio) → 17 páginas reales, abstención correcta, 594 s,
+  US$0,0665; una pestaña de Chromium cayó por memoria (3,7 GB de 4 GB).
+- **Operación (D118):** métricas de producción: ~0,27 GB antes de la primera consulta y ~2,1 GB retenidos después.
+  Serverless salvo días de demo; réplica 4 vCPU / 6 GB; *hard limit* US$10.
+- README completo (URL, arquitectura, reproducir cada experimento, despliegue, corpus y licencias); informe:
+  `docs/informe/03_metodologia_operacion.md`. **197 pruebas**, Ruff limpio, svelte-check 0 errores.
+- **Gasto:** OpenRouter ≥ US$0,0855 (B013 0,0190 + HP en vivo 0,0665; más las consultas posteriores de Wills con su
+  clave nueva, en su consola). Railway: US$5 de suscripción Hobby (incluye US$5 de uso). LangSmith: US$0.
+- **Incidente:** una copia vieja de `web/src/lib/api.ts` abierta en el editor pisó el disco al guardarse y borró la
+  lista blanca de S09b-ter; se restauró desde git antes del commit.
 
 **Hecho el 11-nov (S09b-ter, consulta en vivo y lista blanca; Claude Code · Opus 5.5), con pruebas:**
 
@@ -140,11 +164,11 @@ Siguiente paso exacto:
 
 ## Presupuesto de modelos
 
-| Concepto           | US$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Presupuesto total  | 300,00                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| Créditos comprados | 75,00 (Anthropic 30 + OpenRouter 20, 9-nov; TypeSafe 5, 10-nov, el mínimo que acepta, para la comparación con Jev de D80; OpenRouter 20 más, 10-nov, S09a). Anthropic: US$29,83 disponibles y US$0,17 gastados (consola, 9-nov 21:43)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| Gastado acumulado  | ~17,47 (S09b-ter: 0,1119 = dos consultas en vivo con Flash + N3, OpenRouter; D108 E2 con Haiku: 1,9716 Anthropic; S09a: 0,3745 = humo de la lista curada 0,3443 + punta a punta 0,0302, todo OpenRouter; S08: 0,0213 = segunda lectura de N3 con Haiku en 15 fragmentos; S07: ~5,57 = matriz de ataque 3,4454 + utilidad benigna 1,9011 + Jev ~0,0015 + ~0,22 perdidos en dos cierres de VS Code; S06-bis arnés: 0,2327 humo C0/C3 en dos pasadas, 0,1473 + 0,0854; S06: 0,015 prueba de humo C3 + clasificadores a US$0; S00: ~0,26; S01: 0,024; S02: ~0,18; S03: 1,74; S04: ~1,32; S05: ~5,7 = corpus A v1 0,361 + calibración v3 0,919 + E3 Flash 1,371 + E3 Haiku 1,528 + corrida parcial de Flash descartada 1,312 + ~0,2 de llamadas perdidas en la suspensión). OpenRouter: **saldo real US$21,26** (consola, 10-nov tras S09a; de US$40 cargados). La suma de costos por llamada (~13,7) queda corta frente a la consola: comisiones de compra y llamadas perdidas en cierres no registradas. TypeSafe: ~US$0,002 de 5. Anthropic: **saldo real US$28,25** (consola, 10-nov antes de D108; US$1,76 gastados en el mes) |
+| Concepto           | US$                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Presupuesto total  | 300,00                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| Créditos comprados | 75,00 (Anthropic 30 + OpenRouter 20, 9-nov; TypeSafe 5, 10-nov, el mínimo que acepta, para la comparación con Jev de D80; OpenRouter 20 más, 10-nov, S09a). Anthropic: US$29,83 disponibles y US$0,17 gastados (consola, 9-nov 21:43)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| Gastado acumulado  | ~22,56 (S09c: 5,0855 = Railway Hobby 5,00 + OpenRouter ≥ 0,0855 en producción, B013 0,0190 + HP en vivo 0,0665, más consultas posteriores de Wills; S09b-ter: 0,1119 = dos consultas en vivo con Flash + N3, OpenRouter; D108 E2 con Haiku: 1,9716 Anthropic; S09a: 0,3745 = humo de la lista curada 0,3443 + punta a punta 0,0302, todo OpenRouter; S08: 0,0213 = segunda lectura de N3 con Haiku en 15 fragmentos; S07: ~5,57 = matriz de ataque 3,4454 + utilidad benigna 1,9011 + Jev ~0,0015 + ~0,22 perdidos en dos cierres de VS Code; S06-bis arnés: 0,2327 humo C0/C3 en dos pasadas, 0,1473 + 0,0854; S06: 0,015 prueba de humo C3 + clasificadores a US$0; S00: ~0,26; S01: 0,024; S02: ~0,18; S03: 1,74; S04: ~1,32; S05: ~5,7 = corpus A v1 0,361 + calibración v3 0,919 + E3 Flash 1,371 + E3 Haiku 1,528 + corrida parcial de Flash descartada 1,312 + ~0,2 de llamadas perdidas en la suspensión). OpenRouter: **saldo real US$21,26** (consola, 10-nov tras S09a; de US$40 cargados). La suma de costos por llamada (~13,7) queda corta frente a la consola: comisiones de compra y llamadas perdidas en cierres no registradas. TypeSafe: ~US$0,002 de 5. Anthropic: **saldo real US$28,25** (consola, 10-nov antes de D108; US$1,76 gastados en el mes) |
 
 Costo medido el 9-nov (S00) de una extracción estructurada típica (página con 12 ofertas, 1500–3500 tokens de
 entrada, `json_schema`): Flash 0,0015 · Haiku 0,0016 · DeepSeek Pro 0,006 · Sonnet 0,025 · Kimi 0,032 ·
@@ -170,6 +194,15 @@ largas que la de prueba (recalibrar en S03 con el arnés), y Opus queda cerca de
 El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un subproceso.
 
 ## Bitácora
+
+### 11-nov-2026 — S09c: publicación y MLOps ligero (VS Code · Opus 5.5)
+
+- Decisiones con Wills: D116 (Railway Hobby), D117 (LangSmith), D118 (operación: local + Serverless salvo días de
+  demo) y D119 (avance por fuente). Regla nueva en la memoria: las preguntas de decisión traen contexto completo.
+- Tropiezos: búfer viejo del editor pisó `web/src/lib/api.ts` (restaurado desde git); LangSmith con espacio por
+  agentes exige `LANGSMITH_AGENT_ID`/`LANGSMITH_AGENT_ENVIRONMENT` en vez de `LANGSMITH_PROJECT`; el «Config as code»
+  de Railway está obsoleto (hasta 2026-12-01), así que la configuración vive en el panel y en el README.
+- Commits: `35d07bb` (intermedio, autorizado, para que Railway construyera desde GitHub) y el de cierre.
 
 ### 10-nov-2026 — S09b: frontend de CotIA (VS Code · Opus 5.5)
 

@@ -101,7 +101,7 @@ E2, E3, el laboratorio de ataques ni la publicación de CotIA.
 - [x] Comprar créditos: Anthropic US$30 y OpenRouter US$20 (9-nov); TypeSafe US$5 (10-nov, D80). Presupuesto total
       máximo: US$300. Sin recarga prevista: E3 se detuvo en Haiku (D78).
 - [x] Clave de TypeSafe en `.env` (10-nov).
-- [ ] Cuentas para el despliegue de CotIA (plataforma y PostgreSQL gestionado), cuando se elijan en S09c.
+- [x] Cuentas para el despliegue de CotIA (plataforma y PostgreSQL gestionado), cuando se elijan en S09c.
 - [x] Crear `.env` con `ANTHROPIC_API_KEY` y `OPENROUTER_API_KEY` (S00).
 - [ ] Descargar la plantilla institucional de trabajo escrito (IEEE) del aula y ponerla en `privado/curso/` (antes de S10).
 - [x] Confirmar la creación del repositorio público en GitHub (S00): `777wills/comercio-agentico`.
@@ -367,14 +367,14 @@ real guardada y con el camino de error a US$0; falta la consulta de Wills con su
 
 **Objetivo:** MVP publicado y reproducible.
 
-- [ ] Elegir la plataforma de despliegue con datos oficiales verificados (RAM para Chromium, embeddings y
+- [x] Elegir la plataforma de despliegue con datos oficiales verificados (RAM para Chromium, embeddings y
       clasificador; costo; arranque; PostgreSQL gestionado; dominio) y proponerla a Wills con opciones.
-- [ ] `Dockerfile` (contenedor único) y `compose.yaml` (con PostgreSQL) para local.
-- [ ] Despliegue público con HTTPS; prueba de humo en producción con la clave de Wills.
-- [ ] GitHub Actions: lint, `pytest`, compilación del frontend y una tarea de humo con modelo simulado.
-- [ ] Trazas de llamadas al LLM (LangSmith o Langfuse; el más simple de configurar, con Context7), sin registrar
+- [x] `Dockerfile` (contenedor único) y `compose.yaml` (con PostgreSQL) para local.
+- [x] Despliegue público con HTTPS; prueba de humo en producción con la clave de Wills.
+- [x] GitHub Actions: lint, `pytest`, compilación del frontend y una tarea de humo con modelo simulado.
+- [x] Trazas de llamadas al LLM (LangSmith o Langfuse; el más simple de configurar, con Context7), sin registrar
       claves.
-- [ ] README completo: qué es CotIA, URL pública, cómo reproducir cada experimento con un comando, cómo correr el
+- [x] README completo: qué es CotIA, URL pública, cómo reproducir cada experimento con un comando, cómo correr el
       producto en local, estructura, licencias y límites legales del corpus A.
 - [ ] Capturas y video corto de la demo para la presentación.
 

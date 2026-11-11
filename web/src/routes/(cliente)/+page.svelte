@@ -81,7 +81,9 @@
 				type="button"
 				class="rounded-full px-3 py-1 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
 				onclick={() => (fuentes.panel = true)}
-				>{fuentes.lista ? `${activas} ${activas === 1 ? 'fuente' : 'fuentes'}` : 'Fuentes'}</button
+				>{fuentes.lista
+					? `${fuentes.grupo(config.corpus)?.nombre ?? ''} · ${activas} ${activas === 1 ? 'fuente' : 'fuentes'}`
+					: 'Fuentes'}</button
 			>
 			<button
 				type="submit"

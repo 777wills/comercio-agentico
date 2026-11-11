@@ -52,8 +52,9 @@
 		<Dialog.Header>
 			<Dialog.Title class="text-base">Fuentes</Dialog.Title>
 			<Dialog.Description>
-				El agente solo consulta las fuentes activas del grupo elegido. Sus cambios valen solo en este
-				navegador.
+				Cada consulta usa un solo grupo: el de la pestaña seleccionada al cerrar este panel, con sus
+				fuentes activas. Así no se mezclan tiendas reales con proveedores de prueba. Sus cambios valen
+				solo en este navegador.
 			</Dialog.Description>
 		</Dialog.Header>
 

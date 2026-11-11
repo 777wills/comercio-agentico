@@ -29,21 +29,27 @@ ENV PATH=/app/.venv/bin:$PATH \
     CRAWL4AI_NO_CLOUD_NOTICE=1 \
     PORT=8000
 WORKDIR /app
-COPY --from=builder /app /app
-COPY --from=web /web/build /app/web/build
+COPY --from=builder /app/.venv /app/.venv
 
-# Chromium para crawl4ai, modelos locales (embeddings y los dos clasificadores de C2) y corpus
-# regenerado desde lo versionado: tiendas A1-A3 desde los hechos y variantes atacadas de B (D95).
+# Capas pesadas antes del código, para que un cambio de código no las reconstruya: Chromium para
+# crawl4ai y los modelos locales (embeddings y los dos clasificadores de C2; nombres en
+# emparejamiento.py y agente/defensa.py, comprobados por tests/test_despliegue.py).
 RUN python -m playwright install --with-deps chromium \
     && rm -rf /var/lib/apt/lists/* \
     && python -c "from sentence_transformers import SentenceTransformer as S; \
     from transformers import AutoModelForSequenceClassification as M, AutoTokenizer as T; \
-    from comercio_agentico.agente.defensa import CLASIFICADORES; \
-    from comercio_agentico.emparejamiento import MODELO_EMBEDDINGS; \
-    S(MODELO_EMBEDDINGS); [(T.from_pretrained(c), M.from_pretrained(c)) for c in CLASIFICADORES]" \
-    && python -m comercio_agentico.corpus_a.construir \
+    S('intfloat/multilingual-e5-small'); \
+    [(T.from_pretrained(c), M.from_pretrained(c)) for c in ( \
+    'Horizon-Labs/prompt-injection-guard-small', \
+    'patronus-studio/wolf-defender-prompt-injection')]" \
+    && useradd --create-home --uid 1000 cotia
+
+COPY --from=web /web/build /app/web/build
+COPY . /app
+
+# Corpus regenerado desde lo versionado: tiendas A1-A3 desde los hechos y variantes atacadas de B (D95).
+RUN python -m comercio_agentico.corpus_a.construir \
     && python -m comercio_agentico.ataques.plantar \
-    && useradd --create-home --uid 1000 cotia \
     && chown -R cotia /app/corpus /app/resultados
 
 USER cotia
