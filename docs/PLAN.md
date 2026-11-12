@@ -362,6 +362,9 @@ real guardada y con el camino de error a US$0; falta la consulta de Wills con su
       curada (hoy Haiku 5.5) y N3 lee con Haiku directo. El costo se calcula por tokens × tabla de precios
       (`costo_fuente = "tabla"`), porque Anthropic no devuelve el costo por llamada; la interfaz lo marca como
       estimado.
+- [ ] **Ofertas finales en el Laboratorio.** La API ya emite `detalle.ofertas_finales` (proveedor, título, precio,
+      envío, producto o grupo emparejado, motivo de descarte y verificación N3); falta mostrarlas en
+      `/lab/consultas/[id]` para ver por qué cada oferta quedó fuera en la comparación abierta. Solo interfaz; US$0.
 
 ### S09d — C2 en páginas reales y saneamiento del Markdown (11-nov, D115 b, D120)
 
