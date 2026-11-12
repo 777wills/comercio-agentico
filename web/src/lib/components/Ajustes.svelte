@@ -1,5 +1,5 @@
 <script lang="ts">
-	// Ajustes del modo Cliente (D111): solo la clave de OpenRouter y el modelo.
+	// Ajustes del modo Cliente (D111): solo la clave (OpenRouter o Anthropic, D114) y el modelo.
 	import { ajustes, config, visita } from '#lib/config.svelte.js';
 	import { catalogo } from '#lib/datos.js';
 	import { usd } from '#lib/api.js';
@@ -19,19 +19,20 @@
 		<Dialog.Header>
 			<Dialog.Title class="text-base">Ajustes</Dialog.Title>
 			<Dialog.Description>
-				Cada cotización se paga con su propia clave de OpenRouter. El servidor no la guarda.
+				Cada cotización se paga con su propia clave de OpenRouter o de Anthropic. El servidor no la
+				guarda.
 			</Dialog.Description>
 		</Dialog.Header>
 
 		<div class="space-y-2">
-			<Label for="clave">Clave de OpenRouter</Label>
+			<Label for="clave">Clave de OpenRouter o de Anthropic</Label>
 			<div class="flex gap-2">
 				<Input
 					id="clave"
 					type={mostrar ? 'text' : 'password'}
 					autocomplete="off"
 					spellcheck={false}
-					placeholder="sk-or-v1-…"
+					placeholder="sk-or-v1-… o sk-ant-…"
 					bind:value={config.clave}
 				/>
 				<Button variant="ghost" onclick={() => (mostrar = !mostrar)}>
@@ -47,13 +48,25 @@
 					<button class="hover:text-foreground" onclick={() => config.olvidarClave()}>Olvidar</button>
 				{/if}
 			</div>
+			{#if config.clave}
+				<p class="text-xs {config.proveedor ? 'text-muted-foreground' : 'text-destructive'}">
+					{#if config.proveedor === 'anthropic'}
+						Clave de Anthropic: solo modelos Claude. El costo que muestra CotIA es una estimación; el
+						exacto queda en su consola de Anthropic.
+					{:else if config.proveedor === 'openrouter'}
+						Clave de OpenRouter.
+					{:else}
+						Clave no reconocida: debe empezar por sk-or- (OpenRouter) o sk-ant- (Anthropic).
+					{/if}
+				</p>
+			{/if}
 		</div>
 
 		<div class="space-y-2">
 			<Label>Modelo</Label>
 			{#await cat then c}
 				<div class="divide-y rounded-lg border">
-					{#each c.modelos as m (m.nombre)}
+					{#each c.modelos.filter((m) => config.proveedor !== 'anthropic' || m.anthropic) as m (m.nombre)}
 						<button
 							type="button"
 							class="flex w-full items-center gap-3 px-3 py-2.5 text-left text-sm transition-colors hover:bg-muted/50"

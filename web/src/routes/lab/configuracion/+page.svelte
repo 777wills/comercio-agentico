@@ -51,9 +51,10 @@
 
 	<Card.Root>
 		<Card.Header>
-			<Card.Title>Clave de OpenRouter</Card.Title>
+			<Card.Title>Clave de OpenRouter o de Anthropic</Card.Title>
 			<Card.Description>
-				CotIA no trae créditos propios: cada consulta se paga con su clave. Viaja por HTTPS solo al
+				CotIA no trae créditos propios: cada consulta se paga con su clave. El proveedor se reconoce
+				por el prefijo (sk-or- o sk-ant-). Viaja por HTTPS solo al
 				crear la consulta; el servidor la usa en memoria y no la guarda ni la registra.
 				{#await cat then c}
 					{#if c.trazas}
@@ -69,7 +70,7 @@
 					type={mostrar ? 'text' : 'password'}
 					autocomplete="off"
 					spellcheck={false}
-					placeholder="sk-or-v1-…"
+					placeholder="sk-or-v1-… o sk-ant-…"
 					bind:value={config.clave}
 				/>
 				<Button variant="outline" onclick={() => (mostrar = !mostrar)}>
@@ -86,8 +87,17 @@
 				</Label>
 			</div>
 			<p class="text-xs text-muted-foreground">
-				Recomendación: cree una clave exclusiva para CotIA con un límite de gasto bajo en su cuenta de
-				OpenRouter. Gasto de esta visita: <strong>{visita.total}</strong> consultas,
+				{#if config.proveedor === 'anthropic'}
+					Clave de Anthropic: solo se ofrecen los modelos Claude y N3 lee con Claude Haiku 5.5 por la
+					API directa. Anthropic no devuelve el costo de cada llamada: CotIA lo estima con tokens × la
+					tabla de precios, sin descuentos de caché; el exacto queda en su consola.
+				{:else if config.clave && !config.proveedor}
+					<span class="text-destructive">
+						Clave no reconocida: debe empezar por sk-or- (OpenRouter) o sk-ant- (Anthropic).
+					</span>
+				{/if}
+				Recomendación: cree una clave exclusiva para CotIA con un límite de gasto bajo en su cuenta.
+				Gasto de esta visita: <strong>{visita.total}</strong> consultas,
 				<strong>{usd(visita.gasto)}</strong>.
 			</p>
 		</Card.Content>
@@ -106,7 +116,7 @@
 				<p class="text-sm text-muted-foreground">Cargando…</p>
 			{:then c}
 				<div class="grid gap-3 sm:grid-cols-3">
-					{#each c.modelos as m (m.nombre)}
+					{#each c.modelos.filter((m) => config.proveedor !== 'anthropic' || m.anthropic) as m (m.nombre)}
 						<button
 							type="button"
 							onclick={() => (config.modelo = m.nombre)}
@@ -236,7 +246,8 @@
 			<Card.Title>Verificación por segunda ruta (N3)</Card.Title>
 			<Card.Description>
 				Relee el fragmento de cada oferta candidata por otra ruta: el programa cuando la fuente trae
-				datos estructurados (MCP, schema.org) o Claude Haiku 5.5 por OpenRouter, con su clave. Cada
+				datos estructurados (MCP, schema.org) o Claude Haiku 5.5 con su clave (por OpenRouter o por la
+				API de Anthropic, según cuál haya configurado). Cada
 				oferta muestra si quedó verificada, con discrepancia o sin contraparte.
 			</Card.Description>
 		</Card.Header>

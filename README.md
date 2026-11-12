@@ -41,8 +41,10 @@ planos), y una suite de 20 cargas de inyección indirecta evalúa cuatro configu
   sello de verificación N3, alertas y costo.
 - **Modo Laboratorio** (`/lab`): las 20 cargas de ataque con C0 frente a C3 sobre el mismo modelo, visor del corpus
   original y atacado, resultados de E1–E3 con intervalos de confianza, historial y configuración completa.
-- **Clave propia del visitante (D82):** CotIA no trae créditos. Cada consulta se paga con la clave de OpenRouter
-  del visitante, que vive en su navegador, viaja por HTTPS solo al crear la consulta y no se guarda ni se registra.
+- **Clave propia del visitante (D82, D114):** CotIA no trae créditos. Cada consulta se paga con la clave de
+  OpenRouter o de Anthropic del visitante (el proveedor se reconoce por el prefijo `sk-or-` o `sk-ant-`), que vive en
+  su navegador, viaja por HTTPS solo al crear la consulta y no se guarda ni se registra. Con la de Anthropic solo se
+  ofrecen los modelos Claude y el costo se muestra como estimado (tokens × tabla de precios).
   Los modelos ofrecidos son los que superaron la prueba de humo de la lista curada
   ([`resultados/cotia/modelos.json`](resultados/cotia/modelos.json)).
 
@@ -67,7 +69,8 @@ regenera dentro de la imagen desde lo versionado.
 
 ## Correr CotIA en local
 
-Requisitos: Docker. No hace falta clave para navegar; para consultar, la clave de OpenRouter se pega en Ajustes.
+Requisitos: Docker. No hace falta clave para navegar; para consultar, la clave de OpenRouter o de Anthropic se pega
+en Ajustes.
 
 ```bash
 git clone https://github.com/777wills/comercio-agentico.git && cd comercio-agentico
@@ -93,14 +96,14 @@ Los costos son estimados con DeepSeek V4.1 Flash por OpenRouter. Los objetivos m
 corridas versionadas en `resultados/` sin llamar a ningún modelo. Las corridas con modelo necesitan `.env` y el
 corpus servido (`make corpus-b-servir`, y `make corpus-a-servir` para el corpus A).
 
-| Experimento                       | Corrida (costo)                                            | Análisis (US$0)           | Resultados                                                            |
-| --------------------------------- | ---------------------------------------------------------- | ------------------------- | --------------------------------------------------------------------- |
-| Arnés de prueba                   | `make arnes-simulado` (US$0, agente simulado)              | —                         | —                                                                     |
-| Calibración (corpus B, 60 tareas) | `make calibracion` (~US$1)                                 | `make metricas CORRIDA=…` | [`resultados/informes/`](resultados/informes/)                        |
-| Corpus A (20 tareas reales)       | `make corpus-a-correr` (~US$0,3)                           | `make metricas CORRIDA=…` | [`04_resultados_corpus_a.md`](docs/informe/04_resultados_corpus_a.md) |
-| E1: verificación N3               | `make e1-lecturas` (~US$0,02)                              | `make e1`                 | [`04_resultados_e1.md`](docs/informe/04_resultados_e1.md)             |
-| E2: curva seguridad-utilidad      | `make e2-ataques` (~US$3,7) y `make e2-utilidad` (~US$1,8) | `make e2`                 | [`04_resultados_e2.md`](docs/informe/04_resultados_e2.md)             |
-| E3: comparación de modelos        | `make e3 MODELO=flash` (~US$1,5 por modelo)                | `make e3-frontera`        | [`04_resultados_e3.md`](docs/informe/04_resultados_e3.md)             |
+| Experimento                       | Corrida (costo)                                            | Análisis (US$0)           | Resultados                                                              |
+| --------------------------------- | ---------------------------------------------------------- | ------------------------- | ----------------------------------------------------------------------- |
+| Arnés de prueba                   | `make arnes-simulado` (US$0, agente simulado)              | —                         | —                                                                       |
+| Calibración (corpus B, 60 tareas) | `make calibracion` (~US$1)                                 | `make metricas CORRIDA=…` | [`resultados/informes/`](resultados/informes/)                          |
+| Corpus A (20 tareas reales)       | `make corpus-a-correr` (~US$0,3)                           | `make metricas CORRIDA=…` | [`04_resultados_corpus_a.md`](docs/informe/04_resultados_corpus_a.md)   |
+| E1: verificación N3               | `make e1-lecturas` (~US$0,02)                              | `make e1`                 | [`04_resultados_e1.md`](docs/informe/04_resultados_e1.md)               |
+| E2: curva seguridad-utilidad      | `make e2-ataques` (~US$3,7) y `make e2-utilidad` (~US$1,8) | `make e2`                 | [`04_resultados_e2.md`](docs/informe/04_resultados_e2.md)               |
+| E3: comparación de modelos        | `make e3 MODELO=flash` (~US$1,5 por modelo)                | `make e3-frontera`        | [`04_resultados_e3.md`](docs/informe/04_resultados_e3.md)               |
 | C2 en páginas reales (D115 b)     | `make c2-reales` (US$0, sin LLM; lee tiendas en vivo)      | `make c2-reales-analisis` | [`04_resultados_c2_reales.md`](docs/informe/04_resultados_c2_reales.md) |
 
 `make help` lista todos los objetivos con su costo.

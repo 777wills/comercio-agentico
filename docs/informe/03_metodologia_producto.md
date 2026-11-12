@@ -34,6 +34,15 @@ Claude Haiku 5.5 por OpenRouter con la misma clave (D105). Así conserva el dise
 distinta de la del extractor por defecto. Una prueba automatizada provoca un error del proveedor que repite la clave
 y comprueba que la clave no aparece en la base, en las respuestas, en los eventos ni en los registros.
 
+El visitante puede usar, en lugar de la de OpenRouter, una clave de Anthropic (D114). El proveedor se reconoce por el
+prefijo de la clave (`sk-or-` o `sk-ant-`) y la clave viaja en una sola cabecera; una clave sin prefijo reconocido se
+rechaza antes de iniciar la consulta. Con la clave de Anthropic solo se ofrecen los modelos Claude de la lista curada
+(hoy Claude Haiku 5.5, el mismo modelo que E3 midió por la API directa), y el agente y la segunda lectura de N3 lo
+llaman por esa API. Un modelo de otra plataforma se rechaza en la fábrica de modelos, de modo que ninguna llamada
+puede caer en la clave del proyecto. Como Anthropic no devuelve el costo de cada llamada, CotIA lo calcula con los
+tokens y la tabla de precios y la interfaz lo presenta como estimado; no descuenta caché ni lotes, y el valor exacto
+queda en la consola del visitante. La prueba de que la clave no llega a las trazas se repite con ambos proveedores.
+
 ## Defensas como capas independientes
 
 Las defensas se exponen como tres interruptores independientes (separación de planos, clasificador de inyección y
@@ -105,7 +114,10 @@ color de acento.
   costo total, plazo y disponibilidad), la recomendación o la abstención con su justificación, las alertas, el costo y
   el tiempo. Cada oferta despliega su procedencia: fuente, consulta que la produjo, ruta de extracción y modelo, fecha,
   SHA-256 y el fragmento original. Con la verificación activa, cada oferta muestra su estado N3 y la política
-  (abstenerse o excluir) se elige en la configuración (D110).
+  (abstenerse o excluir) se elige en la configuración (D110). Debajo, la tabla de **ofertas finales** muestra todas las
+  ofertas que llegaron a la comparación con el producto del catálogo o el grupo que se les asignó y, para las que no
+  entraron a la propuesta, el motivo del descarte (por ejemplo, «no es celular» o «almacenamiento distinto» en la
+  comparación abierta). Así la abstención o la elección del agente se pueden auditar oferta por oferta.
 - **Laboratorio de ataques.** El visitante elige una de las 20 cargas, ve su clase, ubicación, objetivo y texto, y
   ejecuta la misma tarea en C0 y en C3 con su modelo. Cada lado muestra su progreso y su propuesta, junto con el
   veredicto del predicado de éxito del ataque. Las cifras de M5 de E2 acompañan la comparación como referencia.
@@ -116,7 +128,8 @@ color de acento.
   política de seguridad de contenido con `sandbox` y se muestran en un marco aislado, sin scripts ni recursos externos.
 - **Resultados** presenta E1, E2 y E3 con sus intervalos de Wilson y figuras, leídos de la evidencia versionada.
   **Historial** lista las consultas de la visita con su costo.
-- **Configuración** reúne lo que controla el visitante: la clave de OpenRouter, guardada solo en el navegador (en la
+- **Configuración** reúne lo que controla el visitante: la clave de OpenRouter o de Anthropic, guardada solo en el
+  navegador (en la
   sesión de la pestaña, salvo que pida recordarla); el modelo de la lista curada, con su costo medido y su evidencia de
   desempeño; las capas de defensa con los presets C0–C3, el umbral del clasificador con aviso de modo exploratorio y la
   elección entre los dos clasificadores validados (D86); la verificación N3, y el gasto acumulado de la visita (D90).

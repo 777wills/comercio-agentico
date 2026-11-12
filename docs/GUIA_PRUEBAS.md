@@ -749,7 +749,7 @@ En otra terminal, con la API corriendo (la clave se lee sin mostrarse):
 ```bash
 read -s CLAVE; V=$(uuidgen)
 ID=$(curl -s -X POST http://127.0.0.1:8000/api/consultas \
-  -H "Content-Type: application/json" -H "X-OpenRouter-Key: $CLAVE" -H "X-Visitante: $V" \
+  -H "Content-Type: application/json" -H "X-Clave-Modelo: $CLAVE" -H "X-Visitante: $V" \
   -d '{"consulta": "Necesito comprar Monitor Samsung Smart Monitor M8 M80D 32\" 4K QLED 64GB. ¿Dónde me sale más barato contando el envío?", "modelo": "deepseek-flash"}' \
   | python3 -c 'import json,sys; print(json.load(sys.stdin)["id"])')
 curl -N http://127.0.0.1:8000/api/consultas/$ID/eventos
@@ -1012,12 +1012,12 @@ minutos), haga una consulta de calentamiento con Flash y, tras la demo, vuelva a
 
 ### Qué se construyó y por qué
 
-| Componente                                | Qué hace                                                                                                                                                                        | Concepto / decisión                                                       |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `ataques/c2_reales.py`, `make c2-reales`  | Lee en vivo una muestra fija de páginas reales de las cinco tiendas y puntúa sus ventanas con los dos clasificadores de C2, en crudo y saneadas. Guarda puntajes y SHA-256, no el texto. | Validez externa del clasificador; falsos positivos bajo cambio de distribución (D115 b). |
-| `web_abierta.sanear`                      | Antes del recorte, en las fuentes abiertas: imágenes → texto alternativo; fuera `data:` URI, parámetros de URL y cadenas base64 largas.                                          | Corrige la causa medida de los falsos positivos (D120).                   |
-| `Lector(crudo=True)`                      | Solo para la medición: devuelve el texto sin sanear ni recortar, para puntuar las dos versiones de la misma lectura.                                                           | Diseño pareado.                                                           |
-| `make c2-reales-analisis`                 | Tablas, curva frente al umbral y comprobación con las 20 cargas y los 47 fragmentos limpios, con lo ya leído.                                                                  | El saneamiento no le quita a C2 la detección.                             |
+| Componente                               | Qué hace                                                                                                                                                                                 | Concepto / decisión                                                                      |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `ataques/c2_reales.py`, `make c2-reales` | Lee en vivo una muestra fija de páginas reales de las cinco tiendas y puntúa sus ventanas con los dos clasificadores de C2, en crudo y saneadas. Guarda puntajes y SHA-256, no el texto. | Validez externa del clasificador; falsos positivos bajo cambio de distribución (D115 b). |
+| `web_abierta.sanear`                     | Antes del recorte, en las fuentes abiertas: imágenes → texto alternativo; fuera `data:` URI, parámetros de URL y cadenas base64 largas.                                                  | Corrige la causa medida de los falsos positivos (D120).                                  |
+| `Lector(crudo=True)`                     | Solo para la medición: devuelve el texto sin sanear ni recortar, para puntuar las dos versiones de la misma lectura.                                                                     | Diseño pareado.                                                                          |
+| `make c2-reales-analisis`                | Tablas, curva frente al umbral y comprobación con las 20 cargas y los 47 fragmentos limpios, con lo ya leído.                                                                            | El saneamiento no le quita a C2 la detección.                                            |
 
 ### Cómo probarlo
 
@@ -1064,3 +1064,49 @@ de pausa por sitio; cada página se puntúa cuatro veces en CPU (~50 s). Las cif
 tiendas, así que no se reproducen exactas. Las ventanas marcadas quedan en `/tmp/c2_reales_marcadas.jsonl` para
 revisarlas a mano (no se versionan). Si lo lanza desde la terminal del editor, use `systemd-run` y `systemd-inhibit`
 (ver `privado/contexto_claude/MEMORIA_CLAUDE_CODE.md`, sección 6).
+
+## S09e — Ofertas finales en el Laboratorio y clave de Anthropic (11-nov, D114)
+
+### Qué se construyó y por qué
+
+| Componente | Qué hace | Concepto / decisión |
+| --- | --- | --- |
+| `OfertasFinales.svelte` en `/lab/consultas/[id]` | Tabla con todas las ofertas que llegaron a la comparación: producto del catálogo o grupo, si entró a la propuesta y, si no, el motivo del descarte; estado N3. | Auditabilidad de la decisión del agente, oferta por oferta. |
+| `api/catalogo.proveedor_de_clave` | Reconoce el proveedor por el prefijo (`sk-or-` o `sk-ant-`); otra clave se rechaza con 422. | Una sola clave a la vez (D114). |
+| Cabecera `X-Clave-Modelo` | Sustituye a `X-OpenRouter-Key`; lleva la clave de cualquiera de los dos proveedores. | Llave propia del visitante (D82). |
+| `obtener_modelo(clave_anthropic=…)` | Claude por la API directa con la clave del visitante; un modelo de otra plataforma se rechaza para no gastar la clave del proyecto. | Aislamiento de credenciales. |
+| `ejecucion.py` | Con `sk-ant-`: agente con `haiku` y N3 con `haiku`, ambos directos; `costo_estimado` en el evento final y en el detalle. | Costo por tabla de precios (`costo_fuente = "tabla"`). |
+| Ajustes y Configuración | Aceptan las dos claves, dicen cuál reconocieron, filtran los modelos y cambian a Claude si hace falta; el costo aparece como «≈ … (estimado)». | Transparencia del gasto. |
+
+### Cómo probarlo
+
+**1. Pruebas — US$0, sin red**
+
+```bash
+uv run pytest tests/test_api.py tests/test_modelos.py -q   # 4 pruebas nuevas: prefijo, Claude directo, clave oculta, trazas
+make check
+```
+
+**2. Ofertas finales con una consulta ya guardada — US$0**
+
+```bash
+make bd && make api        # o: systemctl --user start cotia-api
+```
+
+Abra `http://localhost:8000/lab/historial`, entre a una consulta terminada (por ejemplo, la del Galaxy A57 en vivo) y
+baje hasta **Ofertas finales**. Arriba van las que están «En la propuesta»; el resto, atenuadas, con «Fuera: …» y el
+motivo (en vivo: «No es celular», «Modelo distinto», «Almacenamiento distinto»). En el corpus congelado la columna
+dice «Catálogo» y el motivo es «sin producto del catálogo» o «no cumple la necesidad…». Las consultas más antiguas
+pueden no traer esta tabla.
+
+**3. Reconocimiento de la clave en la interfaz — US$0, sin consulta**
+
+En `/lab/configuracion`, escriba `sk-ant-prueba` (inventada): el texto cambia a «Clave de Anthropic…», la lista de
+modelos queda solo con Claude Haiku 5.5 y el modelo elegido cambia a ese. Con `gsk-prueba` aparece «Clave no
+reconocida». Pulse «Olvidar» al terminar.
+
+**4. Una consulta real con su clave de Anthropic — ~US$0,02–0,03 de su crédito de Anthropic (opcional)**
+
+En el modo Cliente, Ajustes → pegue su clave `sk-ant-…` → consulte un ejemplo del catálogo «Proveedores de prueba».
+Debe terminar con el costo «cerca de US$…» y la nota de estimación; compárelo con la consola de Anthropic (el exacto
+puede diferir unos centavos de centavo por caché). No usar Sonnet ni Opus (D76): no están en la lista.

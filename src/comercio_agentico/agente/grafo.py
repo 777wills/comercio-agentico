@@ -193,6 +193,7 @@ class Contexto:
     politica_n3: PoliticaN3 = "abstener"
     modelo_verificador: str = MODELO_VERIFICADOR
     clave_openrouter: str | None = field(default=None, repr=False)  # CotIA: la del visitante
+    clave_anthropic: str | None = field(default=None, repr=False)  # CotIA: D114
     max_llamadas: int = MAX_LLAMADAS
     abierta: bool = False  # D113: fuentes en vivo o del visitante, comparación sin catálogo
     concurrencia_llm: int = 3
@@ -221,6 +222,8 @@ class Contexto:
             sin_reintentos: dict[str, Any] = {"max_retries": 0}
             if self.clave_openrouter is not None:
                 sin_reintentos["clave_openrouter"] = self.clave_openrouter
+            if self.clave_anthropic is not None:
+                sin_reintentos["clave_anthropic"] = self.clave_anthropic
             match rol:
                 case "planificador":
                     # En vivo solo se ofrecen las herramientas que tienen fuentes (sin MCP, p. ej.);
@@ -714,6 +717,7 @@ async def preguntar(
     politica_n3: PoliticaN3 = "abstener",
     modelo_verificador: str = MODELO_VERIFICADOR,
     clave_openrouter: str | None = None,
+    clave_anthropic: str | None = None,
     al_avanzar: AlAvanzar | None = None,
     max_llamadas: int = MAX_LLAMADAS,
     tope_usd: float | None = None,
@@ -760,6 +764,7 @@ async def preguntar(
             politica_n3=politica_n3,
             modelo_verificador=modelo_verificador,
             clave_openrouter=clave_openrouter,
+            clave_anthropic=clave_anthropic,
             max_llamadas=max_llamadas,
             abierta=abierta,
             _semaforo=semaforo_llm,

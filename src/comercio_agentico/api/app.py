@@ -3,9 +3,10 @@
     docker compose up -d bd                                                   # PostgreSQL local
     uv run uvicorn comercio_agentico.api.app:crear_app --factory --port 8000  # o `make api`
 
-La clave de OpenRouter llega en la cabecera ``X-OpenRouter-Key`` de ``POST /api/consultas`` y solo
-vive en la memoria de la consulta (D82). ``X-Visitante`` es un UUID que genera el navegador para
-agrupar el historial y el gasto de la visita (D90).
+La clave del visitante (OpenRouter o Anthropic, D114) llega en la cabecera ``X-Clave-Modelo`` de
+``POST /api/consultas`` y solo vive en la memoria de la consulta (D82); el proveedor se reconoce por
+el prefijo. ``X-Visitante`` es un UUID que genera el navegador para agrupar el historial y el gasto
+de la visita (D90).
 """
 
 from __future__ import annotations
@@ -31,7 +32,12 @@ from sqlalchemy import func, select, text
 from comercio_agentico.agente.defensa import CLASIFICADORES, MODELO_CLASIFICADOR_DEFECTO
 from comercio_agentico.api import corpus as visor
 from comercio_agentico.api.bd import ConsultaBD, crear_motor, fabrica_sesiones
-from comercio_agentico.api.catalogo import RUTA_LISTA, cargar_lista
+from comercio_agentico.api.catalogo import (
+    ANTHROPIC_DIRECTO,
+    RUTA_LISTA,
+    cargar_lista,
+    proveedor_de_clave,
+)
 from comercio_agentico.api.ejecucion import Saturado, Servicio
 from comercio_agentico.api.esquemas import (
     CambioFuente,
@@ -62,9 +68,7 @@ SERVIDORES_CORPUS = {  # módulo → puertos que abre (los del registro de fuent
     "comercio_agentico.corpus_a.servir": (8802,),
 }
 
-ClaveOpenRouter = Annotated[
-    str | None, Header(alias="X-OpenRouter-Key", min_length=10, max_length=200)
-]
+ClaveModelo = Annotated[str | None, Header(alias="X-Clave-Modelo", min_length=10, max_length=200)]
 Visitante = Annotated[str, Header(alias="X-Visitante", pattern=PATRON_UUID)]
 
 
@@ -194,12 +198,22 @@ def crear_app(
 
     @app.post("/api/consultas", status_code=status.HTTP_202_ACCEPTED)
     async def crear_consulta(
-        peticion: PeticionConsulta, visitante: Visitante, clave: ClaveOpenRouter = None
+        peticion: PeticionConsulta, visitante: Visitante, clave: ClaveModelo = None
     ) -> ConsultaCreada:
         if not clave:
-            raise HTTPException(401, "Configure su clave de OpenRouter para ejecutar consultas.")
+            raise HTTPException(401, "Configure su clave de OpenRouter o de Anthropic.")
+        proveedor = proveedor_de_clave(clave)
+        if proveedor is None:
+            raise HTTPException(
+                422,
+                "Clave no reconocida: debe empezar por sk-or- (OpenRouter) o sk-ant- (Anthropic).",
+            )
         if peticion.modelo not in {m["nombre"] for m in aprobados()}:
             raise HTTPException(422, "El modelo no está en la lista curada (GET /api/modelos).")
+        if proveedor == "anthropic" and peticion.modelo not in ANTHROPIC_DIRECTO:
+            raise HTTPException(
+                422, "Con una clave de Anthropic solo se ofrecen los modelos Claude."
+            )
         carga = None
         if peticion.carga:
             if peticion.corpus != "b":
@@ -330,7 +344,7 @@ def crear_app(
 
     @app.get("/api/modelos")
     def modelos() -> dict[str, Any]:
-        lista = aprobados()
+        lista = [m | {"anthropic": m["nombre"] in ANTHROPIC_DIRECTO} for m in aprobados()]
         nombres = [m["nombre"] for m in lista]
         return {
             "modelos": lista,

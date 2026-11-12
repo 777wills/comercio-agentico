@@ -1,17 +1,20 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
-	import { obtener, type Resumen } from '#lib/api.js';
+	import { obtener, type Detalle, type Resumen } from '#lib/api.js';
 	import { nombresFuentes } from '#lib/datos.js';
 	import Ejecucion from '#lib/components/Ejecucion.svelte';
+	import OfertasFinales from '#lib/components/OfertasFinales.svelte';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 
 	let nombres = $state<Record<string, string>>({});
 	let resumen = $state<Resumen | null>(null);
+	let terminada = $state<Detalle | null>(null);
 	onMount(async () => {
 		nombres = await nombresFuentes();
 	});
 	$effect(() => {
+		terminada = null;
 		obtener<Resumen>(`/api/consultas/${page.params.id}`).then((r) => (resumen = r));
 	});
 </script>
@@ -32,5 +35,14 @@
 </div>
 
 {#key page.params.id}
-	<Ejecucion id={page.params.id!} {nombres} />
+	<Ejecucion id={page.params.id!} {nombres} alTerminar={(d) => (terminada = d)} />
+	{#if terminada?.detalle?.ofertas_finales?.length}
+		<div class="mt-4">
+			<OfertasFinales
+				ofertas={terminada.detalle.ofertas_finales}
+				propuesta={terminada.propuesta}
+				{nombres}
+			/>
+		</div>
+	{/if}
 {/key}

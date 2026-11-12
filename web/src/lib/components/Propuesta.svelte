@@ -13,9 +13,14 @@
 	let {
 		propuesta,
 		nombres = {},
-		segundos = null
-	}: { propuesta: Propuesta; nombres?: Record<string, string>; segundos?: number | null } =
-		$props();
+		segundos = null,
+		estimado = false
+	}: {
+		propuesta: Propuesta;
+		nombres?: Record<string, string>;
+		segundos?: number | null;
+		estimado?: boolean;
+	} = $props();
 
 	let abierta = $state<number | null>(null);
 
@@ -56,7 +61,7 @@
 		<Card.Title class="text-base">Propuesta de compra</Card.Title>
 		<Card.Description>
 			{propuesta.ofertas.length} ofertas comparables · perfil «{propuesta.perfil}» · modelo {propuesta.modelo}
-			· {usd(propuesta.costo_usd)}{segundos != null ? ` · ${Math.round(segundos)} s` : ''}
+			· {estimado ? '≈ ' : ''}{usd(propuesta.costo_usd)}{estimado ? ' (estimado)' : ''}{segundos != null ? ` · ${Math.round(segundos)} s` : ''}
 		</Card.Description>
 	</Card.Header>
 	<Card.Content class="space-y-4">

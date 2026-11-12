@@ -98,7 +98,7 @@
 
 	{#if !config.clave}
 		<p class="mt-3 px-2 text-xs text-muted-foreground">
-			Para cotizar necesita una clave de OpenRouter.
+			Para cotizar necesita una clave de OpenRouter o de Anthropic.
 			<button class="text-foreground underline-offset-4 hover:underline" onclick={() => (ajustes.abierto = true)}
 				>Agregarla</button
 			>

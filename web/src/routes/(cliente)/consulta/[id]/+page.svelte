@@ -60,9 +60,9 @@
 	const terminada = $derived(ultima?.etapa === 'fin');
 
 	function explicarError(m: string): string {
-		if (/Unauthorized|401/.test(m)) return 'OpenRouter rechazó la clave. Revísela en Ajustes.';
-		if (/PaymentRequired|402|credits/i.test(m)) return 'Su cuenta de OpenRouter no tiene saldo suficiente.';
-		if (/TooManyRequests|429/.test(m)) return 'El proveedor del modelo está saturado; intente en unos minutos.';
+		if (/Unauthorized|401/.test(m)) return 'El proveedor del modelo rechazó la clave. Revísela en Ajustes.';
+		if (/PaymentRequired|402|credit/i.test(m)) return 'Su cuenta del proveedor del modelo no tiene saldo suficiente.';
+		if (/TooManyRequests|429|overloaded|529/i.test(m)) return 'El proveedor del modelo está saturado; intente en unos minutos.';
 		return 'La consulta no pudo completarse.';
 	}
 
@@ -133,7 +133,12 @@
 		<a href="/" class="mt-4 inline-block text-sm text-muted-foreground hover:text-foreground">Intentar de nuevo</a>
 	{:else if detalle?.propuesta}
 		<div class="mt-12">
-			<ResultadoCliente propuesta={detalle.propuesta} {nombres} segundos={detalle.segundos} />
+			<ResultadoCliente
+				propuesta={detalle.propuesta}
+				{nombres}
+				segundos={detalle.segundos}
+				estimado={!!detalle.detalle?.costo_estimado}
+			/>
 		</div>
 	{:else}
 		<LoaderCircle class="mt-12 size-4 animate-spin text-muted-foreground" />

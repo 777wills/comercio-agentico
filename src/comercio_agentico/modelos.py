@@ -123,13 +123,16 @@ def obtener_modelo(
     temperatura: float | None = 0.0,
     razonamiento: str | None = ESFUERZO_RAZONAMIENTO,
     clave_openrouter: str | None = None,
+    clave_anthropic: str | None = None,
     **kwargs: Any,
 ) -> BaseChatModel:
     """Devuelve el modelo de chat de LangChain para el nombre corto dado (p. ej. ``"haiku"``).
 
     La temperatura y el esfuerzo de razonamiento solo se aplican a los modelos de OpenRouter; a
     Claude 5.5 no se le activa el pensamiento extendido (D60). ``razonamiento=None`` deja el valor
-    por defecto del modelo. ``clave_openrouter`` (CotIA, D82) reemplaza la del ``.env``.
+    por defecto del modelo. ``clave_openrouter`` o ``clave_anthropic`` (CotIA, D82 y D114)
+    reemplazan la del ``.env``; un modelo de otra plataforma se rechaza para no gastar la del
+    proyecto.
     """
     load_dotenv()
     cfg = ficha(nombre)
@@ -137,6 +140,10 @@ def obtener_modelo(
         if cfg.plataforma != "openrouter":
             raise ValueError(f"{nombre} no se sirve por OpenRouter")
         kwargs["api_key"] = clave_openrouter
+    if clave_anthropic is not None:
+        if cfg.plataforma != "anthropic":
+            raise ValueError(f"{nombre} no se sirve por la API de Anthropic")
+        kwargs["api_key"] = clave_anthropic
 
     if cfg.plataforma == "anthropic":
         # Claude 5.5 rechaza `temperature`; la variabilidad se mide con corridas repetidas (D42).

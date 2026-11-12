@@ -27,7 +27,7 @@
 
 	async function enviar() {
 		if (!config.clave) {
-			toast.error('Configure su clave de OpenRouter para ejecutar consultas.');
+			toast.error('Configure su clave de OpenRouter o de Anthropic para ejecutar consultas.');
 			return;
 		}
 		enviando = true;
@@ -132,7 +132,7 @@
 			{#if !config.clave}
 				<p class="text-xs text-amber-400">
 					Puede navegar todo CotIA sin clave; para ejecutar una consulta, configure su clave de
-					OpenRouter en <a class="underline" href="/lab/configuracion">Configuración</a>. La clave no se
+					OpenRouter o de Anthropic en <a class="underline" href="/lab/configuracion">Configuración</a>. La clave no se
 					guarda en el servidor.
 				</p>
 			{/if}

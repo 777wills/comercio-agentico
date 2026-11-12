@@ -62,9 +62,9 @@
 	};
 
 	function explicarError(m: string): string {
-		if (/Unauthorized|401/.test(m)) return 'OpenRouter rechazó la clave. Revísela en Configuración.';
-		if (/PaymentRequired|402|credits/i.test(m)) return 'La cuenta de OpenRouter no tiene saldo suficiente.';
-		if (/TooManyRequests|429/.test(m)) return 'El proveedor del modelo limitó la tasa; intente en unos minutos.';
+		if (/Unauthorized|401/.test(m)) return 'El proveedor del modelo rechazó la clave. Revísela en Configuración.';
+		if (/PaymentRequired|402|credit/i.test(m)) return 'La cuenta del proveedor del modelo no tiene saldo suficiente.';
+		if (/TooManyRequests|429|overloaded|529/i.test(m)) return 'El proveedor del modelo limitó la tasa; intente en unos minutos.';
 		return m;
 	}
 
@@ -113,7 +113,7 @@
 			case 'fin':
 				return e.estado === 'error'
 					? explicarError(e.error)
-					: `${usd(e.costo_usd)} · ${e.segundos} s`;
+					: `${e.costo_estimado ? '≈ ' : ''}${usd(e.costo_usd)}${e.costo_estimado ? ' (estimado)' : ''} · ${e.segundos} s`;
 		}
 		return '';
 	}
@@ -169,7 +169,12 @@
 
 	<div class="min-w-0">
 		{#if detalle?.propuesta}
-			<Propuesta propuesta={detalle.propuesta} {nombres} segundos={detalle.segundos} />
+			<Propuesta
+				propuesta={detalle.propuesta}
+				{nombres}
+				segundos={detalle.segundos}
+				estimado={!!detalle.detalle?.costo_estimado}
+			/>
 		{:else if detalle?.error}
 			<Card.Root><Card.Content class="space-y-1 text-sm">
 				<p class="text-destructive">{explicarError(detalle.error)}</p>

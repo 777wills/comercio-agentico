@@ -28,6 +28,10 @@ TOPE_HUMO_USD = 0.45
 LIMITE_S = 600  # más de 10 minutos no es usable en la demostración
 RUTA_E3 = RAIZ / "resultados" / "informes" / "e3" / "e3.json"
 NOMBRE_E3 = {"haiku-or": "haiku"}  # mismo modelo; en E3 se llamó por Anthropic directo
+# D114: con la clave de Anthropic del visitante, el modelo de la lista se llama por la API directa.
+# Sonnet no entra a la lista curada (D76).
+ANTHROPIC_DIRECTO = {"haiku-or": "haiku"}
+PREFIJOS_CLAVE = {"sk-or-": "openrouter", "sk-ant-": "anthropic"}
 TRANSITORIOS = ("TooManyRequests",)  # errores del proveedor que se reintentan al reanudar
 # Gratuitos primero y el resto por costo esperado, para que el tope recaiga en el más caro.
 CANDIDATOS = [
@@ -52,6 +56,11 @@ ETIQUETAS = {
     "lfm3-free": "LiquidAI LFM3 1.7B (gratis)",
     "lfm25-free": "LiquidAI LFM2.5 2.6B (gratis)",
 }
+
+
+def proveedor_de_clave(clave: str) -> str | None:
+    """``openrouter`` o ``anthropic`` por el prefijo de la clave (D114); ``None`` si no aplica."""
+    return next((p for pre, p in PREFIJOS_CLAVE.items() if clave.startswith(pre)), None)
 
 
 def cargar_lista(ruta: Path = RUTA_LISTA) -> list[dict[str, Any]]:

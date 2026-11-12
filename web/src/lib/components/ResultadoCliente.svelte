@@ -7,9 +7,14 @@
 	let {
 		propuesta,
 		nombres = {},
-		segundos = null
-	}: { propuesta: Propuesta; nombres?: Record<string, string>; segundos?: number | null } =
-		$props();
+		segundos = null,
+		estimado = false
+	}: {
+		propuesta: Propuesta;
+		nombres?: Record<string, string>;
+		segundos?: number | null;
+		estimado?: boolean;
+	} = $props();
 
 	let abierta = $state<number | null>(null);
 
@@ -140,5 +145,6 @@
 {/if}
 
 <p class="mt-10 text-xs text-muted-foreground">
-	Esta consulta costó {usd(propuesta.costo_usd)}{segundos != null ? ` y tardó ${Math.round(segundos)} s` : ''}.
+	Esta consulta costó {estimado ? 'cerca de ' : ''}{usd(propuesta.costo_usd)}{segundos != null ? ` y tardó ${Math.round(segundos)} s` : ''}.
+	{#if estimado}Es una estimación por tokens; el valor exacto está en su consola de Anthropic.{/if}
 </p>

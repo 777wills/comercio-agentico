@@ -19,8 +19,9 @@ from comercio_agentico.api.ejecucion import Progreso, Servicio, ocultar
 from comercio_agentico.esquema import Alerta, PropuestaCompra
 
 CLAVE = "sk-or-v1-clave-secreta-de-prueba-0123456789"
+CLAVE_ANT = "sk-ant-api03-clave-secreta-de-prueba-0123456789"
 VISITANTE = str(uuid.uuid4())
-CABECERAS = {"X-OpenRouter-Key": CLAVE, "X-Visitante": VISITANTE}
+CABECERAS = {"X-Clave-Modelo": CLAVE, "X-Visitante": VISITANTE}
 
 
 class AgenteSimulado:
@@ -68,6 +69,7 @@ def lista_modelos(tmp_path):
             {
                 "modelos": [
                     {"nombre": "deepseek-flash", "aprobado": True, "costo_usd": 0.015},
+                    {"nombre": "haiku-or", "aprobado": True, "costo_usd": 0.03},
                     {"nombre": "lfm3-free", "aprobado": False, "motivo": "respuesta incorrecta"},
                 ]
             }
@@ -125,8 +127,54 @@ def test_consulta_de_punta_a_punta_con_progreso_sse(lista_modelos):
         assert [e["etapa"] for e in eventos_sse(c, id_consulta)] == etapas
     kw = agente.llamadas[0]
     assert kw["clave_openrouter"] == CLAVE and kw["modelo_verificador"] == "haiku-or"  # D105
+    assert kw["modelo"] == "deepseek-flash" and "clave_anthropic" not in kw
     assert kw["defensas"].configuracion == "C2" and kw["clasificador"].startswith("clasificador-")
     assert kw["registro"] == "registro-b"
+    assert detalle["opciones"]["proveedor"] == "openrouter"
+    assert "costo_estimado" not in detalle["detalle"]
+
+
+def test_clave_de_anthropic_llama_a_claude_directo(lista_modelos):
+    """D114: el prefijo decide el proveedor; modelo y N3 por la API directa; costo estimado."""
+    agente = AgenteSimulado()
+    c, _ = cliente(lista_modelos, agente)
+    cabeceras = {"X-Clave-Modelo": CLAVE_ANT, "X-Visitante": VISITANTE}
+    with c:
+        cuerpo = {"consulta": "Monitor Samsung M8", "verificar": True}
+        flash = c.post("/api/consultas", json=cuerpo, headers=cabeceras)
+        assert flash.status_code == 422 and "Claude" in flash.json()["detail"]
+        r = c.post("/api/consultas", json=cuerpo | {"modelo": "haiku-or"}, headers=cabeceras)
+        assert r.status_code == 202
+        fin = eventos_sse(c, r.json()["id"])[-1]
+        detalle = c.get(f"/api/consultas/{r.json()['id']}").json()
+        modelos = {m["nombre"]: m["anthropic"] for m in c.get("/api/modelos").json()["modelos"]}
+    kw = agente.llamadas[0]
+    assert kw["clave_anthropic"] == CLAVE_ANT and "clave_openrouter" not in kw
+    assert kw["modelo"] == "haiku" and kw["modelo_verificador"] == "haiku"
+    assert fin["costo_estimado"] is True and detalle["detalle"]["costo_estimado"] is True
+    assert detalle["opciones"]["proveedor"] == "anthropic"
+    assert modelos == {"deepseek-flash": False, "haiku-or": True}
+
+
+def test_clave_de_anthropic_no_se_guarda_ni_se_registra(lista_modelos, caplog):
+    caplog.set_level(logging.DEBUG)
+    c, servicio = cliente(lista_modelos, AgenteSimulado(error=f"401 clave inválida {CLAVE_ANT}"))
+    cabeceras = {"X-Clave-Modelo": CLAVE_ANT, "X-Visitante": VISITANTE}
+    with c:
+        cuerpo = {"consulta": "Monitor Samsung M8", "modelo": "haiku-or"}
+        id_consulta = c.post("/api/consultas", json=cuerpo, headers=cabeceras).json()["id"]
+        eventos = eventos_sse(c, id_consulta)
+        respuesta = c.get(f"/api/consultas/{id_consulta}").text
+        with servicio.sesiones() as s:
+            volcado = json.dumps(
+                [
+                    {k: str(v) for k, v in vars(f).items() if not k.startswith("_")}
+                    for f in s.scalars(select(ConsultaBD)).all()
+                ]
+            )
+    assert "[clave oculta]" in eventos[-1]["error"]
+    for texto in [volcado, respuesta, json.dumps(eventos), caplog.text]:
+        assert CLAVE_ANT not in texto
 
 
 def test_la_clave_no_se_guarda_ni_se_registra(lista_modelos, caplog):
@@ -158,9 +206,15 @@ def test_validaciones_de_la_peticion(lista_modelos):
         sin_clave = c.post("/api/consultas", json=cuerpo, headers={"X-Visitante": VISITANTE})
         assert sin_clave.status_code == 401
         assert (
-            c.post("/api/consultas", json=cuerpo, headers={"X-OpenRouter-Key": CLAVE}).status_code
+            c.post("/api/consultas", json=cuerpo, headers={"X-Clave-Modelo": CLAVE}).status_code
             == 422
         )
+        desconocida = c.post(
+            "/api/consultas",
+            json=cuerpo,
+            headers={"X-Clave-Modelo": "gsk-0123456789abcdef", "X-Visitante": VISITANTE},
+        )
+        assert desconocida.status_code == 422 and "sk-ant-" in desconocida.json()["detail"]
         no_curado = c.post(
             "/api/consultas", json=cuerpo | {"modelo": "lfm3-free"}, headers=CABECERAS
         )
@@ -237,7 +291,7 @@ def test_catalogos_resultados_y_salud(lista_modelos):
     c, _ = cliente(lista_modelos, AgenteSimulado())
     with c:
         m = c.get("/api/modelos").json()
-        assert [x["nombre"] for x in m["modelos"]] == ["deepseek-flash"]
+        assert [x["nombre"] for x in m["modelos"]] == ["deepseek-flash", "haiku-or"]
         assert m["por_defecto"] == "deepseek-flash" and m["defensas_por_defecto"] == "C2"
         ej = c.get("/api/ejemplos").json()
         assert len(ej["laboratorio"]) == 20 and ej["b"] and ej["a"]
@@ -248,7 +302,7 @@ def test_catalogos_resultados_y_salud(lista_modelos):
         assert c.get("/api/resultados/figuras/e2/..%2F..%2Fe2.json").status_code == 404
         assert c.get("/api/resultados/figuras/x/a.png").status_code == 404
         salud = c.get("/api/salud").json()
-        assert salud["bd"] is True and salud["modelos"] == 1
+        assert salud["bd"] is True and salud["modelos"] == 2
 
 
 def test_visor_del_corpus_con_lista_blanca(lista_modelos):

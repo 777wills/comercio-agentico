@@ -54,16 +54,36 @@ def test_clave_del_visitante_por_consulta(monkeypatch):
         obtener_modelo("gpt")
 
 
-def test_la_clave_del_visitante_no_llega_a_las_trazas(monkeypatch):
+def test_clave_de_anthropic_del_visitante(monkeypatch):
+    """D114: Claude por la API directa con la clave del visitante; nada de OpenRouter."""
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.setattr("comercio_agentico.modelos.load_dotenv", lambda: None)
+    modelo = obtener_modelo("haiku", clave_anthropic="sk-ant-visitante")
+    assert modelo.anthropic_api_key.get_secret_value() == "sk-ant-visitante"
+    assert "sk-ant-visitante" not in repr(modelo)
+    with pytest.raises(ValueError):
+        obtener_modelo("haiku-or", clave_anthropic="sk-ant-visitante")
+    with pytest.raises(ValueError):
+        obtener_modelo("deepseek-flash", clave_anthropic="sk-ant-visitante")
+
+
+@pytest.mark.parametrize(
+    ("nombre", "argumento", "clave"),
+    [
+        ("deepseek-flash", "clave_openrouter", "sk-or-v1-visitante-secreta-0123456789"),
+        ("haiku", "clave_anthropic", "sk-ant-api03-visitante-secreta-0123456789"),
+    ],
+)
+def test_la_clave_del_visitante_no_llega_a_las_trazas(monkeypatch, nombre, argumento, clave):
     """Lo que vería LangSmith (D117): serialización, parámetros y metadatos de la llamada."""
     from langchain_core.messages import HumanMessage
     from langchain_core.outputs import ChatResult
     from langchain_core.tracers.context import collect_runs
 
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     monkeypatch.setattr("comercio_agentico.modelos.load_dotenv", lambda: None)
-    clave = "sk-or-v1-visitante-secreta-0123456789"
-    modelo = obtener_modelo("deepseek-flash", clave_openrouter=clave)
+    modelo = obtener_modelo(nombre, **{argumento: clave})
     respuesta = ChatResult(generations=[ChatGeneration(message=AIMessage(content="ok"))])
     monkeypatch.setattr(type(modelo), "_generate", lambda *a, **k: respuesta)
     with collect_runs() as recolector:

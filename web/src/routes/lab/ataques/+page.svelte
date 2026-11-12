@@ -37,7 +37,7 @@
 
 	async function correr() {
 		if (!config.clave) {
-			toast.error('Configure su clave de OpenRouter para ejecutar el laboratorio.');
+			toast.error('Configure su clave de OpenRouter o de Anthropic para ejecutar el laboratorio.');
 			return;
 		}
 		enviando = true;

@@ -357,12 +357,12 @@ real guardada y con el camino de error a US$0; falta la consulta de Wills con su
 - [x] Comparación abierta: pistas por GTIN y embeddings, juez con salida estructurada y reglas deterministas.
 - [x] Consulta en vivo real con la clave de Wills (Flash + N3): A56 se abstuvo (solo Falabella lo vende); tras
       los ajustes, A57 recomendó Falabella $1.599.900 verificada. US$0,1119 en las dos.
-- [ ] **Clave de Anthropic como alternativa a la de OpenRouter (D114).** El proveedor se reconoce por el prefijo
+- [x] **Clave de Anthropic como alternativa a la de OpenRouter (D114).** El proveedor se reconoce por el prefijo
       de la clave (`sk-ant-` o `sk-or-`); con la de Anthropic solo se ofrecen los modelos Claude de la lista
       curada (hoy Haiku 5.5) y N3 lee con Haiku directo. El costo se calcula por tokens × tabla de precios
       (`costo_fuente = "tabla"`), porque Anthropic no devuelve el costo por llamada; la interfaz lo marca como
       estimado.
-- [ ] **Ofertas finales en el Laboratorio.** La API ya emite `detalle.ofertas_finales` (proveedor, título, precio,
+- [x] **Ofertas finales en el Laboratorio.** La API ya emite `detalle.ofertas_finales` (proveedor, título, precio,
       envío, producto o grupo emparejado, motivo de descarte y verificación N3); falta mostrarlas en
       `/lab/consultas/[id]` para ver por qué cada oferta quedó fuera en la comparación abierta. Solo interfaz; US$0.
 

@@ -1,5 +1,15 @@
-// Configuración del visitante (D82, D86, D91, D110). Solo vive en este navegador.
+// Configuración del visitante (D82, D86, D91, D110, D114). Solo vive en este navegador.
 import { fuentesApi, obtener, type Defensas, type Grupo, type ListaBlanca, type Resumen } from './api';
+import { catalogo } from './datos';
+
+export type Proveedor = 'openrouter' | 'anthropic';
+
+/** D114: el proveedor de la clave se reconoce por su prefijo. */
+export function proveedorDe(clave: string): Proveedor | null {
+	if (clave.startsWith('sk-ant-')) return 'anthropic';
+	if (clave.startsWith('sk-or-')) return 'openrouter';
+	return null;
+}
 
 export const PRESETS: Record<string, [boolean, boolean, boolean]> = {
 	C0: [false, false, false],
@@ -46,6 +56,7 @@ class Config {
 	politica_n3 = $state<'abstener' | 'excluir'>('abstener');
 	corpus = $state<Grupo>('vivo'); // D113: arranca el grupo en vivo
 	visitante: string;
+	proveedor = $derived(proveedorDe(this.clave));
 
 	/** C0–C3 si las capas coinciden con un punto medido en E2; si no, «exploratorio». */
 	configuracion = $derived.by(() => {
@@ -83,6 +94,16 @@ class Config {
 				limpiar.removeItem(LLAVE_CLAVE);
 				if (this.clave) usar.setItem(LLAVE_CLAVE, this.clave);
 				else usar.removeItem(LLAVE_CLAVE);
+			});
+			// Con una clave de Anthropic solo sirven los modelos Claude de la lista curada.
+			$effect(() => {
+				if (this.proveedor !== 'anthropic') return;
+				const actual = this.modelo;
+				catalogo().then((c) => {
+					const claude = c.modelos.filter((m) => m.anthropic);
+					if (claude.length && !claude.some((m) => m.nombre === actual))
+						this.modelo = claude[0].nombre;
+				});
 			});
 		});
 	}

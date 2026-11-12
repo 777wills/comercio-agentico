@@ -1,4 +1,5 @@
-// Cliente de la API de CotIA (contrato en /docs). La clave de OpenRouter solo viaja en POST /api/consultas.
+// Cliente de la API de CotIA (contrato en /docs). La clave del visitante (OpenRouter o Anthropic) solo
+// viaja en POST /api/consultas.
 
 export type Etapa =
     | "en_cola"
@@ -58,6 +59,17 @@ export type Oferta = {
 
 export type Alerta = { tipo: string; mensaje: string; oferta: number | null };
 
+export type OfertaFinal = {
+    proveedor: string;
+    titulo: string;
+    precio: number;
+    costo_envio: number | null;
+    producto_catalogo: string | null;
+    grupo: number | null;
+    descarte: string | null;
+    verificacion: Oferta["verificacion"];
+};
+
 export type Propuesta = {
     consulta: string;
     perfil: string;
@@ -97,6 +109,7 @@ export type Modelo = {
     costo_usd: number;
     segundos: number;
     acierto?: boolean;
+    anthropic?: boolean; // D114: se puede llamar con una clave de Anthropic
     m2_e3: { m2_media: number; m2_bajo: number; m2_alto: number } | null;
 };
 
@@ -214,7 +227,7 @@ export function crearConsulta(
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "X-OpenRouter-Key": clave,
+            "X-Clave-Modelo": clave,
             "X-Visitante": visitante,
         },
         body: JSON.stringify(peticion),

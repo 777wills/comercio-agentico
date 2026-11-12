@@ -2,8 +2,9 @@
 
 Cada consulta corre como una tarea de asyncio en el mismo proceso que la API (D81). Los nodos del
 grafo emiten su salida a medida que terminan (``preguntar(al_avanzar=...)``); ``Traductor`` la
-reduce a eventos pequeños para el navegador (SSE). La clave de OpenRouter del visitante solo vive
-en la memoria de la tarea y se borra de cualquier mensaje de error antes de guardarlo (D82).
+reduce a eventos pequeños para el navegador (SSE). La clave del visitante (OpenRouter o Anthropic)
+solo vive en la memoria de la tarea y se borra de cualquier mensaje de error antes de guardarla
+(D82).
 """
 
 from __future__ import annotations
@@ -24,6 +25,7 @@ from sqlalchemy.orm import sessionmaker
 from comercio_agentico.agente.defensa import ClasificadorInyeccion
 from comercio_agentico.agente.grafo import preguntar
 from comercio_agentico.api.bd import ConsultaBD
+from comercio_agentico.api.catalogo import ANTHROPIC_DIRECTO, proveedor_de_clave
 from comercio_agentico.api.esquemas import PeticionConsulta
 from comercio_agentico.preguntar import registro_jsonl
 
@@ -32,6 +34,7 @@ log = logging.getLogger("comercio_agentico.api")
 MAX_SIMULTANEAS = int(os.getenv("COTIA_MAX_SIMULTANEAS", "1"))  # ~2 GB de RAM por consulta
 MAX_EN_COLA = int(os.getenv("COTIA_MAX_EN_COLA", "5"))
 MODELO_VERIFICADOR_COTIA = "haiku-or"  # D105
+MODELO_VERIFICADOR_ANTHROPIC = "haiku"  # D114: N3 por la API directa
 LATIDO_S = 15.0
 
 
@@ -236,7 +239,7 @@ class Servicio:
                     corpus=peticion.corpus,
                     carga=peticion.carga,
                     modelo=peticion.modelo,
-                    opciones=peticion.opciones(),
+                    opciones=peticion.opciones() | {"proveedor": proveedor_de_clave(clave)},
                     estado="en_cola",
                     eventos=[],
                 )
@@ -290,6 +293,21 @@ class Servicio:
                         activas = [f for f in registro.fuentes if f.id not in fuera]
                         registro = registro.model_copy(update={"fuentes": activas})
                 extra = {"abierta": True, "documentos": documentos} if abierta else {}
+                # D114: con la clave de Anthropic se llama a Claude directo y el costo sale de la
+                # tabla de precios (Anthropic no lo devuelve por llamada).
+                anthropic = proveedor_de_clave(clave) == "anthropic"
+                if anthropic:
+                    extra |= {
+                        "modelo": ANTHROPIC_DIRECTO[peticion.modelo],
+                        "modelo_verificador": MODELO_VERIFICADOR_ANTHROPIC,
+                        "clave_anthropic": clave,
+                    }
+                else:
+                    extra |= {
+                        "modelo": peticion.modelo,
+                        "modelo_verificador": MODELO_VERIFICADOR_COTIA,
+                        "clave_openrouter": clave,
+                    }
                 traductor = Traductor()
 
                 async def al_avanzar(nodo: str, upd: dict[str, Any]) -> None:
@@ -299,15 +317,12 @@ class Servicio:
 
                 r = await self.preguntar_fn(
                     consulta,
-                    modelo=peticion.modelo,
                     defensas=defensas,
                     clasificador=self.clasificador(peticion.clasificador)
                     if defensas.clasificador
                     else None,
                     verificar=peticion.verificar,
                     politica_n3=peticion.politica_n3,
-                    modelo_verificador=MODELO_VERIFICADOR_COTIA,
-                    clave_openrouter=clave,
                     al_avanzar=al_avanzar,
                     registro=registro,
                     emparejador=emparejador,
@@ -348,6 +363,8 @@ class Servicio:
                 detalle["exito_ataque"] = fin["exito_ataque"] = evaluar_exito(carga, fila)
             costo, segundos = r.propuesta.costo_usd, time.perf_counter() - inicio
             fin |= {"costo_usd": round(costo, 6), "segundos": round(segundos, 1)}
+            if anthropic:
+                detalle["costo_estimado"] = fin["costo_estimado"] = True
             await asyncio.to_thread(
                 self._actualizar,
                 id_consulta,

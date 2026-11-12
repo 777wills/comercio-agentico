@@ -47,12 +47,12 @@ o más caracteres. Las rutas de las fichas, los precios y el bloque schema.org n
 
 **Tabla 4.z.1.** Falsos positivos de C2 en 81 páginas reales, umbral 0,5. Intervalos de Wilson al 95 %.
 
-| Clasificador | Condición | Ventanas retiradas          | Páginas con algún retiro  | Texto retirado |
-| ------------ | --------- | --------------------------- | ------------------------- | -------------- |
+| Clasificador | Condición | Ventanas retiradas              | Páginas con algún retiro    | Texto retirado |
+| ------------ | --------- | ------------------------------- | --------------------------- | -------------- |
 | Horizon      | crudo     | 289/1.463 = 19,8 % [17,8; 21,9] | 33/81 = 40,7 % [30,7; 51,6] | 21,3 %         |
-| Horizon      | saneado   | 5/1.213 = 0,4 % [0,2; 1,0]  | 5/81 = 6,2 % [2,7; 13,6]  | 0,4 %          |
+| Horizon      | saneado   | 5/1.213 = 0,4 % [0,2; 1,0]      | 5/81 = 6,2 % [2,7; 13,6]    | 0,4 %          |
 | Wolf         | crudo     | 232/1.463 = 15,9 % [14,1; 17,8] | 19/81 = 23,5 % [15,6; 33,8] | 17,7 %         |
-| Wolf         | saneado   | 1/1.213 = 0,1 % [0,0; 0,5]  | 1/81 = 1,2 % [0,2; 6,7]   | 0,1 %          |
+| Wolf         | saneado   | 1/1.213 = 0,1 % [0,0; 0,5]      | 1/81 = 1,2 % [0,2; 6,7]     | 0,1 %          |
 
 En crudo, el clasificador de producción retiraba una de cada cinco ventanas y tocaba el 40,7 % de las páginas. El
 caso extremo era Falabella: 237 de 451 ventanas (52,5 %) y el 56,6 % del texto de sus fichas, por el logotipo
