@@ -899,12 +899,12 @@ insignia de «precio confirmado». El costo de la consulta aparece al pie del re
 
 ### Qué se construyó y por qué
 
-| Componente | Qué hace | Concepto de IA / decisión |
-| --- | --- | --- |
-| `agente/web_abierta.py` | Bloqueo de SSRF, robots.txt por sitio, pausa por sitio, recorte centrado en precios y prioridad de enlaces a fichas. | Lectura responsable de internet abierta (D112). |
-| `agente/comparacion_abierta.py` | Pistas por GTIN y embeddings, juez con salida estructurada, reglas deterministas, `proponer_abierto`. | Emparejamiento entre ofertas sin catálogo (D113, D115). |
-| `api/fuentes_visitante.py`, `/api/fuentes` | Lista blanca por visitante: activar, agregar URL o PDF, eliminar, restablecer. | Cambios aislados por visitante (D113). |
-| `Fuentes.svelte` | Panel de la lista blanca en Cliente y Laboratorio. | |
+| Componente                                 | Qué hace                                                                                                             | Concepto de IA / decisión                               |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| `agente/web_abierta.py`                    | Bloqueo de SSRF, robots.txt por sitio, pausa por sitio, recorte centrado en precios y prioridad de enlaces a fichas. | Lectura responsable de internet abierta (D112).         |
+| `agente/comparacion_abierta.py`            | Pistas por GTIN y embeddings, juez con salida estructurada, reglas deterministas, `proponer_abierto`.                | Emparejamiento entre ofertas sin catálogo (D113, D115). |
+| `api/fuentes_visitante.py`, `/api/fuentes` | Lista blanca por visitante: activar, agregar URL o PDF, eliminar, restablecer.                                       | Cambios aislados por visitante (D113).                  |
+| `Fuentes.svelte`                           | Panel de la lista blanca en Cliente y Laboratorio.                                                                   |                                                         |
 
 ### Cómo probarlo
 
@@ -952,14 +952,14 @@ muestra las alertas de C2 (texto retirado en páginas reales, D115 b).
 
 ### Qué se construyó y por qué
 
-| Componente | Qué hace | Concepto / decisión |
-| --- | --- | --- |
-| `Dockerfile`, `.dockerignore` | Imagen única en tres etapas: frontend, dependencias con uv y final con Chromium y modelos horneados; corpus regenerado dentro; usuario sin privilegios. | Reproducibilidad; capas pesadas antes del código (D81, D116). |
-| `compose.yaml` (servicio `app`), `make cotia-docker` | La imagen de producción con PostgreSQL en local, en :8080. | Mismo artefacto en local y en producción (D118). |
-| `.github/workflows/ci.yml` | Pre-commit, corpus regenerado y comparado, pruebas, humo del arnés simulado y frontend. | Puerta de calidad: Railway solo despliega si pasa («Wait for CI»). |
-| Trazas LangSmith | Árbol de pasos del grafo por consulta; aviso en Ajustes; prueba de que la clave no se traza. | Observabilidad (D117). |
-| Avance por fuente | La consulta muestra cada página que lee y su estado. | D119. |
-| `tests/test_despliegue.py` | Comprueba que la imagen hornea los modelos que usa el agente. | La imagen corre sin acceso al Hub. |
+| Componente                                           | Qué hace                                                                                                                                                | Concepto / decisión                                                |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `Dockerfile`, `.dockerignore`                        | Imagen única en tres etapas: frontend, dependencias con uv y final con Chromium y modelos horneados; corpus regenerado dentro; usuario sin privilegios. | Reproducibilidad; capas pesadas antes del código (D81, D116).      |
+| `compose.yaml` (servicio `app`), `make cotia-docker` | La imagen de producción con PostgreSQL en local, en :8080.                                                                                              | Mismo artefacto en local y en producción (D118).                   |
+| `.github/workflows/ci.yml`                           | Pre-commit, corpus regenerado y comparado, pruebas, humo del arnés simulado y frontend.                                                                 | Puerta de calidad: Railway solo despliega si pasa («Wait for CI»). |
+| Trazas LangSmith                                     | Árbol de pasos del grafo por consulta; aviso en Ajustes; prueba de que la clave no se traza.                                                            | Observabilidad (D117).                                             |
+| Avance por fuente                                    | La consulta muestra cada página que lee y su estado.                                                                                                    | D119.                                                              |
+| `tests/test_despliegue.py`                           | Comprueba que la imagen hornea los modelos que usa el agente.                                                                                           | La imagen corre sin acceso al Hub.                                 |
 
 **URL pública:** <https://comercio-agentico-production-bf030669.up.railway.app> (con Serverless activo, la primera
 visita tras un rato sin uso puede tardar o dar un error 502: recargue).
@@ -1007,3 +1007,60 @@ Con «Tiendas en vivo», en «Consultando proveedores» se ven las páginas que 
 
 En Railway → `comercio-agentico` → Settings → Deploy, desactive **Serverless** esa mañana (redespliega en unos
 minutos), haga una consulta de calentamiento con Flash y, tras la demo, vuelva a activarlo.
+
+## S09d — C2 en páginas reales y saneamiento del Markdown (11-nov, D115 b, D120)
+
+### Qué se construyó y por qué
+
+| Componente                                | Qué hace                                                                                                                                                                        | Concepto / decisión                                                       |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `ataques/c2_reales.py`, `make c2-reales`  | Lee en vivo una muestra fija de páginas reales de las cinco tiendas y puntúa sus ventanas con los dos clasificadores de C2, en crudo y saneadas. Guarda puntajes y SHA-256, no el texto. | Validez externa del clasificador; falsos positivos bajo cambio de distribución (D115 b). |
+| `web_abierta.sanear`                      | Antes del recorte, en las fuentes abiertas: imágenes → texto alternativo; fuera `data:` URI, parámetros de URL y cadenas base64 largas.                                          | Corrige la causa medida de los falsos positivos (D120).                   |
+| `Lector(crudo=True)`                      | Solo para la medición: devuelve el texto sin sanear ni recortar, para puntuar las dos versiones de la misma lectura.                                                           | Diseño pareado.                                                           |
+| `make c2-reales-analisis`                 | Tablas, curva frente al umbral y comprobación con las 20 cargas y los 47 fragmentos limpios, con lo ya leído.                                                                  | El saneamiento no le quita a C2 la detección.                             |
+
+### Cómo probarlo
+
+**1. Pruebas — US$0, sin red**
+
+```bash
+uv run pytest tests/test_c2_reales.py tests/test_vivo.py -q    # saneamiento, recorte, análisis pareado
+make check                                                      # Ruff + formato + toda la batería
+```
+
+**2. El saneamiento sobre un texto de ejemplo — US$0, sin red**
+
+```bash
+uv run python -c "
+from comercio_agentico.agente.web_abierta import sanear
+print(sanear('[![logo](data:image/svg+xml,%3Csvg%3E)](https://x.co/cmr) Galaxy A57 \$ 1.599.900 '
+             '[WhatsApp](https://x.co/f?token=eyJhbGciOiJSUzI1NiJ9eyJmb3JtSWQiOiI2MjBmMzNiYzIxYzgwNTRk)'))
+"
+```
+
+Debe ver `[logo](https://x.co/cmr) Galaxy A57 $ 1.599.900 [WhatsApp](https://x.co/f)`: el precio y el título
+quedan; el SVG embebido y el token, no.
+
+**3. Las tablas y la figura con las páginas ya leídas — US$0, sin red** (carga los dos clasificadores, ~1 min)
+
+```bash
+make c2-reales-analisis
+```
+
+Abre `resultados/informes/c2_reales/c2_reales.md` y `c2_reales_umbral.png`. Compare, por clasificador, la fila
+**Total crudo** con **Total saneado**: la proporción de ventanas y de páginas con retiro debe caer casi a cero al
+sanear. En la tabla final, las cargas detectadas y los falsos positivos en los 47 limpios deben ser iguales en crudo
+y saneado.
+
+**4. Repetir la lectura en vivo — US$0 (sin LLM), con red, ~1 h**
+
+```bash
+mv resultados/c2_reales/paginas.jsonl /tmp/   # si quiere empezar de cero; si no, reanuda
+make c2-reales
+```
+
+Lee ~80 páginas reales (portadas, 12 fichas semilla por tienda y los primeros enlaces) respetando robots.txt y 2 s
+de pausa por sitio; cada página se puntúa cuatro veces en CPU (~50 s). Las cifras cambian con el contenido de las
+tiendas, así que no se reproducen exactas. Las ventanas marcadas quedan en `/tmp/c2_reales_marcadas.jsonl` para
+revisarlas a mano (no se versionan). Si lo lanza desde la terminal del editor, use `systemd-run` y `systemd-inhibit`
+(ver `privado/contexto_claude/MEMORIA_CLAUDE_CODE.md`, sección 6).

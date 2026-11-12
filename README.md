@@ -101,6 +101,7 @@ corpus servido (`make corpus-b-servir`, y `make corpus-a-servir` para el corpus 
 | E1: verificación N3               | `make e1-lecturas` (~US$0,02)                              | `make e1`                 | [`04_resultados_e1.md`](docs/informe/04_resultados_e1.md)             |
 | E2: curva seguridad-utilidad      | `make e2-ataques` (~US$3,7) y `make e2-utilidad` (~US$1,8) | `make e2`                 | [`04_resultados_e2.md`](docs/informe/04_resultados_e2.md)             |
 | E3: comparación de modelos        | `make e3 MODELO=flash` (~US$1,5 por modelo)                | `make e3-frontera`        | [`04_resultados_e3.md`](docs/informe/04_resultados_e3.md)             |
+| C2 en páginas reales (D115 b)     | `make c2-reales` (US$0, sin LLM; lee tiendas en vivo)      | `make c2-reales-analisis` | [`04_resultados_c2_reales.md`](docs/informe/04_resultados_c2_reales.md) |
 
 `make help` lista todos los objetivos con su costo.
 

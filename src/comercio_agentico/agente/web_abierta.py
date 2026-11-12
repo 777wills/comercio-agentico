@@ -6,6 +6,8 @@
 - **Cortesía:** pausa mínima entre peticiones a un mismo sitio.
 - **Tamaño:** tope de texto y de enlaces por página, para no inflar los tokens del extractor ni
   del planificador.
+- **Saneamiento (D120):** imágenes, ``data:`` URI, parámetros de URL y cadenas base64 largas
+  salen del texto antes de C2 y del extractor: no informan la compra y disparan el clasificador.
 
 El corpus congelado (servido en local) no pasa por aquí: es configuración de confianza.
 """
@@ -95,6 +97,23 @@ class Cortesia:
 PATRON_PRECIO = re.compile(r"\$\s?\d{1,3}(?:[.,]\d{3})+")
 MARCA_CONTENIDO = "Contenido de la página:\n"
 ANTES, DESPUES = 4, 2  # líneas alrededor de cada precio (título arriba, envío o stock abajo)
+IMAGEN_MD = re.compile(r"!\[([^\]]*)\]\((?:\\.|[^()\\])*\)")
+DATA_URI = re.compile(r"data:[\w.+-]+/[\w.+-]+[,;]\S*")
+PARAMETROS_URL = re.compile(r"(https?://[^\s?#()\"'<>]+)[?#][^\s()\"'<>]*")
+BASE64_LARGO = re.compile(r"[A-Za-z0-9+/]{40,}={0,2}")
+
+
+def sanear(texto: str) -> str:
+    """Quita del Markdown el ruido codificado que no informa la compra (D120).
+
+    Las imágenes quedan como su texto alternativo; los ``data:`` URI y los parámetros de las URL
+    se eliminan; las cadenas base64 largas pasan a «…». Los precios, títulos y rutas de las fichas
+    no cambian (las rutas con guiones no son base64).
+    """
+    texto = IMAGEN_MD.sub(lambda m: m.group(1), texto)
+    texto = DATA_URI.sub("", texto)
+    texto = PARAMETROS_URL.sub(r"\1", texto)
+    return BASE64_LARGO.sub("…", texto)
 
 
 def _foco_en_precios(texto: str) -> str:
@@ -123,8 +142,10 @@ def _prioridad(enlace: str) -> int:
     return 2
 
 
-def recortar(texto: str, enlaces: list[str]) -> tuple[str, list[str]]:
+def recortar(texto: str, enlaces: list[str], saneado: bool = True) -> tuple[str, list[str]]:
     """Tope de tamaño para páginas reales: foco en los productos y en sus enlaces."""
+    if saneado:
+        texto = sanear(texto)
     if len(texto) > MAX_TEXTO_ABIERTA:
         cabeza, marca, cuerpo = texto.partition(MARCA_CONTENIDO)
         if not marca:  # sin bloque schema.org

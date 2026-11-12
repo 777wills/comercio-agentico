@@ -8,12 +8,12 @@ producto y no por preferencia: ~0,27 GB de memoria en reposo, ~2 GB durante una 
 modelo de embeddings `intfloat/multilingual-e5-small` y el clasificador de inyección de C2), salida a internet para
 el modo en vivo y una sola instancia, porque la cola de la API atiende una consulta a la vez.
 
-| Candidata (precios oficiales, 11-nov-2026) | Memoria disponible | Base de datos | Costo para el periodo | Observación |
-|---|---|---|---|---|
-| Railway, plan Hobby | hasta 48 GB por servicio | PostgreSQL en el mismo proyecto | US$5/mes con US$5 de uso incluido; US$10/GB-mes de RAM | Elegida (D116) |
-| Google Cloud Run | hasta 32 GiB | externa | nivel gratuito de 240.000 vCPU-s y 450.000 GiB-s al mes | Arranque en frío de una imagen de varios GB |
-| Hugging Face Spaces (Docker) | 16 GB | — | requiere PRO, US$9/mes | La salida solo admite los puertos 80, 443 y 8080: bloquea PostgreSQL |
-| Render | 2 GB en el plan de US$25/mes | US$6/mes | ~US$31/mes | Plan gratuito de 512 MB insuficiente |
+| Candidata (precios oficiales, 11-nov-2026) | Memoria disponible           | Base de datos                   | Costo para el periodo                                   | Observación                                                          |
+| ------------------------------------------ | ---------------------------- | ------------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------- |
+| Railway, plan Hobby                        | hasta 48 GB por servicio     | PostgreSQL en el mismo proyecto | US$5/mes con US$5 de uso incluido; US$10/GB-mes de RAM  | Elegida (D116)                                                       |
+| Google Cloud Run                           | hasta 32 GiB                 | externa                         | nivel gratuito de 240.000 vCPU-s y 450.000 GiB-s al mes | Arranque en frío de una imagen de varios GB                          |
+| Hugging Face Spaces (Docker)               | 16 GB                        | —                               | requiere PRO, US$9/mes                                  | La salida solo admite los puertos 80, 443 y 8080: bloquea PostgreSQL |
+| Render                                     | 2 GB en el plan de US$25/mes | US$6/mes                        | ~US$31/mes                                              | Plan gratuito de 512 MB insuficiente                                 |
 
 ## 3.y Imagen, integración y entrega continuas
 
@@ -67,4 +67,5 @@ envío, que coincide con la verdad del corpus, con las cinco ofertas del product
 US$0,0190 y tardó 100 s. En el modo en vivo, una consulta por un producto ficticio del corpus B recorrió 17 páginas
 de las cinco tiendas reales en cuatro rondas y se abstuvo correctamente tras 594 s (US$0,066). Esa consulta expuso
 tres límites del modo en vivo en producción: ~35 s por página con 2 vCPU, la caída de una pestaña de Chromium por
-memoria (3,7 GB con un tope de 4 GB) y la retirada de texto comercial legítimo por el clasificador de C2 (D115 b).
+memoria (3,7 GB con un tope de 4 GB) y la retirada de ventanas legítimas por el clasificador de C2, que se debía al
+ruido codificado del Markdown y se corrigió con el saneamiento de D120 (sección de resultados de C2 en páginas reales).

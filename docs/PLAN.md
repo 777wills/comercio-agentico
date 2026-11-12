@@ -363,6 +363,17 @@ real guardada y con el camino de error a US$0; falta la consulta de Wills con su
       (`costo_fuente = "tabla"`), porque Anthropic no devuelve el costo por llamada; la interfaz lo marca como
       estimado.
 
+### S09d — C2 en páginas reales y saneamiento del Markdown (11-nov, D115 b, D120)
+
+- [x] Medición de C2 en una muestra fija de páginas reales (12 fichas semilla del corpus A por tienda + portada y
+      primeros enlaces de las cinco tiendas), con los dos clasificadores del catálogo, por tienda y tipo de página, y curva
+      frente al umbral (`make c2-reales`, US$0, sin LLM; no se guarda el texto, D70).
+- [x] Saneamiento del Markdown de las fuentes abiertas (`web_abierta.sanear`): imágenes, `data:` URI, parámetros
+      de URL y cadenas base64 largas; el corpus congelado no cambia.
+- [x] Medición pareada crudo/saneado sobre la misma lectura y comprobación con las 20 cargas y los 47 fragmentos
+      limpios (detección y falsos positivos sin cambio).
+- [x] Borrador del informe con las cifras: `docs/informe/04_resultados_c2_reales.md`.
+
 ## S09c — CotIA (3/3): publicación y MLOps ligero (lun 16-nov)
 
 **Objetivo:** MVP publicado y reproducible.

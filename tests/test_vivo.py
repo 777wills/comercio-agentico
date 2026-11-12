@@ -23,6 +23,7 @@ from comercio_agentico.agente.web_abierta import (
     Cortesia,
     UrlNoPermitida,
     recortar,
+    sanear,
     validar_url_publica,
 )
 from comercio_agentico.api.fuentes_visitante import FuenteInvalida, texto_pdf
@@ -84,7 +85,8 @@ def test_pausa_entre_peticiones_al_mismo_sitio():
 
 
 def test_recorte_de_paginas_reales():
-    texto, enlaces = recortar("x" * (MAX_TEXTO_ABIERTA + 500), [f"/c/{i}" for i in range(200)])
+    largo = "texto " * ((MAX_TEXTO_ABIERTA + 500) // 6)
+    texto, enlaces = recortar(largo, [f"/c/{i}" for i in range(200)])
     assert len(texto) < MAX_TEXTO_ABIERTA + 20 and texto.endswith("(recortado)")
     assert len(enlaces) == MAX_ENLACES_ABIERTA
     assert recortar("t", ["/a?orden=1", "/b"])[1] == ["/b"]  # los filtros con parámetros se van
@@ -95,6 +97,32 @@ def test_recorte_de_paginas_reales():
     texto, enlaces = recortar(menu + "\n" + productos, ["/c/1", "/portatil-asus/p/123", "/x"])
     assert "$2.499.900" in texto and "Vivobook" in texto and "Categoría 5" not in texto
     assert enlaces[0] == "/portatil-asus/p/123"  # las fichas primero
+
+
+def test_saneamiento_quita_el_ruido_codificado_y_conserva_la_oferta():
+    svg = "data:image/svg+xml,%3Csvg%20width='34'%3E%3Cpath%20d='M32.49%200.03H1.50'/%3E%3C/svg%3E"
+    token = "eyJhbGciOiJSUzI1NiJ9eyJmb3JtSWQiOiI2MjBmMzNiYzIxYzgwNTRkYTM0ODMzMDkiLCJzdWIi"
+    crudo = (
+        f"[![Cmr logo]({svg})](https://www.falabella.com.co/cmr)\n"
+        "![Galaxy A57](https://cdn.tienda.com/a57.webp?scale.option=fill&w=500)\n"
+        "[Samsung Galaxy A57 256 GB](https://www.falabella.com.co/falabella-co/product/"
+        "73262421/Samsung-Galaxy-A57-256GB-8GB-RAM-Camara-posterior-50MP/73262421?sid=HO)\n"
+        "$ 1.599.900 · Envío gratis\n"
+        f"[WhatsApp](https://samsung-webform.sprinklr.com/?token={token})\n"
+        f"código {token}"
+    )
+    limpio = sanear(crudo)
+    assert "data:" not in limpio and "%3C" not in limpio and token not in limpio
+    assert "?scale" not in limpio and "?sid" not in limpio and "?token" not in limpio
+    assert "[Cmr logo](https://www.falabella.com.co/cmr)" in limpio  # la imagen deja su texto
+    assert "Galaxy A57\n" in limpio and "$ 1.599.900 · Envío gratis" in limpio
+    assert "Samsung-Galaxy-A57-256GB-8GB-RAM-Camara-posterior-50MP/73262421)" in limpio
+    assert recortar(crudo, [], saneado=False)[0] == crudo
+
+
+def test_saneamiento_no_toca_el_bloque_schema_org():
+    bloque = '{"@type":"Offer","price":"1599900","gtin13":"8806095426280","url":"https://x.co/p/1"}'
+    assert sanear(bloque) == bloque
 
 
 def test_lector_lee_el_pdf_del_visitante_sin_red():

@@ -99,6 +99,12 @@ e1: ## E1: N3 por reproducción pareada con las lecturas guardadas (US$0; requie
 e1-lecturas: ## E1: segunda lectura de los fragmentos que falten con Haiku (~US$0,02; requiere corpus B y A servidos)
 	uv run python -m comercio_agentico.arnes.e1
 
+c2-reales: ## D115 b: lee en vivo ~80 páginas de las 5 tiendas y mide cuánto retira C2, en crudo y saneado (red; ~1 h; US$0, sin LLM)
+	uv run python -m comercio_agentico.ataques.c2_reales
+
+c2-reales-analisis: ## D115 b: tablas y figura con las páginas ya leídas (US$0, sin red)
+	uv run python -m comercio_agentico.ataques.c2_reales --solo-analisis
+
 metricas: ## Recalcula métricas de una corrida: make metricas CORRIDA=resultados/corridas/<archivo>.jsonl (US$0)
 	uv run python -m comercio_agentico.arnes.metricas $(CORRIDA)
 

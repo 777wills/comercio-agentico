@@ -92,11 +92,14 @@ class Lector:
         registro: RegistroFuentes,
         max_resultados_mcp: int = 8,
         documentos: dict[str, str] | None = None,
+        crudo: bool = False,
     ) -> None:
         self.registro = registro
         self.max_resultados_mcp = max_resultados_mcp
         # PDF que subió el visitante (D113): URL interna ``pdf://<sha256>`` → texto ya extraído.
         self.documentos = documentos or {}
+        # Solo para mediciones (D115 b): páginas abiertas sin sanear ni recortar.
+        self.crudo = crudo
         self._cortesia: Cortesia | None = None
         self._arranque = asyncio.Lock()  # varias lecturas en paralelo: un solo Chromium
         self._cache: dict[str, Documento] = {}
@@ -161,7 +164,7 @@ class Lector:
             }
             - {url}
         )
-        if fuente.abierta:
+        if fuente.abierta and not self.crudo:
             texto, enlaces = recortar(texto, enlaces)
         doc = Documento(fuente=fuente, consulta=url, texto=texto, enlaces=enlaces)
         self._cache[url] = doc

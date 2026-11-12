@@ -133,7 +133,9 @@ embeddings del documento: una lista de precios es corta y se necesita completa.
 La lectura de internet abierta añade salvaguardas que el corpus no necesita: solo se abren direcciones públicas
 (prevención de SSRF), se respeta el robots.txt con un agente de usuario identificable, se espera entre peticiones a un
 mismo sitio y se recorta cada página a las líneas cercanas a un precio, porque el menú de navegación ocupa el inicio
-del texto. Como la mayoría de los productos reales no está en el catálogo de referencia, las ofertas se emparejan
+del texto. Antes del recorte, el Markdown se sanea: las imágenes quedan como su texto alternativo y se eliminan los
+`data:` URI, los parámetros de las URL y las cadenas base64 largas, que no informan la compra y disparan el
+clasificador de C2 (D120). Como la mayoría de los productos reales no está en el catálogo de referencia, las ofertas se emparejan
 entre sí: el GTIN y la similitud de embeddings del título sugieren grupos, y un juez con salida estructurada confirma
 el grupo de cada oferta y si cumple la necesidad; presupuesto, plazo y disponibilidad se revisan con reglas
 deterministas. La disponibilidad no informada no descarta la oferta, pero la marca (D115).
@@ -143,5 +145,6 @@ reproducibles. En una consulta por el Samsung Galaxy A57 de 256 GB, el agente re
 65 ofertas y recomendó la de Falabella por $1.599.900 con envío gratis, confirmada por la segunda lectura de N3, frente
 a la misma referencia en Samsung por $1.999.900 (US$0,063, 379 s). La prueba dejó un hallazgo de validez externa: el
 clasificador de inyección de C2, sin falsos positivos en los 47 fragmentos limpios del corpus, retiró hasta 21 de 26
-ventanas de una ficha real de Falabella y 19 de 35 de la portada de Alkosto. El texto comercial real, con llamados a
-la acción y promociones, se parece a una instrucción más que el texto sintético.
+ventanas de una ficha real de Falabella y 19 de 35 de la portada de Alkosto. La medición posterior mostró que la
+causa no era el texto comercial sino el ruido codificado que la conversión a Markdown conserva (imágenes SVG
+incrustadas y tokens base64 en URL de rastreo); el saneamiento de D120 lo elimina (sección 4.z).
