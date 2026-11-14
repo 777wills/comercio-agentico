@@ -120,6 +120,82 @@ costo del agente con Flash (US$0,015–0,018 por tarea). La mayor parte correspo
 porque la ruta determinista no tiene costo. La lectura con Haiku tardó 4–5 s en la mediana (máximo 18 s) y corre en
 paralelo por fragmento, frente a una latencia del agente de 2–3 minutos por tarea.
 
+## N3 ante errores sembrados
+
+La tasa base de errores en las ofertas ganadoras fue nula, así que E1 no pudo observar a N3 atrapando un error que
+importara. La forma estándar de evaluar un detector cuando los errores son escasos es sembrarlos. Sobre las mismas 80
+ejecuciones se alteró la primera extracción con cinco fallas deterministas, una a la vez y en todas las ejecuciones
+donde cada una aplica. Cada falla altera todas las copias de la oferta afectada:
+
+- **Precio −10 %** y **precio +10 %** de la oferta ganadora.
+- **Envío omitido:** el costo de envío de la ganadora, cuando es mayor que cero, pasa a no informado.
+- **Disponible leída como agotada:** la ganadora pasa a `agotado`.
+- **Agotada leída como disponible:** una oferta agotada más barata que la ganadora pasa a `en_stock`. Se elige la más
+  barata que, así alterada, gane la decisión.
+
+Tres fallas (precio −10 %, envío omitido y agotada leída como disponible) **favorecen** a la oferta alterada: la
+mantienen o la ponen como ganadora con datos falsos. Las otras dos **la perjudican**: la sacan de la competencia.
+
+La segunda lectura de N3 depende solo del fragmento, no de lo que extrajo la primera ruta. Por eso se reutilizaron las
+lecturas guardadas de E1, sin llamadas nuevas a ningún modelo (US$0). Una decisión cuenta como correcta si elige una
+oferta aceptada por la tarea y, cuando recomienda, cotiza el costo total verdadero de esa oferta. Sin fallas, la
+reproducción coincidió con el acierto original en 60/60 y 20/20 ejecuciones, y N3 no marcó ninguna de las 65
+ganadoras (cero falsas alarmas).
+
+**Tabla 4.y.3.** Detección de la falla por N3 (oferta alterada no verificada). Intervalos de Wilson al 95 %.
+
+| Falla                         | Efecto     | Corpus B: detectadas        | Corpus A: detectadas        |
+| ----------------------------- | ---------- | --------------------------: | --------------------------: |
+| Precio −10 %                  | Favorece   | 50/50 = 100 % [92,9; 100]   | 15/15 = 100 % [79,6; 100]   |
+| Envío omitido                 | Favorece   | 44/44 = 100 % [92,0; 100]   | No aplica                   |
+| Agotada leída como disponible | Favorece   | 5/5 = 100 % [56,6; 100]     | 5/5 = 100 % [56,6; 100]     |
+| Precio +10 %                  | Perjudica  | 50/50 = 100 % [92,9; 100]   | 15/15 = 100 % [79,6; 100]   |
+| Disponible leída como agotada | Perjudica  | 50/50 = 100 % [92,9; 100]   | 15/15 = 100 % [79,6; 100]   |
+
+En el corpus B, la detección fue completa por ambas rutas (19 ganadoras por la determinista y 31 por Haiku). En el
+corpus A se repartió en 13 y 2. Ninguna ganadora del corpus A tiene un envío mayor que cero en su extracción, por eso
+la falla de envío no aplica.
+
+**Tabla 4.y.4.** Recomendaciones erróneas (oferta equivocada o costo mal cotizado) por política.
+
+| Corpus | Falla                         |   n | Sin N3 | N3 + abstención | N3 + exclusión |
+| ------ | ----------------------------- | --: | -----: | --------------: | -------------: |
+| B      | Precio −10 %                  |  50 |     50 |               0 |             40 |
+| B      | Envío omitido                 |  44 |     44 |               0 |             36 |
+| B      | Agotada leída como disponible |   5 |      5 |               0 |              0 |
+| B      | Precio +10 %                  |  50 |     42 |              29 |             40 |
+| B      | Disponible leída como agotada |  50 |     40 |              40 |             40 |
+| A      | Precio −10 %                  |  15 |     15 |               0 |             14 |
+| A      | Agotada leída como disponible |   5 |      5 |               0 |              0 |
+| A      | Precio +10 %                  |  15 |     15 |              14 |             14 |
+| A      | Disponible leída como agotada |  15 |     14 |              14 |             14 |
+
+Fuente: `resultados/informes/e1_fallas/e1_fallas.{md,json}`, generados con `make e1-fallas`.
+
+![Figura 4.y.2. Recomendaciones erróneas por falla sembrada y política.](../../resultados/informes/e1_fallas/e1_fallas.png)
+
+Tres resultados se desprenden de las tablas:
+
+1. **N3 detecta toda falla que la segunda ruta no comparte.** Se detectaron 249 de 249 fallas sembradas, por la ruta
+   determinista y por Haiku. La cifra es una cota superior. Las fallas sembradas son independientes de la segunda
+   lectura por construcción y superan la tolerancia de comparación. Los errores naturales de E1 mostraron el límite
+   contrario: dos LLM pueden omitir el mismo dato, y entonces la concordancia no revela el error.
+2. **La protección es asimétrica.** N3 verifica la oferta ganadora. Las fallas que favorecen a una oferta son
+   justamente las que llevan datos falsos a la recomendación, y con la política de abstención **ninguna de las 119
+   llegó al comprador**: las 119 se convirtieron en abstenciones. Las fallas que perjudican a una oferta la sacan de
+   la competencia. Gana entonces otra oferta, leída correctamente, que N3 confirma. N3 marcó la oferta alterada en
+   todos los casos, pero ninguna política usa esa señal sobre las ofertas descartadas. Solo se evitaron los casos en
+   que la ganadora encarecida siguió siendo la más barata (13 de 42 en B y 1 de 15 en A). En términos de negocio,
+   N3 garantiza que **lo que se recomienda es verdad** (precio, envío y disponibilidad confirmados), no que sea lo
+   óptimo.
+3. **La exclusión es peor que la abstención ante las fallas que favorecen.** Al retirar la ganadora marcada, recomienda
+   la siguiente, que no es la que pide la tarea (80 % de erróneas con precio −10 % en B). Solo supera a la abstención
+   cuando la falla puso arriba una oferta agotada, porque entonces la siguiente es la correcta. El resultado respalda
+   la elección de la abstención como política principal (D102).
+
+La asimetría sugiere una mejora concreta: verificar también las ofertas descartadas que habrían ganado y, ante una
+discrepancia, decidir con el valor de la segunda lectura. Queda en la hoja de ruta.
+
 ## Lectura
 
 En estos corpus, la verificación por una segunda ruta **no aporta exactitud a la decisión**. Las ofertas ganadoras ya
@@ -130,3 +206,9 @@ términos absolutos. La evidencia favorece usarla como indicador por oferta en e
 regla de abstención. Dos limitaciones acotan la conclusión: los errores correlacionados entre dos LLM
 escapan a la verificación por concordancia, y la ruta determinista solo existe donde el proveedor publica datos
 estructurados.
+
+Las fallas sembradas completan esta lectura. Cuando la primera extracción sí se equivoca y la segunda ruta no comparte
+el error, N3 lo detecta y, con la política de abstención, impide que datos falsos lleguen a la recomendación. Que no
+cambiara ninguna decisión en E1 refleja la ausencia de errores en las ganadoras con estos modelos y corpus, no una
+capa inerte. Su alcance tiene un límite preciso: protege la veracidad de lo que se recomienda, no la optimalidad de
+la elección.

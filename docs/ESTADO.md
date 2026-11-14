@@ -2,9 +2,10 @@
 
 ## Siguiente sesión
 
-**Propuestas de la auditoría aprobadas e implementadas (14-nov).** Siguen P4 (fallas sembradas en N3, ≈ US$0,05) y
-S10 con P7–P10 (introducción y contexto, estado del arte, plan frente a lo logrado, conclusiones, declaración de uso
-de IAG, referencias verificadas, matriz de decisión de modelos, tabla de riesgos éticos, vocabulario del pipeline).
+**Propuestas de la auditoría aprobadas e implementadas (14-nov).** P4 quedó hecha (fallas sembradas en N3, US$0) y
+de P7–P10 ya hay borradores de la matriz de modelos (P8), los riesgos éticos (P9), el pipeline de datos (P10), el plan
+frente a lo logrado y la declaración de uso de IAG (P7). De S10 faltan la introducción y el contexto, el estado del
+arte, las conclusiones y las referencias verificadas (20–30 fuentes).
 **Siguiente: S09f (D127)**, antes del informe. S09g quedó cerrada el 14-nov (D128: Mercado Libre no se integra por sus términos).
 Necesario de Wills: **P3** (línea base humana: 6 tareas con cronómetro según
 `privado/auditoria/PROTOCOLO_LINEA_BASE.md`), **secreto `OPENROUTER_API_KEY_CANARIO`** en GitHub para el canario
@@ -18,13 +19,35 @@ Siguiente paso exacto:
 
 1. Leer en `docs/PLAN.md` la sección S10. Wills debe descargar la plantilla institucional del informe (IEEE) en
    `privado/curso/`. No iniciar el ensamblaje sin su autorización explícita (entregable grande).
-2. Insumos: los borradores de `docs/informe/` (nuevos: `03_metodologia_operacion.md` y `04_resultados_c2_reales.md`;
-   `03_metodologia_producto.md` suma D114 y la tabla de ofertas finales) y la hoja de ruta.
+2. Insumos: los borradores de `docs/informe/` (nuevos el 14-nov: `03_metodologia_pipeline_datos.md`,
+   `05_discusion_eleccion_modelo.md`, `05_discusion_riesgos_eticos.md`, `06_plan_frente_a_logrado.md`,
+   `06_declaracion_uso_iag.md` y la sección de fallas sembradas en `04_resultados_e1.md`; antes:
+   `03_metodologia_operacion.md` y `04_resultados_c2_reales.md`; `03_metodologia_producto.md` suma D114 y la tabla
+   de ofertas finales) y la hoja de ruta.
 3. Pendientes: capturas y video corto de la demo para la presentación (con Wills, en producción y en día de
    demo, D118). D114 y las ofertas finales del Laboratorio quedaron hechas en S09e; D115 b, en S09d.
 4. Operación (D118): desarrollo en local con `make cotia-docker` (:8080) o `make bd && make api`; Railway con
    Serverless, salvo los días de demo (20 y 27-nov: desactivarlo esa mañana y hacer una consulta de calentamiento).
    Capturas de LangSmith para el informe antes de que caduquen (14 días).
+
+**Hecho el 14-nov (P4 y borradores de S10 con P7–P10; VS Code · Opus 5.5), con pruebas:**
+
+- **P4 / D129:** `arnes/e1_fallas.py` (`make e1-fallas`, US$0, sin red ni corpus servido). Cinco fallas sembradas en la
+  primera extracción de las corridas C1 de E1 (precio ±10 %, envío omitido, disponible leída como agotada y agotada
+  leída como disponible); reutiliza las segundas lecturas en caché. N3 detectó **249/249** fallas, con 0 falsas
+  alarmas en las 65 ganadoras sin falla. Con abstención, **0 de 119** fallas que favorecen a una oferta llegaron a la
+  recomendación. Las que perjudican (sacan a la ganadora) no se recuperan: N3 solo verifica la ganadora. La
+  exclusión es peor que la abstención (80 % de erróneas con precio −10 % en B). Evidencia en
+  `resultados/informes/e1_fallas/`; informe en `04_resultados_e1.md` (Tablas 4.y.3–4.y.4, Figura 4.y.2); hoja de
+  ruta: verificar también las descartadas que habrían ganado.
+- **P8:** `05_discusion_eleccion_modelo.md`. Matriz de los 6 modelos de D31 frente a los criterios del negocio, con
+  los precios del endpoint fijado **verificados en la API pública de OpenRouter el 14-nov** (sin cambios desde el
+  9-nov), el costo estimado de los no medidos y el dato de B013 de la curaduría de CotIA.
+- **P9:** `05_discusion_riesgos_eticos.md` (10 riesgos → mitigación → evidencia → residual). **P10:**
+  `03_metodologia_pipeline_datos.md` (diagrama Mermaid y tabla de etapas con el vocabulario de R.7.1).
+- **P7 (parcial):** `06_plan_frente_a_logrado.md` (contra el plan entregado en agosto) y `06_declaracion_uso_iag.md`
+  (nivel 5 del syllabus, verificado en `privado/curso/syllabus_PAIII.pdf`).
+- `make check`: **218 pruebas** en verde, Ruff limpio. **Gasto: US$0.**
 
 **Hecho el 14-nov (implementación de las propuestas de la auditoría; Claude Code · Opus 5.5), con pruebas:**
 

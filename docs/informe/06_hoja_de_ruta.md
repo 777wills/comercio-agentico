@@ -62,7 +62,10 @@ investigación (D11).
 **N3 dirigida.** E1 mostró que dos LLM pueden omitir el mismo dato (el plazo de un producto agotado) y que la
 concordancia no revela ese error. Dos evoluciones atacan el límite: una re-extracción dirigida, que pregunta a la
 segunda ruta solo por los campos de la oferta candidata, y la verificación bajo ataque, que evalúa si N3 detecta la
-alteración de precio de la clase A20 cuando la carga logra pasar al extractor.
+alteración de precio de la clase A20 cuando la carga logra pasar al extractor. Las fallas sembradas mostraron además
+que N3 protege la veracidad de la oferta recomendada, pero no recupera una oferta correcta que una mala lectura sacó
+de la competencia (precio inflado o disponibilidad leída como agotada). Una tercera evolución verifica también las
+ofertas descartadas que habrían ganado y, ante una discrepancia, decide con el valor de la segunda lectura.
 
 **Mercado Libre como fuente autorizada.** La API de Mercado Libre permite buscar productos de catálogo en Colombia
 con su oferta ganadora, pero sus términos impiden combinar ese contenido con el de otras tiendas (sección 5.x). La

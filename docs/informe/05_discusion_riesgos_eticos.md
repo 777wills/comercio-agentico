@@ -1,0 +1,33 @@
+# 5.y Riesgos éticos, legales y de seguridad
+
+Un agente de compras actúa en nombre de una persona, lee contenido de terceros y propone dónde gastar su dinero.
+Sus riesgos superan la inyección de instrucciones: incluyen la privacidad del comprador, el trato equitativo de los
+proveedores, la transparencia de la recomendación, el grado de autonomía y el uso respetuoso de los sitios que lee.
+La Tabla 5.y.1 recorre cada riesgo con la mitigación implementada y la evidencia que la respalda, y declara el
+riesgo que queda. El análisis parte del ensayo de Ética presentado sobre el mismo caso y lo contrasta con lo que el
+prototipo mide.
+
+**Tabla 5.y.1.** Riesgo → mitigación → evidencia → riesgo residual.
+
+| Riesgo | Mitigación implementada | Evidencia | Riesgo residual |
+| --- | --- | --- | --- |
+| **Inyección indirecta de instrucciones**: una tienda manipula la recomendación, desvía al agente o exfiltra el mandato del comprador | Separación de planos (C1), clasificador de inyección (C2) y control de precio (C3); el texto de terceros nunca entra al plano de control del planificador | E2: M5 de 11,7 % en C0 a 0,0 % en C3 con Flash, sin pérdida de utilidad; ataque adaptativo por el título (A21): 3/3 éxitos en C0 y 0/3 en C1, C2 y C3 | Cargas en un solo idioma y sin técnicas de evasión; un atacante con acceso a la arquitectura puede diseñar cargas nuevas |
+| **Datos falsos en la recomendación** por un error de lectura | Procedencia por dato (fuente, fragmento y SHA-256) y verificación por una segunda ruta (N3) con abstención | E1 con fallas sembradas: 119 de 119 fallas que favorecían a una oferta terminaron en abstención y ninguna llegó al comprador | N3 no recupera una oferta correcta que una mala lectura descartó; dos LLM pueden compartir un error |
+| **Privacidad del comprador** | Clave propia del visitante (BYOK) que no se guarda ni se registra; sin cuentas de usuario; historial agrupado por un identificador anónimo del navegador; ningún dato personal en los corpus | Prueba automatizada: la clave no aparece en la base, las respuestas, los eventos, los registros ni las trazas, con ambos proveedores; búsqueda del prefijo en la traza de producción sin coincidencias | La consulta se envía al proveedor del modelo y queda en la traza de diagnóstico durante 14 días; la interfaz lo informa |
+| **Sesgo contra proveedores** con fuentes poco estructuradas (PDF, mensajes) o con contenido que el clasificador confunde con un ataque | Decisión final determinista (menor costo total entre las ofertas que cumplen), no un juicio del LLM; saneamiento del Markdown antes de C2 | E1: la exactitud de extracción cae en las fuentes de menor madurez (las discrepancias se concentran en el chat y el PDF); C2 en páginas reales: las ventanas marcadas en páginas legítimas bajaron de 19,8 % a 0,4 % con el saneamiento (33 a 5 de 81 páginas) | Una tienda sin datos estructurados sigue expuesta a más errores de lectura y, con ellos, a perder ventas; C2 aún retira algunas ventanas legítimas |
+| **Exclusión del canal agéntico**: el proveedor que no es legible por máquina o que prohíbe los robots queda fuera | Respeto estricto de robots.txt y de los términos de uso; lista blanca editable, en la que el comprador puede agregar sus propias fuentes | Sondeo de tiendas (D112): Mercado Libre, Éxito, Olímpica y Lenovo quedaron fuera tras revisar su robots.txt, su respuesta a un cliente automatizado y sus términos de uso | Es un efecto de mercado, no del agente; el comercio agéntico premia la legibilidad por máquina |
+| **Opacidad de la recomendación** | Cada propuesta explica el criterio, cita la fuente con su huella SHA-256 y muestra alertas (envío no informado, oferta sin verificar, fuente bloqueada, juez sin veredicto) | Procedencia completa en las 90 ejecuciones de cada modelo en E3; tabla de ofertas finales con el motivo de cada descarte en el laboratorio | El razonamiento interno del planificador no se expone al comprador; queda en la traza |
+| **Autonomía excesiva** del agente | El agente no compra, no paga ni inicia sesión; mínima autoridad: herramientas de solo lectura, tope de acciones y de costo por consulta, control de alcance de la consulta | Las cargas de compra y de desvío no tienen herramienta con la que ejecutarse; consultas ajenas a la compra se cortan sin buscar (D126) | Una evolución con pago (AP2 u otro protocolo) exigiría confirmación humana explícita y otra evaluación |
+| **Uso abusivo de los sitios** | robots.txt por sitio, agente de usuario identificable, pausa de 2 s entre peticiones, lectura bajo demanda y sin reproducir páginas ni guardar copias de tiendas reales en el repositorio público | Corpus A versionado solo como manifiesto con sumas de verificación; la medición de C2 en páginas reales guarda puntajes y SHA-256, sin texto | La lectura en vivo sigue siendo tráfico automatizado hacia sitios comerciales |
+| **Falsificación de solicitudes del lado del servidor (SSRF)** desde las URL que agrega el visitante | Solo direcciones públicas; el navegador valida cada salto de redirección y cada recurso | Banco local: sin la guardia, una URL pública que redirigía a un servicio interno lo leyó; con la guardia, la petición no llegó (D125) | Bajo, en una plataforma gestionada sin servicios internos expuestos |
+| **Costos no controlados** para el comprador | Tope de costo por tarea, límite de 15 min por consulta, costo mostrado en cada consulta | Costo medido por cotización de US$0,015–0,017 con los modelos de la lista curada (E3) | El costo depende del modelo que elija el comprador |
+
+## Lectura
+
+La seguridad frente a la inyección es el riesgo con más evidencia, porque fue la pregunta de investigación. Los
+demás riesgos se mitigan con decisiones de diseño verificadas por pruebas automatizadas, no con experimentos
+dedicados. Dos riesgos no dependen solo del agente: el sesgo contra las fuentes poco estructuradas y la exclusión de
+los proveedores no legibles por máquina. Son la cara ética del argumento estratégico del proyecto. El comercio
+agéntico traslada ventaja a quien publica datos estructurados, y un comprador que delega en un agente verá, por
+construcción, menos a los proveedores que no lo hacen. La decisión determinista evita que el modelo agregue un
+sesgo propio. No compensa, en cambio, la asimetría de información que ya existe entre los proveedores.

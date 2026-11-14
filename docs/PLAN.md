@@ -460,6 +460,12 @@ corrida siguiendo el README.
 
 **Objetivo:** informe completo en la plantilla institucional, en PDF.
 
+- [x] P4 de la auditoría: fallas sembradas en N3 (`make e1-fallas`, US$0, D129) y su sección en
+      `04_resultados_e1.md` (14-nov).
+- [x] Borradores de P8 (matriz de modelos), P9 (riesgos éticos), P10 (pipeline de datos), plan frente a lo logrado y
+      declaración de uso de IAG (14-nov).
+- [ ] Borradores pendientes: introducción y problema (cifras re-verificadas), estado del arte, conclusiones con
+      aportes y limitaciones.
 - [ ] Ensamblar los borradores de `docs/informe/` en la plantilla institucional: introducción y problema, estado del
       arte, metodología, resultados, discusión (incluye ética, legal y seguridad, citando el ensayo de Ética como
       base), conclusiones, hoja de ruta (lo propuesto: E4, N1/ACP/UCP/AP2, más proveedores de modelos en CotIA además de

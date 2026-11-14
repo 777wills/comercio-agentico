@@ -9,10 +9,12 @@ import pytest
 from langchain_core.messages import AIMessage
 
 from comercio_agentico.agente import extraccion
-from comercio_agentico.agente.grafo import proponer_con_n3
+from comercio_agentico.agente.grafo import proponer, proponer_con_n3
 from comercio_agentico.agente.interpretacion import Necesidad
 from comercio_agentico.agente.lectura import datos_estructurados
-from comercio_agentico.arnes.e1 import campos_erroneos, detector
+from comercio_agentico.arnes.e1 import CORRIDAS, campos_erroneos, cargar_lecturas, detector
+from comercio_agentico.arnes.e1_fallas import correr_corpus, sembrar
+from comercio_agentico.arnes.metricas import cargar_corrida
 from comercio_agentico.corpus_b import DIR_CORPUS, RUTA_PERFIL
 from comercio_agentico.corpus_b.catalogo import cargar_catalogo
 from comercio_agentico.esquema import Oferta, OfertaExtraida, Procedencia, cargar_perfil
@@ -229,3 +231,43 @@ def test_detector_cruza_marcadas_con_errores_frente_a_la_verdad():
     ]
     d = detector(filas, VERDAD)
     assert (d["vp"], d["fp"], d["fn"], d["vn"]) == (1, 1, 1, 1)
+
+
+# --------------------------------------------------------------------------------------------------
+# P4: fallas sembradas
+
+
+def _decidir(ofertas, politica):
+    return proponer("q", NECESIDAD, ofertas, PERFIL, PRODUCTOS, [], "d", 0.0)
+
+
+def test_sembrar_altera_la_ganadora_o_hace_ganar_una_agotada():
+    agotada = _oferta("P3", 1_900_000, "verificada").model_copy(
+        update={"disponibilidad": "agotado"}
+    )
+    ofertas = [
+        _oferta("P5", 2_000_000, "verificada"),
+        _oferta("P1", 2_100_000, "verificada"),
+        agotada,
+    ]
+    ganadora = _decidir(ofertas, "sin_n3").ofertas[0]
+    assert ganadora.proveedor == "P5"
+
+    baja, indices = sembrar("precio_baja", ofertas, ganadora, _decidir)
+    assert indices == {0} and baja[0].precio == 1_800_000 and baja[1] is ofertas[1]
+    assert sembrar("envio_omitido", ofertas, ganadora, _decidir) is None  # envío 0: no aplica
+
+    falsa, indices = sembrar("disponible_falso", ofertas, ganadora, _decidir)
+    assert indices == {2} and falsa[2].disponibilidad == "en_stock"
+    assert _decidir(falsa, "sin_n3").ofertas[0].proveedor == "P3"
+
+
+def test_fallas_sembradas_sobre_corridas_reales_de_e1():
+    filas = cargar_corrida(CORRIDAS["b"])[:6]
+    salida = correr_corpus("b", filas, cargar_lecturas())
+    control = [f for f in salida if f["falla"] == "ninguna"]
+    assert all(f["acierto_reproducido"] == f["acierto_original"] for f in control)
+    bajas = [f for f in salida if f["falla"] == "precio_baja"]
+    assert bajas and all(f["detectada"] for f in bajas)
+    assert all(f["resultados"]["sin_n3"] == "erronea" for f in bajas)
+    assert all(f["resultados"]["abstener"] == "abstencion_indebida" for f in bajas)

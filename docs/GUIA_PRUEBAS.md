@@ -1226,3 +1226,37 @@ uv run python -m comercio_agentico.preguntar "Dame una receta para asado huilens
 
 Si funciona: una sola llamada al modelo, cero herramientas y el motivo anterior. Una compra normal (por ejemplo
 `--tareas B013`, ≈ US$0,015) debe seguir acertando.
+
+## N3 ante errores sembrados y borradores del informe (14-nov, P4, D129)
+
+| Qué | Para qué | Resultado medido |
+| --- | --- | --- |
+| Fallas sembradas en la primera extracción (`make e1-fallas`) | Medir N3 como detector cuando sí hay errores | 249/249 fallas detectadas; con abstención, 0 de 119 fallas que favorecen a una oferta llegan al comprador |
+| Borradores P7–P10 | Matriz de modelos, riesgos éticos, pipeline de datos, plan frente a lo logrado, declaración de IAG | `docs/informe/` |
+
+### Cómo probarlo
+
+**1. Pruebas sin red — US$0**
+
+```bash
+uv run pytest tests/test_verificacion.py -k "sembrar or fallas" -q
+```
+
+Si funciona: 2 pruebas en verde. La primera arma tres ofertas a mano y comprueba cada falla. La segunda corre la
+siembra sobre 6 ejecuciones reales del corpus B y comprueba que el precio −10 % se detecta siempre y termina en
+abstención.
+
+**2. El experimento completo — US$0, sin red y sin servir los corpus (unos segundos)**
+
+```bash
+make e1-fallas
+```
+
+Escribe `resultados/informes/e1_fallas/e1_fallas.md`, `.json`, `ejecuciones.jsonl` y la figura `e1_fallas.png`.
+Cómo leerlo:
+
+- **Control:** la decisión sin N3 debe reproducir el acierto original (60/60 y 20/20) con 0 falsas alarmas.
+- **Primera tabla de cada corpus (detección):** cuántas ofertas alteradas marcó N3, por ruta (determinista o Haiku).
+- **Segunda tabla (decisión):** con «N3 + abstención», la columna «Errónea» debe quedar en 0 para precio −10 %, envío
+  omitido y agotada leída como disponible. Para precio +10 % y disponible leída como agotada, las erróneas casi no
+  bajan: la falla saca a la oferta correcta y N3 solo verifica a la ganadora.

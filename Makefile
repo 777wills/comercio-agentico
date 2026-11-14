@@ -5,7 +5,7 @@
 SHELL := /bin/bash
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo corpus-a-recolectar corpus-a corpus-a-servir corpus-a-correr humo candidatos app arnes-simulado calibracion e3 e3-frontera e2-ataques e2-ataques-simulado e2-utilidad e2 jev e1 e1-lecturas metricas bd api web web-dev cotia-docker cotia-humo
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo corpus-a-recolectar corpus-a corpus-a-servir corpus-a-correr humo candidatos app arnes-simulado calibracion e3 e3-frontera e2-ataques e2-ataques-simulado e2-utilidad e2 jev e1 e1-lecturas e1-fallas metricas bd api web web-dev cotia-docker cotia-humo
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
@@ -98,6 +98,9 @@ e1: ## E1: N3 por reproducción pareada con las lecturas guardadas (US$0; requie
 
 e1-lecturas: ## E1: segunda lectura de los fragmentos que falten con Haiku (~US$0,02; requiere corpus B y A servidos)
 	uv run python -m comercio_agentico.arnes.e1
+
+e1-fallas: ## E1 con fallas sembradas en la primera extracción (P4; US$0, sin red ni corpus servido)
+	uv run python -m comercio_agentico.arnes.e1_fallas
 
 c2-reales: ## D115 b: lee en vivo ~80 páginas de las 5 tiendas y mide cuánto retira C2, en crudo y saneado (red; ~1 h; US$0, sin LLM)
 	uv run python -m comercio_agentico.ataques.c2_reales
