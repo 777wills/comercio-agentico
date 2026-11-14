@@ -80,6 +80,10 @@ class Necesidad(BaseModel):
     # Fuera del esquema: la interpretación falló y esta necesidad es la mínima (D69).
     _degradada: bool = PrivateAttr(default=False)
 
+    es_compra: bool = Field(
+        default=True,
+        description="false si la consulta no pide comprar, cotizar o comparar un producto (D126).",
+    )
     tipo_producto: str | None = Field(default=None, description="Una de las categorías del perfil.")
     marca: str | None = None
     restricciones: list[RestriccionAtributo] = Field(
@@ -108,6 +112,11 @@ class Necesidad(BaseModel):
     def degradada(self) -> bool:
         return self._degradada
 
+    @property
+    def sin_objeto(self) -> bool:
+        """Ni tipo de producto ni producto concreto: el filtro no podría descartar nada (D126)."""
+        return not (self.tipo_producto or self.producto_mencionado or self.producto_id)
+
     def restricciones_duras(self, perfil: PerfilCategoria) -> list[RestriccionDura]:
         """Lleva cada restricción al nombre y la unidad canónicos del perfil; descarta las que no
         reconoce."""
@@ -128,6 +137,8 @@ Categorías (tipo_producto): {categorias}.
 Atributos comparables (nombre canónico y unidad): {atributos}.
 
 Reglas:
+- es_compra: false si la consulta no pide comprar, cotizar o comparar un producto (una receta, \
+código, una pregunta general o una conversación); en ese caso deja los demás campos vacíos.
 - Toda especificación mínima o máxima de la consulta va en restricciones, con el nombre y la \
 unidad canónicos. Una necesidad sin cifras se traduce a una cifra razonable ("liviano" en un \
 portátil → peso <= 1.6). No inventes restricciones que la consulta no sugiere.

@@ -1212,3 +1212,17 @@ anuncia con una alerta.
 
 En GitHub → Actions → «Evaluación programada» → *Run workflow*. El trabajo «arnés» publica las métricas simuladas;
 el «canario» se omite hasta que exista el secreto `OPENROUTER_API_KEY_CANARIO`.
+
+## Control de alcance de la consulta (14-nov, D126)
+
+Una consulta que no es una compra se corta en el intérprete: no se consultan proveedores y la propuesta se abstiene
+con el motivo «CotIA cotiza productos de electrónica…».
+
+```bash
+uv run pytest tests/test_agente.py -k "alcance or no_es_compra or sin_objeto" -q     # US$0
+make corpus-b-servir    # en otra terminal
+uv run python -m comercio_agentico.preguntar "Dame una receta para asado huilense"  # ≈ US$0,0002 (Flash)
+```
+
+Si funciona: una sola llamada al modelo, cero herramientas y el motivo anterior. Una compra normal (por ejemplo
+`--tareas B013`, ≈ US$0,015) debe seguir acertando.

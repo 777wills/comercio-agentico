@@ -5,6 +5,7 @@
 **Propuestas de la auditoría aprobadas e implementadas (14-nov).** Siguen P4 (fallas sembradas en N3, ≈ US$0,05) y
 S10 con P7–P10 (introducción y contexto, estado del arte, plan frente a lo logrado, conclusiones, declaración de uso
 de IAG, referencias verificadas, matriz de decisión de modelos, tabla de riesgos éticos, vocabulario del pipeline).
+**Siguiente: S09f (D127)**, antes del informe: buscar y sondear tiendas, etiquetarlas y aplicar el tope de 5.
 Necesario de Wills: **P3** (línea base humana: 6 tareas con cronómetro según
 `privado/auditoria/PROTOCOLO_LINEA_BASE.md`), **secreto `OPENROUTER_API_KEY_CANARIO`** en GitHub para el canario
 (P6.3), plantilla institucional del informe, confirmación de la norma de citación (la rúbrica nombra
@@ -46,6 +47,17 @@ Siguiente paso exacto:
   el emparejamiento.
 - `make check`: **214 pruebas** en verde, Ruff limpio. `privado/AUDITORIA_Y_FLUJO.md` actualizado (I.5 y parte II,
   con la sección II.13 sobre LangGraph).
+- **Consultas ajenas a la compra** (Flash, corpus B): «receta para asado huilense» y «código para sumar dos
+  números» → el planificador no llamó herramientas y el agente se abstuvo con el motivo genérico «Ninguna oferta
+  disponible cumple todas las restricciones» (US$0,0013 en total). No hay un control explícito de alcance; con una
+  necesidad vacía, el filtro aceptaría cualquier oferta si el planificador recolectara.
+- **D126, control de alcance:** `es_compra` en la necesidad y ruta `interpretar → proponer`; abstención con necesidad
+  sin objeto. Verificado con Flash: «receta», «código» y «algo para el asado» cortadas con 1 llamada
+  (≈ US$0,0001 c/u); B013 acierta (US$0,013). 216 pruebas en verde.
+- **D127, S09f antes del informe:** catálogo amplio de tiendas, máximo 5 por consulta (incluidas las URL del
+  visitante), preselección por categoría y marca modificable por el visitante. API de Mercado Libre: sin token
+  responde 403 en `/sites/MCO/search` y `/products/search` (comprobado hoy); requiere una aplicación registrada por
+  Wills.
 - **Gasto de la fase: ≈ US$0,34** (total de la auditoría ≈ US$0,94; OpenRouter ≈ US$0,55, Anthropic ≈ US$0,39).
 
 **Hecho el 14-nov (auditoría integral antes del informe; Claude Code · Opus 5.5), con pruebas:**

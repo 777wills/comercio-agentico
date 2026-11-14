@@ -475,3 +475,38 @@ def test_restriccion_de_categoria_ordenada_no_rompe_la_seleccion():
     assert resolucion.operador == "en" and resolucion.valor == ["QHD", "4K", "8K"]
     assert resolucion.cumple("4K") and not resolucion.cumple("FHD")
     assert panel.operador == "==" and panel.cumple("IPS")
+
+
+# --------------------------------------------------------------------------------------------------
+# Control de alcance (D126)
+
+
+def test_consulta_que_no_es_compra_no_consulta_proveedores():
+    planificador = Doble(AIMessage("Listo."))
+    ctx = Contexto(
+        modelo="doble",
+        lector=LectorDoble(),  # type: ignore[arg-type]
+        registro=REGISTRO,
+        emparejador=EMPAREJADOR,
+        perfil=PERFIL,
+        costo=RegistroCosto(1.0),
+        defensas=Defensas.de("C1"),
+        clasificador=ClasificadorDoble(),
+    )
+    ctx._llm = {"interprete": Doble(Necesidad(es_compra=False)), "planificador": planificador}
+    final = asyncio.run(
+        construir_grafo(ctx).ainvoke({"consulta": "Dame una receta para asado huilense"})
+    )
+    p = final["propuesta"]
+    assert p.abstencion and "no pide comprar" in p.motivo_abstencion
+    assert planificador.vistos == []  # ni planificador ni herramientas: costo de una sola llamada
+
+
+def test_necesidad_sin_objeto_se_abstiene_en_vez_de_recomendar_cualquier_cosa():
+    ofertas = [oferta("P4", "C11", 2_732_000), oferta("P2", "C26", 900_000)]
+    p = proponer("algo barato", Necesidad(), ofertas, PERFIL, PRODUCTOS, [], "doble", 0.0)
+    assert p.abstencion and p.recomendada is None
+    assert "no indica qué producto" in p.motivo_abstencion
+    degradada = Necesidad()
+    degradada._degradada = True  # D69: la necesidad degradada conserva su comportamiento
+    assert not proponer("q", degradada, ofertas, PERFIL, PRODUCTOS, [], "doble", 0.0).abstencion

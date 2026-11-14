@@ -377,6 +377,27 @@ real guardada y con el camino de error a US$0; falta la consulta de Wills con su
       limpios (detección y falsos positivos sin cambio).
 - [x] Borrador del informe con las cifras: `docs/informe/04_resultados_c2_reales.md`.
 
+### S09f — Catálogo amplio de tiendas en vivo con un máximo de 5 por consulta (14-nov, D127; antes de S10)
+
+- [ ] Buscar el mayor número posible de tiendas colombianas de electrónica y sondear cada una con el criterio de D112
+      (robots.txt, respuesta a un cliente automatizado, términos de uso); punto de partida: las aptas del sondeo del
+      14-nov (iShop, Mac Center, Tienda Claro, Clevercel, Tecnoplaza, Homecenter). US$0.
+- [ ] Etiquetar cada tienda apta con sus categorías y, si aplica, su marca exclusiva (p. ej., iShop y Mac Center
+      solo Apple; Samsung Colombia solo Samsung).
+- [ ] Ampliar `TIENDAS_EN_VIVO` con las aptas y fijar el tope de **5 tiendas por consulta**, incluidas las URL que
+      agregue el visitante: preselección por la categoría y la marca de la necesidad, que el visitante puede cambiar.
+- [ ] Prueba de humo por tienda nueva (una consulta en vivo con Flash, < US$0,05 cada una) y registro de las que
+      fallen al abrir sus fichas.
+- [x] Decisión registrada (D127, precisa D112).
+- [ ] Actualizar el panel «Fuentes» con las etiquetas, la preselección y el contador «n de 5».
+- [ ] Evaluar la API oficial de Mercado Libre como fuente estructurada (requiere que Wills registre una aplicación
+      en su portal de desarrolladores; prueba de búsqueda con el token, US$0) y decidir si entra.
+
+### Control de alcance de la consulta (14-nov, D126)
+
+- [x] `es_compra` en la necesidad, ruta `interpretar → proponer` para consultas ajenas y abstención con necesidad sin
+      objeto; pruebas automáticas y verificación con Flash.
+
 ## S09c — CotIA (3/3): publicación y MLOps ligero (lun 16-nov)
 
 **Objetivo:** MVP publicado y reproducible.

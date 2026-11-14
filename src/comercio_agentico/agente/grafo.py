@@ -406,6 +406,31 @@ def pesos(valor: float) -> str:
     return "$" + f"{valor:,.0f}".replace(",", ".")
 
 
+FUERA_DE_ALCANCE = (
+    "CotIA cotiza productos de electrónica en tiendas y proveedores; la consulta no pide comprar, "
+    "cotizar ni comparar un producto."
+)
+SIN_OBJETO = (
+    "La consulta no indica qué producto busca. Precise el tipo de producto (por ejemplo, un "
+    "portátil o un monitor) o el modelo."
+)
+
+
+def abstencion_de_alcance(
+    consulta: str, motivo: str, perfil: PerfilCategoria, modelo: str, costo_usd: float
+) -> PropuestaCompra:
+    """Control de alcance (D126): la consulta no es una compra o no dice qué producto busca."""
+    return PropuestaCompra(
+        consulta=consulta,
+        perfil=perfil.nombre,
+        modelo=modelo,
+        costo_usd=costo_usd,
+        abstencion=True,
+        motivo_abstencion=motivo,
+        justificacion="No se consultaron proveedores.",
+    )
+
+
 def proponer(
     consulta: str,
     necesidad: Necesidad,
@@ -417,6 +442,10 @@ def proponer(
     costo_usd: float,
     alertas_defensa: Sequence[Alerta] = (),
 ) -> PropuestaCompra:
+    if necesidad.sin_objeto and not necesidad.degradada:
+        # Sin objeto, ningún filtro descartaría nada y ganaría la oferta más barata de cualquier
+        # cosa (D126). La necesidad degradada conserva su comportamiento (D69).
+        return abstencion_de_alcance(consulta, SIN_OBJETO, perfil, modelo, costo_usd)
     validas = sorted(
         (o for o in ofertas if motivo_descarte(o, necesidad, perfil, productos) is None),
         key=lambda o: (o.costo_total, o.proveedor),
@@ -596,6 +625,10 @@ def construir_grafo(ctx: Contexto):
             "llamadas": estado.get("llamadas", 0) + len(permitidas),
         }
 
+    def ruta_interpretacion(estado: Estado) -> str:
+        # Una consulta que no es una compra no consulta proveedores (D126).
+        return "planificar" if estado["necesidad"].es_compra else "proponer"
+
     def ruta_planificador(estado: Estado) -> str:
         ultimo = estado["messages"][-1]
         con_llamadas = isinstance(ultimo, AIMessage) and bool(ultimo.tool_calls)
@@ -635,7 +668,12 @@ def construir_grafo(ctx: Contexto):
         return {"ofertas_finales": unicas}
 
     async def nodo_proponer(estado: Estado) -> dict:
-        ofertas, alertas = estado["ofertas_finales"], list(estado.get("alertas", []))
+        if not estado["necesidad"].es_compra:
+            propuesta = abstencion_de_alcance(
+                estado["consulta"], FUERA_DE_ALCANCE, ctx.perfil, ctx.modelo, ctx.costo.costo_total
+            )
+            return {"propuesta": propuesta}
+        ofertas, alertas = estado.get("ofertas_finales", []), list(estado.get("alertas", []))
         proponer_fn = proponer_abierto if ctx.abierta else proponer
         if ctx.verifica_precios and not ctx.abierta:  # C3 necesita el precio de catálogo
             ofertas, atipicas = verificar_precios(ofertas, referencias)
@@ -680,7 +718,9 @@ def construir_grafo(ctx: Contexto):
     grafo.add_node("emparejar", nodo_emparejar)
     grafo.add_node("proponer", nodo_proponer)
     grafo.add_edge(START, "interpretar")
-    grafo.add_edge("interpretar", "planificar")
+    grafo.add_conditional_edges(
+        "interpretar", ruta_interpretacion, {"planificar": "planificar", "proponer": "proponer"}
+    )
     grafo.add_conditional_edges(
         "planificar", ruta_planificador, {"herramientas": "herramientas", "emparejar": "emparejar"}
     )
