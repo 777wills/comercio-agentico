@@ -36,6 +36,7 @@ repos:
       - id: ruff
         args: ["--fix", "--exit-non-zero-on-fix"]
       - id: ruff-format
+        exclude: ^\.claude/skills/
 
   # --- uv: mantiene uv.lock sincronizado (Astral) ---
   - repo: https://github.com/astral-sh/uv-pre-commit
