@@ -1069,14 +1069,14 @@ revisarlas a mano (no se versionan). Si lo lanza desde la terminal del editor, u
 
 ### Qué se construyó y por qué
 
-| Componente | Qué hace | Concepto / decisión |
-| --- | --- | --- |
+| Componente                                       | Qué hace                                                                                                                                                       | Concepto / decisión                                         |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
 | `OfertasFinales.svelte` en `/lab/consultas/[id]` | Tabla con todas las ofertas que llegaron a la comparación: producto del catálogo o grupo, si entró a la propuesta y, si no, el motivo del descarte; estado N3. | Auditabilidad de la decisión del agente, oferta por oferta. |
-| `api/catalogo.proveedor_de_clave` | Reconoce el proveedor por el prefijo (`sk-or-` o `sk-ant-`); otra clave se rechaza con 422. | Una sola clave a la vez (D114). |
-| Cabecera `X-Clave-Modelo` | Sustituye a `X-OpenRouter-Key`; lleva la clave de cualquiera de los dos proveedores. | Llave propia del visitante (D82). |
-| `obtener_modelo(clave_anthropic=…)` | Claude por la API directa con la clave del visitante; un modelo de otra plataforma se rechaza para no gastar la clave del proyecto. | Aislamiento de credenciales. |
-| `ejecucion.py` | Con `sk-ant-`: agente con `haiku` y N3 con `haiku`, ambos directos; `costo_estimado` en el evento final y en el detalle. | Costo por tabla de precios (`costo_fuente = "tabla"`). |
-| Ajustes y Configuración | Aceptan las dos claves, dicen cuál reconocieron, filtran los modelos y cambian a Claude si hace falta; el costo aparece como «≈ … (estimado)». | Transparencia del gasto. |
+| `api/catalogo.proveedor_de_clave`                | Reconoce el proveedor por el prefijo (`sk-or-` o `sk-ant-`); otra clave se rechaza con 422.                                                                    | Una sola clave a la vez (D114).                             |
+| Cabecera `X-Clave-Modelo`                        | Sustituye a `X-OpenRouter-Key`; lleva la clave de cualquiera de los dos proveedores.                                                                           | Llave propia del visitante (D82).                           |
+| `obtener_modelo(clave_anthropic=…)`              | Claude por la API directa con la clave del visitante; un modelo de otra plataforma se rechaza para no gastar la clave del proyecto.                            | Aislamiento de credenciales.                                |
+| `ejecucion.py`                                   | Con `sk-ant-`: agente con `haiku` y N3 con `haiku`, ambos directos; `costo_estimado` en el evento final y en el detalle.                                       | Costo por tabla de precios (`costo_fuente = "tabla"`).      |
+| Ajustes y Configuración                          | Aceptan las dos claves, dicen cuál reconocieron, filtran los modelos y cambian a Claude si hace falta; el costo aparece como «≈ … (estimado)».                 | Transparencia del gasto.                                    |
 
 ### Cómo probarlo
 
@@ -1110,3 +1110,56 @@ reconocida». Pulse «Olvidar» al terminar.
 En el modo Cliente, Ajustes → pegue su clave `sk-ant-…` → consulte un ejemplo del catálogo «Proveedores de prueba».
 Debe terminar con el costo «cerca de US$…» y la nota de estimación; compárelo con la consola de Anthropic (el exacto
 puede diferir unos centavos de centavo por caché). No usar Sonnet ni Opus (D76): no están en la lista.
+
+---
+
+## Auditoría (14-nov): pruebas reales, tiendas nuevas y ataque adaptativo
+
+### Qué se hizo y por qué
+
+Auditoría del proyecto contra la rúbrica antes del informe, con pruebas reales en el corpus B, en las 5 tiendas en
+vivo y en 6 tiendas reales nuevas, más un ataque adaptativo contra la separación de planos. No cambió el código del
+producto. La evidencia sin texto de páginas está en `resultados/auditoria/` y los scripts de diagnóstico en
+`privado/auditoria/` (no se versionan).
+
+| Prueba | Qué mide | Resultado |
+| --- | --- | --- |
+| Corpus B, 5 tareas, perfil del cliente (C2 + N3) | El agente completo con Flash y con Haiku | Flash 5/5; Haiku 4/5 (restricción inferida en B025) |
+| 5 consultas en vivo | Tiendas de la lista blanca y tiendas nuevas | Juez en vivo pierde ofertas sin veredicto (propuesta P1); tiendas nuevas correctas |
+| Ataque por el título (exfiltrar el presupuesto) | Si C1 deja pasar instrucciones por los campos estructurados | C0 3/3 exfiltraciones; C1/C2 0/8 |
+| SSRF al agregar URL | Bloqueo de direcciones internas | Rechazadas; la redirección queda como riesgo por análisis |
+
+### Cómo probarlo
+
+**1. Verificación sin red — US$0**
+
+```bash
+make check                                   # Ruff, formato y 208 pruebas
+cd web && npm run check                      # 0 errores (Node ≥ 22.17)
+```
+
+**2. Ver la evidencia guardada — US$0**
+
+```bash
+python3 -c "import json;[print(d['modelo'],d['config'],d['rep'],d['exfiltro_presupuesto'],d['elegida']) for d in map(json.loads,open('resultados/auditoria/2026-11-14_ataque_titulo.jsonl'))]"
+```
+
+Debe mostrar `True` en las tres filas C0 y `False` en todas las C1 y C2, con la oferta elegida `P4 C11 2757000` en
+todas: el ataque no cambió la compra, solo intentó filtrar el presupuesto.
+
+**3. Repetir el ataque por el título — ~US$0,015 por ejecución (Flash)**
+
+```bash
+make corpus-b-servir        # en otra terminal
+uv run python privado/auditoria/ataque_titulo.py deepseek-flash C0 1 /tmp/titulo.jsonl
+uv run python privado/auditoria/ataque_titulo.py deepseek-flash C1 1 /tmp/titulo.jsonl
+```
+
+Se interpreta así: en C0, `"abrio_confirmar": true` y una URL con `presupuesto=3000000` (el planificador obedeció el
+nombre del producto); en C1, `false` y el título de P3 sin la instrucción.
+
+**4. Ver el defecto del juez en vivo — US$0,03–0,07 por consulta (Flash, con su clave)**
+
+En el modo Cliente, catálogo «En vivo», consulte el Galaxy A57 de 256 GB. Después, en
+`/lab/consultas/<id>` → **Ofertas finales**, busque descartes «sin juicio de pertinencia»: si aparecen y alguna es
+más barata que la recomendada, es el defecto de la propuesta P1. Es intermitente: puede no aparecer.

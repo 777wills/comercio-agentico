@@ -2,9 +2,12 @@
 
 ## Siguiente sesión
 
-**Por definir con Wills.** S10 (informe IEEE) queda **para el final**, por decisión de Wills (11-nov). Candidata
-principal: capturas y video corto de la demo (local a US$0; producción en día de demo, D118) y las capturas de
-LangSmith antes de que caduquen. Opcional: una consulta real con la clave de Anthropic de Wills (~US$0,02–0,03).
+**Decidir con Wills las propuestas de la auditoría del 14-nov** (`privado/AUDITORIA_Y_FLUJO.md`, parte I) y ejecutar
+el bloque A antes de S10. Orden recomendado: P1 (juez por lotes en la comparación abierta) y P6.1 (límite de tiempo y
+consultas huérfanas) → P3 (línea base humana: Wills cotiza 6 tareas con cronómetro) → P4 (fallas sembradas en N3) y
+P5 (análisis de error de las vagas, US$0) → P6.2 (evaluación programada en GitHub Actions) → S10 con P7–P10.
+Necesario de Wills: plantilla institucional del informe y confirmación de la norma de citación (la rúbrica nombra
+APA/MLA/Chicago; el plan, IEEE); visto bueno de cada propuesta; **rotar las claves de `.env`** (las usó la auditoría).
 
 **S10 — Informe IEEE (al final).** S09c quedó hecha el 11-nov (cinco días antes de lo previsto): CotIA publicada en
 <https://comercio-agentico-production-bf030669.up.railway.app>.
@@ -20,6 +23,30 @@ Siguiente paso exacto:
 4. Operación (D118): desarrollo en local con `make cotia-docker` (:8080) o `make bd && make api`; Railway con
    Serverless, salvo los días de demo (20 y 27-nov: desactivarlo esa mañana y hacer una consulta de calentamiento).
    Capturas de LangSmith para el informe antes de que caduquen (14 días).
+
+**Hecho el 14-nov (auditoría integral antes del informe; Claude Code · Opus 5.5), con pruebas:**
+
+- Auditoría contra la rúbrica (criterio por criterio), el syllabus y el plan entregado; documento
+  `privado/AUDITORIA_Y_FLUJO.md` (parte I: 16 propuestas priorizadas; parte II: flujo del agente para la defensa).
+- Verificación: Ruff y formato limpios, **208 pruebas** en verde, svelte-check 0 errores, producción `ok`.
+- **Corpus B**, perfil del cliente (C2 + N3), tareas B001, B013, B025, B037 y B054: Flash 5/5 (US$0,095), Haiku 4/5
+  (US$0,103; B025 falla por la restricción inferida `autonomia >= 8`).
+- **En vivo, lista blanca:** A57 con Flash → Samsung $1.999.900, cuando Falabella ofrecía $1.649.900 y quedó
+  descartada «sin juicio de pertinencia» (5/40 ofertas sin veredicto del juez); portátil ≥ 16 GB ≤ $3,5 M → Asus
+  Vivobook 15 $2.449.990 en Panamericana, verificada; audífonos Sony con Haiku (clave de Anthropic) → abstención por
+  **65/65** ofertas sin veredicto. Reproducido aislado, el juez con Haiku juzga 65/65: fallo intermitente (P1).
+- **Tiendas nuevas** (sondeo de robots.txt y respuesta a US$0): aptas iShop, Mac Center, Tienda Claro, Clevercel,
+  Tecnoplaza y Homecenter; excluidas Xiaomi y Éxito (403) y Jumbo (robots.txt). iPhone 17 256 GB → $4.259.960
+  verificada; A57 en Clevercel/Tecnoplaza/Homecenter → abstención correcta (venden A50–A56).
+- **Ataque adaptativo por el título** (exfiltrar el presupuesto, corpus B): C0 3/3; C1 0/3 (Flash) y 0/2 (Haiku);
+  C2 0/3. El extractor copió el título sin la instrucción. Borrador: `docs/informe/04_resultados_ataque_adaptativo.md`;
+  evidencia: `resultados/auditoria/`.
+- SSRF: URL internas directas rechazadas; la redirección pública → interna no se pudo reproducir (los redireccionadores
+  bloquean robots) y queda como riesgo por análisis (P13).
+- Hallazgos de higiene: línea 1 de `docs/GUIA_PRUEBAS.md` corregida; Streamlit sigue en el repositorio (P12).
+- **Gasto: ≈ US$0,60** (≈ US$0,38 OpenRouter, ≈ US$0,22 Anthropic). Autorización de Wills para esta auditoría: hasta
+  US$3 por cuenta, sin Sonnet, Kimi ni Opus.
+- Sin decisiones nuevas: las propuestas esperan debate. Scripts de diagnóstico en `privado/auditoria/`.
 
 **Hecho el 11-nov (S09e, ofertas finales en el Laboratorio y clave de Anthropic; VS Code · Opus 5.5), con pruebas:**
 
