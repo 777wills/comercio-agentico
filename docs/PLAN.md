@@ -390,9 +390,9 @@ real guardada y con el camino de error a US$0; falta la consulta de Wills con su
       fallen al abrir sus fichas.
 - [x] Decisión registrada (D127, precisa D112).
 - [ ] Actualizar el panel «Fuentes» con las etiquetas, la preselección y el contador «n de 5».
-- [ ] Integración con Mercado Libre: sesión S09g.
+- [x] Integración con Mercado Libre: sesión S09g (D128, no se integra).
 
-### S09g — Exploración de la integración de CotIA con la API de Mercado Libre (por hacer; US$0)
+### S09g — Exploración de la integración de CotIA con la API de Mercado Libre (14-nov, D128: no se integra)
 
 Pregunta que responde: ¿puede CotIA consultar Mercado Libre Colombia (MCO) por su API oficial, en los términos que
 Mercado Libre exige, como una fuente estructurada más? El 14-nov, sin token, `/sites/MCO/search`, `/products/search`
@@ -414,22 +414,23 @@ exploración se hace en el navegador.
 - Nada se acepta ni se publica a nombre de Wills sin su confirmación explícita.
 
 **Entregables:**
-- [ ] Recorrido completo de la guía para producto con Claude in Chrome y notas por sección, con su URL: qué exige
+- [x] Recorrido completo de la guía para producto con Claude in Chrome y notas por sección, con su URL: qué exige
       Mercado Libre para integrar, qué está permitido y qué no.
-- [ ] Respuestas verificadas en la fuente: ¿tiene costo la API?; ¿qué flujo OAuth y qué permisos (*scopes*) aplican
+- [x] Respuestas verificadas en la fuente: ¿tiene costo la API?; ¿qué flujo OAuth y qué permisos (*scopes*) aplican
       a una aplicación que solo consulta?; ¿una aplicación sin ser vendedor puede buscar anuncios públicos por
       palabra clave en MCO, o solo los propios?; ¿qué devuelve la búsqueda de productos del catálogo (precio,
       vendedor, envío, existencias)?; límites de tasa; restricciones de uso (comparación de precios, uso por
       terceros, almacenamiento de datos, atribución).
-- [ ] Si los términos lo permiten y Wills lo confirma: aplicación creada siguiendo la guía, y prueba con el token
+- [-] (No aplica: los términos lo impiden, D128) Si los términos lo permiten y Wills lo confirma: aplicación creada siguiendo la guía, y prueba con el token
       de una búsqueda en MCO (Galaxy A57 de 256 GB) que muestre solo los códigos de respuesta y los campos
       devueltos (US$0, sin LLM).
-- [ ] Propuesta a Wills con opciones: integrar (Mercado Libre como fuente estructurada, al estilo del mayorista por
+- [x] Propuesta a Wills con opciones: integrar (Mercado Libre como fuente estructurada, al estilo del mayorista por
       MCP, con el mismo saneamiento y las mismas defensas, porque los títulos siguen siendo texto de terceros; y
       cómo se concilia el token del proyecto con D82, que no expone credenciales del proyecto), dejarla en la hoja
       de ruta o descartarla. La decisión se registra en `docs/DECISIONES.md`.
-- [ ] Si se integra: herramienta del planificador, prueba automática con respuestas grabadas y una consulta en vivo
+- [-] (No aplica, D128) Si se integra: herramienta del planificador, prueba automática con respuestas grabadas y una consulta en vivo
       con Flash (< US$0,05).
+- [x] Borrador de la limitación para el informe: `docs/informe/05_limitacion_mercadolibre.md`.
 
 ### Control de alcance de la consulta (14-nov, D126)
 

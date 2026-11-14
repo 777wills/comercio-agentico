@@ -63,3 +63,9 @@ investigación (D11).
 concordancia no revela ese error. Dos evoluciones atacan el límite: una re-extracción dirigida, que pregunta a la
 segunda ruta solo por los campos de la oferta candidata, y la verificación bajo ataque, que evalúa si N3 detecta la
 alteración de precio de la clase A20 cuando la carga logra pasar al extractor.
+
+**Mercado Libre como fuente autorizada.** La API de Mercado Libre permite buscar productos de catálogo en Colombia
+con su oferta ganadora, pero sus términos impiden combinar ese contenido con el de otras tiendas (sección 5.x). La
+evolución es solicitar una autorización expresa para el uso académico o comercial del comparador e integrar la
+fuente como un proveedor estructurado más, con las mismas defensas, porque los títulos de sus publicaciones siguen
+siendo texto de terceros.

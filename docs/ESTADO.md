@@ -5,7 +5,7 @@
 **Propuestas de la auditoría aprobadas e implementadas (14-nov).** Siguen P4 (fallas sembradas en N3, ≈ US$0,05) y
 S10 con P7–P10 (introducción y contexto, estado del arte, plan frente a lo logrado, conclusiones, declaración de uso
 de IAG, referencias verificadas, matriz de decisión de modelos, tabla de riesgos éticos, vocabulario del pipeline).
-**Siguiente: S09f (D127)**, antes del informe: buscar y sondear tiendas, etiquetarlas y aplicar el tope de 5.
+**Siguiente: S09f (D127)**, antes del informe. S09g quedó cerrada el 14-nov (D128: Mercado Libre no se integra por sus términos).
 Necesario de Wills: **P3** (línea base humana: 6 tareas con cronómetro según
 `privado/auditoria/PROTOCOLO_LINEA_BASE.md`), **secreto `OPENROUTER_API_KEY_CANARIO`** en GitHub para el canario
 (P6.3), plantilla institucional del informe, confirmación de la norma de citación (la rúbrica nombra
@@ -58,6 +58,12 @@ Siguiente paso exacto:
   visitante), preselección por categoría y marca modificable por el visitante. API de Mercado Libre: sin token
   responde 403 en `/sites/MCO/search` y `/products/search` (comprobado hoy); requiere una aplicación registrada por
   Wills.
+- **S09g hecha (D128):** documentación del portal de desarrolladores recorrida con Claude in Chrome (crear app, OAuth,
+  ítems y búsquedas, buscador de productos, competencia, permisos, 403, 429, pruebas, MCP, quick start, T&C de
+  Colombia). Viable técnicamente (`/products/search` en MCO + `buy_box_winner`), sin tarifa base; el MCP oficial
+  solo sirve documentación; los T&C (cl. 5.2 y 2) prohíben combinar su contenido con el de terceros y los servicios
+  competidores → no se integra; se documenta como limitación (`docs/informe/05_limitacion_mercadolibre.md`). No se
+  creó la aplicación ni se aceptó nada. US$0. Notas: `privado/mercadolibre/NOTAS_S09G.md`.
 - **S09g** añadida al plan: exploración de la integración con la API de Mercado Libre recorriendo con Claude in
   Chrome la guía para producto del portal de desarrolladores, con las reglas de interacción y de secretos fijadas
   por Wills.
