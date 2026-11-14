@@ -21,7 +21,13 @@ from pypdf.errors import PdfReadError
 from sqlalchemy import delete, select
 from sqlalchemy.orm import sessionmaker
 
-from comercio_agentico.agente.fuentes import TIENDAS_EN_VIVO, Fuente, RegistroFuentes
+from comercio_agentico.agente.fuentes import (
+    EN_VIVO_POR_DEFECTO,
+    MAX_WEB_ACTIVAS,
+    TIENDAS_EN_VIVO,
+    Fuente,
+    RegistroFuentes,
+)
 from comercio_agentico.agente.web_abierta import AGENTE_USUARIO, sitio, validar_url_publica
 from comercio_agentico.api.bd import FuenteVisitanteBD
 
@@ -67,6 +73,10 @@ def texto_pdf(datos: bytes) -> str:
 
 def _id_usuario(fila: FuenteVisitanteBD) -> str:
     return "U" + fila.id[:6]
+
+
+def _activa_por_defecto(fuente: Fuente) -> bool:
+    return fuente.origen != "vivo" or fuente.id in EN_VIVO_POR_DEFECTO
 
 
 def _fuente_usuario(fila: FuenteVisitanteBD) -> Fuente:
@@ -122,7 +132,9 @@ class FuentesVisitante:
                     "tipo_fuente": f.tipo_fuente,
                     "url": f.url,
                     "origen": f.origen,
-                    "activa": prefs.get(f.id, True),
+                    "categorias": f.categorias,
+                    "marca": f.marca,
+                    "activa": prefs.get(f.id, _activa_por_defecto(f)),
                     "eliminable": False,
                 }
                 for f in self.por_defecto(grupo)
@@ -135,6 +147,8 @@ class FuentesVisitante:
                         "tipo_fuente": _fuente_usuario(f).tipo_fuente,
                         "url": f.url if f.tipo == "url" else f"PDF · SHA-256 {f.sha256[:12]}",
                         "origen": "usuario",
+                        "categorias": [],
+                        "marca": None,
                         "activa": f.activa,
                         "eliminable": True,
                     }
@@ -150,7 +164,7 @@ class FuentesVisitante:
         """Fuentes activas del grupo y textos de los PDF del visitante (``pdf://<sha256>``)."""
         filas = self._filas(visitante)
         prefs = {f.fuente_id: f.activa for f in filas if f.tipo == "pref"}
-        fuentes = [f for f in self.por_defecto(grupo) if prefs.get(f.id, True)]
+        fuentes = [f for f in self.por_defecto(grupo) if prefs.get(f.id, _activa_por_defecto(f))]
         documentos: dict[str, str] = {}
         if grupo == "vivo":
             for f in filas:
@@ -158,7 +172,22 @@ class FuentesVisitante:
                     fuentes.append(_fuente_usuario(f))
                     if f.tipo == "pdf" and f.texto:
                         documentos[f.url] = f.texto
+            # D131: nunca más de 5 fuentes web, aunque la base guarde preferencias anteriores.
+            web = [f.id for f in fuentes if f.herramienta == "abrir_pagina"][MAX_WEB_ACTIVAS:]
+            fuentes = [f for f in fuentes if f.id not in web]
         return RegistroFuentes(fuentes=fuentes), documentos
+
+    def web_activas(self, visitante: str) -> list[str]:
+        """IDs de las fuentes web activas del grupo en vivo (tiendas y URL del visitante)."""
+        registro, _ = self.registro(visitante, "vivo")
+        return [f.id for f in registro.fuentes if f.herramienta == "abrir_pagina"]
+
+    def _verificar_cupo(self, visitante: str) -> None:
+        if len(self.web_activas(visitante)) >= MAX_WEB_ACTIVAS:
+            raise FuenteInvalida(
+                f"Máximo {MAX_WEB_ACTIVAS} tiendas activas por consulta; desactive una para "
+                "activar otra."
+            )
 
     # ----------------------------------------------------------------------------------------------
     # Cambios
@@ -170,6 +199,13 @@ class FuentesVisitante:
         )
         if propia is None and fuente_id not in {f.id for g in GRUPOS for f in self.por_defecto(g)}:
             raise KeyError(fuente_id)
+        es_web_vivo = (
+            propia.tipo == "url"
+            if propia is not None
+            else fuente_id in {f.id for f in TIENDAS_EN_VIVO}
+        )
+        if activa and es_web_vivo and fuente_id not in self.web_activas(visitante):
+            self._verificar_cupo(visitante)
         with self.sesiones.begin() as s:
             if propia is not None:
                 s.get(FuenteVisitanteBD, propia.id).activa = activa
@@ -196,8 +232,8 @@ class FuentesVisitante:
             else:
                 pref.activa = activa
 
-    def _guardar(self, visitante: str, **campos: Any) -> dict[str, Any]:
-        fila = FuenteVisitanteBD(id=str(uuid.uuid4()), visitante=visitante, activa=True, **campos)
+    def _guardar(self, visitante: str, activa: bool = True, **campos: Any) -> dict[str, Any]:
+        fila = FuenteVisitanteBD(id=str(uuid.uuid4()), visitante=visitante, activa=activa, **campos)
         with self.sesiones.begin() as s:
             s.add(fila)
         return {"id": _id_usuario(fila), "nombre": fila.nombre}
@@ -220,6 +256,8 @@ class FuentesVisitante:
         host = urlsplit(url).hostname or url
         return self._guardar(
             visitante,
+            # Con el cupo lleno se guarda desactivada; el visitante elige cuál apagar (D131).
+            activa=len(self.web_activas(visitante)) < MAX_WEB_ACTIVAS,
             tipo="url",
             fuente_id="",
             nombre=(nombre or host.removeprefix("www."))[:120],
@@ -255,6 +293,6 @@ class FuentesVisitante:
             s.execute(delete(FuenteVisitanteBD).where(FuenteVisitanteBD.id == propia.id))
 
     def restablecer(self, visitante: str) -> None:
-        """Vuelve a la lista por defecto: todo activo y sin fuentes propias."""
+        """Vuelve a la lista por defecto: las 5 tiendas fijas activas y sin fuentes propias."""
         with self.sesiones.begin() as s:
             s.execute(delete(FuenteVisitanteBD).where(FuenteVisitanteBD.visitante == visitante))

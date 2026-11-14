@@ -379,17 +379,19 @@ real guardada y con el camino de error a US$0; falta la consulta de Wills con su
 
 ### S09f — Catálogo amplio de tiendas en vivo con un máximo de 5 por consulta (14-nov, D127; antes de S10)
 
-- [ ] Buscar el mayor número posible de tiendas colombianas de electrónica y sondear cada una con el criterio de D112
+- [x] Buscar el mayor número posible de tiendas colombianas de electrónica y sondear cada una con el criterio de D112
       (robots.txt, respuesta a un cliente automatizado, términos de uso); punto de partida: las aptas del sondeo del
-      14-nov (iShop, Mac Center, Tienda Claro, Clevercel, Tecnoplaza, Homecenter). US$0.
-- [ ] Etiquetar cada tienda apta con sus categorías y, si aplica, su marca exclusiva (p. ej., iShop y Mac Center
+      14-nov (iShop, Mac Center, Tienda Claro, Clevercel, Tecnoplaza, Homecenter). US$0. Hecho: 35 tiendas con
+      `make sondeo-tiendas`; criterio único de términos (D132): salen Alkosto y Ktronix.
+- [x] Etiquetar cada tienda apta con sus categorías y, si aplica, su marca exclusiva (p. ej., iShop y Mac Center
       solo Apple; Samsung Colombia solo Samsung).
-- [ ] Ampliar `TIENDAS_EN_VIVO` con las aptas y fijar el tope de **5 tiendas por consulta**, incluidas las URL que
-      agregue el visitante: preselección por la categoría y la marca de la necesidad, que el visitante puede cambiar.
+- [x] Ampliar `TIENDAS_EN_VIVO` con las aptas y fijar el tope de **5 tiendas por consulta**, incluidas las URL que
+      agregue el visitante. Precisado por D131: 5 tiendas fijas activas al cargar y el visitante cambia la selección
+      (sin preselección automática).
 - [ ] Prueba de humo por tienda nueva (una consulta en vivo con Flash, < US$0,05 cada una) y registro de las que
       fallen al abrir sus fichas.
 - [x] Decisión registrada (D127, precisa D112).
-- [ ] Actualizar el panel «Fuentes» con las etiquetas, la preselección y el contador «n de 5».
+- [x] Actualizar el panel «Fuentes» con las etiquetas, la preselección y el contador «n de 5».
 - [x] Integración con Mercado Libre: sesión S09g (D128, no se integra).
 
 ### S09g — Exploración de la integración de CotIA con la API de Mercado Libre (14-nov, D128: no se integra)

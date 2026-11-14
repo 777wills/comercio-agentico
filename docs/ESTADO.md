@@ -6,7 +6,10 @@
 de P7–P10 ya hay borradores de la matriz de modelos (P8), los riesgos éticos (P9), el pipeline de datos (P10), el plan
 frente a lo logrado y la declaración de uso de IAG (P7). De S10 faltan la introducción y el contexto, el estado del
 arte, las conclusiones y las referencias verificadas (20–30 fuentes).
-**Siguiente: S09f (D127)**, antes del informe. S09g quedó cerrada el 14-nov (D128: Mercado Libre no se integra por sus términos).
+**S09f hecha el 14-nov (D131, D132).** Catálogo en vivo de 13 tiendas con 5 fijas al cargar y tope de 5; Alkosto y
+Ktronix salen por sus términos. Pendiente de S09f: revisar `resultados/tiendas/humo_2026-11-14.jsonl` (prueba de
+humo de Tigo, Flamingo, HP, LG y Sony, en curso al cierre) y retirar de `TIENDAS_EN_VIVO` las que no lleguen a fichas.
+**Siguiente: S10 (informe).**
 Necesario de Wills: **P3** (línea base humana: 6 tareas con cronómetro según
 `privado/auditoria/PROTOCOLO_LINEA_BASE.md`), **secreto `OPENROUTER_API_KEY_CANARIO`** en GitHub para el canario
 (P6.3), plantilla institucional del informe, confirmación de la norma de citación (la rúbrica nombra
@@ -29,6 +32,31 @@ Siguiente paso exacto:
 4. Operación (D118): desarrollo en local con `make cotia-docker` (:8080) o `make bd && make api`; Railway con
    Serverless, salvo los días de demo (20 y 27-nov: desactivarlo esa mañana y hacer una consulta de calentamiento).
    Capturas de LangSmith para el informe antes de que caduquen (14 días).
+
+**Hecho el 14-nov (S09f, catálogo amplio de tiendas en vivo; VS Code · Opus 5.5), con pruebas:**
+
+- **Incidente al arrancar:** a las 11:44, 11 archivos (DECISIONES, PLAN, ESTADO, 6 borradores del informe,
+  `arnes/e1_fallas.py`, `tests/test_verificacion.py`) se escribieron con versiones del 10-nov (búferes viejos de VS
+  Code). Restaurados desde HEAD con `git restore`, con autorización de Wills. Nota en la memoria (sección 7).
+- **D131 (decisión de Wills):** sin preselección automática; 5 tiendas fijas activas al cargar (Falabella, Samsung
+  Colombia, Panamericana, Homecenter, Tienda Claro) y el visitante cambia la selección; la API rechaza una sexta
+  fuente web activa (422), una URL con el cupo lleno se guarda apagada y el registro nunca pasa de 5 fuentes web;
+  los PDF no cuentan.
+- **Sondeo (`make sondeo-tiendas`, US$0):** 35 tiendas; términos renderizados con Chromium donde cargan por JS.
+  **D132 (decisión de Wills):** criterio único; los términos de Alkosto, Ktronix, Alkomprar y Tecnoplaza («spiders,
+  site copiers… para acceder, adquirir, copiar ó monitorear»), Huawei, Asus y Home Sentry prohíben el acceso
+  automatizado → no aptas. Aptas: Falabella, Samsung, Panamericana, Homecenter, Tienda Claro, Tigo, Mac Center,
+  iShop, Clevercel, Flamingo, HP, LG, Sony Store, con etiquetas de categoría y marca. El `llms.txt` de Alkosto trae
+  «Instrucciones para el modelo de lenguaje» comerciales (ejemplo real para el informe).
+- Panel «Fuentes»: etiquetas («Solo Apple · Portátiles…»), contador «n de 5» y bloqueo del sexto interruptor.
+  `ataques/c2_reales.py` conserva la lista del 11-nov (medición de S09d).
+- **Prueba de humo** (Flash, una tienda activa, `privado/auditoria/humo_tiendas.py`): Homecenter, monitor ≥ 27" →
+  Xiaomi A27i $429.900 verificada por N3 (14 páginas, 69 ofertas, 589 s, US$0,080). Tienda Claro, Mac Center, iShop
+  y Clevercel ya se probaron hoy en la auditoría (en grupos). Tigo, Flamingo, HP, LG y Sony: en curso al cierre.
+- Informe: `03_metodologia_producto.md` (catálogo, criterio y tope) y `05_discusion_riesgos_eticos.md` (fila de
+  exclusión). `make check`: **218 pruebas** en verde, Ruff limpio, svelte-check 0 errores, build correcto.
+- **Gasto: ≈ US$0,56 estimado** (OpenRouter, Flash: Homecenter US$0,080; Tienda Claro, que siguió en la API al acotar
+  la prueba; y 5 tiendas a ≈ US$0,08 c/u). Sondeo y revisión de términos: US$0.
 
 **Hecho el 14-nov (P4 y borradores de S10 con P7–P10; VS Code · Opus 5.5), con pruebas:**
 

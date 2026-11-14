@@ -14,7 +14,12 @@ from comercio_agentico.agente.comparacion_abierta import (
     pistas,
     proponer_abierto,
 )
-from comercio_agentico.agente.fuentes import TIENDAS_EN_VIVO, Fuente, RegistroFuentes
+from comercio_agentico.agente.fuentes import (
+    EN_VIVO_POR_DEFECTO,
+    TIENDAS_EN_VIVO,
+    Fuente,
+    RegistroFuentes,
+)
 from comercio_agentico.agente.interpretacion import Necesidad
 from comercio_agentico.agente.lectura import Lector
 from comercio_agentico.agente.web_abierta import (
@@ -144,16 +149,21 @@ def test_lector_lee_el_pdf_del_visitante_sin_red():
 
 
 def test_tiendas_en_vivo_por_defecto():
-    assert [f.nombre for f in TIENDAS_EN_VIVO] == [
-        "Alkosto",
-        "Ktronix",
+    por_defecto = [f.nombre for f in TIENDAS_EN_VIVO if f.id in EN_VIVO_POR_DEFECTO]
+    assert por_defecto == [
         "Falabella",
         "Samsung Colombia",
         "Panamericana",
+        "Homecenter",
+        "Tienda Claro",
     ]
+    # D132: términos que prohíben el acceso automatizado → fuera del catálogo
+    assert not {"Alkosto", "Ktronix"} & {f.nombre for f in TIENDAS_EN_VIVO}
+    assert len({f.id for f in TIENDAS_EN_VIVO}) == len(TIENDAS_EN_VIVO)
     assert all(f.abierta and f.prefijo.startswith("https://") for f in TIENDAS_EN_VIVO)
+    assert all(f.categorias for f in TIENDAS_EN_VIVO)
     registro = RegistroFuentes(fuentes=TIENDAS_EN_VIVO)
-    assert registro.por_url("https://www.alkosto.com/portatiles/c/BI_104").id == "V1"
+    assert registro.por_url("https://www.maccenter.com.co/iphone").marca == "Apple"
     assert registro.por_url("https://www.samsung.com/co/monitors/").id == "V4"
     assert registro.por_url("https://www.samsung.com/mx/") is None  # otro país, otro sitio
 
@@ -293,7 +303,7 @@ def test_proponer_abierto_elige_el_menor_costo_total_y_se_abstiene_con_motivo():
     b = _oferta("Monitor LG 27 4K", 1_150_000, TIENDAS_EN_VIVO[1], envio=80_000)
     b = b.model_copy(update={"grupo": 1})
     p = proponer_abierto("monitor", Necesidad(), [a, b], PERFIL, None, [], "doble", 0.01)
-    assert not p.abstencion and p.ofertas[p.recomendada].proveedor == "V1"
+    assert not p.abstencion and p.ofertas[p.recomendada].proveedor == "V3"
     assert "entre 2 ofertas del mismo producto" in p.justificacion
 
     malas = [a.model_copy(update={"descarte": "supera el presupuesto"})]
@@ -331,19 +341,29 @@ def test_lista_blanca_por_visitante_de_punta_a_punta(lista_modelos):  # noqa: F8
     with c:
         grupos = {g["id"]: g for g in c.get("/api/fuentes", headers=CABECERAS).json()["grupos"]}
         assert list(grupos) == ["vivo", "a", "b"]
-        assert [f["id"] for f in grupos["vivo"]["fuentes"]] == ["V1", "V2", "V3", "V4", "V5"]
-        assert all(
-            f["activa"] and not f["eliminable"] for g in grupos.values() for f in g["fuentes"]
-        )
+        ids_vivo = [f.id for f in TIENDAS_EN_VIVO]
+        assert [f["id"] for f in grupos["vivo"]["fuentes"]] == ids_vivo
+        # D131: al cargar, solo las 5 fijas del grupo en vivo están activas
+        assert {f["id"] for f in grupos["vivo"]["fuentes"] if f["activa"]} == EN_VIVO_POR_DEFECTO
+        assert all(f["activa"] for g in ("a", "b") for f in grupos[g]["fuentes"])
+        assert not any(f["eliminable"] for g in grupos.values() for f in g["fuentes"])
+        mac = next(f for f in grupos["vivo"]["fuentes"] if f["nombre"] == "Mac Center")
+        assert mac["marca"] == "Apple" and "celular" in mac["categorias"]
+
+        # Tope de 5: una sexta tienda no se activa hasta desactivar otra
+        r = c.patch("/api/fuentes/V9", json={"activa": True}, headers=CABECERAS)
+        assert r.status_code == 422 and "5 tiendas" in r.json()["detail"]
 
         # Desactivar una fuente por defecto solo afecta a este visitante
         r = c.patch("/api/fuentes/V3", json={"activa": False}, headers=CABECERAS)
         assert (
             next(f for f in r.json()["grupos"][0]["fuentes"] if f["id"] == "V3")["activa"] is False
         )
-        assert all(
-            f["activa"] for f in c.get("/api/fuentes", headers=otro).json()["grupos"][0]["fuentes"]
-        )
+        assert next(
+            f
+            for f in c.get("/api/fuentes", headers=otro).json()["grupos"][0]["fuentes"]
+            if f["id"] == "V3"
+        )["activa"]
 
         # URL propia: interna → rechazada; robots.txt la prohíbe → rechazada; pública → agregada
         assert (
@@ -356,6 +376,12 @@ def test_lista_blanca_por_visitante_de_punta_a_punta(lista_modelos):  # noqa: F8
         assert r.status_code == 422 and "robots.txt" in r.json()["detail"]
         r = c.post("/api/fuentes/url", json={"url": "https://8.8.8.8/tienda"}, headers=CABECERAS)
         assert r.status_code == 201
+        # Con el cupo lleno (4 fijas + 1 propia), la segunda URL queda guardada pero apagada
+        r = c.post("/api/fuentes/url", json={"url": "https://8.8.8.8/otra"}, headers=CABECERAS)
+        assert r.status_code == 201
+        otra = next(f for f in r.json()["grupos"][0]["fuentes"] if f["url"].endswith("/otra"))
+        assert otra["activa"] is False
+        assert c.delete(f"/api/fuentes/{otra['id']}", headers=CABECERAS).status_code == 200
 
         # PDF propio: se guarda su texto y su SHA-256; un archivo que no es PDF se rechaza
         archivo = {"archivo": ("lista.pdf", _pdf("Monitor LG 27 4K $1.200.000"), "application/pdf")}
@@ -367,8 +393,11 @@ def test_lista_blanca_por_visitante_de_punta_a_punta(lista_modelos):  # noqa: F8
         assert [f["tipo_fuente"] for f in propias] == ["web_plana", "pdf"]
         assert propias[1]["url"].startswith("PDF · SHA-256 ")
 
+        # Los PDF no cuentan para el tope de 5 fuentes web
+        assert len(servicio.fuentes.web_activas(VISITANTE)) == 5
         registro, documentos = servicio.fuentes.registro(VISITANTE, "vivo")
         assert "V3" not in {f.id for f in registro.fuentes}
+        assert len(registro.fuentes) == 6
         assert len(documentos) == 1 and "Monitor" in next(iter(documentos.values()))
 
         # La consulta en vivo llega al agente con la comparación abierta y esas fuentes
@@ -384,18 +413,17 @@ def test_lista_blanca_por_visitante_de_punta_a_punta(lista_modelos):  # noqa: F8
         assert kw["abierta"] is True and kw["documentos"] == documentos
         assert {f.id for f in kw["registro"].fuentes} == {f.id for f in registro.fuentes}
 
-        # Eliminar una propia; las por defecto no se eliminan; restablecer vuelve a todo
+        # Eliminar una propia; las por defecto no se eliminan; restablecer vuelve a las 5 fijas
         assert c.delete(f"/api/fuentes/{propias[0]['id']}", headers=CABECERAS).status_code == 200
-        assert c.delete("/api/fuentes/V1", headers=CABECERAS).status_code == 404
+        assert c.delete("/api/fuentes/V3", headers=CABECERAS).status_code == 404
         r = c.post("/api/fuentes/restablecer", headers=CABECERAS).json()
-        assert (
-            all(f["activa"] for f in r["grupos"][0]["fuentes"])
-            and len(r["grupos"][0]["fuentes"]) == 5
-        )
+        vivo = r["grupos"][0]["fuentes"]
+        assert {f["id"] for f in vivo if f["activa"]} == EN_VIVO_POR_DEFECTO
+        assert len(vivo) == len(TIENDAS_EN_VIVO)
 
         # Sin fuentes activas en el grupo no se crea la consulta
-        for i in range(1, 6):
-            c.patch(f"/api/fuentes/V{i}", json={"activa": False}, headers=CABECERAS)
+        for i in EN_VIVO_POR_DEFECTO:
+            c.patch(f"/api/fuentes/{i}", json={"activa": False}, headers=CABECERAS)
         r = c.post(
             "/api/consultas", json={"consulta": "monitor 4K", "corpus": "vivo"}, headers=CABECERAS
         )

@@ -136,9 +136,26 @@ color de acento.
 
 ## Consulta en vivo y fuentes del usuario
 
-Además del corpus congelado, CotIA consulta tiendas reales de una lista blanca: Alkosto, Ktronix, Falabella, Samsung
-Colombia y Panamericana. La lista se eligió el 11-nov-2026 tras revisar el robots.txt de cada sitio, su respuesta a un
-cliente automatizado y sus términos de uso (D112). El visitante ve la lista completa, la activa o desactiva por
+Además del corpus congelado, CotIA consulta tiendas reales de una lista blanca. La primera lista (11-nov-2026) tuvo
+cinco tiendas elegidas tras revisar el robots.txt de cada sitio, su respuesta a un cliente automatizado y sus términos
+de uso (D112). El 14-nov se amplió con un sondeo reproducible de 35 tiendas colombianas (`make sondeo-tiendas`) que
+lee esos tres criterios y busca en las páginas de términos cláusulas sobre robots o extracción automatizada; las
+páginas que cargan por JavaScript se leyeron también con el navegador. El criterio se volvió único (D132): una tienda
+no es apta si sus términos prohíben de forma expresa el acceso automatizado, aunque su robots.txt lo permita o
+publique un `llms.txt` para modelos de lenguaje. Así salieron Alkosto y Ktronix, cuyos términos excluyen «spiders,
+site copiers ó cualquier otro dispositivo, programa, algoritmo ó método para acceder, adquirir, copiar ó
+monitorear» su contenido, junto con Huawei, Asus y Home Sentry; el `llms.txt` de Alkosto incluye además una sección de
+«Instrucciones para el modelo de lenguaje» con mensajes comerciales, un ejemplo real de texto de una tienda dirigido
+al agente. El catálogo quedó en 13 tiendas aptas, cada una con las categorías que vende y, si aplica, su marca
+exclusiva (Tabla 3.p.2).
+
+Cada consulta usa como máximo cinco fuentes web, incluidas las URL que agregue el visitante (D127, D131): con el
+tope de 14 acciones del planificador, más tiendas reparten menos de tres acciones por tienda y el agente no alcanza
+las fichas de producto, y el costo y la latencia crecen con cada fuente. Al cargar CotIA quedan activas siempre las
+mismas cinco (Falabella, Samsung Colombia, Panamericana, Homecenter y Tienda Claro); el visitante cambia la selección
+con los interruptores del panel «Fuentes», que muestra el contador «n de 5» y no deja activar una sexta. La API
+aplica el mismo tope, y una URL agregada con el cupo lleno se guarda desactivada. Los PDF no cuentan, porque no
+consumen navegación. El visitante ve la lista completa, la activa o desactiva por
 fuente y le agrega tiendas propias (URL) y listas de precios en PDF; sus cambios se guardan por visitante y no
 afectan a los demás (D113). Del PDF se conservan el texto extraído y su SHA-256, no el archivo, y no se calculan
 embeddings del documento: una lista de precios es corta y se necesita completa.
@@ -154,7 +171,7 @@ el grupo de cada oferta y si cumple la necesidad; presupuesto, plazo y disponibi
 deterministas. La disponibilidad no informada no descarta la oferta, pero la marca (D115).
 
 El modo en vivo es una demostración sin cifras en el informe: sus resultados cambian con los precios y no son
-reproducibles. En una consulta por el Samsung Galaxy A57 de 256 GB, el agente recorrió las cinco tiendas, recolectó
+reproducibles. En una consulta por el Samsung Galaxy A57 de 256 GB sobre la lista del 11-nov, el agente recorrió las cinco tiendas, recolectó
 65 ofertas y recomendó la de Falabella por $1.599.900 con envío gratis, confirmada por la segunda lectura de N3, frente
 a la misma referencia en Samsung por $1.999.900 (US$0,063, 379 s). La prueba dejó un hallazgo de validez externa: el
 clasificador de inyección de C2, sin falsos positivos en los 47 fragmentos limpios del corpus, retiró hasta 21 de 26

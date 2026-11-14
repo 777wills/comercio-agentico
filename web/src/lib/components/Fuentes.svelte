@@ -23,9 +23,16 @@
 		mensaje: 'Chat'
 	};
 	const AYUDA: Record<Grupo, string> = {
-		vivo: 'Tiendas reales en internet, leídas en el momento. Puede agregar las suyas y sus listas de precios en PDF.',
+		vivo: 'Tiendas reales en internet, leídas en el momento. Cada consulta usa hasta 5 tiendas activas, incluidas las que agregue; sus listas de precios en PDF no cuentan.',
 		a: 'Réplicas de tiendas colombianas con datos leídos el 9-nov-2026. Siempre dan el mismo resultado.',
 		b: 'Cinco proveedores ficticios en formatos distintos: catálogo MCP, dos webs, PDF y chat.'
+	};
+	const CATEGORIA: Record<string, string> = {
+		portatil: 'Portátiles',
+		monitor: 'Monitores',
+		celular: 'Celulares',
+		audifonos: 'Audífonos',
+		almacenamiento: 'Almacenamiento'
 	};
 
 	onMount(() => {
@@ -45,6 +52,13 @@
 	const propias = $derived(grupo?.fuentes.filter((f) => f.eliminable) ?? []);
 	const urlsPropias = $derived(propias.filter((f) => f.tipo_fuente !== 'pdf').length);
 	const pdfsPropios = $derived(propias.filter((f) => f.tipo_fuente === 'pdf').length);
+	// D131: tope de tiendas web activas en el grupo en vivo (los PDF no cuentan).
+	const tope = $derived(fuentes.lista?.limites.tiendas_activas ?? 5);
+	const activasWeb = $derived(
+		grupo?.fuentes.filter((f) => f.activa && f.tipo_fuente !== 'pdf').length ?? 0
+	);
+	const sinCupo = (f: { activa: boolean; tipo_fuente: string }) =>
+		config.corpus === 'vivo' && !f.activa && f.tipo_fuente !== 'pdf' && activasWeb >= tope;
 </script>
 
 <Dialog.Root bind:open={fuentes.panel}>
@@ -69,6 +83,11 @@
 			{/each}
 		</div>
 		<p class="-mt-2 text-xs text-muted-foreground">{AYUDA[config.corpus]}</p>
+		{#if config.corpus === 'vivo' && grupo}
+			<p class="-mt-3 text-xs {activasWeb >= tope ? 'text-foreground' : 'text-muted-foreground'}">
+				Tiendas activas: <span class="font-medium tabular-nums">{activasWeb} de {tope}</span>
+			</p>
+		{/if}
 
 		{#if grupo}
 			<ul class="divide-y rounded-lg border">
@@ -76,12 +95,18 @@
 					<li class="flex items-center gap-3 px-3 py-2.5">
 						<Switch
 							checked={f.activa}
-							disabled={fuentes.ocupado}
+							disabled={fuentes.ocupado || sinCupo(f)}
 							onCheckedChange={(v) => intentar(() => fuentes.activar(f.id, v))}
 							aria-label="Activar {f.nombre}"
+							title={sinCupo(f) ? `Máximo ${tope} tiendas activas: desactive una para activar esta.` : undefined}
 						/>
 						<div class="min-w-0 flex-1">
 							<div class="truncate text-sm {f.activa ? '' : 'text-muted-foreground'}">{f.nombre}</div>
+							{#if f.categorias?.length}
+								<div class="truncate text-xs text-muted-foreground">
+									{f.marca ? `Solo ${f.marca} · ` : ''}{f.categorias.map((c) => CATEGORIA[c] ?? c).join(', ')}
+								</div>
+							{/if}
 							<div class="truncate text-xs text-muted-foreground" title={f.url}>
 								{TIPO[f.tipo_fuente] ?? f.tipo_fuente}{f.origen === 'usuario' ? ' · agregada por usted' : ''}
 								· {f.url}
@@ -157,7 +182,7 @@
 			class="justify-self-start text-xs text-muted-foreground hover:text-foreground"
 			disabled={fuentes.ocupado}
 			onclick={() =>
-				intentar(() => fuentes.restablecer(), 'Lista restablecida: todas activas y sin fuentes propias.')}
+				intentar(() => fuentes.restablecer(), 'Lista restablecida: tiendas por defecto y sin fuentes propias.')}
 			>Restablecer la lista por defecto</button
 		>
 	</Dialog.Content>

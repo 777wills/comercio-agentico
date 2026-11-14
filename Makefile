@@ -108,6 +108,9 @@ c2-reales: ## D115 b: lee en vivo ~80 páginas de las 5 tiendas y mide cuánto r
 c2-reales-analisis: ## D115 b: tablas y figura con las páginas ya leídas (US$0, sin red)
 	uv run python -m comercio_agentico.ataques.c2_reales --solo-analisis
 
+sondeo-tiendas: ## D132: robots.txt, respuesta y términos de 35 tiendas candidatas (red; ~1 min; US$0, sin LLM)
+	uv run python -m comercio_agentico.sondeo_tiendas
+
 metricas: ## Recalcula métricas de una corrida: make metricas CORRIDA=resultados/corridas/<archivo>.jsonl (US$0)
 	uv run python -m comercio_agentico.arnes.metricas $(CORRIDA)
 

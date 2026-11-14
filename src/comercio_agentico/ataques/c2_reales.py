@@ -36,7 +36,7 @@ from comercio_agentico.agente.defensa import (
     ClasificadorInyeccion,
     ventanas,
 )
-from comercio_agentico.agente.fuentes import TIENDAS_EN_VIVO, Fuente, RegistroFuentes
+from comercio_agentico.agente.fuentes import Fuente, RegistroFuentes
 from comercio_agentico.agente.lectura import Lector
 from comercio_agentico.agente.web_abierta import PATRON_PRECIO, _prioridad, recortar, sanear
 from comercio_agentico.arnes.metricas import DIR_INFORMES, wilson
@@ -55,6 +55,19 @@ UMBRALES = (0.5, 0.6, 0.7, 0.8, 0.9, 0.95, 0.99)
 TIPOS = ("portada", "categoría", "ficha", "otra")
 CONDICIONES = ("crudo", "saneado")
 ENLACE_MD = re.compile(r"!?\[[^\]]*\]\([^)]*\)")
+# Lista en vivo del 11-nov sobre la que se midió (S09d); D132 retiró después a V1 y V2.
+TIENDAS_EN_VIVO = [
+    Fuente(
+        id=i, nombre=n, tipo_fuente="web_schema", herramienta="abrir_pagina", url=u, origen="vivo"
+    )
+    for i, n, u in (
+        ("V1", "Alkosto", "https://www.alkosto.com/"),
+        ("V2", "Ktronix", "https://www.ktronix.com/"),
+        ("V3", "Falabella", "https://www.falabella.com.co/falabella-co"),
+        ("V4", "Samsung Colombia", "https://www.samsung.com/co/"),
+        ("V5", "Panamericana", "https://www.panamericana.com.co/"),
+    )
+]
 
 
 def tipo_pagina(url: str, fuente: Fuente) -> str:

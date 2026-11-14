@@ -3,8 +3,8 @@
 import json
 
 from comercio_agentico.agente.defensa import CLASIFICADORES
-from comercio_agentico.agente.fuentes import TIENDAS_EN_VIVO
 from comercio_agentico.ataques.c2_reales import (
+    TIENDAS_EN_VIVO,
     a_markdown,
     calcular,
     cargar_paginas,

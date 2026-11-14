@@ -182,12 +182,14 @@ export type FuenteLista = {
     tipo_fuente: string;
     url: string;
     origen: "corpus" | "vivo" | "usuario";
+    categorias: string[];
+    marca: string | null;
     activa: boolean;
     eliminable: boolean;
 };
 export type ListaBlanca = {
     grupos: { id: Grupo; nombre: string; fuentes: FuenteLista[] }[];
-    limites: { urls: number; pdfs: number; mb_pdf: number };
+    limites: { urls: number; pdfs: number; mb_pdf: number; tiendas_activas: number };
 };
 
 export class ErrorApi extends Error {

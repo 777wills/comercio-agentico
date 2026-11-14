@@ -1260,3 +1260,50 @@ Cómo leerlo:
 - **Segunda tabla (decisión):** con «N3 + abstención», la columna «Errónea» debe quedar en 0 para precio −10 %, envío
   omitido y agotada leída como disponible. Para precio +10 % y disponible leída como agotada, las erróneas casi no
   bajan: la falla saca a la oferta correcta y N3 solo verifica a la ganadora.
+
+## S09f — Catálogo amplio de tiendas en vivo con tope de 5 (14-nov, D127, D131, D132)
+
+| Qué | Para qué |
+| --- | --- |
+| `make sondeo-tiendas` | Revisa 35 tiendas: robots.txt, respuesta a un robot y cláusulas sobre robots en sus términos |
+| 13 tiendas en vivo con etiquetas | Categorías que vende cada una y marca exclusiva (Apple, Samsung, HP, LG, Sony) |
+| 5 activas al cargar, tope de 5 | Falabella, Samsung Colombia, Panamericana, Homecenter y Tienda Claro; el visitante cambia la selección |
+| Alkosto y Ktronix fuera (D132) | Sus términos prohíben «spiders… o cualquier programa» para acceder al sitio |
+
+### Cómo probarlo
+
+**1. Pruebas sin red — US$0**
+
+```bash
+uv run pytest tests/test_vivo.py -q
+```
+
+Si funciona: todas en verde. `test_lista_blanca_por_visitante_de_punta_a_punta` comprueba que arrancan activas las 5
+por defecto, que una URL agregada con el cupo lleno queda desactivada, que activar una sexta tienda responde 422 y
+que restablecer vuelve a las 5.
+
+**2. El sondeo — US$0, con red (~1 min)**
+
+```bash
+make sondeo-tiendas
+```
+
+Escribe `resultados/tiendas/sondeo_<fecha>.jsonl`, una línea por tienda: `robots` (permite o el motivo), `estado` de
+la portada (403 o 429 = no apta) y, por cada página de términos enlazada, los fragmentos que mencionan robots o
+extracción automatizada. Los fragmentos se leen a mano: «Rastrear mi pedido» o «robot aspiradora» son falsos
+positivos; «Utilizar spiders… para acceder» es una prohibición.
+
+**3. El panel en la interfaz — US$0 (sin consultar)**
+
+```bash
+make bd && make api      # o: make cotia-docker (:8080)
+```
+
+Abrir <http://127.0.0.1:8000>, botón «Fuentes», pestaña «Tiendas en vivo». Si funciona: 13 tiendas, 5 encendidas,
+«Tiendas activas: 5 de 5», cada tienda con sus categorías («Solo Apple · Portátiles, Monitores…») y los interruptores
+apagados deshabilitados hasta que se apague otra. «Restablecer la lista por defecto» vuelve a las 5.
+
+**4. Una consulta en vivo — < US$0,05 (Flash, con su clave en la interfaz)**
+
+Con solo Mac Center activa, «¿Dónde está más barato el iPhone 17 de 256 GB?». Tarda entre 5 y 10 minutos (cada
+página tarda ~1 min entre la lectura con Chromium y la extracción).

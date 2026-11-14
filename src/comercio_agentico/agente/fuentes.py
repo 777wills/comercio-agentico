@@ -30,6 +30,9 @@ class Fuente(BaseModel):
     # corpus: copia congelada servida en local. vivo y usuario: internet abierta, con las
     # salvaguardas de `web_abierta` (D112).
     origen: Origen = "corpus"
+    # Solo informativas para el visitante (D127): categorías del perfil y marca exclusiva.
+    categorias: list[str] = []
+    marca: str | None = None
 
     @property
     def abierta(self) -> bool:
@@ -60,17 +63,40 @@ def cargar_fuentes(ruta: str | Path = RUTA_FUENTES_B) -> RegistroFuentes:
         return RegistroFuentes.model_validate(yaml.safe_load(archivo))
 
 
-# Tiendas reales de la lista blanca por defecto (D112; sondeo de robots.txt, respuesta y términos
-# del 11-nov-2026). La URL es el punto de entrada; el agente sigue enlaces del mismo sitio.
+TODAS = ["portatil", "monitor", "celular", "audifonos", "almacenamiento"]
+APPLE = ["portatil", "monitor", "celular", "audifonos"]
+SAMSUNG = ["monitor", "celular", "audifonos", "almacenamiento"]
+
+# Tiendas reales aptas (D112, D132: robots.txt, respuesta a un cliente automatizado y términos sin
+# prohibición expresa del acceso automatizado; sondeo del 14-nov-2026 en resultados/tiendas/).
+# La URL es el punto de entrada; el agente sigue enlaces del mismo sitio.
 TIENDAS_EN_VIVO: list[Fuente] = [
     Fuente(
-        id=i, nombre=n, tipo_fuente="web_schema", herramienta="abrir_pagina", url=u, origen="vivo"
+        id=i,
+        nombre=n,
+        tipo_fuente="web_schema",
+        herramienta="abrir_pagina",
+        url=u,
+        origen="vivo",
+        categorias=c,
+        marca=m,
     )
-    for i, n, u in (
-        ("V1", "Alkosto", "https://www.alkosto.com/"),
-        ("V2", "Ktronix", "https://www.ktronix.com/"),
-        ("V3", "Falabella", "https://www.falabella.com.co/falabella-co"),
-        ("V4", "Samsung Colombia", "https://www.samsung.com/co/"),
-        ("V5", "Panamericana", "https://www.panamericana.com.co/"),
+    for i, n, u, c, m in (
+        ("V3", "Falabella", "https://www.falabella.com.co/falabella-co", TODAS, None),
+        ("V4", "Samsung Colombia", "https://www.samsung.com/co/", SAMSUNG, "Samsung"),
+        ("V5", "Panamericana", "https://www.panamericana.com.co/", TODAS, None),
+        ("V6", "Homecenter", "https://www.homecenter.com.co/homecenter-co/", TODAS, None),
+        ("V7", "Tienda Claro", "https://tienda.claro.com.co/", ["celular", "audifonos"], None),
+        ("V8", "Tigo", "https://compras.tigo.com.co/", ["celular"], None),
+        ("V9", "Mac Center", "https://www.maccenter.com.co/", APPLE, "Apple"),
+        ("V10", "iShop", "https://www.ishop.co/", APPLE, "Apple"),
+        ("V11", "Clevercel", "https://www.clevercel.co/", ["celular", "audifonos"], None),
+        ("V12", "Flamingo", "https://www.flamingo.com.co/", TODAS, None),
+        ("V13", "HP Colombia", "https://www.hp.com/co-es/shop/", ["portatil", "monitor"], "HP"),
+        ("V14", "LG Colombia", "https://www.lg.com/co/", ["monitor", "audifonos"], "LG"),
+        ("V15", "Sony Store", "https://store.sony.com.co/", ["audifonos"], "Sony"),
     )
 ]
+# Activas al cargar CotIA (D131); el visitante cambia la selección con un tope de 5.
+EN_VIVO_POR_DEFECTO = {"V3", "V4", "V5", "V6", "V7"}
+MAX_WEB_ACTIVAS = 5
