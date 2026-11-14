@@ -390,8 +390,46 @@ real guardada y con el camino de error a US$0; falta la consulta de Wills con su
       fallen al abrir sus fichas.
 - [x] Decisión registrada (D127, precisa D112).
 - [ ] Actualizar el panel «Fuentes» con las etiquetas, la preselección y el contador «n de 5».
-- [ ] Evaluar la API oficial de Mercado Libre como fuente estructurada (requiere que Wills registre una aplicación
-      en su portal de desarrolladores; prueba de búsqueda con el token, US$0) y decidir si entra.
+- [ ] Integración con Mercado Libre: sesión S09g.
+
+### S09g — Exploración de la integración de CotIA con la API de Mercado Libre (por hacer; US$0)
+
+Pregunta que responde: ¿puede CotIA consultar Mercado Libre Colombia (MCO) por su API oficial, en los términos que
+Mercado Libre exige, como una fuente estructurada más? El 14-nov, sin token, `/sites/MCO/search`, `/products/search`
+y `/sites/MCO` respondieron 403, y el portal de desarrolladores rechaza a los lectores automáticos, por eso la
+exploración se hace en el navegador.
+
+**Forma de trabajo (pedido de Wills):**
+- La documentación se recorre con **Claude in Chrome** de la forma más autónoma posible, partiendo de
+  <https://developers.mercadolibre.com.co/es_ar/guia-para-producto> y siguiendo todas sus secciones y enlaces
+  internos (autenticación y autorización, creación de la aplicación, búsquedas e ítems, productos y catálogo,
+  límites de uso, términos y condiciones, buenas prácticas).
+- Las interacciones de Wills se reducen al mínimo. Si hace falta poner datos en el portal (por ejemplo, para crear
+  la aplicación), el agente **primero los pide en el chat** y los escribe él mismo en la página. Solo pide a Wills
+  que actúe **en el mismo tab** que usa la extensión cuando no hay alternativa: inicio de sesión, verificación de
+  identidad, CAPTCHA, aceptación de términos a su nombre.
+- **Secretos:** el agente nunca copia, muestra ni guarda en el chat el *Client Secret* ni los tokens. Wills los
+  pasa a `.env` (`MERCADOLIBRE_CLIENT_ID`, `MERCADOLIBRE_CLIENT_SECRET`) y el agente los carga en un subproceso,
+  mostrando solo códigos de respuesta.
+- Nada se acepta ni se publica a nombre de Wills sin su confirmación explícita.
+
+**Entregables:**
+- [ ] Recorrido completo de la guía para producto con Claude in Chrome y notas por sección, con su URL: qué exige
+      Mercado Libre para integrar, qué está permitido y qué no.
+- [ ] Respuestas verificadas en la fuente: ¿tiene costo la API?; ¿qué flujo OAuth y qué permisos (*scopes*) aplican
+      a una aplicación que solo consulta?; ¿una aplicación sin ser vendedor puede buscar anuncios públicos por
+      palabra clave en MCO, o solo los propios?; ¿qué devuelve la búsqueda de productos del catálogo (precio,
+      vendedor, envío, existencias)?; límites de tasa; restricciones de uso (comparación de precios, uso por
+      terceros, almacenamiento de datos, atribución).
+- [ ] Si los términos lo permiten y Wills lo confirma: aplicación creada siguiendo la guía, y prueba con el token
+      de una búsqueda en MCO (Galaxy A57 de 256 GB) que muestre solo los códigos de respuesta y los campos
+      devueltos (US$0, sin LLM).
+- [ ] Propuesta a Wills con opciones: integrar (Mercado Libre como fuente estructurada, al estilo del mayorista por
+      MCP, con el mismo saneamiento y las mismas defensas, porque los títulos siguen siendo texto de terceros; y
+      cómo se concilia el token del proyecto con D82, que no expone credenciales del proyecto), dejarla en la hoja
+      de ruta o descartarla. La decisión se registra en `docs/DECISIONES.md`.
+- [ ] Si se integra: herramienta del planificador, prueba automática con respuestas grabadas y una consulta en vivo
+      con Flash (< US$0,05).
 
 ### Control de alcance de la consulta (14-nov, D126)
 

@@ -58,6 +58,9 @@ Siguiente paso exacto:
   visitante), preselección por categoría y marca modificable por el visitante. API de Mercado Libre: sin token
   responde 403 en `/sites/MCO/search` y `/products/search` (comprobado hoy); requiere una aplicación registrada por
   Wills.
+- **S09g** añadida al plan: exploración de la integración con la API de Mercado Libre recorriendo con Claude in
+  Chrome la guía para producto del portal de desarrolladores, con las reglas de interacción y de secretos fijadas
+  por Wills.
 - **Gasto de la fase: ≈ US$0,34** (total de la auditoría ≈ US$0,94; OpenRouter ≈ US$0,55, Anthropic ≈ US$0,39).
 
 **Hecho el 14-nov (auditoría integral antes del informe; Claude Code · Opus 5.5), con pruebas:**
