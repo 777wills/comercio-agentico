@@ -169,6 +169,11 @@ def crear_app(
     ruta_modelos: Path = RUTA_LISTA,
     dir_web: Path = DIR_WEB,
 ) -> FastAPI:
+    # El avance del agente (fuentes leídas, juez, N3) queda en el registro del servidor; nivel
+    # configurable con COTIA_LOG (la clave del visitante nunca se registra).
+    if not logging.getLogger().handlers:
+        logging.basicConfig(format="%(asctime)s %(name)s %(message)s", datefmt="%H:%M:%S")
+    logging.getLogger("comercio_agentico").setLevel(os.getenv("COTIA_LOG", "INFO"))
     motor = crear_motor(url_bd)
     sesiones = fabrica_sesiones(motor)
     servicio = servicio or Servicio(sesiones)
@@ -178,6 +183,8 @@ def crear_app(
     @asynccontextmanager
     async def ciclo(_: FastAPI):
         procesos = _arrancar_corpus() if servir_corpus else []
+        if huerfanas := servicio.recuperar_huerfanas():
+            log.warning("%d consultas huérfanas de un arranque anterior pasan a error", huerfanas)
         yield
         for p in procesos:
             p.terminate()

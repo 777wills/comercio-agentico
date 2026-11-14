@@ -22,7 +22,7 @@ import httpx
 from pypdf import PdfReader
 
 from comercio_agentico.agente.fuentes import Fuente, RegistroFuentes
-from comercio_agentico.agente.web_abierta import AGENTE_USUARIO, Cortesia, recortar
+from comercio_agentico.agente.web_abierta import AGENTE_USUARIO, Cortesia, GuardiaRed, recortar
 
 os.environ.setdefault("CRAWL4AI_NO_CLOUD_NOTICE", "1")
 
@@ -104,6 +104,7 @@ class Lector:
         self._arranque = asyncio.Lock()  # varias lecturas en paralelo: un solo Chromium
         self._cache: dict[str, Documento] = {}
         self._crawler: Any = None
+        self.guardia: GuardiaRed | None = None
         self._http: httpx.AsyncClient | None = None
 
     async def __aenter__(self) -> Lector:
@@ -116,6 +117,11 @@ class Lector:
             await self._crawler.__aexit__(None, None, None)
         if self._http is not None:
             await self._http.aclose()
+
+    def _de_confianza(self, url: str) -> bool:
+        """El corpus congelado se sirve en local y es configuración de confianza."""
+        fuente = self.registro.por_url(url)
+        return fuente is not None and not fuente.abierta
 
     def _fuente(self, url: str) -> Fuente:
         fuente = self.registro.por_url(url)
@@ -135,6 +141,11 @@ class Lector:
         async with self._arranque:  # Chromium arranca solo si la tarea abre alguna página
             if self._crawler is None:
                 crawler = AsyncWebCrawler(config=BrowserConfig(headless=True, verbose=False))
+                if any(f.abierta for f in self.registro.fuentes):  # D125
+                    self.guardia = GuardiaRed(confiable=self._de_confianza)
+                    crawler.crawler_strategy.set_hook(
+                        "on_page_context_created", self.guardia.instalar
+                    )
                 await crawler.__aenter__()
                 self._crawler = crawler
         resultado = await self._crawler.arun(

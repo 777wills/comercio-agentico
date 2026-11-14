@@ -199,6 +199,47 @@ def test_la_clave_no_se_guarda_ni_se_registra(lista_modelos, caplog):
         assert CLAVE not in texto
 
 
+def test_consulta_que_supera_el_limite_de_tiempo_termina_en_error(lista_modelos):
+    """D124: una lectura colgada no ocupa la única plaza para siempre."""
+
+    async def colgado(consulta, **kw):
+        await asyncio.sleep(30)
+
+    c, _ = cliente(lista_modelos, colgado, limite_s=0.3)
+    with c:
+        id_consulta = c.post(
+            "/api/consultas", json={"consulta": "Monitor Samsung M8"}, headers=CABECERAS
+        ).json()["id"]
+        eventos = eventos_sse(c, id_consulta)
+        detalle = c.get(f"/api/consultas/{id_consulta}").json()
+    assert eventos[-1]["estado"] == "error" and "límite de 0 min" in eventos[-1]["error"]
+    assert detalle["estado"] == "error"
+
+
+def test_al_arrancar_las_consultas_huerfanas_pasan_a_error(lista_modelos):
+    from comercio_agentico.api.ejecucion import INTERRUMPIDA
+
+    c, servicio = cliente(lista_modelos, AgenteSimulado())
+    with servicio.sesiones.begin() as s:
+        for i, estado in enumerate(("en_curso", "en_cola", "terminada")):
+            s.add(
+                ConsultaBD(
+                    id=f"00000000-0000-4000-8000-00000000000{i}",
+                    visitante=VISITANTE,
+                    consulta="x",
+                    corpus="b",
+                    modelo="deepseek-flash",
+                    opciones={},
+                    estado=estado,
+                    eventos=[],
+                )
+            )
+    with c, servicio.sesiones() as s:
+        estados = {f.estado: f.error for f in s.scalars(select(ConsultaBD)).all()}
+    assert set(estados) == {"error", "terminada"}
+    assert estados["error"] == INTERRUMPIDA
+
+
 def test_validaciones_de_la_peticion(lista_modelos):
     c, _ = cliente(lista_modelos, AgenteSimulado())
     with c:

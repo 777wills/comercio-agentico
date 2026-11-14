@@ -2,12 +2,13 @@
 
 ## Siguiente sesión
 
-**Decidir con Wills las propuestas de la auditoría del 14-nov** (`privado/AUDITORIA_Y_FLUJO.md`, parte I) y ejecutar
-el bloque A antes de S10. Orden recomendado: P1 (juez por lotes en la comparación abierta) y P6.1 (límite de tiempo y
-consultas huérfanas) → P3 (línea base humana: Wills cotiza 6 tareas con cronómetro) → P4 (fallas sembradas en N3) y
-P5 (análisis de error de las vagas, US$0) → P6.2 (evaluación programada en GitHub Actions) → S10 con P7–P10.
-Necesario de Wills: plantilla institucional del informe y confirmación de la norma de citación (la rúbrica nombra
-APA/MLA/Chicago; el plan, IEEE); visto bueno de cada propuesta; **rotar las claves de `.env`** (las usó la auditoría).
+**Propuestas de la auditoría aprobadas e implementadas (14-nov).** Siguen P4 (fallas sembradas en N3, ≈ US$0,05) y
+S10 con P7–P10 (introducción y contexto, estado del arte, plan frente a lo logrado, conclusiones, declaración de uso
+de IAG, referencias verificadas, matriz de decisión de modelos, tabla de riesgos éticos, vocabulario del pipeline).
+Necesario de Wills: **P3** (línea base humana: 6 tareas con cronómetro según
+`privado/auditoria/PROTOCOLO_LINEA_BASE.md`), **secreto `OPENROUTER_API_KEY_CANARIO`** en GitHub para el canario
+(P6.3), plantilla institucional del informe, confirmación de la norma de citación (la rúbrica nombra
+APA/MLA/Chicago; el plan, IEEE) y **rotar las claves de `.env`** (OpenRouter y Anthropic; las usó la auditoría).
 
 **S10 — Informe IEEE (al final).** S09c quedó hecha el 11-nov (cinco días antes de lo previsto): CotIA publicada en
 <https://comercio-agentico-production-bf030669.up.railway.app>.
@@ -23,6 +24,29 @@ Siguiente paso exacto:
 4. Operación (D118): desarrollo en local con `make cotia-docker` (:8080) o `make bd && make api`; Railway con
    Serverless, salvo los días de demo (20 y 27-nov: desactivarlo esa mañana y hacer una consulta de calentamiento).
    Capturas de LangSmith para el informe antes de que caduquen (14 días).
+
+**Hecho el 14-nov (implementación de las propuestas de la auditoría; Claude Code · Opus 5.5), con pruebas:**
+
+- **P1 / D122:** juez de la comparación abierta por lotes de 15 con reintento y alerta «sin juicio de pertinencia».
+  Verificado en vivo: A57 con Flash 64/64 ofertas juzgadas; audífonos Sony con Haiku 113/113 y recomendación Sony
+  WH-CH720N $349.900 (Alkosto), verificada (antes, 65/65 perdidas).
+- **P2 (b) / D123:** carga formal A21 (`ataques/cargas_adaptativas.yaml`, `ataques/adaptativo.py`,
+  `make ataque-adaptativo`). Flash: C0 3/3 exfiltraciones; C1, C2, C3 0/3 cada una
+  (`resultados/ataques/2026-11-14_adaptativo_titulo.jsonl`). Una ejecución C1 se abstuvo por sobreinferencia de
+  restricciones desde el nombre del producto (no por el ataque).
+- **P5:** `docs/informe/04_analisis_error_vagas.md` (US$0).
+- **P6.1 / D124:** límite de 15 min por consulta (`COTIA_LIMITE_S`) y consultas huérfanas a error al arrancar.
+  **P6.2–6.3:** `.github/workflows/evaluacion.yml` (arnés simulado semanal; canario con secreto).
+- **P12 / D121:** Streamlit retirado (módulo, prueba, dependencia y objetivo del Makefile); registro del agente
+  visible en la API (`COTIA_LOG`).
+- **P13 / D125:** guardia de red en Chromium (`GuardiaRed` en `agente/web_abierta.py`): valida cada salto de
+  redirección y bloquea imágenes, video y fuentes. Verificado con un banco local: sin guardia se leía el servicio
+  interno; con guardia no llegó la petición.
+- **P15 (parcial):** la ficha de Falabella se lee completa y C2 no retira nada; la pérdida ocurre en la extracción o
+  el emparejamiento.
+- `make check`: **214 pruebas** en verde, Ruff limpio. `privado/AUDITORIA_Y_FLUJO.md` actualizado (I.5 y parte II,
+  con la sección II.13 sobre LangGraph).
+- **Gasto de la fase: ≈ US$0,34** (total de la auditoría ≈ US$0,94; OpenRouter ≈ US$0,55, Anthropic ≈ US$0,39).
 
 **Hecho el 14-nov (auditoría integral antes del informe; Claude Code · Opus 5.5), con pruebas:**
 

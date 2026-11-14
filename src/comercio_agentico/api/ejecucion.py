@@ -36,6 +36,8 @@ MAX_EN_COLA = int(os.getenv("COTIA_MAX_EN_COLA", "5"))
 MODELO_VERIFICADOR_COTIA = "haiku-or"  # D105
 MODELO_VERIFICADOR_ANTHROPIC = "haiku"  # D114: N3 por la API directa
 LATIDO_S = 15.0
+LIMITE_S = float(os.getenv("COTIA_LIMITE_S", "900"))  # D124: tope de reloj por consulta
+INTERRUMPIDA = "Consulta interrumpida: el servidor se reinició antes de terminarla."
 
 
 class Saturado(RuntimeError):
@@ -176,8 +178,10 @@ class Servicio:
         clasificador_fn: Callable[[str], Any] = ClasificadorInyeccion,
         max_simultaneas: int = MAX_SIMULTANEAS,
         max_en_cola: int = MAX_EN_COLA,
+        limite_s: float = LIMITE_S,
     ) -> None:
         self.sesiones = sesiones
+        self.limite_s = limite_s
         self.preguntar_fn = preguntar_fn
         self.recursos_fn, self.variante_fn, self.clasificador_fn = (
             recursos_fn,
@@ -212,6 +216,15 @@ class Servicio:
         if nombre not in self._clasificadores:
             self._clasificadores[nombre] = self.clasificador_fn(nombre)
         return self._clasificadores[nombre]
+
+    def recuperar_huerfanas(self) -> int:
+        """D124: al arrancar, ninguna consulta está en curso; las que la base aún marca así
+        quedaron huérfanas por un reinicio y pasan a ``error`` con un motivo claro."""
+        with self.sesiones.begin() as s:
+            filas = s.query(ConsultaBD).filter(ConsultaBD.estado.in_(("en_cola", "en_curso"))).all()
+            for fila in filas:
+                fila.estado, fila.error = "error", INTERRUMPIDA
+            return len(filas)
 
     def activas(self) -> int:
         return sum(not p.terminado for p in self.progresos.values())
@@ -315,19 +328,26 @@ class Servicio:
                     if evento is not None:
                         await prog.emitir(evento)
 
-                r = await self.preguntar_fn(
-                    consulta,
-                    defensas=defensas,
-                    clasificador=self.clasificador(peticion.clasificador)
-                    if defensas.clasificador
-                    else None,
-                    verificar=peticion.verificar,
-                    politica_n3=peticion.politica_n3,
-                    al_avanzar=al_avanzar,
-                    registro=registro,
-                    emparejador=emparejador,
-                    **extra,
-                )
+                try:
+                    async with asyncio.timeout(self.limite_s):
+                        r = await self.preguntar_fn(
+                            consulta,
+                            defensas=defensas,
+                            clasificador=self.clasificador(peticion.clasificador)
+                            if defensas.clasificador
+                            else None,
+                            verificar=peticion.verificar,
+                            politica_n3=peticion.politica_n3,
+                            al_avanzar=al_avanzar,
+                            registro=registro,
+                            emparejador=emparejador,
+                            **extra,
+                        )
+                except TimeoutError:
+                    minutos = round(self.limite_s / 60)
+                    raise TimeoutError(
+                        f"La consulta superó el límite de {minutos} min y se detuvo."
+                    ) from None
             fila = registro_jsonl(None, r, None)
             detalle: dict[str, Any] = {
                 k: fila[k]

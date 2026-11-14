@@ -5,9 +5,11 @@ la mayoría de los productos no está en ese catálogo, así que las ofertas se 
 
 1. **Pistas sin LLM:** mismo GTIN, o embeddings del título casi idénticos (multilingual-e5,
    el mismo codificador del catálogo), forman grupos tentativos.
-2. **Juez con salida estructurada:** una sola llamada recibe la necesidad formalizada y las
-   ofertas con sus pistas; confirma el grupo de cada una (separa variantes) y dice si cumple la
-   necesidad (tipo de producto, marca, modelo y atributos pedidos), con el motivo si no.
+2. **Juez con salida estructurada:** recibe la necesidad formalizada y las ofertas con sus pistas,
+   por lotes de hasta 15 en paralelo (D122); confirma el grupo de cada una (separa variantes) y
+   dice si cumple la necesidad (tipo de producto, marca, modelo y atributos pedidos), con el
+   motivo si no. Las ofertas sin veredicto se vuelven a preguntar una vez; las que sigan sin él
+   quedan fuera con alerta.
 3. **Reglas deterministas:** perfil de categoría (disponibilidad), presupuesto y plazo.
 
 La propuesta elige la oferta válida de menor costo total, como en el camino con catálogo.
@@ -15,6 +17,8 @@ La propuesta elige la oferta válida de menor costo total, como en el camino con
 
 from __future__ import annotations
 
+import asyncio
+import logging
 from collections import Counter
 from collections.abc import Sequence
 from typing import Any
@@ -32,9 +36,13 @@ from comercio_agentico.esquema import (
     PropuestaCompra,
     _todos_obligatorios,
 )
-from comercio_agentico.modelos import invocar_estructurado
+from comercio_agentico.modelos import CostoExcedido, invocar_estructurado
+
+log = logging.getLogger("comercio_agentico.agente")
 
 UMBRAL_PISTA = 0.93  # similitud coseno de títulos para sugerir el mismo grupo
+TAMANO_LOTE = 15  # D122: ofertas por llamada al juez
+SIN_JUICIO = "sin juicio de pertinencia"
 
 
 class Juicio(BaseModel):
@@ -132,29 +140,64 @@ async def comparar(
     config: dict | None = None,
 ) -> list[Oferta]:
     """Copias de las ofertas con ``grupo`` y ``descarte`` (None si cumple)."""
+    """D122: el juez trabaja por lotes de hasta ``TAMANO_LOTE`` ofertas, en paralelo, y se vuelve a
+    preguntar una vez por las que queden sin veredicto. Las que sigan sin juicio se descartan como
+    ``SIN_JUICIO`` y la propuesta lo advierte (no se adivina que sirvan)."""
     if not ofertas:
         return []
     sugeridos = pistas(ofertas, codificar)
-    prompt = (
-        "Necesidad del comprador:\n"
-        + necesidad.model_dump_json(exclude_none=True, indent=1)
-        + "\n\nOfertas:\n"
-        + "\n".join(
-            _linea(i, o, g) for i, (o, g) in enumerate(zip(ofertas, sugeridos, strict=True))
+    cabecera = "Necesidad del comprador:\n" + necesidad.model_dump_json(exclude_none=True, indent=1)
+    # Las ofertas de un mismo grupo sugerido van juntas: el juez compara variantes lado a lado.
+    orden = sorted(range(len(ofertas)), key=lambda i: (sugeridos[i], i))
+    por_oferta: dict[int, Juicio] = {}
+    grupos: dict[tuple[int, int], int] = {}  # (lote, grupo del juez) → grupo global
+    siguiente = max(sugeridos) + 1
+
+    async def juzgar(indices: list[int]) -> Juicios:
+        prompt = (
+            cabecera
+            + "\n\nOfertas:\n"
+            + "\n".join(_linea(i, ofertas[i], sugeridos[i]) for i in indices)
         )
-    )
-    salida = await invocar_estructurado(
-        juez, [SystemMessage(INSTRUCCIONES_JUEZ), HumanMessage(prompt)], config
-    )
-    juicios = Juicios() if salida is None else salida
-    juicios = Juicios.model_validate(juicios) if isinstance(juicios, dict) else juicios
-    por_oferta = {j.oferta: j for j in juicios.juicios if 0 <= j.oferta < len(ofertas)}
+        try:
+            salida = await invocar_estructurado(
+                juez, [SystemMessage(INSTRUCCIONES_JUEZ), HumanMessage(prompt)], config
+            )
+        except CostoExcedido:
+            raise
+        except Exception as error:  # un lote caído no tumba a los demás
+            log.info("  juez: lote de %d ofertas falló (%s)", len(indices), type(error).__name__)
+            return Juicios()
+        salida = Juicios() if salida is None else salida
+        return Juicios.model_validate(salida) if isinstance(salida, dict) else salida
+
+    for ronda in range(2):  # primera pasada y un reintento de las faltantes
+        pendientes = [i for i in orden if i not in por_oferta]
+        if not pendientes:
+            break
+        lotes = [pendientes[k : k + TAMANO_LOTE] for k in range(0, len(pendientes), TAMANO_LOTE)]
+        respuestas = await asyncio.gather(*(juzgar(lote) for lote in lotes))
+        for n, (lote, juicios) in enumerate(zip(lotes, respuestas, strict=True)):
+            propios = {sugeridos[i] for i in lote}
+            for j in juicios.juicios:
+                if j.oferta not in lote or j.oferta in por_oferta:
+                    continue
+                # Un grupo sugerido se conserva; uno nuevo del juez se numera por lote.
+                if j.grupo not in propios:
+                    clave = (ronda * 1000 + n, j.grupo)
+                    if clave not in grupos:
+                        grupos[clave], siguiente = siguiente, siguiente + 1
+                    j = j.model_copy(update={"grupo": grupos[clave]})
+                por_oferta[j.oferta] = j
+        if ronda == 0 and len(por_oferta) < len(ofertas):
+            faltan = len(ofertas) - len(por_oferta)
+            log.info("  juez: %d ofertas sin veredicto; se reintenta", faltan)
 
     resultado = []
     for i, o in enumerate(ofertas):
         j = por_oferta.get(i)
         if j is None:  # sin juicio no hay evidencia de que sirva: se descarta, no se adivina
-            grupo, motivo = sugeridos[i], "sin juicio de pertinencia"
+            grupo, motivo = sugeridos[i], SIN_JUICIO
         else:
             grupo, motivo = j.grupo, None if j.cumple else (j.motivo or "no es lo pedido")
         motivo = motivo or descarte_determinista(o, necesidad, perfil)
@@ -182,6 +225,14 @@ def proponer_abierto(
     )
     alertas = [Alerta(tipo="fuente_no_disponible", mensaje=e) for e in errores]
     alertas += list(alertas_defensa)
+    if sin_juicio := sum(o.descarte == SIN_JUICIO for o in ofertas):
+        alertas.append(
+            Alerta(
+                tipo="emparejamiento_dudoso",
+                mensaje=f"{sin_juicio} ofertas quedaron sin juicio de pertinencia tras reintentar "
+                "y no se consideran.",
+            )
+        )
     proveedores = sorted({o.proveedor for o in ofertas})
     base = (
         f"Se recolectaron {len(ofertas)} ofertas de {len(proveedores)} fuentes "

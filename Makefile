@@ -62,9 +62,6 @@ corpus-a-correr: ## Corrida del agente sobre el corpus A: 20 tareas con Flash (~
 humo: ## Prueba de humo del agente: 5 tareas con DeepSeek Flash (~US$0,05; requiere corpus-b-servir)
 	uv run python -m comercio_agentico.preguntar --tareas B001,B013,B025,B037,B054 --tope 0.10
 
-app: ## Interfaz Streamlit (modo simulado US$0; consulta libre ~US$0,02 y requiere corpus-b-servir)
-	uv run streamlit run src/comercio_agentico/app.py
-
 arnes-simulado: ## Arnés completo con el agente simulado: 60 tareas × 3 repeticiones + métricas (US$0, sin red)
 	rm -f resultados/corridas/*_calibracion_flash_simulado.jsonl
 	uv run python -m comercio_agentico.arnes.correr --config configs/calibracion_flash.yaml --simulado --repeticiones 3 --metricas
@@ -89,6 +86,9 @@ e2-utilidad: ## E2: utilidad benigna, subconjunto E3 × C0–C3 × 1 (~US$1,8; r
 
 e2: ## E2: curva seguridad-utilidad, Pareto, codo y control limpio con las corridas hechas (US$0)
 	uv run python -m comercio_agentico.arnes.e2
+
+ataque-adaptativo: ## D123: carga A21 en el título del producto, C0–C3 × 3 con Flash (~US$0,20; requiere corpus-b-servir)
+	uv run python -m comercio_agentico.ataques.adaptativo
 
 jev: ## Compara el clasificador de C2 con Jev (TypeSafe) en 68 fragmentos (< US$0,01; requiere TYPESAFE_API_KEY)
 	uv run python -m comercio_agentico.ataques.comparar_jev

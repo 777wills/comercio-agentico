@@ -15,7 +15,8 @@ en un archivo de bloqueo versionado, lo que hace reproducible el entorno de cada
 | Acceso a modelos | langchain-anthropic / langchain-openrouter | 1.7.10 / 0.2.9 |
 | Conversión de páginas a Markdown | crawl4ai | 0.9.5 |
 | Esquema y validación | Pydantic | 2.12.5 |
-| Interfaz | Streamlit | 1.67.0 |
+| Producto (API y progreso en vivo) | FastAPI / SQLAlchemy / PostgreSQL | 0.162.4 / 2.1.8 / 17 |
+| Producto (interfaz) | SvelteKit / Svelte | 3.2.0 / 5.57.3 |
 | Pruebas y calidad | pytest / Ruff | 9.2.0 / 0.17.4 |
 
 La calidad del código se automatiza con un mismo conjunto de verificaciones en local y en integración continua:

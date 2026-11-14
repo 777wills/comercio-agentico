@@ -221,6 +221,61 @@ def test_comparar_usa_el_juicio_del_llm_y_las_reglas_deterministas():
     assert "datos de terceros" in sistema
 
 
+def _ofertas_numeradas(n: int) -> list:
+    return [_oferta(f"Producto distinto número {i} modelo X{i:03d}", 100_000 + i) for i in range(n)]
+
+
+def _indices(mensajes) -> list[int]:
+    import re
+
+    return [int(m) for m in re.findall(r"^Oferta (\d+) ", mensajes[1].content, re.MULTILINE)]
+
+
+def test_juez_por_lotes_reintenta_las_faltantes_y_no_pierde_ofertas():
+    """D122: 40 ofertas → 3 lotes; la primera pasada omite la mitad de cada lote y el reintento
+    las recupera. Ninguna queda «sin juicio»."""
+    ofertas = _ofertas_numeradas(40)
+    vistos: list[list[int]] = []
+
+    def responder(mensajes):
+        indices = _indices(mensajes)
+        vistos.append(indices)
+        primera = len(vistos) <= 3
+        elegidos = indices[::2] if primera else indices
+        return Juicios(
+            juicios=[Juicio(oferta=i, grupo=99, cumple=True, motivo=None) for i in elegidos]
+        )
+
+    juez = Doble(responder)
+    n = Necesidad(tipo_producto="monitor")
+    salida = asyncio.run(comparar(ofertas, n, PERFIL, juez, codificador_trigramas))
+    assert max(len(v) for v in vistos) <= 15
+    assert len(vistos) == 3 + 2  # 3 lotes y 2 lotes de reintento (20 faltantes)
+    assert all(o.descarte is None for o in salida)
+    # Un grupo nuevo del juez se numera por lote: no mezcla productos de lotes distintos
+    assert len({o.grupo for o in salida}) > 1
+
+
+def test_juez_lote_caido_y_omision_persistente_quedan_con_alerta():
+    ofertas = _ofertas_numeradas(20)
+
+    def responder(mensajes):
+        indices = _indices(mensajes)
+        if 0 in indices:  # el lote con la oferta 0 falla siempre
+            raise TimeoutError("sin respuesta")
+        return Juicios(
+            juicios=[Juicio(oferta=i, grupo=1, cumple=True, motivo=None) for i in indices]
+        )
+
+    n = Necesidad(tipo_producto="monitor")
+    salida = asyncio.run(comparar(ofertas, n, PERFIL, Doble(responder), codificador_trigramas))
+    sin = [o for o in salida if o.descarte == "sin juicio de pertinencia"]
+    assert 0 < len(sin) <= 15 and any(o.descarte is None for o in salida)
+    p = proponer_abierto("consulta", n, salida, PERFIL, None, [], "doble", 0.0)
+    alerta = next(a for a in p.alertas if a.tipo == "emparejamiento_dudoso")
+    assert f"{len(sin)} ofertas quedaron sin juicio" in alerta.mensaje
+
+
 def test_disponibilidad_desconocida_compite_con_aviso_y_agotado_no():
     from comercio_agentico.agente.comparacion_abierta import descarte_determinista
 
@@ -345,3 +400,83 @@ def test_lista_blanca_por_visitante_de_punta_a_punta(lista_modelos):  # noqa: F8
             "/api/consultas", json={"consulta": "monitor 4K", "corpus": "vivo"}, headers=CABECERAS
         )
         assert r.status_code == 422
+
+
+# --------------------------------------------------------------------------------------------------
+# D125: guardia de red del navegador (redirecciones y recursos)
+
+
+class _Respuesta:
+    def __init__(self, status: int, location: str | None = None):
+        self.status = status
+        self.headers = {"location": location} if location else {}
+
+
+class _Ruta:
+    """Doble de ``playwright.Route``: responde según un mapa URL → respuesta."""
+
+    def __init__(self, url: str, mapa: dict, tipo: str = "document"):
+        self.request = type("P", (), {"url": url, "resource_type": tipo})()
+        self.mapa, self.final, self.pedidas = mapa, None, []
+
+    async def continue_(self):
+        self.final = "continuar"
+
+    async def abort(self, motivo: str = "failed"):
+        self.final = f"abortar:{motivo}"
+
+    async def fulfill(self, response):
+        self.final = f"entregar:{response.status}"
+
+    async def fetch(self, url: str, max_redirects: int):
+        assert max_redirects == 0
+        self.pedidas.append(url)
+        return self.mapa[url]
+
+
+def _guardia(monkeypatch, privados: set[str], confiable=lambda url: False):
+    from comercio_agentico.agente import web_abierta
+    from comercio_agentico.agente.web_abierta import GuardiaRed
+
+    def validar(url):
+        if url.split("/")[2] in privados:
+            raise UrlNoPermitida("no pública")
+        return url
+
+    monkeypatch.setattr(web_abierta, "validar_url_publica", validar)
+    return GuardiaRed(confiable=confiable)
+
+
+def test_guardia_bloquea_una_redireccion_publica_hacia_una_direccion_interna(monkeypatch):
+    guardia = _guardia(monkeypatch, {"interno.local"})
+    mapa = {
+        "https://tienda.co/a": _Respuesta(302, "/b"),
+        "https://tienda.co/b": _Respuesta(301, "http://interno.local/secreto"),
+    }
+    ruta = _Ruta("https://tienda.co/a", mapa)
+    asyncio.run(guardia.manejar(ruta))
+    assert ruta.final == "abortar:blockedbyclient"
+    assert ruta.pedidas == ["https://tienda.co/a", "https://tienda.co/b"]  # nunca pidió el interno
+    assert guardia.bloqueadas == ["http://interno.local/secreto"]
+
+
+def test_guardia_deja_pasar_cadenas_publicas_y_el_corpus_de_confianza(monkeypatch):
+    guardia = _guardia(
+        monkeypatch, {"127.0.0.1:8800"}, confiable=lambda u: u.startswith("http://127.0.0.1:8800/")
+    )
+    directa = _Ruta("https://tienda.co/p", {"https://tienda.co/p": _Respuesta(200)})
+    redirigida = _Ruta(
+        "https://tienda.co/x",
+        {
+            "https://tienda.co/x": _Respuesta(302, "https://www.tienda.co/x"),
+            "https://www.tienda.co/x": _Respuesta(200),
+        },
+    )
+    corpus = _Ruta("http://127.0.0.1:8800/p3_web_plana/index.html", {})
+    imagen = _Ruta("https://tienda.co/logo.png", {}, tipo="image")
+    for r in (directa, redirigida, corpus, imagen):
+        asyncio.run(guardia.manejar(r))
+    assert directa.final == "entregar:200"
+    assert redirigida.final == "continuar"  # el navegador recorre la cadena ya validada
+    assert corpus.final == "continuar" and corpus.pedidas == []
+    assert imagen.final == "abortar:failed"

@@ -1,7 +1,8 @@
 """Salvaguardas para leer internet abierta: tiendas en vivo y fuentes del visitante (D112).
 
 - **SSRF:** solo se abren URL http(s) cuyo host resuelve a direcciones públicas; nunca
-  ``localhost``, redes privadas, enlace local ni metadatos de la nube.
+  ``localhost``, redes privadas, enlace local ni metadatos de la nube. En el navegador se valida
+  además cada redirección y cada recurso (``GuardiaRed``, D125).
 - **robots.txt:** se consulta una vez por sitio y se respeta para el agente de usuario del robot.
 - **Cortesía:** pausa mínima entre peticiones a un mismo sitio.
 - **Tamaño:** tope de texto y de enlaces por página, para no inflar los tokens del extractor ni
@@ -19,7 +20,8 @@ import ipaddress
 import re
 import socket
 import time
-from urllib.parse import urlsplit
+from collections.abc import Callable
+from urllib.parse import urljoin, urlsplit
 from urllib.robotparser import RobotFileParser
 
 import httpx
@@ -52,6 +54,68 @@ def validar_url_publica(url: str) -> str:
         if not ipaddress.ip_address(d.split("%")[0]).is_global:
             raise UrlNoPermitida(f"{partes.hostname} apunta a una dirección no pública.")
     return url
+
+
+MAX_SALTOS = 5
+RECURSOS_BLOQUEADOS = {"image", "media", "font"}  # no informan la compra (D120)
+
+
+class GuardiaRed:
+    """D125: SSRF en el navegador. Playwright llama al manejador de una ruta solo con la primera
+    URL de una cadena de redirecciones; el navegador sigue las demás por su cuenta. Por eso cada
+    petición se resuelve aquí salto a salto (``max_redirects=0``) y se exige una dirección pública
+    en cada uno. Si la cadena es limpia, la respuesta se entrega tal cual (2xx) o se deja seguir
+    al navegador (3xx ya validada). Las URL de fuentes de confianza (corpus local) pasan sin
+    control. Imágenes, video y fuentes tipográficas se descartan: no informan la compra.
+    """
+
+    def __init__(self, confiable: Callable[[str], bool] = lambda url: False) -> None:
+        self.confiable = confiable
+        self.bloqueadas: list[str] = []
+        self._hosts: dict[str, bool] = {}
+
+    async def _publica(self, url: str) -> bool:
+        host = urlsplit(url).hostname or ""
+        if host not in self._hosts:
+            try:
+                await asyncio.to_thread(validar_url_publica, url)
+                self._hosts[host] = True
+            except UrlNoPermitida:
+                self._hosts[host] = False
+        return self._hosts[host]
+
+    async def manejar(self, route) -> None:
+        peticion = route.request
+        url = peticion.url
+        if not url.startswith(("http://", "https://")) or self.confiable(url):
+            await route.continue_()
+            return
+        if peticion.resource_type in RECURSOS_BLOQUEADOS:
+            await route.abort()
+            return
+        salto = url
+        for _ in range(MAX_SALTOS + 1):
+            if not await self._publica(salto):
+                self.bloqueadas.append(salto)
+                await route.abort("blockedbyclient")
+                return
+            respuesta = await route.fetch(url=salto, max_redirects=0)
+            destino = respuesta.headers.get("location")
+            if not (300 <= respuesta.status < 400 and destino):
+                if salto == url:
+                    await route.fulfill(response=respuesta)
+                else:  # la cadena es pública: el navegador la recorre con su URL correcta
+                    await route.continue_()
+                return
+            salto = urljoin(salto, destino)
+        await route.abort("blockedbyclient")
+
+    async def instalar(self, page, context, **_: object):
+        """Hook ``on_page_context_created`` de crawl4ai (una sola vez por contexto)."""
+        if not getattr(context, "_cotia_guardia", False):
+            await context.route("**/*", self.manejar)
+            context._cotia_guardia = True
+        return page
 
 
 class Cortesia:

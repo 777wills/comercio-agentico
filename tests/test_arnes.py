@@ -136,23 +136,6 @@ def test_informe_markdown_y_graficos(corrida, tmp_path):
     assert all(r.exists() and r.stat().st_size > 1000 for r in rutas)
 
 
-def test_app_streamlit_modo_simulado():
-    from streamlit.testing.v1 import AppTest
-
-    from comercio_agentico.corpus_b import RAIZ
-
-    at = AppTest.from_file(str(RAIZ / "src" / "comercio_agentico" / "app.py"), default_timeout=60)
-    at.run()
-    assert not at.exception
-    at.radio[0].set_value("simulado").run()
-    at.selectbox[0].set_value("B013").run()
-    at.button[0].click().run()
-    assert not at.exception
-    assert at.success and "Recomendación" in at.success[0].value
-    assert len(at.dataframe[0].value) >= 2
-    assert any("SHA-256" in m.value for m in at.markdown)
-
-
 def test_subconjunto_e3_congelado_y_proporcional():
     from collections import Counter
 

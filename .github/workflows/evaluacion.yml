@@ -1,0 +1,88 @@
+# Evaluación programada (D124): reevaluación periódica del agente sobre el corpus regenerado, como
+# sustituto del reentrenamiento (el proyecto no entrena modelos). Cada lunes y a demanda.
+#
+# - «arnes»: corpus regenerado y comparado con lo versionado, arnés con el agente simulado sobre
+#   las 60 tareas y métricas M1–M6 publicadas como artefacto (US$0).
+# - «canario»: 5 tareas reales con DeepSeek V4.1 Flash (una por categoría, tope US$0,10 por tarea).
+#   Solo corre si existe el secreto OPENROUTER_API_KEY_CANARIO; falla si aciertan menos de 4. Es
+#   el monitoreo de deriva: detecta si el modelo o el proveedor cambian detrás del mismo nombre.
+name: Evaluación programada
+
+on:
+  schedule:
+    - cron: "0 11 * * 1" # lunes 06:00 en Colombia
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  arnes:
+    name: Arnés simulado y métricas
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@18d369b23da25a81e9458561248e1aafff6a70fa # v10.3.1
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - run: uv sync --all-groups
+      - name: Regenerar el corpus y compararlo con lo versionado
+        run: |
+          uv run python -m comercio_agentico.corpus_a.construir
+          uv run python -m comercio_agentico.ataques.plantar
+          git diff --exit-code -- corpus/
+      - name: Arnés con el agente simulado (60 tareas) y métricas
+        run: >
+          uv run python -m comercio_agentico.arnes.correr --config configs/calibracion_flash.yaml
+          --simulado --salida /tmp/evaluacion_simulada.jsonl --metricas
+      - uses: actions/upload-artifact@v4
+        with:
+          name: metricas-simuladas
+          path: resultados/informes/evaluacion_simulada/
+
+  canario:
+    name: Canario con el modelo real
+    runs-on: ubuntu-latest
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY_CANARIO }}
+      COSTO_MAXIMO_POR_TAREA_USD: "0.10"
+    steps:
+      - name: ¿Hay secreto del canario?
+        id: secreto
+        run: echo "hay=${{ env.OPENROUTER_API_KEY != '' }}" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        if: steps.secreto.outputs.hay == 'true'
+      - uses: astral-sh/setup-uv@18d369b23da25a81e9458561248e1aafff6a70fa # v10.3.1
+        if: steps.secreto.outputs.hay == 'true'
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - name: Entorno y navegador
+        if: steps.secreto.outputs.hay == 'true'
+        run: |
+          uv sync --all-groups
+          uv run playwright install --with-deps chromium
+      - name: Cinco tareas reales (Flash, C1)
+        if: steps.secreto.outputs.hay == 'true'
+        run: |
+          uv run python -m comercio_agentico.corpus_b.servir &
+          sleep 8
+          uv run python -m comercio_agentico.preguntar --tareas B001,B013,B025,B037,B054 \
+            --tope 0.10 --silencioso --salida /tmp/canario.jsonl
+      - name: Umbral (al menos 4 de 5 aciertos)
+        if: steps.secreto.outputs.hay == 'true'
+        run: |
+          python3 - <<'EOF'
+          import json, sys
+          filas = [json.loads(l) for l in open("/tmp/canario.jsonl")]
+          aciertos = sum(f["evaluacion"]["acierto"] for f in filas)
+          gasto = sum(f["costo_usd"] for f in filas)
+          print(f"Canario: {aciertos}/{len(filas)} aciertos, US${gasto:.4f}")
+          sys.exit(0 if aciertos >= 4 and len(filas) == 5 else 1)
+          EOF
+      - uses: actions/upload-artifact@v4
+        if: steps.secreto.outputs.hay == 'true' && always()
+        with:
+          name: canario
+          path: /tmp/canario.jsonl
