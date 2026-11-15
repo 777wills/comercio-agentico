@@ -1342,3 +1342,38 @@ Para aceptar una reversión intencional: `GUARDIA_OK=1 git commit …`.
 
 Abrir `docs/informe/07_referencias.md` y comprobar al azar dos o tres entradas en su DOI o URL. Los seis pendientes
 menores (páginas de USENIX, sede de WebArena, dos nombres de autor) están listados al final del archivo.
+
+## S10a — Informe de avance y presentación de la presustentación (15-nov, D137)
+
+| Qué | Para qué |
+| --- | --- |
+| `privado/entregables/Informe_avance_PAIII_WilliamSuaza.docx` y `.pdf` | Carta de aval (firma en blanco) + 1 página de resumen ejecutivo en la plantilla del curso |
+| `privado/entregables/Presentacion_Presustentacion_PAIII_WilliamSuaza.pptx` y `.pdf` | 5 láminas en la plantilla institucional, guion de 7 min en las notas del orador |
+| `privado/entregables/fuentes_s10a/` | Generadores (python-docx y python-pptx) para regenerar ambos archivos |
+| `docs/PLAN.md` §4, §5, S10–S12 | Plan revisado contra la plantilla, la rúbrica, el syllabus y los lineamientos (D137) |
+
+### Cómo probarlo
+
+**1. Revisar los entregables — US$0, sin red**
+
+Abrir los dos `.pdf` de `privado/entregables/`. Si funciona: el informe tiene 2 páginas (carta + resumen ejecutivo)
+y la presentación 5 láminas. En PowerPoint, la vista «Notas» muestra el guion con los tiempos de cada lámina
+([0:00–0:30] … [5:30–7:00]).
+
+**2. Regenerar los archivos desde los generadores — US$0, sin red**
+
+```bash
+uv run --with python-docx python -I privado/entregables/fuentes_s10a/informe_avance.py \
+  privado/curso/Formato_informe.docx /tmp/avance.docx
+cp privado/entregables/Presentacion_Plan_PAIII_WilliamSuaza.pptx /tmp/plan.pptx
+uv run --with python-pptx python -I privado/entregables/fuentes_s10a/presentacion.py /tmp/plan.pptx /tmp/pres.pptx
+soffice --headless --convert-to pdf --outdir /tmp /tmp/avance.docx /tmp/pres.pptx && pdfinfo /tmp/avance.pdf | grep Pages
+```
+
+Si funciona: imprime `ok …` dos veces y `Pages: 2`. Si cambia una cifra en un borrador del informe, se corrige en
+el generador y se vuelve a correr.
+
+**3. Ensayo cronometrado — US$0**
+
+Leer en voz alta las notas de las cinco láminas con cronómetro: deben caber en 7 minutos. Si se pasa, recortar
+primero las notas de la lámina 2 (estado actual).

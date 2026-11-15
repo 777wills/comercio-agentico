@@ -84,7 +84,7 @@ privado/                    # fuera de git: material del curso, entregables, con
 | S09a   | sáb 14-nov          | **CotIA (1/3):** API FastAPI + SSE + PostgreSQL + llave propia     | R.6.2 Cr8                |
 | S09b   | dom 15-nov          | **CotIA (2/3):** frontend SvelteKit en modo oscuro                 | R.6.2 Cr8, R.7.2         |
 | S09c   | lun 16-nov          | **CotIA (3/3):** Docker, despliegue público, CI, trazas y README   | R.6.2 Cr8, R.7.2         |
-| S10a   | lun 16-nov          | Informe de avance (1 página) y presentación de la presustentación | RA1, RA2                 |
+| S10a   | lun 16-nov (hecha 15) | Informe de avance (1 página) y presentación de la presustentación | RA1, RA2                 |
 | S10    | mar 17 / mié 18-nov | Informe completo en la plantilla del curso (borrador → PDF)        | RA1 comunicación escrita |
 | S11    | jue 19-nov          | Auditoría contra rúbrica, presentación final, radicación          | RA1, RA2 oral            |
 | S12    | 21–26-nov           | Video de 10 min, ensayo de preguntas, pulido de la demo            | RA2 oral                 |
@@ -99,8 +99,19 @@ privado/                    # fuera de git: material del curso, entregables, con
 | 21–26-nov | Incorporar la retroalimentación de la presustentación en la versión final; video de 10 min | Wills + agente |
 | vie 27-nov | Sustentación final con el mentor (y el representante de la empresa, si aplica); documento enviado con el visto bueno del mentor | Wills |
 
-Por confirmar con el profesor: si la versión radicada el 20-nov puede reemplazarse por la que incorpora la
-retroalimentación de la presustentación (`SUSTENTACIÓN.txt` exige incluirla).
+Por confirmar con el profesor: (a) si la versión radicada el 20-nov puede reemplazarse por la que incorpora la
+retroalimentación de la presustentación (`SUSTENTACIÓN.txt` exige incluirla); (b) en qué fecha y por qué medio se
+entrega el video de 10 minutos, que la rúbrica de `SUSTENTACIÓN.txt` califica pero sin plazo explícito (el plan
+supone el 21–26-nov); (c) si la plantilla de diapositivas `Icesi_para_diapositivas.pptx` que nombra
+`SUSTENTACIÓN.txt` es la misma «Plantilla presentacion institucional Icesi -2026.pptx» que ya está en
+`privado/curso/`; (d) si en la sustentación se espera un representante de la empresa (la rúbrica tiene una
+columna de nota del invitado).
+
+**Resultados de aprendizaje evaluados (D137):** la presustentación cubre RA2, RA3 y RA4, porque
+`PRESUSTENTACIÓN.txt` nombra RA3 y RA4 y el syllabus asigna RA2 y RA3 a la «Sustentación Avance». La
+sustentación final evalúa RA3 y RA4 (syllabus), la rúbrica completa (R.6.1, R.6.2, RA1, RA2, R.7.1, R.7.2) y los
+seis criterios de `SUSTENTACIÓN.txt`: introducción y problema, metodología, resultados y discusión, conclusiones,
+referencias y video.
 
 _Reprogramado el 10-nov: S00–S05 se terminaron el 9 y 10-nov; S06–S09 se adelantan y el producto CotIA (D81–D84)
 reemplaza la app Streamlit con tres sesiones (S09a–c). Las fechas de S00–S05 quedan como estaban planeadas._
@@ -118,10 +129,15 @@ E2, E3, el laboratorio de ataques ni la publicación de CotIA.
 - [x] Cuentas para el despliegue de CotIA (plataforma y PostgreSQL gestionado), cuando se elijan en S09c.
 - [x] Crear `.env` con `ANTHROPIC_API_KEY` y `OPENROUTER_API_KEY` (S00).
 - [x] Descargar la plantilla del trabajo escrito y ponerla en `privado/curso/` (15-nov: `Formato_informe.docx`).
-- [ ] Carta de aval firmada por el mentor (Prof. José Armando Ordóñez Córdoba); la plantilla la trae como primera
-      página para la presustentación y para la sustentación.
-- [ ] Confirmar con el profesor si la sustentación espera un «representante de la empresa» en un proyecto individual
-      sin empresa aliada.
+- [ ] **Urgente (antes del mar 17-nov):** carta de aval firmada por el mentor (Prof. José Armando Ordóñez
+      Córdoba); la plantilla la trae como primera página para la presustentación y para la sustentación.
+- [ ] Llevar al profesor las cuatro preguntas de la sección 4 (versión radicada, fecha del video, plantilla de
+      diapositivas y representante de la empresa en un proyecto individual sin empresa aliada).
+- [ ] **P3, línea base humana:** 6 tareas cotizadas a mano con cronómetro según
+      `privado/auditoria/PROTOCOLO_LINEA_BASE.md`. Alimenta Cr6 (eficiencia) en el informe y en la presentación
+      final; si no llega antes del 18-nov, se declara como pendiente.
+- [ ] Secreto `OPENROUTER_API_KEY_CANARIO` en GitHub (P6.3; activa el canario semanal).
+- [ ] Rotar las claves de `.env` (OpenRouter y Anthropic) y actualizar la de Railway si aplica.
 - [x] Confirmar la creación del repositorio público en GitHub (S00): `777wills/comercio-agentico`.
 
 ---
@@ -364,7 +380,8 @@ real guardada y con el camino de error a US$0; falta la consulta de Wills con su
       oferta, ajustes con clave y modelo; C2 + N3 abstener fijos).
 - [x] Modo Laboratorio en `/lab/...` con navegación lateral y todas las funcionalidades de D83 y D87.
 - [x] Tema sobrio (neutros, superficies planas, Inter local, un acento).
-- [ ] Consulta real de Wills desde el modo Cliente con su clave (< US$0,03 con Flash + N3).
+- [ ] Consulta real de Wills desde el modo Cliente con su clave (< US$0,03 con Flash + N3). Por confirmar si la
+      cubrió la prueba de humo en producción de S09c.
 
 ### S09b-ter — Consulta en vivo y lista blanca editable (11-nov, D112, D113)
 
@@ -482,18 +499,21 @@ corrida siguiendo el README.
 **Objetivo:** los dos entregables de la presustentación (`privado/curso/PRESUSTENTACIÓN.txt`), en
 `privado/entregables/`.
 
-- [ ] **Informe de avance de 1 página** en `Formato_informe.docx`: resumen ejecutivo del estado del proyecto (título,
+- [x] **Informe de avance de 1 página** en `Formato_informe.docx`: resumen ejecutivo del estado del proyecto (título,
       autor, resumen, estado por objetivo, resultados de E1–E3 y CotIA, cronograma y lo pendiente), más la carta de
       aval si el mentor la firma a tiempo.
-- [ ] **Presentación de 7 minutos** (máximo 5 láminas, plantilla «Plantilla presentacion institucional Icesi
+- [x] **Presentación de 7 minutos** (máximo 5 láminas, plantilla «Plantilla presentacion institucional Icesi
       -2026.pptx», guion en las notas del orador) con los tres elementos obligatorios: estado actual del proyecto,
       cumplimiento del cronograma (plan frente a lo logrado) y cumplimiento de los criterios de la rúbrica.
-- [ ] Preparar las respuestas a los cuatro criterios del profesor: coherencia entre cronograma y progreso técnico,
-      grado de avance en los modelos de IA, claridad y alineación con RA3 (soluciones sistémicas sustentadas en
-      evidencia) y RA4 (comunicación), y consideraciones éticas y de viabilidad técnica.
+- [x] Preparar las respuestas a los cuatro criterios del profesor: coherencia entre cronograma y progreso técnico,
+      grado de avance en los modelos de IA, claridad y alineación con RA2 (sistemas agénticos), RA3 (soluciones
+      sistémicas sustentadas en evidencia) y RA4 (comunicación) (D137), y consideraciones éticas y de viabilidad
+      técnica.
 - [ ] Wills sube ambos documentos a Intu a más tardar el mar 17-nov.
 
 **Terminado cuando:** los dos archivos están en `privado/entregables/` y Wills los subió a Intu.
+_15-nov: generados `Informe_avance_PAIII_WilliamSuaza` y `Presentacion_Presustentacion_PAIII_WilliamSuaza`
+(`.docx`/`.pptx` y `.pdf`); las respuestas a los cuatro criterios van en las notas del orador. Falta la subida a Intu._
 
 ## S10 — Informe en la plantilla del curso (mar 17 / mié 18-nov)
 
@@ -525,17 +545,29 @@ persona. Correspondencia con los borradores: 01 + 02 → I; 03 → II; 04 → II
 - [ ] Verificar cada referencia y cifra contra la fuente primaria; descargar el informe primario de la CCCE si se
       cita. Hecho el 15-nov para las 40 de `07_referencias.md` y la CCCE; OWASP unificado en la edición 2026 (D135).
 - [ ] Pasar a APA 7 las citas `[ref: …]` de los borradores anteriores (03–05).
+- [ ] Piezas propias de la plantilla: resumen de 150–250 palabras sin citas, índice de términos (unas cuatro palabras
+      clave en orden alfabético) y Reconocimiento (en singular, sin primera persona).
+- [ ] Tabla de herramientas con las versiones de las librerías, tomadas de `uv.lock` y `web/package-lock.json`.
+- [ ] Formato de la plantilla: carta, márgenes, una columna, Times New Roman, «Fig.» con el pie debajo y «Tabla» con
+      el título encima y numeración romana; figuras como archivos de imagen, no capturas pegadas a mano.
+- [ ] Capturas de LangSmith para el informe **antes del 24-nov** (las trazas caducan a los 14 días; las del 11-nov se
+      pierden el 25-nov).
 - [ ] Revisión de metacomentario y de registro académico.
+- [ ] Exportar a PDF y revisar el PDF página por página (tablas, figuras, enlaces).
 
 **Terminado cuando:** PDF generado en `privado/entregables/`, con referencias verificadas.
 
 ## S11 — Auditoría, presentación y radicación (jue 19-nov)
 
-- [ ] Auditoría del informe contra la rúbrica criterio por criterio (R.6.1, R.6.2, RA1, R.7.1, R.7.2) y contra los
-      lineamientos del aula virtual; corregir lo que falle.
+- [ ] Auditoría del informe contra la rúbrica criterio por criterio (R.6.1, R.6.2, RA1, R.7.1, R.7.2), contra los
+      seis criterios de `SUSTENTACIÓN.txt`, contra RA3 y RA4 del syllabus (D137) y contra los lineamientos del aula
+      virtual; corregir lo que falle.
 - [ ] Presentación final de 5 láminas sobre «Plantilla presentacion institucional Icesi -2026.pptx», guardada en
       `privado/entregables/`, guion completo en notas del orador; base del video.
-- [ ] Preguntas probables del tribunal con respuesta preparada.
+- [ ] Preguntas probables del tribunal con respuesta preparada (P11 de `privado/AUDITORIA_Y_FLUJO.md`).
+- [ ] Demo segura para el 20-nov (P11, D118): consulta en vivo corta sobre el corpus B o A (1–2 min), consulta en
+      tiendas reales grabada de antemano, laboratorio de ataques C0 frente a C3 listo, y Railway sin Serverless esa
+      mañana con una consulta de calentamiento.
 - [ ] Wills radica informe y presentación (20-nov), con el visto bueno del mentor.
 
 **Terminado cuando:** radicado.
@@ -546,6 +578,8 @@ persona. Correspondencia con los borradores: 01 + 02 → I; 03 → II; 04 → II
 - [ ] Guion del video de 10 minutos (problema, solución, demo, resultados, conclusiones) y apoyo a la grabación; se
       evalúa por claridad, síntesis y calidad visual.
 - [ ] Ensayo de preguntas y respuestas.
+- [ ] Demo del 27-nov: repetir la preparación del 20-nov (Railway sin Serverless esa mañana, consulta de
+      calentamiento, grabación de respaldo) y volver a activar Serverless al terminar (D118).
 
 ---
 

@@ -2,22 +2,18 @@
 
 ## Siguiente sesión
 
-**S10 en curso (15-nov).** Ya están los borradores de introducción (`01_introduccion.md`), estado del arte
-(`02_estado_del_arte.md`), conclusiones (`06_conclusiones.md`) y referencias en APA 7 (`07_referencias.md`, 40
-entradas verificadas en la fuente primaria). D133: el informe cita en APA 7. D134: guardia contra búferes viejos
-(`make guardia` al arrancar). S09f quedó cerrada: las 6 tiendas de la prueba de humo llegaron a fichas.
-**Corrección de cifra:** las ventas del comercio electrónico colombiano en el primer trimestre de 2026 fueron
-**$39,37 billones** (informe primario de la CCCE), no $39,7 como decía el plan de trabajo.
-**Siguiente: S10a (lun 16-nov): informe de avance de 1 página y presentación de la presustentación.** Wills los
-sube a Intu **a más tardar el mar 17-nov** (turno del 20-nov reservado; D136). Después, S10 (ensamblaje del informe
-completo en `privado/curso/Formato_informe.docx`, APA 7 porque manda la rúbrica).
-**15-nov (tarde):** OWASP unificado en la edición 2026 (D135); plantilla, presustentación y sustentación documentadas
-en `docs/PLAN.md` (plazos y estructura, D136); `.claude/settings.json` versionado.
-Necesario de Wills: **carta de aval firmada por el mentor** (primera página de la plantilla), confirmar con el
-profesor si en la sustentación se espera un «representante de la empresa» y si la versión radicada el 20-nov se
-puede reemplazar con la retroalimentación, **P3** (línea base humana: 6 tareas con cronómetro según
-`privado/auditoria/PROTOCOLO_LINEA_BASE.md`; alimenta la diapositiva de eficiencia), **secreto
-`OPENROUTER_API_KEY_CANARIO`** en GitHub (P6.3) y **rotar las claves de `.env`** (OpenRouter y Anthropic).
+**S10a hecha (15-nov, un día antes).** En `privado/entregables/`: `Informe_avance_PAIII_WilliamSuaza.docx` y
+`.pdf` (carta de aval llena y sin firma + 1 página) y `Presentacion_Presustentacion_PAIII_WilliamSuaza.pptx` y
+`.pdf` (5 láminas, guion de 7 min en las notas). Generadores en `privado/entregables/fuentes_s10a/`. D137: plan
+revisado contra la plantilla, la rúbrica, el syllabus y los dos lineamientos.
+**Siguiente: S10 (lun 16 a mié 18-nov): informe completo en `privado/curso/Formato_informe.docx`, APA 7.**
+**Wills, antes del mar 17-nov:** revisar y subir a Intu los dos entregables; pedir la firma de la carta de aval al
+mentor (si llega, reemplaza la primera página); llevar al profesor las cuatro preguntas de `docs/PLAN.md` §4
+(versión radicada, fecha del video, plantilla de diapositivas, representante de la empresa). Después: **P3**
+(línea base humana: 6 tareas con cronómetro según `privado/auditoria/PROTOCOLO_LINEA_BASE.md`; completa Cr6),
+**secreto `OPENROUTER_API_KEY_CANARIO`** en GitHub (P6.3) y **rotar las claves de `.env`**.
+Antecedentes del 15-nov: borradores 01, 02, 06 y 07 (40 referencias APA 7), D133–D136, OWASP 2026. Ventas CCCE
+2026-I = **$39,37 billones** (no $39,7).
 
 **S10 — Informe (APA 7, D133 y D136).** S09c quedó hecha el 11-nov: CotIA publicada en
 <https://comercio-agentico-production-bf030669.up.railway.app>.
@@ -25,9 +21,11 @@ puede reemplazar con la retroalimentación, **P3** (línea base humana: 6 tareas
 Siguiente paso exacto:
 
 0. `make guardia` antes de tocar nada (D134); si falla, avisar a Wills.
-1. S10a: leer en `docs/PLAN.md` la sección S10a. Proponer a Wills el contenido del informe de avance (1 página en
-   `Formato_informe.docx`) y el guion de las 5 láminas (estado actual, cronograma, rúbrica); generar ambos en
-   `privado/entregables/` con su autorización (entregable).
+1. S10: leer en `docs/PLAN.md` la sección S10 (casillas ampliadas por D137). Para generar el `.docx`, reutilizar el
+   enfoque de `privado/entregables/fuentes_s10a/informe_avance.py` (python-docx sobre la plantilla: conserva la
+   carta, quita los marcos del encabezado y los textos de ejemplo, usa los estilos Heading 1 numerados en romanos).
+   Dato pendiente: `06_plan_frente_a_logrado.md` dice «entregado en agosto»; CLAUDE.md fecha el plan el 1-sep
+   (los archivos son del 30-ago): confirmar con Wills antes de escribirlo en el informe.
 2. S10: ensamblar los borradores en la estructura de D136 (01 + 02 → Introducción; 03 → Materiales y métodos con
    versiones de librerías; 04 → Resultados sin interpretación; 05 → Discusión; 06 → Conclusiones; plan frente a lo
    logrado e IAG → Apéndice). Convertir las citas `[ref: …]` a APA 7 y sumar a `07_referencias.md` la normativa y
@@ -42,6 +40,25 @@ Siguiente paso exacto:
 4. Operación (D118): desarrollo en local con `make cotia-docker` (:8080) o `make bd && make api`; Railway con
    Serverless, salvo los días de demo (20 y 27-nov: desactivarlo esa mañana y hacer una consulta de calentamiento).
    Capturas de LangSmith para el informe antes de que caduquen (14 días).
+
+**Hecho el 15-nov (revisión del plan y S10a; Claude Code · Opus 5.5):**
+
+- `make guardia` limpio al arrancar.
+- **Revisión del plan (D137)** contra `Formato_informe.docx`, la rúbrica, el syllabus, `PRESUSTENTACIÓN.txt` y
+  `SUSTENTACIÓN.txt`. Casillas nuevas: P3, canario, rotación de claves, demo segura de P11 (20 y 27-nov),
+  capturas de LangSmith antes del 24-nov, piezas de la plantilla (resumen, índice de términos, Reconocimiento,
+  versiones de librerías, formato y PDF), auditoría con los seis criterios de `SUSTENTACIÓN.txt` y RA2–RA4, y
+  cuatro preguntas para el profesor.
+- **Informe de avance** sobre la plantilla (python-docx): carta de aval con los datos del proyecto y la firma en
+  blanco (decisión de Wills) y una página con resumen, índice de términos, Tabla I (estado por objetivo),
+  resultados de E1–E3 y del producto, cronograma (14 cumplidos, 3 parciales, 1 propuesto de 18) y ética y
+  viabilidad. Cifras tomadas de `06_conclusiones.md` y `06_plan_frente_a_logrado.md`.
+- **Presentación** sobre la del plan (misma plantilla institucional y paleta): portada, estado actual (diagrama de
+  fuentes → N1–N4 → propuesta y tres bloques del producto), avance en IA (E2, E1, E3), cronograma (sesiones y
+  barra de compromisos) y rúbrica (14 criterios con semáforo: Cr6 y R.7.2 Cr5 en parcial). Guion de 7 min en las
+  notas con las respuestas a los cuatro criterios del profesor. Validación de la estructura y revisión visual de
+  cada lámina.
+- **Gasto: US$0** (sin LLM).
 
 **Hecho el 15-nov (S10, borradores del informe y guardia; VS Code · Opus 5.5):**
 
