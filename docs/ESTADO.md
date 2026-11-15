@@ -8,22 +8,30 @@ entradas verificadas en la fuente primaria). D133: el informe cita en APA 7. D13
 (`make guardia` al arrancar). S09f quedó cerrada: las 6 tiendas de la prueba de humo llegaron a fichas.
 **Corrección de cifra:** las ventas del comercio electrónico colombiano en el primer trimestre de 2026 fueron
 **$39,37 billones** (informe primario de la CCCE), no $39,7 como decía el plan de trabajo.
-**Siguiente: S10 (ensamblaje del informe), con autorización de Wills.**
-Necesario de Wills: **plantilla institucional del informe** en `privado/curso/`, autorización para ensamblar,
-**edición de OWASP** que se cita (2025, la del mapeo, o 2026, ya publicada), **P3** (línea base humana: 6 tareas
-con cronómetro según `privado/auditoria/PROTOCOLO_LINEA_BASE.md`), **secreto `OPENROUTER_API_KEY_CANARIO`** en
-GitHub (P6.3) y **rotar las claves de `.env`** (OpenRouter y Anthropic; las usó la auditoría).
+**Siguiente: S10a (lun 16-nov): informe de avance de 1 página y presentación de la presustentación.** Wills los
+sube a Intu **a más tardar el mar 17-nov** (turno del 20-nov reservado; D136). Después, S10 (ensamblaje del informe
+completo en `privado/curso/Formato_informe.docx`, APA 7 porque manda la rúbrica).
+**15-nov (tarde):** OWASP unificado en la edición 2026 (D135); plantilla, presustentación y sustentación documentadas
+en `docs/PLAN.md` (plazos y estructura, D136); `.claude/settings.json` versionado.
+Necesario de Wills: **carta de aval firmada por el mentor** (primera página de la plantilla), confirmar con el
+profesor si en la sustentación se espera un «representante de la empresa» y si la versión radicada el 20-nov se
+puede reemplazar con la retroalimentación, **P3** (línea base humana: 6 tareas con cronómetro según
+`privado/auditoria/PROTOCOLO_LINEA_BASE.md`; alimenta la diapositiva de eficiencia), **secreto
+`OPENROUTER_API_KEY_CANARIO`** en GitHub (P6.3) y **rotar las claves de `.env`** (OpenRouter y Anthropic).
 
-**S10 — Informe (APA 7, D133).** S09c quedó hecha el 11-nov: CotIA publicada en
+**S10 — Informe (APA 7, D133 y D136).** S09c quedó hecha el 11-nov: CotIA publicada en
 <https://comercio-agentico-production-bf030669.up.railway.app>.
 
 Siguiente paso exacto:
 
 0. `make guardia` antes de tocar nada (D134); si falla, avisar a Wills.
-1. Con la plantilla en `privado/curso/` y la autorización de Wills, ensamblar los borradores de `docs/informe/` en
-   orden (01, 02, 03, 04, 05, 06, 07). Convertir las citas `[ref: …]` de los borradores anteriores a APA 7 y sumar
-   a `07_referencias.md` la normativa y los marcos éticos ya verificados (`CONTEXTO_SESION.md` §4). Cerrar los
-   pendientes de verificación listados al final de `07_referencias.md`.
+1. S10a: leer en `docs/PLAN.md` la sección S10a. Proponer a Wills el contenido del informe de avance (1 página en
+   `Formato_informe.docx`) y el guion de las 5 láminas (estado actual, cronograma, rúbrica); generar ambos en
+   `privado/entregables/` con su autorización (entregable).
+2. S10: ensamblar los borradores en la estructura de D136 (01 + 02 → Introducción; 03 → Materiales y métodos con
+   versiones de librerías; 04 → Resultados sin interpretación; 05 → Discusión; 06 → Conclusiones; plan frente a lo
+   logrado e IAG → Apéndice). Convertir las citas `[ref: …]` a APA 7 y sumar a `07_referencias.md` la normativa y
+   los marcos éticos ya verificados (`CONTEXTO_SESION.md` §4). Cerrar los pendientes al final de `07_referencias.md`.
 2. Insumos: los borradores de `docs/informe/` (nuevos el 14-nov: `03_metodologia_pipeline_datos.md`,
    `05_discusion_eleccion_modelo.md`, `05_discusion_riesgos_eticos.md`, `06_plan_frente_a_logrado.md`,
    `06_declaracion_uso_iag.md` y la sección de fallas sembradas en `04_resultados_e1.md`; antes:

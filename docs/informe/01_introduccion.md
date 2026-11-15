@@ -35,7 +35,7 @@ Los modelos de lenguaje permiten, por primera vez, leer páginas de estructura a
 tipados sin escribir un extractor por sitio. Esa misma capacidad abre una superficie de ataque. Un agente que lee
 contenido de terceros puede recibir instrucciones escondidas en ese contenido: la **inyección indirecta de
 instrucciones** (Greshake et al., 2023), que encabeza la clasificación de riesgos de aplicaciones con modelos de
-lenguaje de OWASP (OWASP Gen AI Security Project, 2024) y que, en su forma agéntica, corresponde al secuestro de
+lenguaje de OWASP (OWASP Gen AI Security Project, 2026) y que, en su forma agéntica, corresponde al secuestro de
 objetivos del agente (OWASP Gen AI Security Project, 2025). En un agente de compras, el atacante es cualquier
 tienda o vendedor capaz de escribir en una página que el agente consultará, y su objetivo es comercial: desviar la
 recomendación, falsear un precio o extraer el presupuesto del comprador.

@@ -514,7 +514,7 @@ corren juntos con el clasificador real sobre una tarea benigna sin falsas alarma
 **4. Leer el mapeo a los marcos — costo US$0**
 
 ```bash
-cat ataques/mapeo.md          # OWASP LLM01:2025, OWASP Agentic 2026, MITRE ATLAS v2026.10
+cat ataques/mapeo.md          # OWASP LLM01:2026, OWASP Agentic 2026, MITRE ATLAS v2026.10
 cat docs/informe/03_metodologia_seguridad.md
 ```
 

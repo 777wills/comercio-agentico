@@ -3,13 +3,14 @@
 La suite de este proyecto estudia la **inyección indirecta de instrucciones**: el agente lee contenido
 publicado por un proveedor (página, PDF o chat) que contiene órdenes dirigidas al modelo, no datos.
 Las cinco clases de ataque y las cuatro configuraciones de defensa (C0–C3) se enmarcan en tres
-referencias públicas, verificadas en su fuente primaria el 10-nov-2026.
+referencias públicas, verificadas en su fuente primaria el 10-nov-2026 (OWASP para LLM, actualizado a la edición
+2026 el 15-nov-2026, D135).
 
 ## Fuentes primarias
 
 | Marco | Versión vigente | Fecha | Fuente |
 |---|---|---|---|
-| OWASP Top 10 for LLM Applications | 2025 (LLM01:2025) | lista de 2025 | genai.owasp.org/llm-top-10/ |
+| OWASP Top 10 for LLM Applications | 2026 (LLM01:2026) | publicado 3-ago-2026 | genai.owasp.org/resource/owasp-genai-llm-top-10-2026/ |
 | OWASP Top 10 for Agentic Applications | 2026 | publicado 9-dic-2025 | genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/ |
 | MITRE ATLAS | v2026.10 | 28-oct-2026 | github.com/mitre-atlas/atlas-data (release v2026.10) |
 
@@ -21,10 +22,11 @@ referencias públicas, verificadas en su fuente primaria el 10-nov-2026.
 
 Toda la suite instancia una misma técnica raíz:
 
-- **OWASP LLM01:2025 Prompt Injection**, variante *Indirect Prompt Injection*: «ocurre cuando un LLM
-  acepta entrada de fuentes externas, como páginas web o archivos [...] que, al ser interpretadas por
-  el modelo, alteran su comportamiento de forma no intencionada o inesperada». Escenario de ataque
-  #2 del documento: una página con instrucciones ocultas que llevan al LLM a exfiltrar la conversación.
+- **OWASP LLM01:2026 Prompt Injection**, ejemplo común #2 *Indirect injection through retrieved content*: las
+  instrucciones del atacante «viajan en un pasaje de RAG, una página web, un documento o un correo y se ejecutan
+  cuando el contenido llega a la ventana de contexto». La edición 2026 parte de que los LLM «no hacen distinción
+  arquitectónica entre "instrucciones" y "datos"». Escenario de ataque #2 del documento (*Indirect Injection via
+  Retrieved Web Content*): una página con instrucciones ocultas que llevan al LLM a exfiltrar la conversación.
 - **MITRE ATLAS AML.T0051.001 — LLM Prompt Injection: Indirect** (táctica AML.TA0005 *Execution*;
   madurez «Realized»): «inyección de prompts de forma indirecta a través de un canal de datos
   separado que el LLM o el agente de IA ingiere [...]. Estas instrucciones se originan en contenido
@@ -44,18 +46,22 @@ Toda la suite instancia una misma técnica raíz:
 
 Las cuatro **ubicaciones** (texto visible, oculto en HTML, PDF, mensaje) son variantes del mismo
 AML.T0051.001; el plantado en HTML invisible corresponde a la ofuscación que la propia técnica
-menciona (ATLAS AML.T0068 *LLM Prompt Obfuscation*; OWASP escenario #9 *Multilingual/Obfuscated*).
+menciona (ATLAS AML.T0068 *LLM Prompt Obfuscation*; OWASP LLM01:2026, ejemplos comunes #5 *Invisible-character
+injection* y #8 *Multilingual, encoded, or low-resource-language payloads*).
 
 ## Mapeo de las defensas a mitigaciones
 
-| Configuración | Qué añade | OWASP LLM01:2025 (estrategia) | MITRE ATLAS (mitigación) |
+| Configuración | Qué añade | OWASP LLM01:2026 (estrategia) | MITRE ATLAS (mitigación) |
 |---|---|---|---|
 | C0 | ninguna (línea base) | — | — |
-| C1 | separación de planos: el contenido del proveedor no llega al planificador | #6 Segregar e identificar el contenido externo | AML.M0030 Restrict AI Agent Tool Invocation on Untrusted Data |
-| C2 | clasificador de inyección sobre cada fragmento (filtro de entrada) | #3 Filtrado de entrada y salida | AML.M0020 Generative AI Guardrails · AML.M0015 Adversarial Input Detection |
-| C3 | verificación cruzada de precio (validación determinista de la salida) | #2 Definir y validar formatos de salida esperados | AML.M0033 Input and Output Validation for AI Agent Components |
+| C1 | separación de planos: el contenido del proveedor no llega al planificador | #6 Canal separado y etiquetado por procedencia para el contenido externo; #4 capacidad en el código de la aplicación, no en el modelo | AML.M0030 Restrict AI Agent Tool Invocation on Untrusted Data |
+| C2 | clasificador de inyección sobre cada fragmento (filtro de entrada) y saneamiento del Markdown | #3 Filtrar en cada frontera de modalidad; #5 eliminar caracteres invisibles en la ingesta | AML.M0020 Generative AI Guardrails · AML.M0015 Adversarial Input Detection |
+| C3 | verificación cruzada de precio (validación determinista de la salida) | #2 Esquema de salida estricto validado en código de confianza | AML.M0033 Input and Output Validation for AI Agent Components |
 
-Las cinco clases también ejercen, de forma transversal, **OWASP LLM06:2025 Excessive Agency**
+El ataque adaptativo A21 (D123), diseñado después de conocer las defensas, responde a la estrategia #11 de
+LLM01:2026: probar contra atacantes adaptativos que conocen la defensa desplegada.
+
+Las cinco clases también ejercen, de forma transversal, **OWASP LLM03:2026 Excessive Agency**
 (el daño depende de cuánta acción se delegue al agente) y, cuando la carga pide confirmar o comprar,
 la mitigación **AML.M0029 Human In-the-Loop for AI Agent Actions**.
 

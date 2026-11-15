@@ -60,9 +60,10 @@ Perez y Ribeiro (2022) mostraron que una instrucción del usuario puede secuestr
 filtrar su prompt de sistema. Greshake et al. (2023) extendieron el ataque a las aplicaciones integradas: el
 atacante no necesita acceso al modelo, le basta con colocar instrucciones en datos que la aplicación recuperará, y
 lo demostraron contra un asistente de búsqueda comercial basado en GPT-4. La clasificación de OWASP para
-aplicaciones con modelos de lenguaje ubica la inyección de instrucciones como el primer riesgo (LLM01:2025) y
-distingue la directa, escrita por el usuario, de la indirecta, que llega desde sitios web o archivos (OWASP Gen AI
-Security Project, 2024). Su clasificación para aplicaciones agénticas nombra el secuestro de objetivos del agente
+aplicaciones con modelos de lenguaje ubica la inyección de instrucciones como el primer riesgo (LLM01:2026). Parte
+de que los modelos no hacen distinción arquitectónica entre instrucciones y datos, y describe la vía indirecta: las
+instrucciones del atacante viajan en una página web, un documento o un correo y se ejecutan cuando ese contenido
+llega al contexto del modelo (OWASP Gen AI Security Project, 2026). Su clasificación para aplicaciones agénticas nombra el secuestro de objetivos del agente
 (ASI01) y el uso indebido de herramientas (ASI02) (OWASP Gen AI Security Project, 2025), y MITRE ATLAS la registra
 como la técnica AML.T0051.001 (MITRE, 2026).
 

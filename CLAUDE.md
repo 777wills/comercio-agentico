@@ -118,8 +118,9 @@ OpenRouter y elige un modelo de una lista curada; el proyecto no expone sus cré
 | Hito | Fecha | Peso |
 |---|---|---|
 | Plan de trabajo | 1-sep-2026 | 20 % (entregado) |
+| **Subir a Intu el informe de avance (1 página) y la presentación de la presustentación** | **17-nov-2026** | — |
 | **Todo listo: informe PDF + presentación** | **19-nov-2026** | — |
-| Presustentación y radicación del informe y la presentación finales | 20-nov-2026 | 30 % |
+| Presustentación (7 min + 3 de preguntas) y radicación del informe y la presentación finales | 20-nov-2026 | 30 % |
 | Video de 10 min y ensayo de la defensa | 21–26-nov-2026 | — |
 | Sustentación final | 27-nov-2026 | 50 % |
 
@@ -160,7 +161,8 @@ Carpeta `privado/` (no versionada):
 | `privado/curso/Plantilla presentacion institucional Icesi -2026.pptx` | Plantilla obligatoria de diapositivas |
 | `privado/curso/Tema_ ... Intu.html` (2) | Páginas del aula virtual (fechas y lineamientos de entrega) |
 | `privado/curso/Challenges_MCD_MIAA_2026_2 - Retos disponibles.csv` | Banco de retos de la universidad |
-| `privado/curso/` | Aquí va también la plantilla institucional del informe (IEEE) cuando Wills la descargue |
+| `privado/curso/Formato_informe.docx` | Plantilla obligatoria del informe (estructura y formato en D136); cita en APA 7 porque manda la rúbrica |
+| `privado/curso/PRESUSTENTACIÓN.txt`, `privado/curso/SUSTENTACIÓN.txt` | Lineamientos de la presustentación y de la sustentación final |
 | `privado/entregables/Plan_de_trabajo_PAIII_WilliamSuaza.docx` / `.pdf` | Plan de trabajo entregado |
 | `privado/entregables/Presentacion_Plan_PAIII_WilliamSuaza.pptx` | Presentación del plan (5 láminas, guion en notas) |
 | `privado/entregables/Trabajo_final_Etica_WilliamSuaza.docx` | Ensayo de Ética (otra asignatura, trabajo en grupo; mismo caso) |

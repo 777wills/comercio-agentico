@@ -75,11 +75,11 @@ https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-86M
 MITRE. (2026). *LLM Prompt Injection: Indirect* (AML.T0051.001). En *MITRE ATLAS* (v2026.10).
 https://atlas.mitre.org/techniques/AML.T0051.001
 
-OWASP Gen AI Security Project. (2024, 17 de noviembre). *OWASP Top 10 for LLM applications 2025*.
-https://genai.owasp.org/resource/owasp-top-10-for-llm-applications-2025/
-
 OWASP Gen AI Security Project. (2025, 9 de diciembre). *OWASP Top 10 for agentic applications for 2026*.
 https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
+
+OWASP Gen AI Security Project. (2026, 3 de agosto). *OWASP Top 10 for LLM applications 2026*.
+https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/
 
 Parikh, S. y Surapaneni, R. (2025, 16 de septiembre). *Powering AI commerce with the new Agent Payments Protocol
 (AP2)*. Google Cloud Blog.
@@ -151,4 +151,5 @@ Conference on Learning Representations (ICLR 2024)*. https://doi.org/10.48550/ar
 - Sede de WebArena (ICLR 2024) en OpenReview: confirmada solo por fuentes secundarias.
 - Año de Llama Prompt Guard 2 (2025, inferido de la licencia de la colección Llama 4).
 - Sexto autor de StakeBench («Wai, F. K.» según arXiv) y segundo autor de AP2 («Gandh, P. A.» según arXiv) en el PDF.
-- Edición de OWASP: existe la edición 2026 del Top 10 para LLM; el mapeo de la suite usa LLM01:2025.
+- Edición de OWASP para LLM: se cita la 2026 (D135); la portada del PDF dice 4-ago-2026 y la ficha del recurso,
+  3-ago-2026 (se usa la de la ficha).

@@ -4,12 +4,12 @@
   líneas. Un clasificador local de Hugging Face (CPU) puntúa cada ventana, y las que superan el
   umbral se retiran antes de que el texto llegue al extractor. El resto del fragmento se procesa
   normalmente y se emite la alerta ``posible_inyeccion``. También se retiran los enlaces que solo
-  aparecían en las ventanas retiradas. Es filtrado de entrada (OWASP LLM01:2025, estrategia 3;
+  aparecían en las ventanas retiradas. Es filtrado de entrada (OWASP LLM01:2026, estrategia 3;
   MITRE ATLAS AML.M0020).
 - **C3, verificación cruzada de precio.** Después del emparejamiento se excluye toda oferta cuyo
   precio cae fuera de [0,75; 1,30] × el precio de referencia del catálogo o por debajo de 0,80 × la
   mediana de los demás proveedores del mismo producto. Es validación determinista de la salida
-  del extractor (OWASP LLM01:2025, estrategia 2; ATLAS AML.M0033). En el corpus B limpio ninguna
+  del extractor (OWASP LLM01:2026, estrategia 2; ATLAS AML.M0033). En el corpus B limpio ninguna
   oferta sale de esas bandas (0,871–1,065 frente al catálogo; 0,863 como mínimo frente a la
   mediana).
 

@@ -8,23 +8,24 @@ defensa frente a las cargas (curva seguridad-utilidad) se reporta en la sección
 
 ## Vector: inyección indirecta de instrucciones
 
-El ataque estudiado es la **inyección indirecta de instrucciones** (OWASP LLM01:2025, _Indirect
-Prompt Injection_; MITRE ATLAS AML.T0051.001, madurez «Realized»): el adversario no interactúa con el
+El ataque estudiado es la **inyección indirecta de instrucciones** (OWASP LLM01:2026, inyección indirecta a
+través de contenido recuperado; MITRE ATLAS AML.T0051.001, madurez «Realized»): el adversario no interactúa con el
 agente, sino que inserta instrucciones en contenido que el agente ingiere al consultar una fuente. El
 plantado de esas instrucciones en una fuente consultada por el agente corresponde además a ATLAS
 AML.T0099 (_AI Agent Tool Data Poisoning_). El mapeo completo de las cinco clases de ataque y de las
-defensas a OWASP (Top 10 for LLM 2025 y Top 10 for Agentic Applications 2026) y a MITRE ATLAS v2026.10
-está en `ataques/mapeo.md`, verificado contra las fuentes primarias el 10-nov-2026.
+defensas a OWASP (Top 10 for LLM Applications 2026 y Top 10 for Agentic Applications 2026) y a MITRE ATLAS v2026.10
+está en `ataques/mapeo.md`, verificado contra las fuentes primarias (la edición 2026 de OWASP para LLM, el
+15-nov-2026).
 
 ## Cuatro configuraciones de defensa (C0–C3)
 
 Cada configuración añade una capa a la anterior, de modo que la curva seguridad-utilidad tiene cuatro
 puntos comparables con el mismo modelo base (DeepSeek Flash, D79):
 
-| Config. | Capa añadida                                                                                                                                                                     | Mitigación (OWASP LLM01:2025 / MITRE ATLAS)   |
+| Config. | Capa añadida                                                                                                                                                                     | Mitigación (OWASP LLM01:2026 / MITRE ATLAS)   |
 | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
 | **C0**  | ninguna: el texto del proveedor llega al planificador                                                                                                                            | línea base                                    |
-| **C1**  | **separación de planos**: el contenido del proveedor solo llega a un extractor acotado con salida estructurada; al planificador vuelven ofertas en JSON, nunca prosa de terceros | #6 Segregar el contenido externo / AML.M0030  |
+| **C1**  | **separación de planos**: el contenido del proveedor solo llega a un extractor acotado con salida estructurada; al planificador vuelven ofertas en JSON, nunca prosa de terceros | #6 Canal separado del contenido externo / AML.M0030  |
 | **C2**  | **clasificador de inyección**: cada fragmento se divide en ventanas y un clasificador local marca y retira las que son instrucciones antes de extraer                            | #3 Filtrado de entrada / AML.M0020, AML.M0015 |
 | **C3**  | **verificación cruzada de precio**: se excluye toda oferta con precio fuera de banda respecto al catálogo y a la mediana de los demás proveedores                                | #2 Validar la salida / AML.M0033              |
 
