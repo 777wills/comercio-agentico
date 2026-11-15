@@ -5,7 +5,7 @@
 SHELL := /bin/bash
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test check build clean ping corpus-b corpus-b-servir corpus-b-catalogo corpus-a-recolectar corpus-a corpus-a-servir corpus-a-correr humo candidatos app arnes-simulado calibracion e3 e3-frontera e2-ataques e2-ataques-simulado e2-utilidad e2 jev e1 e1-lecturas e1-fallas metricas bd api web web-dev cotia-docker cotia-humo
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test guardia check build clean ping corpus-b corpus-b-servir corpus-b-catalogo corpus-a-recolectar corpus-a corpus-a-servir corpus-a-correr humo candidatos app arnes-simulado calibracion e3 e3-frontera e2-ataques e2-ataques-simulado e2-utilidad e2 jev e1 e1-lecturas e1-fallas metricas bd api web web-dev cotia-docker cotia-humo
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
@@ -135,7 +135,10 @@ cotia-humo: ## CotIA: prueba de humo de la lista curada de modelos (tope US$0,45
 test: ## Ejecuta las pruebas
 	uv run pytest
 
-check: lint format-check test ## Verificación completa (lint + formato + pruebas)
+guardia: ## Detecta archivos que volvieron a una versión vieja (búferes de VS Code; US$0)
+	uv run python scripts/guardia_bufer.py
+
+check: guardia lint format-check test ## Verificación completa (lint + formato + pruebas)
 
 build: ## Construye el paquete (sdist + wheel)
 	uv build

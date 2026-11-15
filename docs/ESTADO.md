@@ -2,26 +2,28 @@
 
 ## Siguiente sesión
 
-**Propuestas de la auditoría aprobadas e implementadas (14-nov).** P4 quedó hecha (fallas sembradas en N3, US$0) y
-de P7–P10 ya hay borradores de la matriz de modelos (P8), los riesgos éticos (P9), el pipeline de datos (P10), el plan
-frente a lo logrado y la declaración de uso de IAG (P7). De S10 faltan la introducción y el contexto, el estado del
-arte, las conclusiones y las referencias verificadas (20–30 fuentes).
-**S09f hecha el 14-nov (D131, D132).** Catálogo en vivo de 13 tiendas con 5 fijas al cargar y tope de 5; Alkosto y
-Ktronix salen por sus términos. Pendiente de S09f: revisar `resultados/tiendas/humo_2026-11-14.jsonl` (prueba de
-humo de Tigo, Flamingo, HP, LG y Sony, en curso al cierre) y retirar de `TIENDAS_EN_VIVO` las que no lleguen a fichas.
-**Siguiente: S10 (informe).**
-Necesario de Wills: **P3** (línea base humana: 6 tareas con cronómetro según
-`privado/auditoria/PROTOCOLO_LINEA_BASE.md`), **secreto `OPENROUTER_API_KEY_CANARIO`** en GitHub para el canario
-(P6.3), plantilla institucional del informe, confirmación de la norma de citación (la rúbrica nombra
-APA/MLA/Chicago; el plan, IEEE) y **rotar las claves de `.env`** (OpenRouter y Anthropic; las usó la auditoría).
+**S10 en curso (15-nov).** Ya están los borradores de introducción (`01_introduccion.md`), estado del arte
+(`02_estado_del_arte.md`), conclusiones (`06_conclusiones.md`) y referencias en APA 7 (`07_referencias.md`, 40
+entradas verificadas en la fuente primaria). D133: el informe cita en APA 7. D134: guardia contra búferes viejos
+(`make guardia` al arrancar). S09f quedó cerrada: las 6 tiendas de la prueba de humo llegaron a fichas.
+**Corrección de cifra:** las ventas del comercio electrónico colombiano en el primer trimestre de 2026 fueron
+**$39,37 billones** (informe primario de la CCCE), no $39,7 como decía el plan de trabajo.
+**Siguiente: S10 (ensamblaje del informe), con autorización de Wills.**
+Necesario de Wills: **plantilla institucional del informe** en `privado/curso/`, autorización para ensamblar,
+**edición de OWASP** que se cita (2025, la del mapeo, o 2026, ya publicada), **P3** (línea base humana: 6 tareas
+con cronómetro según `privado/auditoria/PROTOCOLO_LINEA_BASE.md`), **secreto `OPENROUTER_API_KEY_CANARIO`** en
+GitHub (P6.3) y **rotar las claves de `.env`** (OpenRouter y Anthropic; las usó la auditoría).
 
-**S10 — Informe IEEE (al final).** S09c quedó hecha el 11-nov (cinco días antes de lo previsto): CotIA publicada en
+**S10 — Informe (APA 7, D133).** S09c quedó hecha el 11-nov: CotIA publicada en
 <https://comercio-agentico-production-bf030669.up.railway.app>.
 
 Siguiente paso exacto:
 
-1. Leer en `docs/PLAN.md` la sección S10. Wills debe descargar la plantilla institucional del informe (IEEE) en
-   `privado/curso/`. No iniciar el ensamblaje sin su autorización explícita (entregable grande).
+0. `make guardia` antes de tocar nada (D134); si falla, avisar a Wills.
+1. Con la plantilla en `privado/curso/` y la autorización de Wills, ensamblar los borradores de `docs/informe/` en
+   orden (01, 02, 03, 04, 05, 06, 07). Convertir las citas `[ref: …]` de los borradores anteriores a APA 7 y sumar
+   a `07_referencias.md` la normativa y los marcos éticos ya verificados (`CONTEXTO_SESION.md` §4). Cerrar los
+   pendientes de verificación listados al final de `07_referencias.md`.
 2. Insumos: los borradores de `docs/informe/` (nuevos el 14-nov: `03_metodologia_pipeline_datos.md`,
    `05_discusion_eleccion_modelo.md`, `05_discusion_riesgos_eticos.md`, `06_plan_frente_a_logrado.md`,
    `06_declaracion_uso_iag.md` y la sección de fallas sembradas en `04_resultados_e1.md`; antes:
@@ -32,6 +34,24 @@ Siguiente paso exacto:
 4. Operación (D118): desarrollo en local con `make cotia-docker` (:8080) o `make bd && make api`; Railway con
    Serverless, salvo los días de demo (20 y 27-nov: desactivarlo esa mañana y hacer una consulta de calentamiento).
    Capturas de LangSmith para el informe antes de que caduquen (14 días).
+
+**Hecho el 15-nov (S10, borradores del informe y guardia; VS Code · Opus 5.5):**
+
+- **Incidente al arrancar (tercera vez):** a las 08:29 se guardaron 14 archivos con búferes viejos. `DECISIONES.md`
+  y `PLAN.md` eran idénticos a los del 10-nov y `ESTADO.md` volvía a «S09b»; los 7 `.py`, `api.ts`, la guía y
+  un borrador solo cambiaron de formato (Black a 88 columnas, Prettier en tablas). Restaurados desde HEAD con
+  autorización de Wills; se conservó su cambio en `Fuentes.svelte` (desborde horizontal del panel).
+- **D134, solución definitiva:** `.vscode/settings.json` local (`files.hotExit: off`, `editor.formatOnSave: false`,
+  `files.saveConflictResolution: askUser`) y `scripts/guardia_bufer.py` (`make guardia`, dentro de `make check` y
+  como hook de pre-commit). Probada con una sobrescritura simulada de `PLAN.md`: la detecta y nombra el commit.
+- **D133:** el informe cita en APA 7 (la rúbrica nombra APA/MLA/Chicago).
+- **Borradores de S10:** `01_introduccion.md`, `02_estado_del_arte.md` (con la Tabla 2.1 de brecha),
+  `06_conclusiones.md` y `07_referencias.md` (40 entradas en APA 7, verificadas hoy en la fuente primaria; seis
+  pendientes menores al final del archivo). Corrección: ventas de la CCCE 2026-I = $39,37 billones (el plan decía
+  $39,7, cifra que corresponde al cuarto trimestre de 2025 y que varios medios repitieron).
+- **S09f cerrada:** prueba de humo de Tigo, Flamingo, HP, LG y Sony (más Homecenter): las 6 llegan a fichas; HP,
+  LG y Sony se abstienen por N3. Ninguna se retira. Evidencia: `resultados/tiendas/humo_2026-11-14.jsonl`.
+- **Gasto: US$0** (sin LLM; la verificación de referencias se hizo leyendo las fuentes).
 
 **Hecho el 14-nov (S09f, catálogo amplio de tiendas en vivo; VS Code · Opus 5.5), con pruebas:**
 
@@ -358,6 +378,13 @@ largas que la de prueba (recalibrar en S03 con el arnés), y Opus queda cerca de
 El `.env` nunca se lee ni se muestra en las sesiones: las claves se cargan en un subproceso.
 
 ## Bitácora
+
+### 15-nov-2026 — S10: borradores del informe y guardia contra búferes viejos (VS Code · Opus 5.5)
+
+- Decisiones con Wills: D133 (APA 7) y D134 (solución definitiva a las sobrescrituras de VS Code).
+- Borradores 01, 02, 06 y 07 del informe; referencias verificadas con tres subagentes en paralelo contra la fuente
+  primaria. Corrección de la cifra de ventas de la CCCE.
+- Gasto: US$0.
 
 ### 11-nov-2026 — S09c: publicación y MLOps ligero (VS Code · Opus 5.5)
 

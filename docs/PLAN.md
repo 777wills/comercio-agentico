@@ -388,8 +388,9 @@ real guardada y con el camino de error a US$0; falta la consulta de Wills con su
 - [x] Ampliar `TIENDAS_EN_VIVO` con las aptas y fijar el tope de **5 tiendas por consulta**, incluidas las URL que
       agregue el visitante. Precisado por D131: 5 tiendas fijas activas al cargar y el visitante cambia la selección
       (sin preselección automática).
-- [ ] Prueba de humo por tienda nueva (una consulta en vivo con Flash, < US$0,05 cada una) y registro de las que
-      fallen al abrir sus fichas.
+- [x] Prueba de humo por tienda nueva (una consulta en vivo con Flash, < US$0,05 cada una) y registro de las que
+      fallen al abrir sus fichas. Hecho: las 6 llegaron a fichas (5–14 páginas); Homecenter, Tigo y Flamingo
+      recomiendan; HP, LG y Sony se abstienen por N3; ninguna se retira.
 - [x] Decisión registrada (D127, precisa D112).
 - [x] Actualizar el panel «Fuentes» con las etiquetas, la preselección y el contador «n de 5».
 - [x] Integración con Mercado Libre: sesión S09g (D128, no se integra).
@@ -466,8 +467,9 @@ corrida siguiendo el README.
       `04_resultados_e1.md` (14-nov).
 - [x] Borradores de P8 (matriz de modelos), P9 (riesgos éticos), P10 (pipeline de datos), plan frente a lo logrado y
       declaración de uso de IAG (14-nov).
-- [ ] Borradores pendientes: introducción y problema (cifras re-verificadas), estado del arte, conclusiones con
-      aportes y limitaciones.
+- [x] Borradores pendientes: introducción y problema (cifras re-verificadas), estado del arte, conclusiones con
+      aportes y limitaciones. Hecho el 15-nov: `01_introduccion.md`, `02_estado_del_arte.md`, `06_conclusiones.md`
+      y `07_referencias.md` (APA 7, D133).
 - [ ] Ensamblar los borradores de `docs/informe/` en la plantilla institucional: introducción y problema, estado del
       arte, metodología, resultados, discusión (incluye ética, legal y seguridad, citando el ensayo de Ética como
       base), conclusiones, hoja de ruta (lo propuesto: E4, N1/ACP/UCP/AP2, más proveedores de modelos en CotIA además de

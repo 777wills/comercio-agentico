@@ -1,7 +1,7 @@
 # Borradores del informe
 
-Cada sesión deja aquí la sección que produjo. En S10 se ensamblan en la plantilla institucional (IEEE, dos columnas,
-español, citación numérica).
+Cada sesión deja aquí la sección que produjo. En S10 se ensamblan en la plantilla institucional (español, citación
+APA 7 según D133; las referencias verificadas están en `07_referencias.md`).
 
 Convención de nombres: `NN_seccion_tema.md` (01 introducción, 02 estado del arte, 03 metodología, 04 resultados,
 05 discusión, 06 conclusiones y hoja de ruta, 07 referencias).

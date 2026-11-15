@@ -62,7 +62,7 @@
 </script>
 
 <Dialog.Root bind:open={fuentes.panel}>
-	<Dialog.Content class="max-h-[85vh] gap-5 overflow-y-auto p-6 sm:max-w-xl">
+	<Dialog.Content class="max-h-[85vh] grid-cols-[minmax(0,1fr)] gap-5 overflow-x-hidden overflow-y-auto p-6 sm:max-w-xl">
 		<Dialog.Header>
 			<Dialog.Title class="text-base">Fuentes</Dialog.Title>
 			<Dialog.Description>

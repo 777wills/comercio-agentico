@@ -1307,3 +1307,38 @@ apagados deshabilitados hasta que se apague otra. «Restablecer la lista por def
 
 Con solo Mac Center activa, «¿Dónde está más barato el iPhone 17 de 256 GB?». Tarda entre 5 y 10 minutos (cada
 página tarda ~1 min entre la lectura con Chromium y la extracción).
+
+## S10 — Borradores del informe y guardia contra búferes viejos (15-nov, D133, D134)
+
+| Qué | Para qué |
+| --- | --- |
+| `make guardia` | Detecta archivos que volvieron a una versión anterior del historial (búferes viejos de VS Code) |
+| Hook de pre-commit `guardia-bufer` | Impide que esa regresión llegue a un commit |
+| `docs/informe/01`, `02`, `06`, `07` | Introducción, estado del arte, conclusiones y 40 referencias en APA 7 verificadas |
+
+### Cómo probarlo
+
+**1. La guardia en limpio — US$0, sin red**
+
+```bash
+make guardia && echo limpio
+```
+
+Si funciona: imprime `limpio`. Si falla, nombra cada archivo que es idéntico a una versión vieja y el commit del
+que viene; se revisa con `git diff` y se restaura con `git restore <archivo>`.
+
+**2. La guardia ante una sobrescritura simulada — US$0, sin red**
+
+```bash
+git show d770c23:docs/PLAN.md > docs/PLAN.md   # simula el búfer viejo del 10-nov
+make guardia                                    # debe fallar y nombrar d770c23
+git restore docs/PLAN.md                        # deja el archivo como estaba
+```
+
+Si funciona: el segundo comando falla con «docs/PLAN.md: es idéntico a la versión del commit d770c23 2026-11-10».
+Para aceptar una reversión intencional: `GUARDIA_OK=1 git commit …`.
+
+**3. Las referencias — US$0**
+
+Abrir `docs/informe/07_referencias.md` y comprobar al azar dos o tres entradas en su DOI o URL. Los seis pendientes
+menores (páginas de USENIX, sede de WebArena, dos nombres de autor) están listados al final del archivo.

@@ -29,6 +29,16 @@ repos:
       - id: mixed-line-ending
       - id: detect-private-key
 
+  # --- Guardia: archivos que volvieron a una versión vieja (búferes de VS Code) ---
+  - repo: local
+    hooks:
+      - id: guardia-bufer
+        name: guardia de búferes viejos
+        entry: uv run python scripts/guardia_bufer.py
+        language: system
+        pass_filenames: false
+        always_run: true
+
   # --- Ruff: lint + formato (Astral) ---
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.16.9
