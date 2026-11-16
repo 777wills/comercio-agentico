@@ -97,7 +97,9 @@ componentes de shadcn-svelte sobre bits-ui, con tema claro por defecto y un tema
 la ejecución de consultas la exige.
 
 La interfaz se organiza en dos modos con rutas separadas. El **modo Cliente** (`/`) está pensado para el
-usuario final: una caja de consulta con ejemplos, un selector de catálogo con nombres de negocio («Tiendas
+usuario final: una barra lateral con el historial de consultas del visitante, al estilo de los asistentes
+conversacionales (agrupado por fecha, con un indicador de las consultas que siguen en curso, que se actualiza solo y
+se convierte en un cajón en pantallas pequeñas), una caja de consulta con ejemplos, un selector de catálogo con nombres de negocio («Tiendas
 colombianas» para el corpus A y «Proveedores de prueba» para el B), un progreso resumido en cuatro pasos (entender la
 necesidad, consultar proveedores, comparar ofertas y recomendar), la recomendación o la abstención en un bloque
 destacado, una tabla corta con el costo total con envío, el plazo y la disponibilidad, y el texto original de la

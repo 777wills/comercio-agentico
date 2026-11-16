@@ -3,7 +3,7 @@
 	import { toast } from 'svelte-sonner';
 	import { crearConsulta, ErrorApi } from '#lib/api.js';
 	import { onMount } from 'svelte';
-	import { ajustes, config, fuentes, opcionesCliente } from '#lib/config.svelte.js';
+	import { ajustes, config, fuentes, opcionesCliente, visita } from '#lib/config.svelte.js';
 	import { ejemplos } from '#lib/datos.js';
 	import Fuentes from '#lib/components/Fuentes.svelte';
 	import ArrowUp from '@lucide/svelte/icons/arrow-up';
@@ -39,6 +39,7 @@
 				config.clave,
 				config.visitante
 			);
+			visita.refrescar().catch(() => {});
 			await goto(`/consulta/${r.id}`);
 		} catch (e) {
 			toast.error(e instanceof ErrorApi ? e.message : 'No se pudo crear la consulta.');
@@ -50,7 +51,7 @@
 
 <svelte:head><title>CotIA</title></svelte:head>
 
-<section class="mx-auto flex max-w-2xl flex-col pt-[10vh] pb-16 sm:pt-[16vh]">
+<section class="mx-auto flex max-w-2xl flex-col pt-[8vh] pb-16 sm:pt-[14vh]">
 	<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">¿Qué necesita comprar?</h1>
 	<p class="mt-3 text-muted-foreground">
 		CotIA compara proveedores y le recomienda la mejor oferta, con la fuente de cada precio.

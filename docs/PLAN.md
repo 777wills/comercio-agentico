@@ -527,6 +527,9 @@ pantallas y ventanas emergentes usables en un celular.
 - [x] Sin desplazamientos anidados en Ataques y Corpus en móvil; selector de corpus y campo de la clave sin desborde;
       diálogos con alto máximo; foco visible y `prefers-reduced-motion`.
 - [x] Revisión visual a 390 px y en escritorio, en claro y en oscuro; `make check` en verde.
+- [x] Historial en barra lateral al estilo de claude.ai (D140): «Nueva consulta», consultas agrupadas por fecha
+      con punto de estado, refresco mientras alguna sigue en curso; cajón en móvil; `/mis-consultas` redirige a `/`.
+      Cambiar de consulta desde la barra recrea la vista (`{#key}`), con su propio flujo de eventos.
 - [ ] Desplegar en Railway (push a `main`) y revisar producción en un celular real.
 
 **Terminado cuando:** las casillas anteriores están cumplidas y producción muestra el tema claro.

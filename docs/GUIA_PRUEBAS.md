@@ -1417,3 +1417,14 @@ make bd && make api      # http://localhost:8000
     muestra el total grande y, si N3 confirmó el precio, la franja «Precio verificado». Las ofertas se ven como
     lista con el precio a la derecha. El resumen dice «de 1 fuente (Homecenter)», no «(V6)».
 - No debe haber desplazamiento horizontal de la página en ninguna ruta.
+
+**3. Barra lateral de consultas (D140) — US$0, sin clave**
+
+- En escritorio, la barra izquierda muestra «Nueva consulta», sus consultas agrupadas (Hoy, Ayer, Últimos 7 días,
+  Anteriores) y abajo Ajustes, Laboratorio, el gasto y el tema. El botón de la cabecera (o Ctrl+B) la colapsa.
+- A 390 px la barra es un cajón: el botón ☰ lo abre; al tocar una consulta, se carga y el cajón se cierra.
+- Al pasar de una consulta a otra desde la barra, el título y el resultado cambian (no se queda la anterior).
+- Un punto rojo marca las consultas con error; uno verde pulsante, las que siguen en curso (la lista se refresca
+  cada 5 s mientras haya alguna).
+- `http://localhost:8000/mis-consultas` redirige a la portada.
+- En un navegador sin consultas, la barra dice «Sus consultas aparecerán aquí».
