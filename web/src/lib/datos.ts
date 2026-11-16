@@ -54,9 +54,16 @@ export function conNombres(
     texto: string,
     nombres: Record<string, string>,
 ): string {
-    let t = texto;
+    // Códigos entre paréntesis, solos o en lista: «(V5)» o «(V3, V4, V5)».
+    let t = texto.replace(
+        /\(([A-Z]\d+(?:,\s*[A-Z]\d+)*)\)/g,
+        (_, lista: string) =>
+            `(${lista
+                .split(/,\s*/)
+                .map((c) => nombres[c] ?? c)
+                .join(", ")})`,
+    );
     for (const [codigo, nombre] of Object.entries(nombres)) {
-        t = t.replace(new RegExp(`\\(${codigo}\\)`, "g"), `(${nombre})`);
         t = t.replace(
             new RegExp(`\\b(de|en) ${codigo}\\b`, "g"),
             `$1 ${nombre}`,
