@@ -2,6 +2,14 @@
 
 ## Siguiente sesión
 
+**16-nov (S10d, panel «Fuente» del cliente; Claude Code · Opus 5.5):** el texto original de la fuente traía
+palabras sin espacios (URL de schema.org de hasta ~450 caracteres) que ensanchaban la celda y la tabla de ofertas;
+la columna «Ocultar» quedaba fuera de vista y había que bajar hasta la barra horizontal de la tabla. Arreglo en
+`ResultadoCliente.svelte`: el fragmento parte en cualquier punto (`overflow-wrap: anywhere`, solo desplazamiento
+vertical) y suma «Ocultar fuente» al pie del panel. Verificado en Chrome con la consulta local «Celular…» (45
+ofertas): a 1300 px la tabla mide 896 px en un contenedor de 896 (antes, 1119); a 619 px sin desborde de página.
+`make check` en verde (223 pruebas). **Gasto US$0.** Sigue S10 (informe del curso).
+
 **16-nov (S10c, informe de cotización; Claude Code · Opus 5.5), D142:** cada consulta terminada tiene un
 **informe de cotización** en `/informe/{id}` (solicitud y criterios, decisión, cuadro, descartadas con su motivo,
 bitácora por ronda con cada URL leída, controles y alertas, anexo de procedencia con SHA-256 y fragmento), imprimible

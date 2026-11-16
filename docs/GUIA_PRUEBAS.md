@@ -1508,3 +1508,25 @@ uv run python -m comercio_agentico.api.evidencia exp.json        # Huella NO vá
 **4. Una consulta nueva de punta a punta — < US$0,01** (DeepSeek Flash, una consulta sobre «Proveedores de
 prueba»): lanzarla en `/`, esperar el resultado y abrir el informe. En el corpus B la bitácora muestra las lecturas
 de los cinco proveedores sintéticos (web, PDF, chat y MCP).
+
+## S10d — Panel «Fuente» sin desplazamiento horizontal (16-nov)
+
+**Qué cambió:** en el resultado del cliente, abrir «Fuente» en una oferta ya no ensancha la tabla. El texto
+original parte las líneas largas (URL, JSON de schema.org) y el panel trae «Ocultar fuente» al pie.
+
+**1. Revisarlo en una consulta ya guardada — US$0**
+
+```bash
+make bd && make web && make api      # o: systemctl --user restart cotia-api tras make web
+# abrir http://localhost:8000, entrar a una consulta terminada con varias ofertas y pulsar «Fuente»
+```
+
+Debe ver: el fragmento envuelto dentro del recuadro gris, con barra solo vertical; la columna «Ocultar» de la fila
+sigue a la vista sin desplazar la tabla hacia la derecha, y «Ocultar fuente», debajo del recuadro, cierra el panel.
+En una ventana angosta (< 640 px, lista apilada) igual: la página no se desplaza en horizontal.
+
+**2. Comprobación objetiva en la consola del navegador — US$0** (vista de escritorio, con un panel abierto):
+
+```js
+const w = document.querySelector('div.overflow-x-auto'); [w.scrollWidth, w.clientWidth]   // deben ser iguales
+```

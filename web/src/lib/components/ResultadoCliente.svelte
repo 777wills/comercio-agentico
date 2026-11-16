@@ -86,6 +86,7 @@
 	</ul>
 {/if}
 
+<!-- El fragmento parte en cualquier punto: una URL larga no ensancha la tabla ni esconde «Ocultar». -->
 {#snippet fuente(o: Propuesta['ofertas'][number])}
 	<p class="text-xs text-muted-foreground">
 		Leído en {proveedor(o)} el
@@ -93,8 +94,14 @@
 		{cop(o.precio)} + envío {cop(o.costo_envio)}. Este es el texto original de la fuente:
 	</p>
 	<pre
-		class="mt-2 max-h-56 overflow-auto rounded-lg bg-muted p-3 text-xs whitespace-pre-wrap text-muted-foreground">{o
+		class="mt-2 max-h-56 overflow-y-auto rounded-lg bg-muted p-3 text-xs whitespace-pre-wrap [overflow-wrap:anywhere] text-muted-foreground">{o
 			.procedencia.fragmento_original}</pre>
+	<div class="mt-1.5 text-right">
+		<button
+			class="text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+			onclick={() => (abierta = null)}>Ocultar fuente</button
+		>
+	</div>
 {/snippet}
 
 {#if propuesta.ofertas.length}
