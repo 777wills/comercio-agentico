@@ -158,13 +158,14 @@ monitorear» su contenido, junto con Huawei, Asus y Home Sentry; el `llms.txt` d
 al agente. El catálogo quedó en 13 tiendas aptas, cada una con las categorías que vende y, si aplica, su marca
 exclusiva (Tabla 3.p.2).
 
-Cada consulta usa como máximo cinco fuentes web, incluidas las URL que agregue el visitante: con el
-tope de 14 acciones del planificador, más tiendas reparten menos de tres acciones por tienda y el agente no alcanza
-las fichas de producto, y el costo y la latencia crecen con cada fuente. Al cargar CotIA quedan activas siempre las
-mismas cinco (Falabella, Samsung Colombia, Panamericana, Homecenter y Tienda Claro); el visitante cambia la selección
-con los interruptores del panel «Fuentes», que muestra el contador «n de 5» y no deja activar una sexta. La API
-aplica el mismo tope, y una URL agregada con el cupo lleno se guarda desactivada. Los PDF no cuentan, porque no
-consumen navegación. El visitante ve la lista completa, la activa o desactiva por
+Al cargar CotIA quedan activas siempre las mismas cinco tiendas (Falabella, Samsung Colombia, Panamericana,
+Homecenter y Tienda Claro); el visitante cambia la selección con los interruptores del panel «Fuentes» y puede
+activar todas las del catálogo y las URL que agregue. El panel muestra cuántas tiendas web están activas y, por
+encima de cinco, advierte que el planificador reparte su presupuesto fijo de 14 acciones entre más fuentes: con más
+de cinco tiendas corresponden menos de tres acciones a cada una, el agente puede no alcanzar las fichas de producto,
+y el costo y la latencia crecen con cada fuente. La preselección conserva así el comportamiento medido, y el
+visitante decide el equilibrio entre cobertura y costo. Los PDF no cuentan en esa cifra, porque no consumen
+navegación. El visitante ve la lista completa, la activa o desactiva por
 fuente y le agrega tiendas propias (URL) y listas de precios en PDF; sus cambios se guardan por visitante y no
 afectan a los demás. Del PDF se conservan el texto extraído y su SHA-256, no el archivo, y no se calculan
 embeddings del documento: una lista de precios es corta y se necesita completa.

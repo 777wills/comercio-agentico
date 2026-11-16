@@ -568,6 +568,18 @@ consulta incompleta no gaste una corrida.
 **Terminado cuando:** «…6 GB de RAM» recomienda una oferta verificada y «…gb de ram» pide la cifra sin consultar
 proveedores.
 
+## S10f — Sin tope de tiendas activas en vivo (lun 16-nov, D144)
+
+**Objetivo:** que el visitante active cuantas tiendas quiera, con las 5 fijas de D131 activas al cargar.
+
+- [x] API: sin recorte en `registro`, sin verificación de cupo; una URL propia nueva entra activa;
+      `limites.tiendas_recomendadas`.
+- [x] Panel «Fuentes»: «Tiendas activas: n» y aviso por encima de 5; ningún interruptor bloqueado.
+- [x] Prueba de `tests/test_vivo.py` actualizada (`make check`, 226) y prueba local con `curl` (8 activas).
+- [ ] Revisar en producción tras el despliegue.
+
+**Terminado cuando:** al cargar quedan 5 activas y la API acepta una sexta.
+
 ## S10 — Informe en la plantilla del curso (mar 17 / mié 18-nov)
 
 **Objetivo:** informe completo en `Formato_informe.docx`, en PDF, con citas APA 7 (D133).

@@ -97,6 +97,7 @@ TIENDAS_EN_VIVO: list[Fuente] = [
         ("V15", "Sony Store", "https://store.sony.com.co/", ["audifonos"], "Sony"),
     )
 ]
-# Activas al cargar CotIA (D131); el visitante cambia la selección con un tope de 5.
+# Activas al cargar CotIA (D131); el visitante activa las que quiera, sin tope (D144).
 EN_VIVO_POR_DEFECTO = {"V3", "V4", "V5", "V6", "V7"}
-MAX_WEB_ACTIVAS = 5
+# Por encima de esta cifra la interfaz avisa que las acciones se reparten entre más tiendas.
+TIENDAS_RECOMENDADAS = 5

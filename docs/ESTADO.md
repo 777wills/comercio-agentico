@@ -2,6 +2,16 @@
 
 ## Siguiente sesión
 
+**16-nov (S10f, sin tope de tiendas activas; Claude Code · Opus 5.5), D144 (precisa D131):** al cargar CotIA
+siguen activas las 5 tiendas fijas, pero el visitante puede activar todas las del catálogo y sus URL propias. Se quitó
+el recorte y la verificación de cupo de `api/fuentes_visitante.py` (una URL nueva entra activa); `MAX_WEB_ACTIVAS`
+pasa a `TIENDAS_RECOMENDADAS = 5`, solo informativo (`limites.tiendas_recomendadas`); el panel «Fuentes» muestra
+«Tiendas activas: n» y, con más de 5, avisa que las 14 acciones se reparten entre más tiendas. El presupuesto de
+acciones y el tope de reloj no cambian. `make check` en verde (226 pruebas); prueba local con `curl`: 5 activas al
+cargar, tres tiendas más aceptadas (200), restablecer vuelve a 5. Borrador `03_metodologia_producto.md` actualizado.
+**Gasto US$0.** **Wills:** tras el despliegue, abrir «Fuentes» en producción y encender una sexta tienda. **Sigue S10
+(informe del curso).**
+
 **16-nov (S10e, mejoras tras el análisis de una consulta real; Claude Code · Opus 5.5), D143:** la consulta
 local «Celular de por lo menos gb de ram» se abstuvo con 36 de 45 ofertas en discrepancia. Diagnóstico: (1) la
 consulta omitía la cifra y el intérprete descartó la condición en silencio (la más barata fue un ZTE de 2 GB);

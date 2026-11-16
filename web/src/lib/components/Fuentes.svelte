@@ -23,7 +23,7 @@
 		mensaje: 'Chat'
 	};
 	const AYUDA: Record<Grupo, string> = {
-		vivo: 'Tiendas reales en internet, leídas en el momento. Cada consulta usa hasta 5 tiendas activas, incluidas las que agregue; sus listas de precios en PDF no cuentan.',
+		vivo: 'Tiendas reales en internet, leídas en el momento. Cada consulta usa todas las tiendas activas, incluidas las que agregue. Con más tiendas la consulta tarda más y cuesta más.',
 		a: 'Réplicas de tiendas colombianas con datos leídos el 9-nov-2026. Siempre dan el mismo resultado.',
 		b: 'Cinco proveedores ficticios en formatos distintos: catálogo MCP, dos webs, PDF y chat.'
 	};
@@ -52,13 +52,11 @@
 	const propias = $derived(grupo?.fuentes.filter((f) => f.eliminable) ?? []);
 	const urlsPropias = $derived(propias.filter((f) => f.tipo_fuente !== 'pdf').length);
 	const pdfsPropios = $derived(propias.filter((f) => f.tipo_fuente === 'pdf').length);
-	// D131: tope de tiendas web activas en el grupo en vivo (los PDF no cuentan).
-	const tope = $derived(fuentes.lista?.limites.tiendas_activas ?? 5);
+	// D144: sin tope de tiendas activas; por encima de las recomendadas solo se avisa (los PDF no cuentan).
+	const recomendadas = $derived(fuentes.lista?.limites.tiendas_recomendadas ?? 5);
 	const activasWeb = $derived(
 		grupo?.fuentes.filter((f) => f.activa && f.tipo_fuente !== 'pdf').length ?? 0
 	);
-	const sinCupo = (f: { activa: boolean; tipo_fuente: string }) =>
-		config.corpus === 'vivo' && !f.activa && f.tipo_fuente !== 'pdf' && activasWeb >= tope;
 </script>
 
 <Dialog.Root bind:open={fuentes.panel}>
@@ -84,9 +82,15 @@
 		</div>
 		<p class="-mt-2 text-xs text-muted-foreground">{AYUDA[config.corpus]}</p>
 		{#if config.corpus === 'vivo' && grupo}
-			<p class="-mt-3 text-xs {activasWeb >= tope ? 'text-foreground' : 'text-muted-foreground'}">
-				Tiendas activas: <span class="font-medium tabular-nums">{activasWeb} de {tope}</span>
+			<p class="-mt-3 text-xs text-muted-foreground">
+				Tiendas activas: <span class="font-medium tabular-nums text-foreground">{activasWeb}</span>
 			</p>
+			{#if activasWeb > recomendadas}
+				<p class="-mt-3 text-xs text-warning">
+					Con más de {recomendadas} tiendas, el agente reparte sus acciones entre todas y puede no llegar a
+					las fichas de algunas.
+				</p>
+			{/if}
 		{/if}
 
 		{#if grupo}
@@ -95,10 +99,9 @@
 					<li class="flex items-center gap-3 px-3 py-2.5">
 						<Switch
 							checked={f.activa}
-							disabled={fuentes.ocupado || sinCupo(f)}
+							disabled={fuentes.ocupado}
 							onCheckedChange={(v) => intentar(() => fuentes.activar(f.id, v))}
 							aria-label="Activar {f.nombre}"
-							title={sinCupo(f) ? `Máximo ${tope} tiendas activas: desactive una para activar esta.` : undefined}
 						/>
 						<div class="min-w-0 flex-1">
 							<div class="truncate text-sm {f.activa ? '' : 'text-muted-foreground'}">{f.nombre}</div>

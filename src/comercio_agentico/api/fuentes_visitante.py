@@ -23,7 +23,6 @@ from sqlalchemy.orm import sessionmaker
 
 from comercio_agentico.agente.fuentes import (
     EN_VIVO_POR_DEFECTO,
-    MAX_WEB_ACTIVAS,
     TIENDAS_EN_VIVO,
     Fuente,
     RegistroFuentes,
@@ -172,22 +171,12 @@ class FuentesVisitante:
                     fuentes.append(_fuente_usuario(f))
                     if f.tipo == "pdf" and f.texto:
                         documentos[f.url] = f.texto
-            # D131: nunca más de 5 fuentes web, aunque la base guarde preferencias anteriores.
-            web = [f.id for f in fuentes if f.herramienta == "abrir_pagina"][MAX_WEB_ACTIVAS:]
-            fuentes = [f for f in fuentes if f.id not in web]
         return RegistroFuentes(fuentes=fuentes), documentos
 
     def web_activas(self, visitante: str) -> list[str]:
         """IDs de las fuentes web activas del grupo en vivo (tiendas y URL del visitante)."""
         registro, _ = self.registro(visitante, "vivo")
         return [f.id for f in registro.fuentes if f.herramienta == "abrir_pagina"]
-
-    def _verificar_cupo(self, visitante: str) -> None:
-        if len(self.web_activas(visitante)) >= MAX_WEB_ACTIVAS:
-            raise FuenteInvalida(
-                f"Máximo {MAX_WEB_ACTIVAS} tiendas activas por consulta; desactive una para "
-                "activar otra."
-            )
 
     # ----------------------------------------------------------------------------------------------
     # Cambios
@@ -199,13 +188,6 @@ class FuentesVisitante:
         )
         if propia is None and fuente_id not in {f.id for g in GRUPOS for f in self.por_defecto(g)}:
             raise KeyError(fuente_id)
-        es_web_vivo = (
-            propia.tipo == "url"
-            if propia is not None
-            else fuente_id in {f.id for f in TIENDAS_EN_VIVO}
-        )
-        if activa and es_web_vivo and fuente_id not in self.web_activas(visitante):
-            self._verificar_cupo(visitante)
         with self.sesiones.begin() as s:
             if propia is not None:
                 s.get(FuenteVisitanteBD, propia.id).activa = activa
@@ -256,8 +238,6 @@ class FuentesVisitante:
         host = urlsplit(url).hostname or url
         return self._guardar(
             visitante,
-            # Con el cupo lleno se guarda desactivada; el visitante elige cuál apagar (D131).
-            activa=len(self.web_activas(visitante)) < MAX_WEB_ACTIVAS,
             tipo="url",
             fuente_id="",
             nombre=(nombre or host.removeprefix("www."))[:120],

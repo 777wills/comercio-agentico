@@ -1564,3 +1564,34 @@ cotización lo repite en la columna N3.
 en `/`, con su clave, escribir «Televisor de pulgadas para la sala». Debe responder que falta la cantidad de
 pulgadas. Una consulta vaga sin cifra («Un portátil liviano para la universidad») **sí** recorre tiendas y cuesta
 una corrida completa (≈ US$0,06): no es necesario probarla.
+
+## S10f — Sin tope de tiendas activas en vivo (16-nov, D144)
+
+**Qué cambió:** al cargar CotIA siguen activas las mismas 5 tiendas, pero ya puede activar todas las del catálogo y
+sus URL propias. El panel «Fuentes» muestra «Tiendas activas: n» (antes «n de 5») y, con más de 5, un aviso en
+color de advertencia: el agente reparte sus 14 acciones entre todas las tiendas y puede no llegar a las fichas de
+algunas.
+
+**1. Pruebas sin red — US$0**
+
+```bash
+uv run pytest -q tests/test_vivo.py     # activa una sexta tienda y una segunda URL propia, ambas quedan activas
+make check                              # 226 pruebas
+```
+
+**2. Probar la API local — US$0** (no llama a ningún modelo):
+
+```bash
+H="X-Visitante: 11111111-1111-4111-8111-111111111111"
+curl -s localhost:8000/api/fuentes -H "$H" | python3 -c "import sys,json;d=json.load(sys.stdin);print([f['nombre'] for f in d['grupos'][0]['fuentes'] if f['activa']], d['limites'])"
+for v in V8 V9 V10; do curl -s -o /dev/null -w "$v %{http_code}\n" -X PATCH localhost:8000/api/fuentes/$v -H "$H" -H 'Content-Type: application/json' -d '{"activa":true}'; done
+curl -s -X POST localhost:8000/api/fuentes/restablecer -H "$H" -o /dev/null -w "%{http_code}\n"
+```
+
+Debe ver: las 5 tiendas fijas activas y `tiendas_recomendadas: 5`; luego tres `200` (antes, `422` con «Máximo 5
+tiendas activas»). El último comando vuelve a las 5 por defecto.
+
+**3. En el navegador — US$0:** `make web && systemctl --user restart cotia-api`, abrir `http://localhost:8000`,
+«Fuentes» → «Tiendas en vivo». Debe ver «Tiendas activas: 5» sin aviso; al encender una sexta, «Tiendas activas: 6»
+y el aviso. Ningún interruptor queda bloqueado. Una consulta con más de 5 tiendas cuesta y tarda más que las
+≈ US$0,06 de una corrida normal: no hace falta correrla.

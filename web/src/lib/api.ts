@@ -191,7 +191,7 @@ export type FuenteLista = {
 };
 export type ListaBlanca = {
     grupos: { id: Grupo; nombre: string; fuentes: FuenteLista[] }[];
-    limites: { urls: number; pdfs: number; mb_pdf: number; tiendas_activas: number };
+    limites: { urls: number; pdfs: number; mb_pdf: number; tiendas_recomendadas: number };
 };
 
 export class ErrorApi extends Error {

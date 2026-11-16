@@ -350,9 +350,11 @@ def test_lista_blanca_por_visitante_de_punta_a_punta(lista_modelos):  # noqa: F8
         mac = next(f for f in grupos["vivo"]["fuentes"] if f["nombre"] == "Mac Center")
         assert mac["marca"] == "Apple" and "celular" in mac["categorias"]
 
-        # Tope de 5: una sexta tienda no se activa hasta desactivar otra
+        # D144: sin tope; una sexta tienda se activa y la API informa la cifra recomendada
         r = c.patch("/api/fuentes/V9", json={"activa": True}, headers=CABECERAS)
-        assert r.status_code == 422 and "5 tiendas" in r.json()["detail"]
+        assert r.status_code == 200
+        assert sum(f["activa"] for f in r.json()["grupos"][0]["fuentes"]) == 6
+        assert r.json()["limites"]["tiendas_recomendadas"] == 5
 
         # Desactivar una fuente por defecto solo afecta a este visitante
         r = c.patch("/api/fuentes/V3", json={"activa": False}, headers=CABECERAS)
@@ -376,11 +378,11 @@ def test_lista_blanca_por_visitante_de_punta_a_punta(lista_modelos):  # noqa: F8
         assert r.status_code == 422 and "robots.txt" in r.json()["detail"]
         r = c.post("/api/fuentes/url", json={"url": "https://8.8.8.8/tienda"}, headers=CABECERAS)
         assert r.status_code == 201
-        # Con el cupo lleno (4 fijas + 1 propia), la segunda URL queda guardada pero apagada
+        # Sin tope (D144), la segunda URL también queda activa
         r = c.post("/api/fuentes/url", json={"url": "https://8.8.8.8/otra"}, headers=CABECERAS)
         assert r.status_code == 201
         otra = next(f for f in r.json()["grupos"][0]["fuentes"] if f["url"].endswith("/otra"))
-        assert otra["activa"] is False
+        assert otra["activa"] is True
         assert c.delete(f"/api/fuentes/{otra['id']}", headers=CABECERAS).status_code == 200
 
         # PDF propio: se guarda su texto y su SHA-256; un archivo que no es PDF se rechaza
@@ -393,11 +395,11 @@ def test_lista_blanca_por_visitante_de_punta_a_punta(lista_modelos):  # noqa: F8
         assert [f["tipo_fuente"] for f in propias] == ["web_plana", "pdf"]
         assert propias[1]["url"].startswith("PDF · SHA-256 ")
 
-        # Los PDF no cuentan para el tope de 5 fuentes web
-        assert len(servicio.fuentes.web_activas(VISITANTE)) == 5
+        # 4 fijas + V9 + la URL propia = 6 fuentes web activas; el PDF se suma aparte
+        assert len(servicio.fuentes.web_activas(VISITANTE)) == 6
         registro, documentos = servicio.fuentes.registro(VISITANTE, "vivo")
         assert "V3" not in {f.id for f in registro.fuentes}
-        assert len(registro.fuentes) == 6
+        assert len(registro.fuentes) == 7
         assert len(documentos) == 1 and "Monitor" in next(iter(documentos.values()))
 
         # La consulta en vivo llega al agente con la comparación abierta y esas fuentes
