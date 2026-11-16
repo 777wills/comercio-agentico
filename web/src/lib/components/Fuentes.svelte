@@ -171,7 +171,7 @@
 					<FileUp /> Subir lista de precios (PDF)
 				</Button>
 				<p class="text-xs text-muted-foreground">
-					Hasta {lim.urls} tiendas y {lim.pdfs} PDF de {lim.mb_pdf} MB. CotIA solo abre direcciones
+					Puede agregar hasta {lim.urls} tiendas propias y {lim.pdfs} listas en PDF (máximo {lim.mb_pdf} MB cada una). CotIA solo abre direcciones
 					públicas y respeta el robots.txt de cada sitio. Del PDF se guarda el texto y su huella
 					SHA-256, no el archivo.
 				</p>
