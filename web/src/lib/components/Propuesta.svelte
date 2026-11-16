@@ -115,9 +115,10 @@
 								<div class="truncate" title={o.titulo}>{o.titulo}</div>
 								<div class="flex flex-wrap gap-1 pt-1">
 									{#if i === propuesta.recomendada}<Badge>Recomendada</Badge>{/if}
+									{#if i === propuesta.alternativa}<Badge variant="outline">Mejor verificada</Badge>{/if}
 									{#if o.verificacion}
 										<Badge variant="outline" class={N3[o.verificacion].clase}>
-											N3: {N3[o.verificacion].texto}
+											N3: {N3[o.verificacion].texto}{o.campos_discrepancia?.length ? ` (${o.campos_discrepancia.join(', ').replaceAll('_', ' ')})` : ''}
 										</Badge>
 									{/if}
 									{#if !o.producto_catalogo}

@@ -89,6 +89,10 @@ class Necesidad(BaseModel):
     restricciones: list[RestriccionAtributo] = Field(
         default_factory=list, description="Especificaciones mínimas o máximas que pide la consulta."
     )
+    falta: str | None = Field(
+        default=None,
+        description="Dato que la consulta anuncia sin su cifra o valor (D143); null si no falta.",
+    )
     presupuesto_max: float | None = Field(
         default=None, description="Tope en COP sobre precio + envío; null si no lo da."
     )
@@ -142,6 +146,10 @@ código, una pregunta general o una conversación); en ese caso deja los demás 
 - Toda especificación mínima o máxima de la consulta va en restricciones, con el nombre y la \
 unidad canónicos. Una necesidad sin cifras se traduce a una cifra razonable ("liviano" en un \
 portátil → peso <= 1.6). No inventes restricciones que la consulta no sugiere.
+- falta: si la consulta anuncia una especificación o un tope pero omite su cifra o su valor \
+("por lo menos gb de RAM", "que cueste menos de pesos"), escribe qué falta en pocas palabras \
+("la cantidad de GB de RAM"); si no falta nada, null. Una necesidad sin cifras ("liviano", "buena \
+cámara") no es un dato faltante: se traduce a una cifra razonable.
 - presupuesto_max: el tope de dinero en pesos, si lo hay. plazo_max_dias: si pide un plazo.
 - Si nombra un producto concreto (marca y modelo), cópialo en producto_mencionado y elige en \
 producto_id el candidato que sea exactamente ese producto, con la misma variante de memoria, \

@@ -551,6 +551,23 @@ la recomendación, como la que deja un cotizador en una empresa.
 
 **Terminado cuando:** el informe de una consulta real se imprime completo y la huella del expediente se verifica.
 
+## S10e — Mejoras tras el análisis de una consulta real (lun 16-nov, D143)
+
+**Objetivo:** que una consulta en vivo no termine en abstención por desacuerdos que no son de precio y que una
+consulta incompleta no gaste una corrida.
+
+- [x] N3: la disponibilidad solo se compara si las dos lecturas la conocen; `campos_discrepancia` por oferta,
+      visible en el laboratorio y en el informe de cotización.
+- [x] Intérprete: campo `falta`; el grafo se abstiene antes de recorrer tiendas y pide el dato.
+- [x] Política abstener: `alternativa` con la mejor oferta verificada, nombrada en el motivo.
+- [x] 3 pruebas sin red (`make check`, 226) y dos consultas reales con Flash (≈ US$0,06).
+- [ ] Revisar en producción tras el despliegue.
+- [ ] Propuesto (hoja de ruta): recorrido directo a búsqueda o categoría en lugar de las portadas; quitar ofertas
+      duplicadas de la misma fuente.
+
+**Terminado cuando:** «…6 GB de RAM» recomienda una oferta verificada y «…gb de ram» pide la cifra sin consultar
+proveedores.
+
 ## S10 — Informe en la plantilla del curso (mar 17 / mié 18-nov)
 
 **Objetivo:** informe completo en `Formato_informe.docx`, en PDF, con citas APA 7 (D133).

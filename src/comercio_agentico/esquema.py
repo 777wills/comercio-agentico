@@ -142,6 +142,9 @@ class Oferta(OfertaExtraida):
     verificacion: Literal["verificada", "discrepancia", "sin_contraparte"] | None = Field(
         default=None, description="Resultado de N3; null si no se verificó."
     )
+    campos_discrepancia: list[str] = Field(
+        default_factory=list, description="Campos en que N3 no coincidió con la extracción (D143)."
+    )
     # Comparación abierta (D113): fuentes en vivo y del visitante, sin catálogo de referencia.
     grupo: int | None = Field(
         default=None, description="Grupo de ofertas del mismo producto; lo escribe la comparación."
@@ -315,6 +318,10 @@ class PropuestaCompra(BaseModel):
     justificacion: str = ""
     abstencion: bool = False
     motivo_abstencion: str | None = None
+    alternativa: int | None = Field(
+        default=None,
+        description="Índice de la mejor oferta verificada cuando N3 impide recomendar (D143).",
+    )
     alertas: list[Alerta] = Field(default_factory=list)
     modelo: str | None = None
     costo_usd: float = Field(default=0.0, ge=0)
@@ -329,7 +336,7 @@ class PropuestaCompra(BaseModel):
                 raise ValueError("La abstención debe explicar su motivo")
         elif self.recomendada is None:
             raise ValueError("Sin abstención debe haber una oferta recomendada")
-        indices = [self.recomendada] + [a.oferta for a in self.alertas]
+        indices = [self.recomendada, self.alternativa] + [a.oferta for a in self.alertas]
         for i in indices:
             if i is not None and not 0 <= i < len(self.ofertas):
                 raise ValueError(f"Índice de oferta fuera de rango: {i}")

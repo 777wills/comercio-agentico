@@ -319,7 +319,7 @@
 										<td class="num">{cop(total(o))}</td>
 										<td>{dias(o.plazo_entrega_dias)}</td>
 										<td>{DISPONIBILIDAD[o.disponibilidad]}</td>
-										<td>{o.verificacion ? N3[o.verificacion] : 'No se verificó'}</td>
+										<td>{o.verificacion ? N3[o.verificacion] : 'No se verificó'}{o.campos_discrepancia?.length ? ` (${o.campos_discrepancia.join(', ').replaceAll('_', ' ')})` : ''}</td>
 									</tr>
 								{/each}
 							</tbody>

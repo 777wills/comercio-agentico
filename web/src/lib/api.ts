@@ -54,6 +54,7 @@ export type Oferta = {
     url_detalle: string | null;
     producto_catalogo: string | null;
     verificacion: "verificada" | "discrepancia" | "sin_contraparte" | null;
+    campos_discrepancia?: string[];
     procedencia: Procedencia;
 };
 
@@ -78,6 +79,7 @@ export type Propuesta = {
     justificacion: string;
     abstencion: boolean;
     motivo_abstencion: string | null;
+    alternativa?: number | null;
     alertas: Alerta[];
     modelo: string | null;
     costo_usd: number;

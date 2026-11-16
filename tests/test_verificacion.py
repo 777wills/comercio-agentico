@@ -120,6 +120,17 @@ def test_con_el_llm_un_nulo_frente_a_un_valor_si_es_discrepancia():
     assert discrepancias(con_gtin, sin_gtin) == []
 
 
+def test_disponibilidad_desconocida_en_una_ruta_no_es_discrepancia():
+    """D143: desconocer la disponibilidad no contradice a la otra ruta; un desacuerdo real sí."""
+    c = Contraparte(titulo="m8", precio=100, disponibilidad="en_stock", publicados=TODOS)
+    o = OfertaExtraida(titulo="m8", precio=100, disponibilidad="desconocida")
+    assert discrepancias(o, c) == []
+    assert discrepancias(o.model_copy(update={"disponibilidad": "agotado"}), c) == [
+        "disponibilidad"
+    ]
+    assert discrepancias(o.model_copy(update={"precio": 120}), c) == ["precio"]
+
+
 def test_correspondencia_escalonada():
     a = Contraparte(titulo="Otro nombre", precio=1, gtin="9520000000011")
     b = Contraparte(titulo="x", precio=2, url_detalle="http://t/c02.html")
@@ -201,6 +212,22 @@ def test_politicas_ante_la_ganadora_no_verificada(politica, abstencion, proveedo
     assert any(a.tipo == "sin_verificar" for a in p.alertas)
     if proveedor:
         assert p.ofertas[p.recomendada].proveedor == proveedor
+
+
+def test_abstener_nombra_los_campos_y_la_mejor_verificada_sin_recomendarla():
+    ganadora = _oferta("P5", 2_000_000, "discrepancia")
+    ganadora.campos_discrepancia = ["precio"]
+    ofertas = [ganadora, _oferta("P1", 2_100_000, "verificada")]
+    p = proponer_con_n3("q", NECESIDAD, ofertas, PERFIL, PRODUCTOS, [], "d", 0.0)
+    assert p.abstencion and p.recomendada is None
+    assert "discrepancia en precio" in p.motivo_abstencion
+    assert p.ofertas[p.alternativa].proveedor == "P1"
+    assert "La mejor oferta confirmada es" in p.motivo_abstencion and "$2.100.000" in (
+        p.motivo_abstencion
+    )
+    sin_verificadas = [ganadora, _oferta("P1", 2_100_000, "sin_contraparte")]
+    p = proponer_con_n3("q", NECESIDAD, sin_verificadas, PERFIL, PRODUCTOS, [], "d", 0.0)
+    assert p.abstencion and p.alternativa is None and "confirmada" not in p.motivo_abstencion
 
 
 def test_abstener_no_cambia_nada_si_la_ganadora_esta_verificada():

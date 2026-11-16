@@ -2,22 +2,23 @@
 
 ## Siguiente sesión
 
-**16-nov (análisis de la consulta local «Celular de por lo menos gb de ram»; Claude Code · Opus 5.5), sin
-cambios de código:** CotIA se abstuvo (C2 + N3, abstener) y el resultado fue seguro pero inútil. Tres causas:
-(1) **consulta ambigua aceptada en silencio**: falta la cifra de RAM y el intérprete devolvió `restricciones: []`;
-al ordenar por precio, la más barata fue un ZTE de 2 GB, lo opuesto a la intención. (2) **Falso positivo de N3**:
-de 45 ofertas, 7 verificadas, 36 en discrepancia y 2 sin contraparte. Confirmado con una llamada a Haiku sobre la
-ficha de Panamericana: las 6 discrepancias de esa fuente son **solo de disponibilidad** (el extractor deja
-`desconocida`; las instrucciones de N3 tratan lo que se puede comprar como `en_stock`); precio idéntico en todas.
-En la re-extracción se comparan todos los campos, así que ese desacuerdo dispara la abstención. Además,
-`Verificacion.campos` no se guarda ni se muestra. (3) **Recorrido caro**: la primera ronda abrió las 5 portadas
-(30 ofertas ajenas: juguetes, televisores, Homecenter), 203 mil tokens de entrada, 344 s, US$0,0617; Falabella no
-aportó nada. Había una alternativa verificada y en stock (Kalley Black G4, Claro, $409.900) que el cliente no vio.
-Propuestas, **pendientes de debatir con Wills** (tocan D101, D110 y D126; E1 se midió con la N3 actual):
-igualar criterios de N3 (un campo `desconocida` no cuenta como discrepancia, o solo precio y GTIN en la
-re-extracción) y guardar el campo que no coincidió; marcar la falta de cifra en la consulta; mostrar la mejor
-oferta verificada cuando hay abstención. Recomendación: llevar el caso a Discusión del informe y dejar los arreglos
-para después del 19-nov o en la hoja de ruta. **Gasto: ≈ US$0,01** (una llamada a Haiku por OpenRouter).
+**16-nov (S10e, mejoras tras el análisis de una consulta real; Claude Code · Opus 5.5), D143:** la consulta
+local «Celular de por lo menos gb de ram» se abstuvo con 36 de 45 ofertas en discrepancia. Diagnóstico: (1) la
+consulta omitía la cifra y el intérprete descartó la condición en silencio (la más barata fue un ZTE de 2 GB);
+(2) una llamada a Haiku confirmó que las discrepancias eran **solo de disponibilidad** (el extractor deja
+`desconocida`; N3 trata lo que se puede comprar como en stock), con el precio idéntico; una simulación con «6 GB»
+se abstenía igual. Implementado: **(a)** N3 compara la disponibilidad solo si las dos lecturas la conocen y cada
+oferta guarda `campos_discrepancia` (laboratorio e informe los muestran); **(b)** la necesidad suma `falta` y el
+grafo se abstiene antes de recorrer tiendas pidiendo el dato; **(c)** con la política abstener, la propuesta nombra
+la mejor oferta verificada (`alternativa`) sin recomendarla. `make check` en verde (**226 pruebas**, 3 nuevas).
+Pruebas reales con Flash: «…gb de ram» → abstención pidiendo la cantidad de GB en 16 s y **US$0,00026** (antes
+US$0,0617 y 344 s); «…6 GB de RAM» → **recomienda** Nubia Focus 2 Ultra 8 GB, $834.900, con 7 de 7 ofertas
+verificadas (US$0,0601, 372 s); el intérprete no marca falta en consultas vagas sin cifra («portátil liviano»,
+«buena cámara») y sí en «Televisor de pulgadas». E1–E3 se midieron con la versión anterior. Borrador:
+`05_discusion_verificacion_en_vivo.md`. **Gasto ≈ US$0,072** (Haiku ≈ 0,01; Flash ≈ 0,062). Pendientes menores
+vistos: el recorrido sigue abriendo las portadas (propuesto, hoja de ruta) y una oferta salió duplicada (Moto Edge
+60 Fusion, misma fila dos veces). **Wills:** abrir en Brave las dos consultas nuevas de la barra lateral; tras el
+despliegue, repetir en producción. **Sigue S10 (informe del curso).**
 
 **16-nov (S10d, panel «Fuente» del cliente; Claude Code · Opus 5.5):** el texto original de la fuente traía
 palabras sin espacios (URL de schema.org de hasta ~450 caracteres) que ensanchaban la celda y la tabla de ofertas;

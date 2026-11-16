@@ -502,6 +502,29 @@ def test_consulta_que_no_es_compra_no_consulta_proveedores():
     assert planificador.vistos == []  # ni planificador ni herramientas: costo de una sola llamada
 
 
+def test_consulta_con_dato_faltante_pide_el_dato_sin_consultar_proveedores():
+    """D143: «por lo menos gb de RAM» no se busca sin la cifra."""
+    planificador = Doble(AIMessage("Listo."))
+    ctx = Contexto(
+        modelo="doble",
+        lector=LectorDoble(),  # type: ignore[arg-type]
+        registro=REGISTRO,
+        emparejador=EMPAREJADOR,
+        perfil=PERFIL,
+        costo=RegistroCosto(1.0),
+        defensas=Defensas.de("C1"),
+        clasificador=ClasificadorDoble(),
+    )
+    necesidad = Necesidad(tipo_producto="celular", falta="la cantidad de GB de RAM")
+    ctx._llm = {"interprete": Doble(necesidad), "planificador": planificador}
+    final = asyncio.run(
+        construir_grafo(ctx).ainvoke({"consulta": "Celular de por lo menos gb de ram"})
+    )
+    p = final["propuesta"]
+    assert p.abstencion and "no indica la cantidad de GB de RAM" in p.motivo_abstencion
+    assert planificador.vistos == []
+
+
 def test_necesidad_sin_objeto_se_abstiene_en_vez_de_recomendar_cualquier_cosa():
     ofertas = [oferta("P4", "C11", 2_732_000), oferta("P2", "C26", 900_000)]
     p = proponer("algo barato", Necesidad(), ofertas, PERFIL, PRODUCTOS, [], "doble", 0.0)

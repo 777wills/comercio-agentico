@@ -36,7 +36,12 @@ from langchain_core.tools import tool
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.message import add_messages
 
-from comercio_agentico.agente.comparacion_abierta import Juicios, comparar, proponer_abierto
+from comercio_agentico.agente.comparacion_abierta import (
+    Juicios,
+    _pesos,
+    comparar,
+    proponer_abierto,
+)
 from comercio_agentico.agente.defensa import (
     ClasificadorInyeccion,
     Defensas,
@@ -410,6 +415,16 @@ FUERA_DE_ALCANCE = (
     "CotIA cotiza productos de electrónica en tiendas y proveedores; la consulta no pide comprar, "
     "cotizar ni comparar un producto."
 )
+
+
+def dato_faltante(falta: str) -> str:
+    """Motivo de la abstención cuando la consulta omite una cifra o un valor (D143)."""
+    return (
+        f"La consulta no indica {falta.rstrip('.')}. Escríbelo y vuelve a consultar; no se "
+        "consultaron proveedores para no gastar en una búsqueda sin ese criterio."
+    )
+
+
 SIN_OBJETO = (
     "La consulta no indica qué producto busca. Precise el tipo de producto (por ejemplo, un "
     "portátil o un monitor) o el modelo."
@@ -553,16 +568,28 @@ def proponer_con_n3(
     ganadora = p.ofertas[p.recomendada]
     if ganadora.verificacion == "verificada":
         return p
+    estado = ganadora.verificacion or "sin verificar"
+    if ganadora.campos_discrepancia:
+        estado += " en " + ", ".join(c.replace("_", " ") for c in ganadora.campos_discrepancia)
     motivo = (
         f"La oferta de menor costo ({ganadora.titulo[:60]}, {ganadora.proveedor}) no se pudo "
-        f"confirmar con una segunda lectura de su fuente ({ganadora.verificacion})."
+        f"confirmar con una segunda lectura de su fuente ({estado})."
     )
     alerta = Alerta(tipo="sin_verificar", mensaje=motivo, oferta=p.recomendada)
+    # La mejor oferta confirmada se nombra, sin recomendarla: la política no cambia (D143).
+    alternativa = next((i for i, o in enumerate(p.ofertas) if o.verificacion == "verificada"), None)
+    if alternativa is not None:
+        o = p.ofertas[alternativa]
+        motivo += (
+            f" La mejor oferta confirmada es {o.titulo[:60]} de {o.proveedor} por "
+            f"{_pesos(o.costo_total)}."
+        )
     return p.model_copy(
         update={
             "abstencion": True,
             "recomendada": None,
             "motivo_abstencion": motivo,
+            "alternativa": alternativa,
             "alertas": [*p.alertas, alerta],
         }
     )
@@ -626,8 +653,10 @@ def construir_grafo(ctx: Contexto):
         }
 
     def ruta_interpretacion(estado: Estado) -> str:
-        # Una consulta que no es una compra no consulta proveedores (D126).
-        return "planificar" if estado["necesidad"].es_compra else "proponer"
+        # Una consulta que no es una compra (D126) o a la que le falta un dato (D143) no
+        # consulta proveedores.
+        necesidad = estado["necesidad"]
+        return "planificar" if necesidad.es_compra and not necesidad.falta else "proponer"
 
     def ruta_planificador(estado: Estado) -> str:
         ultimo = estado["messages"][-1]
@@ -671,6 +700,15 @@ def construir_grafo(ctx: Contexto):
         if not estado["necesidad"].es_compra:
             propuesta = abstencion_de_alcance(
                 estado["consulta"], FUERA_DE_ALCANCE, ctx.perfil, ctx.modelo, ctx.costo.costo_total
+            )
+            return {"propuesta": propuesta}
+        if estado["necesidad"].falta:
+            propuesta = abstencion_de_alcance(
+                estado["consulta"],
+                dato_faltante(estado["necesidad"].falta),
+                ctx.perfil,
+                ctx.modelo,
+                ctx.costo.costo_total,
             )
             return {"propuesta": propuesta}
         ofertas, alertas = estado.get("ofertas_finales", []), list(estado.get("alertas", []))

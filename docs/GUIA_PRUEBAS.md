@@ -1530,3 +1530,37 @@ En una ventana angosta (< 640 px, lista apilada) igual: la página no se desplaz
 ```js
 const w = document.querySelector('div.overflow-x-auto'); [w.scrollWidth, w.clientWidth]   // deben ser iguales
 ```
+
+## S10e — Verificación sin falsos positivos por disponibilidad y aviso de dato faltante (16-nov, D143)
+
+**Qué cambió:** (a) N3 ya no marca discrepancia cuando una de las dos lecturas no conoce la disponibilidad, y cada
+oferta guarda qué campo no coincidió; (b) una consulta que anuncia una especificación sin su cifra («por lo menos
+gb de RAM») se detiene antes de recorrer tiendas y pide el dato; (c) al abstenerse, el motivo nombra la mejor
+oferta verificada.
+
+**1. Pruebas sin red — US$0**
+
+```bash
+uv run pytest -q tests/test_verificacion.py tests/test_agente.py -k "desconocida or campos or faltante"
+make check                                     # 226 pruebas
+```
+
+Debe ver: 3 pruebas en verde. Cubren la disponibilidad desconocida (no discrepa) frente a «agotado» (sí discrepa),
+el motivo con el campo y la mejor verificada, y el corte por dato faltante sin llamar al planificador.
+
+**2. Ver las dos consultas reales ya guardadas — US$0**
+
+```bash
+make bd && make web && systemctl --user restart cotia-api   # o make api
+# abrir http://localhost:8000 en el navegador de siempre: la barra lateral muestra las dos consultas nuevas
+```
+
+Debe ver: «Celular de por lo menos gb de ram» con «Sin recomendación» y el pedido de la cantidad de GB de RAM (costo
+≈ US$0,0003); «Celular de por lo menos 6 GB de RAM» con la recomendación verificada (Nubia Focus 2 Ultra, 8 GB). En
+el Laboratorio, la insignia de N3 dice qué campo discrepó, por ejemplo «N3: Discrepancia (precio)», y el informe de
+cotización lo repite en la columna N3.
+
+**3. Repetir el aviso de dato faltante — ≈ US$0,0003** (DeepSeek Flash, una sola llamada; no recorre tiendas):
+en `/`, con su clave, escribir «Televisor de pulgadas para la sala». Debe responder que falta la cantidad de
+pulgadas. Una consulta vaga sin cifra («Un portátil liviano para la universidad») **sí** recorre tiendas y cuesta
+una corrida completa (≈ US$0,06): no es necesario probarla.

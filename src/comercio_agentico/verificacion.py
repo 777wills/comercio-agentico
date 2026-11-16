@@ -274,7 +274,8 @@ def contraparte_de(o: OfertaExtraida, candidatas: list[Contraparte]) -> Contrapa
 
 
 def discrepancias(o: OfertaExtraida, c: Contraparte) -> list[str]:
-    """Campos de D101 en los que las rutas no coinciden (el GTIN solo si ambas lo traen)."""
+    """Campos de D101 en los que las rutas no coinciden (el GTIN solo si ambas lo traen; la
+    disponibilidad solo si ninguna la deja en ``desconocida``, D143: desconocer no contradice)."""
     distintos = []
     for campo in CAMPOS_N3:
         if campo not in c.publicados:
@@ -282,6 +283,9 @@ def discrepancias(o: OfertaExtraida, c: Contraparte) -> list[str]:
         a, b = getattr(o, campo), getattr(c, campo)
         if campo == "gtin":
             if a and b and a != b:
+                distintos.append(campo)
+        elif campo == "disponibilidad":
+            if "desconocida" not in (a, b) and a != b:
                 distintos.append(campo)
         elif campo in ("precio", "costo_envio", "plazo_entrega_dias"):
             if (a is None) != (b is None) or (a is not None and abs(float(a) - float(b)) >= 0.5):
@@ -338,5 +342,6 @@ async def verificar_ofertas(
     for o, (ruta, candidatas) in zip(ofertas, rutas, strict=True):
         v = verificar_oferta(o, ruta, candidatas)
         o.verificacion = v.estado
+        o.campos_discrepancia = v.campos
         resultado.append(v)
     return resultado
