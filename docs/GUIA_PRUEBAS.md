@@ -1455,3 +1455,56 @@ Si el segundo `curl` responde 404, la consulta ya había fallado por la clave fa
 Botón en la interfaz — < US$0,01 (una consulta real con DeepSeek Flash): lanzar una consulta en `/`, pulsar
 «Cancelar consulta» bajo el progreso. Debe mostrar «Consulta cancelada» con lo consumido, y en la barra lateral la
 consulta queda con un punto gris. En el laboratorio, el botón está bajo «Progreso en vivo».
+
+## S10c — Informe de cotización del comprador (16-nov, D142)
+
+### Qué se construyó
+
+- `GET /api/consultas/{id}/evidencia`: expediente JSON de la consulta (solicitud, criterios interpretados, eventos
+  de cada ronda, propuesta, ofertas finales con su motivo de descarte, procedencia y costo) con una huella SHA-256.
+  Con `?descargar=true` el navegador lo guarda como `cotia_evidencia_<id>.json`.
+- `/informe/{id}`: el informe imprimible, en seis secciones y un anexo de procedencia. Botones «Imprimir o guardar
+  como PDF» y «Descargar evidencia (JSON)». Se llega desde «Informe de cotización», bajo el resultado de la consulta
+  (en el laboratorio, «Informe de cotización →»).
+- Nada de esto llama a un modelo: todo sale de lo que la consulta ya guardó.
+
+### Cómo probarlo
+
+**1. Pruebas automáticas — US$0, sin red**
+
+```bash
+uv run pytest tests/test_api.py -q -k expediente     # 2 passed
+make check                                            # 223 passed, Ruff limpio
+```
+
+La primera prueba corre una consulta con el agente simulado, pide el expediente, comprueba la huella, altera un
+dato y comprueba que la huella deja de coincidir, y que la clave del visitante no aparece en el archivo.
+
+**2. El informe de una consulta ya hecha — US$0**
+
+Con la API local (`make bd && make web && make api`), abra cualquier consulta terminada de la barra lateral y pulse
+«Informe de cotización». Si no tiene consultas locales, use una ya guardada en la base:
+
+```bash
+docker compose exec bd sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -Atc \
+  "select id, left(consulta,50) from consultas where propuesta is not null order by creada desc limit 5"'
+# abrir http://localhost:8000/informe/<id>
+```
+
+Debe ver: la solicitud con sus criterios en lenguaje claro («tamaño de pantalla (pulgadas) ≥ 27»), la decisión,
+el cuadro, las descartadas con su motivo, cada ronda con las URL leídas (✓ o ✕ «sin respuesta») y el anexo con
+SHA-256 y fragmento por oferta. Pulse «Imprimir o guardar como PDF»: la vista previa sale en papel claro aunque use
+el tema oscuro, sin la barra de botones, y con el anexo en página nueva.
+
+**3. Verificar la huella del expediente — US$0**
+
+```bash
+curl -s "localhost:8000/api/consultas/<id>/evidencia" -o exp.json
+uv run python -m comercio_agentico.api.evidencia exp.json        # Huella válida: 989c…
+sed -i 's/"precio":[0-9]*/"precio":1/' exp.json                   # alterar un precio
+uv run python -m comercio_agentico.api.evidencia exp.json        # Huella NO válida…
+```
+
+**4. Una consulta nueva de punta a punta — < US$0,01** (DeepSeek Flash, una consulta sobre «Proveedores de
+prueba»): lanzarla en `/`, esperar el resultado y abrir el informe. En el corpus B la bitácora muestra las lecturas
+de los cinco proveedores sintéticos (web, PDF, chat y MCP).

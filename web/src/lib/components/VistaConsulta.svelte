@@ -17,6 +17,7 @@
 	import { nombresFuentes } from '#lib/datos.js';
 	import ResultadoCliente from '#lib/components/ResultadoCliente.svelte';
 	import Check from '@lucide/svelte/icons/check';
+	import FileText from '@lucide/svelte/icons/file-text';
 	import LoaderCircle from '@lucide/svelte/icons/loader-circle';
 	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
 
@@ -181,6 +182,17 @@
 				segundos={detalle.segundos}
 				estimado={!!detalle.detalle?.costo_estimado}
 			/>
+			<!-- D142: evidencia de todo lo cotizado y del porqué de la recomendación. -->
+			<div class="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 border-t pt-6">
+				<a
+					href="/informe/{id}"
+					class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors hover:border-primary/50 hover:text-primary"
+					><FileText class="size-4" />Informe de cotización</a
+				>
+				<p class="text-xs text-muted-foreground">
+					Todo lo investigado, lo descartado y la procedencia de cada dato, listo para imprimir o guardar en PDF.
+				</p>
+			</div>
 		</div>
 	{:else}
 		<LoaderCircle class="mt-12 size-4 animate-spin text-muted-foreground" />

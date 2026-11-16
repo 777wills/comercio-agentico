@@ -189,3 +189,30 @@
 		display: none;
 	}
 }
+
+/* Impresión del informe de cotización (D142): siempre en papel claro, aunque el visitante use el
+   tema oscuro. */
+@media print {
+	html.dark {
+		--background: #ffffff;
+		--foreground: #16212b;
+		--card: #ffffff;
+		--card-foreground: #16212b;
+		--primary: #0f766e;
+		--primary-foreground: #ffffff;
+		--muted: #eef1f3;
+		--muted-foreground: #4a5661;
+		--accent: #e3f1ef;
+		--accent-foreground: #0b4f4a;
+		--destructive: #b42318;
+		--warning: #8a5300;
+		--border: #d5dce1;
+	}
+	html {
+		--background: #ffffff;
+	}
+	body {
+		-webkit-print-color-adjust: exact;
+		print-color-adjust: exact;
+	}
+}

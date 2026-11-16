@@ -187,3 +187,20 @@ clasificador de inyección de C2, sin falsos positivos en los 47 fragmentos limp
 ventanas de una ficha real de Falabella y 19 de 35 de la portada de Alkosto. La medición posterior mostró que la
 causa no era el texto comercial sino el ruido codificado que la conversión a Markdown conserva (imágenes SVG
 incrustadas y tokens base64 en URL de rastreo); el saneamiento descrito arriba lo elimina (sección 4.z).
+
+## Informe de cotización y expediente de evidencia
+
+Cada consulta con propuesta genera un informe de cotización dirigido al comprador, equivalente a la evidencia que
+documenta un cotizador humano: la solicitud y los criterios interpretados, la decisión (recomendación con su
+justificación o abstención con su motivo), el cuadro comparativo, las ofertas descartadas con el motivo de cada
+descarte, la bitácora de la investigación por ronda (cada página o documento leído, su resultado y las ofertas
+extraídas), los controles de seguridad activos con las alertas registradas y un anexo con la procedencia de cada
+oferta (URL, fecha de lectura, ruta de extracción, suma SHA-256 y fragmento original). El informe se construye de
+forma determinista a partir de lo que la consulta registró durante la ejecución (los eventos del grafo y la
+procedencia de cada oferta), sin una llamada adicional a un modelo de lenguaje; en consecuencia, no constituye una
+explicación generada a posteriori sino el registro de las acciones del agente, y su costo es nulo.
+
+El informe se presenta como una vista imprimible que el navegador exporta a PDF. El expediente completo se descarga
+en JSON e incluye una huella SHA-256 calculada sobre su forma canónica (claves ordenadas, UTF-8, sin espacios), que
+permite comprobar que el documento no se modificó después de generado. En papel, los fragmentos se recortan a 900
+caracteres; el texto íntegro permanece en el expediente, vinculado por su suma de verificación.

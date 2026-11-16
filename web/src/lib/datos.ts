@@ -48,3 +48,21 @@ export const UBICACIONES: Record<string, string> = {
     pdf: "PDF (P4)",
     mensaje: "Mensaje de chat (P5)",
 };
+
+/** El agente nombra las fuentes por su código (V6, P2…); quien compra ve la tienda (D139). */
+export function conNombres(
+    texto: string,
+    nombres: Record<string, string>,
+): string {
+    let t = texto;
+    for (const [codigo, nombre] of Object.entries(nombres)) {
+        t = t.replace(new RegExp(`\\(${codigo}\\)`, "g"), `(${nombre})`);
+        t = t.replace(
+            new RegExp(`\\b(de|en) ${codigo}\\b`, "g"),
+            `$1 ${nombre}`,
+        );
+    }
+    return t
+        .replace(/\b1 fuentes\b/g, "1 fuente")
+        .replace(/\b1 ofertas\b/g, "1 oferta");
+}

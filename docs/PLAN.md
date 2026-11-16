@@ -536,6 +536,21 @@ pantallas y ventanas emergentes usables en un celular.
 
 **Terminado cuando:** las casillas anteriores están cumplidas y producción muestra el tema claro.
 
+## S10c — Informe de cotización del comprador (lun 16-nov, D142)
+
+**Objetivo:** que el comprador obtenga, de cada consulta, la evidencia completa de lo investigado y del porqué de
+la recomendación, como la que deja un cotizador en una empresa.
+
+- [x] `GET /api/consultas/{id}/evidencia`: expediente con la consulta, la necesidad, los eventos, la propuesta y las
+      ofertas finales, con huella SHA-256 verificable (`python -m comercio_agentico.api.evidencia`); 2 pruebas sin red.
+- [x] Página `/informe/{id}`: solicitud y criterios, decisión, cuadro comparativo, descartadas con su motivo, bitácora
+      por ronda, controles y alertas, anexo de procedencia; «Imprimir o guardar como PDF» y «Descargar evidencia».
+- [x] Enlace desde la consulta terminada (cliente y laboratorio); impresión en papel claro con cualquier tema.
+- [x] Revisión con una consulta real guardada (LG, 13 ofertas, 5 rondas): escritorio, 390 px y PDF (12 páginas).
+- [ ] Revisar en producción tras el despliegue.
+
+**Terminado cuando:** el informe de una consulta real se imprime completo y la huella del expediente se verifica.
+
 ## S10 — Informe en la plantilla del curso (mar 17 / mié 18-nov)
 
 **Objetivo:** informe completo en `Formato_informe.docx`, en PDF, con citas APA 7 (D133).

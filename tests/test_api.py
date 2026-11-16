@@ -490,3 +490,44 @@ def test_criterio_de_la_lista_curada():
 def test_ocultar_la_clave():
     assert ocultar(f"error {CLAVE} x", CLAVE) == "error [clave oculta] x"
     assert ocultar("sin clave", None) == "sin clave"
+
+
+def test_expediente_de_evidencia_con_huella_verificable(lista_modelos):
+    """D142: el informe de cotización se arma con el expediente guardado, sin llamar al modelo."""
+    from comercio_agentico.api.evidencia import huella, verificar
+
+    agente = AgenteSimulado()
+    c, _ = cliente(lista_modelos, agente)
+    with c:
+        id_consulta = c.post(
+            "/api/consultas", json={"consulta": "Monitor Samsung M8"}, headers=CABECERAS
+        ).json()["id"]
+        eventos_sse(c, id_consulta)
+        r = c.get(f"/api/consultas/{id_consulta}/evidencia")
+        assert r.status_code == 200 and "content-disposition" not in r.headers
+        doc = r.json()
+        assert doc["consulta"]["texto"] == "Monitor Samsung M8"
+        assert doc["propuesta"]["abstencion"] and "necesidad" in doc["detalle"]
+        plan = next(e for e in doc["eventos"] if e["etapa"] == "plan")
+        assert plan["herramientas"][0]["args"]["url"] == "http://p5/chat.txt"
+        assert doc["eventos"][-1]["etapa"] == "fin"
+        assert verificar(doc) and len(doc["huella_sha256"]) == 64
+        # Cualquier alteración posterior rompe la huella.
+        doc["propuesta"]["motivo_abstencion"] = "Otro motivo"
+        assert not verificar(doc) and huella(doc) != doc["huella_sha256"]
+        # La clave del visitante no viaja en el expediente.
+        assert CLAVE not in r.text
+        descarga = c.get(f"/api/consultas/{id_consulta}/evidencia?descargar=true")
+        assert descarga.headers["content-disposition"].startswith("attachment;")
+        assert c.get("/api/consultas/no-existe/evidencia").status_code == 404
+    assert len(agente.llamadas) == 1  # el expediente no vuelve a correr el agente
+
+
+def test_expediente_exige_una_propuesta(lista_modelos):
+    c, _ = cliente(lista_modelos, AgenteSimulado(error="fallo del proveedor"))
+    with c:
+        id_consulta = c.post(
+            "/api/consultas", json={"consulta": "Monitor Samsung M8"}, headers=CABECERAS
+        ).json()["id"]
+        eventos_sse(c, id_consulta)
+        assert c.get(f"/api/consultas/{id_consulta}/evidencia").status_code == 409

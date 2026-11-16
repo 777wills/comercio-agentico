@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import Annotated, Any
 
 from fastapi import Depends, FastAPI, Form, Header, HTTPException, Request, UploadFile, status
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.sse import EventSourceResponse, ServerSentEvent
 from sqlalchemy import func, select, text
 
@@ -49,6 +49,7 @@ from comercio_agentico.api.esquemas import (
     PeticionConsulta,
     ResumenConsulta,
 )
+from comercio_agentico.api.evidencia import expediente
 from comercio_agentico.api.fuentes_visitante import (
     MAX_BYTES_PDF,
     MAX_PDFS,
@@ -340,6 +341,21 @@ def crear_app(
         return DetalleConsulta(
             **_resumen(fila), propuesta=fila.propuesta, detalle=fila.detalle, error=fila.error
         )
+
+    @app.get("/api/consultas/{id_consulta}/evidencia")
+    def evidencia(id_consulta: str, descargar: bool = False) -> JSONResponse:
+        """Expediente del informe de cotización (D142): todo lo guardado, con su huella SHA-256."""
+        with sesiones() as s:
+            fila = s.get(ConsultaBD, id_consulta)
+        if fila is None:
+            raise HTTPException(404, "Consulta inexistente.")
+        if fila.propuesta is None:
+            raise HTTPException(409, "La consulta aún no tiene propuesta.")
+        cabeceras = {}
+        if descargar:
+            nombre = f"cotia_evidencia_{id_consulta[:8]}.json"
+            cabeceras["Content-Disposition"] = f'attachment; filename="{nombre}"'
+        return JSONResponse(expediente(fila), headers=cabeceras)
 
     @app.get("/api/consultas")
     def historial(visitante: Visitante, limite: int = 50) -> Historial:

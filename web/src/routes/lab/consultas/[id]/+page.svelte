@@ -36,6 +36,12 @@
 
 {#key page.params.id}
 	<Ejecucion id={page.params.id!} {nombres} alTerminar={(d) => (terminada = d)} />
+	{#if terminada?.propuesta}
+		<a
+			href="/informe/{page.params.id}"
+			class="mt-4 inline-block text-sm text-primary hover:underline">Informe de cotización →</a
+		>
+	{/if}
 	{#if terminada?.detalle?.ofertas_finales?.length}
 		<div class="mt-4">
 			<OfertasFinales

@@ -2,6 +2,16 @@
 
 ## Siguiente sesión
 
+**16-nov (S10c, informe de cotización; Claude Code · Opus 5.5), D142:** cada consulta terminada tiene un
+**informe de cotización** en `/informe/{id}` (solicitud y criterios, decisión, cuadro, descartadas con su motivo,
+bitácora por ronda con cada URL leída, controles y alertas, anexo de procedencia con SHA-256 y fragmento), imprimible
+a PDF desde el navegador (siempre en papel claro), y un **expediente JSON** descargable
+(`GET /api/consultas/{id}/evidencia`) con huella SHA-256 verificable (`python -m comercio_agentico.api.evidencia`).
+Determinista, sin llamar a ningún modelo. Probado con una consulta real guardada (monitor LG: 13 ofertas, 14
+descartadas, 5 rondas): escritorio, 390 px y PDF en tema oscuro (12 páginas). `make check` en verde (**223
+pruebas**). Borrador en `03_metodologia_producto.md`. **Gasto US$0.** **Wills:** tras el despliegue, abrir el
+informe de una consulta en producción e imprimirlo. **Sigue S10 (informe del curso), mar 17 y mié 18-nov.**
+
 **16-nov (S10b, revisión de la interfaz; Claude Code · Opus 5.5), D139:** tema claro por defecto con selector
 claro/oscuro/sistema, IBM Plex Sans, laboratorio con «← Modo cliente» en móvil, recomendación como cotización,
 lista apilada de ofertas en móvil, resumen con nombres de tienda en lugar de códigos, diálogos con alto máximo y sin

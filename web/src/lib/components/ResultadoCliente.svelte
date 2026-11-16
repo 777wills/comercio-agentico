@@ -1,6 +1,7 @@
 <script lang="ts">
 	// Resultado del modo Cliente (D111): recomendación, tabla corta y fuente por oferta.
 	import { cop, usd, type Propuesta } from '#lib/api.js';
+	import { conNombres } from '#lib/datos.js';
 	import BadgeCheck from '@lucide/svelte/icons/badge-check';
 	import Info from '@lucide/svelte/icons/info';
 
@@ -39,16 +40,8 @@
 	};
 	const alertas = $derived([...new Set(propuesta.alertas.map((a) => ALERTAS[a.tipo]).filter(Boolean))]);
 	const dias = (n: number | null) => (n == null ? '—' : `${n} ${n === 1 ? 'día' : 'días'}`);
-	// La procedencia técnica (URL y SHA-256) queda para el laboratorio; aquí va en «Fuente».
-	// El resumen del agente nombra las fuentes por su código (V6, P2…); quien compra ve la tienda (D139).
-	const legible = (texto: string) => {
-		let t = texto;
-		for (const [codigo, nombre] of Object.entries(nombres)) {
-			t = t.replace(new RegExp(`\\(${codigo}\\)`, 'g'), `(${nombre})`);
-			t = t.replace(new RegExp(`\\b(de|en) ${codigo}\\b`, 'g'), `$1 ${nombre}`);
-		}
-		return t.replace(/\b1 fuentes\b/g, '1 fuente').replace(/\b1 ofertas\b/g, '1 oferta');
-	};
+	// La procedencia técnica completa (URL y SHA-256) va en el informe de cotización (D142).
+	const legible = (texto: string) => conNombres(texto, nombres);
 	const justificacion = $derived(legible(propuesta.justificacion.replace(/\s*Procedencia:.*$/s, '')));
 	const hayVerificadas = $derived(propuesta.ofertas.some((o) => o.verificacion === 'verificada'));
 	const rec = $derived(propuesta.recomendada != null ? propuesta.ofertas[propuesta.recomendada] : null);

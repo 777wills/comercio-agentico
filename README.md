@@ -38,7 +38,8 @@ planos), y una suite de 20 cargas de inyección indirecta evalúa cuatro configu
 
 - **Modo Cliente** (`/`): consulta en lenguaje natural sobre proveedores de prueba (corpus B), tiendas colombianas
   reconstruidas (corpus A) o tiendas en vivo de una lista blanca; progreso en vivo, recomendación con su fuente y
-  sello de verificación N3, alertas y costo.
+  sello de verificación N3, alertas y costo; **informe de cotización** imprimible con todo lo investigado, lo
+  descartado y la procedencia de cada dato, y expediente JSON con huella SHA-256 (D142).
 - **Modo Laboratorio** (`/lab`): las 20 cargas de ataque con C0 frente a C3 sobre el mismo modelo, visor del corpus
   original y atacado, resultados de E1–E3 con intervalos de confianza, historial y configuración completa.
 - **Clave propia del visitante (D82, D114):** CotIA no trae créditos. Cada consulta se paga con la clave de
