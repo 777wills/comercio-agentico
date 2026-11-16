@@ -2,6 +2,23 @@
 
 ## Siguiente sesión
 
+**16-nov (análisis de la consulta local «Celular de por lo menos gb de ram»; Claude Code · Opus 5.5), sin
+cambios de código:** CotIA se abstuvo (C2 + N3, abstener) y el resultado fue seguro pero inútil. Tres causas:
+(1) **consulta ambigua aceptada en silencio**: falta la cifra de RAM y el intérprete devolvió `restricciones: []`;
+al ordenar por precio, la más barata fue un ZTE de 2 GB, lo opuesto a la intención. (2) **Falso positivo de N3**:
+de 45 ofertas, 7 verificadas, 36 en discrepancia y 2 sin contraparte. Confirmado con una llamada a Haiku sobre la
+ficha de Panamericana: las 6 discrepancias de esa fuente son **solo de disponibilidad** (el extractor deja
+`desconocida`; las instrucciones de N3 tratan lo que se puede comprar como `en_stock`); precio idéntico en todas.
+En la re-extracción se comparan todos los campos, así que ese desacuerdo dispara la abstención. Además,
+`Verificacion.campos` no se guarda ni se muestra. (3) **Recorrido caro**: la primera ronda abrió las 5 portadas
+(30 ofertas ajenas: juguetes, televisores, Homecenter), 203 mil tokens de entrada, 344 s, US$0,0617; Falabella no
+aportó nada. Había una alternativa verificada y en stock (Kalley Black G4, Claro, $409.900) que el cliente no vio.
+Propuestas, **pendientes de debatir con Wills** (tocan D101, D110 y D126; E1 se midió con la N3 actual):
+igualar criterios de N3 (un campo `desconocida` no cuenta como discrepancia, o solo precio y GTIN en la
+re-extracción) y guardar el campo que no coincidió; marcar la falta de cifra en la consulta; mostrar la mejor
+oferta verificada cuando hay abstención. Recomendación: llevar el caso a Discusión del informe y dejar los arreglos
+para después del 19-nov o en la hoja de ruta. **Gasto: ≈ US$0,01** (una llamada a Haiku por OpenRouter).
+
 **16-nov (S10d, panel «Fuente» del cliente; Claude Code · Opus 5.5):** el texto original de la fuente traía
 palabras sin espacios (URL de schema.org de hasta ~450 caracteres) que ensanchaban la celda y la tabla de ofertas;
 la columna «Ocultar» quedaba fuera de vista y había que bajar hasta la barra horizontal de la tabla. Arreglo en
