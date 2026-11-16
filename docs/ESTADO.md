@@ -2,6 +2,15 @@
 
 ## Siguiente sesión
 
+**16-nov (revisión de vigencia de los documentos de estudio; Claude Code · Opus 5.5):** `privado/AUDITORIA_Y_FLUJO.md`
+y `privado/ENTENDER_EL_PROYECTO.md` (secciones 1–8 y glosario) contrastados con el código y con D01–D148; corregidos
+~30 puntos desfasados (profundidad en lugar del tope fijo de 14, tiendas activas al cargar, lista curada de 9 modelos,
+1 TB = 1.024 GB, N3 y disponibilidad, corte por dato faltante, lecturas repetidas, moneda, anclaje del planificador,
+informe de cotización, canario retirado, OWASP 2026, `leidas` en el estado del grafo, 233 pruebas, gasto ≈ US$24,2).
+La bitácora (§9) se conserva como registro fechado, con una nota de vigencia. Sin código ni decisiones nuevas.
+Pendiente: confirmar el número de _Unbounded Consumption_ en OWASP 2026 antes de citarlo; la tabla «Presupuesto de
+modelos» de este archivo sigue con el acumulado del 11-nov. **Gasto US$0.** **Sigue S10 (informe).**
+
 **16-nov (S10j, instrucciones del planificador; Claude Code · Opus 5.5), D148:** el planificador abre solo la url
 registrada y los enlaces recibidos (sin rutas adivinadas), entra a la categoría desde la portada, no reabre páginas y
 deja la tienda sin enlaces al producto. Cambio global de `INSTRUCCIONES_PLANIFICADOR` por decisión de Wills (nueva
