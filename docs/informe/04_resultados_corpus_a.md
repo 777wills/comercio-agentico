@@ -29,10 +29,10 @@ no dependen de ese dato. En particular, en la tarea con todo agotado y un produc
 Falabella, el agente no confundió los productos.
 
 El corpus sintético no reveló esta limitación porque su tienda con JSON-LD también mostraba la disponibilidad en
-texto. La corrección (D74) incorpora a la lectura web los datos schema.org de la página como texto del plano de
+texto. La corrección incorpora a la lectura web los datos schema.org de la página como texto del plano de
 datos; esta corrida queda como línea base del corpus A.
 
-## 4.y Lectura con datos schema.org (D74)
+## 4.y Lectura con datos schema.org
 
 La lectura web del agente antepone ahora al Markdown de la página los objetos schema.org `Product` y `Offer` que
 publica (JSON-LD y microdatos, extraídos con `extruct`), como texto del plano de datos. Con el resto de la
@@ -59,5 +59,5 @@ Un efecto secundario muestra la sensibilidad del extractor a las etiquetas. En A
 visible de la ficha es el EAN, y schema.org lo publica como `sku`. Con la lectura en Markdown, el extractor tomaba
 ese código como GTIN en 35 de 62 ofertas de ficha (16 coincidían con la verdad); con el objeto schema.org a la
 vista, lo hizo en 1 de 67, en cumplimiento de su instrucción de copiar el GTIN solo cuando aparece como tal. El emparejamiento no se resintió,
-porque los productos se reconocieron por nombre con los embeddings, pero la verificación determinista de N3 (S08)
+porque los productos se reconocieron por nombre con los embeddings, pero la verificación determinista de N3
 no debe suponer que el GTIN llega siempre en la oferta extraída.

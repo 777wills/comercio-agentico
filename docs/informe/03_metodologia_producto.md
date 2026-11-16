@@ -1,7 +1,7 @@
 # 3.x Del prototipo al producto: la API de CotIA
 
 CotIA expone el agente como un servicio web sin modificar su lógica de decisión. La API se construyó con FastAPI y
-corre en el mismo proceso que el agente (D81). Así, el contrato OpenAPI se genera desde los mismos modelos Pydantic
+corre en el mismo proceso que el agente. Así, el contrato OpenAPI se genera desde los mismos modelos Pydantic
 que el agente ya usa para su salida estructurada, y no hace falta una capa de traducción ni un intermediario de
 colas.
 
@@ -23,18 +23,18 @@ la base.
 Las consultas, sus opciones, la propuesta completa (con la procedencia de cada dato: fuente, URL, fecha, fragmento
 y SHA-256) y los eventos se guardan en PostgreSQL mediante SQLAlchemy 2. Las pruebas usan SQLite en memoria con el
 mismo código, de modo que el contrato de la API se verifica sin red y sin costo. El historial y el gasto acumulado se
-agrupan por un identificador anónimo que genera el navegador (D90).
+agrupan por un identificador anónimo que genera el navegador.
 
 ## Llave propia del visitante
 
-El producto no gasta créditos del proyecto (D82). La clave de OpenRouter del visitante llega en una cabecera en cada
+El producto no gasta créditos del proyecto. La clave de OpenRouter del visitante llega en una cabecera en cada
 consulta y se pasa al cliente de OpenRouter solo para esa consulta. No se escribe en variables de entorno, no se
 guarda en la base y se elimina de cualquier mensaje de error antes de registrarlo. La segunda lectura de N3 usa
-Claude Haiku 5.5 por OpenRouter con la misma clave (D105). Así conserva el diseño de E1, con un lector de otra familia
+Claude Haiku 5.5 por OpenRouter con la misma clave. Así conserva el diseño de E1, con un lector de otra familia
 distinta de la del extractor por defecto. Una prueba automatizada provoca un error del proveedor que repite la clave
 y comprueba que la clave no aparece en la base, en las respuestas, en los eventos ni en los registros.
 
-El visitante puede usar, en lugar de la de OpenRouter, una clave de Anthropic (D114). El proveedor se reconoce por el
+El visitante puede usar, en lugar de la de OpenRouter, una clave de Anthropic. El proveedor se reconoce por el
 prefijo de la clave (`sk-or-` o `sk-ant-`) y la clave viaja en una sola cabecera; una clave sin prefijo reconocido se
 rechaza antes de iniciar la consulta. Con la clave de Anthropic solo se ofrecen los modelos Claude de la lista curada
 (hoy Claude Haiku 5.5, el mismo modelo que E3 midió por la API directa), y el agente y la segunda lectura de N3 lo
@@ -46,21 +46,21 @@ queda en la consola del visitante. La prueba de que la clave no llega a las traz
 ## Defensas como capas independientes
 
 Las defensas se exponen como tres interruptores independientes (separación de planos, clasificador de inyección y
-verificación de precio) más el umbral del clasificador (D91). C0–C3 son atajos que fijan las combinaciones medidas en
-E2, y CotIA usa C2 por defecto (D106), el codo de la curva seguridad-utilidad. Cualquier otra combinación, o un
+verificación de precio) más el umbral del clasificador. C0–C3 son atajos que fijan las combinaciones medidas en
+E2, y CotIA usa C2 por defecto, el codo de la curva seguridad-utilidad. Cualquier otra combinación, o un
 umbral distinto de 0,5 con el clasificador activo, se marca como exploratoria porque no tiene cifras propias. El
 clasificador se carga una sola vez y lo comparten todas las consultas; el umbral se aplica por consulta.
 
 ## Laboratorio de ataques
 
-Una consulta puede apuntar a una de las 20 variantes del corpus B con una carga plantada (S06-bis). La API planta la
+Una consulta puede apuntar a una de las 20 variantes del corpus B con una carga plantada. La API planta la
 carga en su copia aislada, la sirve en un puerto local, ejecuta la tarea asociada a la carga con las defensas elegidas
 y evalúa el predicado de éxito del ataque con el mismo código de E2, sin juicio humano. En la prueba de punta a punta,
 la carga A20 (precio falso en el chat) tuvo éxito en C0, como en las tres repeticiones de E2.
 
 ## Lista curada de modelos
 
-Solo se ofrecen modelos que superan una prueba de humo del agente completo (D107). Con la tarea B013 del corpus B
+Solo se ofrecen modelos que superan una prueba de humo del agente completo. Con la tarea B013 del corpus B
 en C2, se comprueba que el modelo **funciona**: termina sin errores, recolecta ofertas, formaliza la necesidad y
 responde en menos de 10 minutos. Además, el modelo debe tener **desempeño con evidencia**: haber acertado esa tarea
 o tener M2 medido en E3. Una sola tarea mide mal el acierto: Claude Haiku 5.5, con M2 de 90,0 % en E3, eligió mal
@@ -86,23 +86,23 @@ sujetos a límites de tasa que hacen impredecible la latencia. La prueba costó 
 
 Cada consulta ocupa del orden de 2 GB de memoria (clasificador, modelo de _embeddings_ y navegador sin interfaz).
 Por eso la API ejecuta una consulta a la vez y deja en cola hasta cinco más; por encima de ese límite responde con
-HTTP 429. Los dos valores son configurables según la memoria del despliegue (S09c).
+HTTP 429. Los dos valores son configurables según la memoria del despliegue.
 
 ## Interfaz
 
 La interfaz es una aplicación de página única construida con SvelteKit, compilada a archivos estáticos y servida por
-la misma API, de modo que el producto sigue siendo un solo proceso y un solo contenedor (D81). Usa Tailwind CSS y
-componentes de shadcn-svelte sobre bits-ui, en modo oscuro (D109). Sin clave se puede recorrer todo el producto; solo
+la misma API, de modo que el producto sigue siendo un solo proceso y un solo contenedor. Usa Tailwind CSS y
+componentes de shadcn-svelte sobre bits-ui, en modo oscuro. Sin clave se puede recorrer todo el producto; solo
 la ejecución de consultas la exige.
 
-La interfaz se organiza en dos modos con rutas separadas (D111). El **modo Cliente** (`/`) está pensado para el
+La interfaz se organiza en dos modos con rutas separadas. El **modo Cliente** (`/`) está pensado para el
 usuario final: una caja de consulta con ejemplos, un selector de catálogo con nombres de negocio («Tiendas
 colombianas» para el corpus A y «Proveedores de prueba» para el B), un progreso resumido en cuatro pasos (entender la
 necesidad, consultar proveedores, comparar ofertas y recomendar), la recomendación o la abstención en un bloque
 destacado, una tabla corta con el costo total con envío, el plazo y la disponibilidad, y el texto original de la
 fuente de cada oferta. Las alertas se traducen a lenguaje de compra y solo aparecen si existen. El cliente solo
-configura su clave y el modelo; las defensas quedan fijas en C2 (D106) con verificación N3 y política de abstención
-(D110), y un sello marca las ofertas cuyo precio confirmó la segunda lectura. El **modo Laboratorio** (`/lab`), con
+configura su clave y el modelo; las defensas quedan fijas en C2 con verificación N3 y política de abstención,
+y un sello marca las ofertas cuyo precio confirmó la segunda lectura. El **modo Laboratorio** (`/lab`), con
 navegación lateral, conserva el instrumental completo del experimento que se describe a continuación. La dirección
 visual es sobria en ambos modos: neutros oscuros sin tinte, superficies planas, una sola tipografía (Inter) y un solo
 color de acento.
@@ -114,7 +114,7 @@ color de acento.
   costo total, plazo y disponibilidad), la recomendación o la abstención con su justificación, las alertas, el costo y
   el tiempo. Cada oferta despliega su procedencia: fuente, consulta que la produjo, ruta de extracción y modelo, fecha,
   SHA-256 y el fragmento original. Con la verificación activa, cada oferta muestra su estado N3 y la política
-  (abstenerse o excluir) se elige en la configuración (D110). Debajo, la tabla de **ofertas finales** muestra todas las
+  (abstenerse o excluir) se elige en la configuración. Debajo, la tabla de **ofertas finales** muestra todas las
   ofertas que llegaron a la comparación con el producto del catálogo o el grupo que se les asignó y, para las que no
   entraron a la propuesta, el motivo del descarte (por ejemplo, «no es celular» o «almacenamiento distinto» en la
   comparación abierta). Así la abstención o la elección del agente se pueden auditar oferta por oferta.
@@ -124,23 +124,22 @@ color de acento.
 - **Corpus.** Un visor muestra las fuentes del corpus B y del corpus A en su formato original (página web, PDF, chat,
   catálogo MCP) y, para cada carga, la página limpia y la atacada lado a lado con el texto plantado resaltado en el
   código fuente. Esto hace visible el caso de la ubicación oculta, que no aparece en la página renderizada pero sí en
-  el bloque JSON-LD que lee el agente (D87). Los archivos se sirven por lista blanca; las páginas HTML llevan una
+  el bloque JSON-LD que lee el agente. Los archivos se sirven por lista blanca; las páginas HTML llevan una
   política de seguridad de contenido con `sandbox` y se muestran en un marco aislado, sin scripts ni recursos externos.
 - **Resultados** presenta E1, E2 y E3 con sus intervalos de Wilson y figuras, leídos de la evidencia versionada.
   **Historial** lista las consultas de la visita con su costo.
 - **Configuración** reúne lo que controla el visitante: la clave de OpenRouter o de Anthropic, guardada solo en el
-  navegador (en la
-  sesión de la pestaña, salvo que pida recordarla); el modelo de la lista curada, con su costo medido y su evidencia de
+  navegador (en la sesión de la pestaña, salvo que pida recordarla); el modelo de la lista curada, con su costo medido y su evidencia de
   desempeño; las capas de defensa con los presets C0–C3, el umbral del clasificador con aviso de modo exploratorio y la
-  elección entre los dos clasificadores validados (D86); la verificación N3, y el gasto acumulado de la visita (D90).
+  elección entre los dos clasificadores validados; la verificación N3, y el gasto acumulado de la visita.
 
 ## Consulta en vivo y fuentes del usuario
 
 Además del corpus congelado, CotIA consulta tiendas reales de una lista blanca. La primera lista (11-nov-2026) tuvo
 cinco tiendas elegidas tras revisar el robots.txt de cada sitio, su respuesta a un cliente automatizado y sus términos
-de uso (D112). El 14-nov se amplió con un sondeo reproducible de 35 tiendas colombianas (`make sondeo-tiendas`) que
+de uso. El 14-nov se amplió con un sondeo reproducible de 35 tiendas colombianas (`make sondeo-tiendas`) que
 lee esos tres criterios y busca en las páginas de términos cláusulas sobre robots o extracción automatizada; las
-páginas que cargan por JavaScript se leyeron también con el navegador. El criterio se volvió único (D132): una tienda
+páginas que cargan por JavaScript se leyeron también con el navegador. El criterio se volvió único: una tienda
 no es apta si sus términos prohíben de forma expresa el acceso automatizado, aunque su robots.txt lo permita o
 publique un `llms.txt` para modelos de lenguaje. Así salieron Alkosto y Ktronix, cuyos términos excluyen «spiders,
 site copiers ó cualquier otro dispositivo, programa, algoritmo ó método para acceder, adquirir, copiar ó
@@ -149,7 +148,7 @@ monitorear» su contenido, junto con Huawei, Asus y Home Sentry; el `llms.txt` d
 al agente. El catálogo quedó en 13 tiendas aptas, cada una con las categorías que vende y, si aplica, su marca
 exclusiva (Tabla 3.p.2).
 
-Cada consulta usa como máximo cinco fuentes web, incluidas las URL que agregue el visitante (D127, D131): con el
+Cada consulta usa como máximo cinco fuentes web, incluidas las URL que agregue el visitante: con el
 tope de 14 acciones del planificador, más tiendas reparten menos de tres acciones por tienda y el agente no alcanza
 las fichas de producto, y el costo y la latencia crecen con cada fuente. Al cargar CotIA quedan activas siempre las
 mismas cinco (Falabella, Samsung Colombia, Panamericana, Homecenter y Tienda Claro); el visitante cambia la selección
@@ -157,7 +156,7 @@ con los interruptores del panel «Fuentes», que muestra el contador «n de 5» 
 aplica el mismo tope, y una URL agregada con el cupo lleno se guarda desactivada. Los PDF no cuentan, porque no
 consumen navegación. El visitante ve la lista completa, la activa o desactiva por
 fuente y le agrega tiendas propias (URL) y listas de precios en PDF; sus cambios se guardan por visitante y no
-afectan a los demás (D113). Del PDF se conservan el texto extraído y su SHA-256, no el archivo, y no se calculan
+afectan a los demás. Del PDF se conservan el texto extraído y su SHA-256, no el archivo, y no se calculan
 embeddings del documento: una lista de precios es corta y se necesita completa.
 
 La lectura de internet abierta añade salvaguardas que el corpus no necesita: solo se abren direcciones públicas
@@ -165,10 +164,10 @@ La lectura de internet abierta añade salvaguardas que el corpus no necesita: so
 mismo sitio y se recorta cada página a las líneas cercanas a un precio, porque el menú de navegación ocupa el inicio
 del texto. Antes del recorte, el Markdown se sanea: las imágenes quedan como su texto alternativo y se eliminan los
 `data:` URI, los parámetros de las URL y las cadenas base64 largas, que no informan la compra y disparan el
-clasificador de C2 (D120). Como la mayoría de los productos reales no está en el catálogo de referencia, las ofertas se emparejan
+clasificador de C2. Como la mayoría de los productos reales no está en el catálogo de referencia, las ofertas se emparejan
 entre sí: el GTIN y la similitud de embeddings del título sugieren grupos, y un juez con salida estructurada confirma
 el grupo de cada oferta y si cumple la necesidad; presupuesto, plazo y disponibilidad se revisan con reglas
-deterministas. La disponibilidad no informada no descarta la oferta, pero la marca (D115).
+deterministas. La disponibilidad no informada no descarta la oferta, pero la marca.
 
 El modo en vivo es una demostración sin cifras en el informe: sus resultados cambian con los precios y no son
 reproducibles. En una consulta por el Samsung Galaxy A57 de 256 GB sobre la lista del 11-nov, el agente recorrió las cinco tiendas, recolectó
@@ -177,4 +176,4 @@ a la misma referencia en Samsung por $1.999.900 (US$0,063, 379 s). La prueba dej
 clasificador de inyección de C2, sin falsos positivos en los 47 fragmentos limpios del corpus, retiró hasta 21 de 26
 ventanas de una ficha real de Falabella y 19 de 35 de la portada de Alkosto. La medición posterior mostró que la
 causa no era el texto comercial sino el ruido codificado que la conversión a Markdown conserva (imágenes SVG
-incrustadas y tokens base64 en URL de rastreo); el saneamiento de D120 lo elimina (sección 4.z).
+incrustadas y tokens base64 en URL de rastreo); el saneamiento descrito arriba lo elimina (sección 4.z).

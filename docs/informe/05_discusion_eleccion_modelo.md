@@ -1,8 +1,8 @@
 # 5.x Elección del modelo como decisión de negocio
 
 El modelo de lenguaje es el componente de mayor costo variable del agente y el que fija su latencia. Elegirlo es una
-decisión de negocio: el comprador paga cada cotización con su propia clave (D82) y espera la respuesta en línea.
-Esta sección ordena el espacio de alternativas de D31 frente a los criterios del negocio. Muestra por qué la regla de
+decisión de negocio: el comprador paga cada cotización con su propia clave y espera la respuesta en línea.
+Esta sección ordena el espacio de modelos candidatos frente a los criterios del negocio. Muestra por qué la regla de
 parada de E3 justifica no medir los modelos caros y qué cambiaría la elección.
 
 ## Criterios
@@ -14,12 +14,12 @@ parada de E3 justifica no medir los modelos caros y qué cambiaría la elección
 | Éxito y perfil de error | M2, abstención indebida y exactitud sobre lo cubierto: abstenerse frente a equivocarse | M2 y M4 de E3 |
 | Estabilidad | Misma decisión en tres repeticiones | M3 de E3 |
 | Robustez sin defensas | Éxito de la inyección en C0 | M5 de E2 |
-| Soberanía de los datos | Posibilidad de ejecutar el modelo en infraestructura propia | Licencia de los pesos (D31) |
+| Soberanía de los datos | Posibilidad de ejecutar el modelo en infraestructura propia | Licencia de los pesos |
 
 ## Matriz
 
-**Tabla 5.x.1.** Alternativas de D31 frente a los criterios del negocio. Precios en US$ por millón de tokens
-(entrada / salida). Los de OpenRouter corresponden al endpoint fijado en D34 y los de Anthropic, al catálogo de
+**Tabla 5.x.1.** Modelos candidatos frente a los criterios del negocio. Precios en US$ por millón de tokens
+(entrada / salida). Los de OpenRouter corresponden al proveedor de inferencia fijado para cada modelo y los de Anthropic, al catálogo de
 OpenRouter. Todos se consultaron en la API pública de OpenRouter el 14-nov-2026 y coinciden con los registrados el
 9-nov-2026.
 
@@ -36,7 +36,7 @@ El costo de los modelos no medidos se estimó con los dos perfiles de tokens obs
 31 224 de salida por tarea (Flash), y 66 738 y 20 606 (Haiku). Es una cota indicativa. Un modelo que razone más
 generaría más tokens de salida y costaría más. Con esos perfiles, el modelo medio más barato multiplica por nueve el
 costo por cotización del modelo base, y el más caro, por cincuenta. La prueba de humo de la lista curada de CotIA
-(D107) aporta un dato por modelo en la tarea B013, sin valor estadístico. DeepSeek V4 Pro costó US$0,130, tardó 265 s
+ aporta un dato por modelo en la tarea B013, sin valor estadístico. DeepSeek V4 Pro costó US$0,130, tardó 265 s
 y falló la tarea. Kimi K3.1 Pro costó US$0,184, tardó 109 s y acertó, frente a US$0,0146 y 82 s de Flash en la
 misma tarea (`resultados/cotia/modelos.json`).
 
@@ -67,7 +67,7 @@ inyección sin defensas. Las defensas cubren esa exposición: en C3, M5 fue 0/60
 | No recomendar nunca algo equivocado | Claude Haiku 5.5 | Mayor exactitud sobre lo cubierto (95,8 %): prefiere abstenerse a equivocarse |
 | Resolver consultas vagas | Sin elección medida | Ningún modelo medido supera el 67 %; un modelo medio es la prueba pendiente (≈ US$0,6 en las 6 tareas vagas × 3) |
 
-**En CotIA**, la elección queda en manos del comprador, porque paga con su clave. La lista curada (D107) incluye los
+**En CotIA**, la elección queda en manos del comprador, porque paga con su clave. La lista curada incluye los
 modelos que superaron la prueba de humo: Flash como opción por defecto, Haiku y Kimi K3.1 Pro. Haiku también se
-puede usar con una clave de Anthropic (D105, D114). Cada consulta muestra su costo, así que el comprador ve en su
+puede usar con una clave de Anthropic. Cada consulta muestra su costo, así que el comprador ve en su
 propia cuenta el compromiso entre costo y latencia.

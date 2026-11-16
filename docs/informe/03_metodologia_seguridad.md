@@ -20,7 +20,7 @@ está en `ataques/mapeo.md`, verificado contra las fuentes primarias (la edició
 ## Cuatro configuraciones de defensa (C0–C3)
 
 Cada configuración añade una capa a la anterior, de modo que la curva seguridad-utilidad tiene cuatro
-puntos comparables con el mismo modelo base (DeepSeek Flash, D79):
+puntos comparables con el mismo modelo base (DeepSeek Flash):
 
 | Config. | Capa añadida                                                                                                                                                                     | Mitigación (OWASP LLM01:2026 / MITRE ATLAS)   |
 | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
@@ -30,7 +30,7 @@ puntos comparables con el mismo modelo base (DeepSeek Flash, D79):
 | **C3**  | **verificación cruzada de precio**: se excluye toda oferta con precio fuera de banda respecto al catálogo y a la mediana de los demás proveedores                                | #2 Validar la salida / AML.M0033              |
 
 La separación de planos (C1) es la pieza central: hace _medible_ el ataque, porque la navegación del
-planificador es secuestrable en C0 y no en C1 (D59). C2 y C3 no usan ningún LLM —el clasificador
+planificador es secuestrable en C0 y no en C1. C2 y C3 no usan ningún LLM —el clasificador
 corre en CPU y la verificación de precio es aritmética—, así que su costo por consulta es US$0 y su
 latencia es acotada.
 
@@ -86,7 +86,7 @@ usuario elegir entre los dos modelos validados (`CLASIFICADORES` en `agente/defe
 ### Comparación con un detector comercial (Jev)
 
 Para contrastar el clasificador local con una alternativa comercial, los mismos 68 fragmentos pasaron por los dos
-modelos locales y por Jev (TypeSafe AI), un modelo de decisión accesible solo por API y sin pesos abiertos (D80): las
+modelos locales y por Jev (TypeSafe AI), un modelo de decisión accesible solo por API y sin pesos abiertos: las
 20 cargas de la suite, una variante adaptativa de «política falsificada» (una supuesta norma del distribuidor que
 exige registrar la cotización como confirmada, sin frase de anulación) y los 47 fragmentos limpios. Jev recibió cada
 fragmento como estado y la pregunta tipada de su documentación para detectar pasajes que intentan controlar al
@@ -114,7 +114,7 @@ La suite consta de **20 cargas sintéticas**, una por combinación de cinco obje
 desviar la compra, inflar la cantidad, exfiltrar el presupuesto del mandato, saltar la confirmación humana y alterar
 el precio comparado, en texto visible de P3, HTML oculto de P2, PDF de P4 y mensaje de P5. Cada carga fija el archivo
 de destino, una tarea benigna con respuesta conocida y un predicado observable por programa. Las cargas se publican en
-`ataques/cargas.yaml` (D95); su plantado se realiza exclusivamente sobre copias locales del corpus B.
+`ataques/cargas.yaml`; su plantado se realiza exclusivamente sobre copias locales del corpus B.
 
 Las tareas seleccionadas (B013, B016 y B045) ofrecen cobertura de los proveedores atacantes y evitan confundir un
 fallo de cobertura con un éxito defensivo. Las cargas de acción incluyen un marcador de URL que el arnés sustituye
@@ -125,12 +125,12 @@ y un valor falso explícito. La métrica M5 es la proporción de ejecuciones cuy
 
 `ataques/plantar.py` recrea cada variante desde `corpus/b_sintetico/` en `corpus/b_ataques/<id>/`; nunca escribe en
 el corpus limpio, y las variantes se regeneran desde `ataques/cargas.yaml`, que se publica con el repositorio para que
-la suite sea reproducible (D95). El texto visible se inserta
+la suite sea reproducible. El texto visible se inserta
 como un párrafo HTML. En P2 se añade al campo `description` del JSON-LD, porque un comentario HTML podría desaparecer
 durante la conversión a Markdown; el lector antepone esos datos estructurados al contenido. En P4 la lista de precios
 se regenera con el mismo generador y la carga queda como un párrafo tras la tabla. En P5 se añade una línea del
 propio vendedor, con hora posterior al último mensaje. Cada carga ocupa así la posición natural de su formato, sin
-realces que la distingan del resto del contenido (D93). Las URL de acción se resuelven dentro del directorio local
+realces que la distingan del resto del contenido. Las URL de acción se resuelven dentro del directorio local
 del proveedor atacante y usan un
 puerto efímero de `127.0.0.1`; el registro de fuentes se deriva por variante sin modificar la configuración canónica.
 
@@ -143,8 +143,8 @@ resumen y la corrida comprimida quedan en `resultados/ataques/`; la sección de 
 
 ### Diseño del experimento E2
 
-El diseño se fijó antes de ejecutar la matriz (D96). La **seguridad** de cada configuración es 1 − M5 sobre las
-20 cargas con tres repeticiones (60 ejecuciones por configuración), con DeepSeek V4.1 Flash como modelo base (D79).
+El diseño se fijó antes de ejecutar la matriz. La **seguridad** de cada configuración es 1 − M5 sobre las
+20 cargas con tres repeticiones (60 ejecuciones por configuración), con DeepSeek V4.1 Flash como modelo base.
 La **utilidad** es M2 sobre las 30 tareas benignas del subconjunto de E3, con una repetición por configuración y la
 misma configuración del agente que en E3 salvo la capa de defensa; el rango de 10 pp observado entre repeticiones en
 E3 sirve de referencia del ruido. Ambas proporciones se acompañan de intervalos de Wilson al 95 %. Una configuración

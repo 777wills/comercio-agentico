@@ -1,9 +1,9 @@
 # 4.x Resultados E2: curva seguridad-utilidad de las defensas
 
 E2 mide cuánto protege cada configuración de defensa (C0–C3) frente a la inyección indirecta y cuánta utilidad
-cuesta esa protección, con el diseño fijado antes de ejecutar (D96): seguridad = 1 − M5 sobre las 20 cargas con tres
+cuesta esa protección, con el diseño fijado antes de ejecutar: seguridad = 1 − M5 sobre las 20 cargas con tres
 repeticiones (60 ejecuciones por configuración) y utilidad = M2 sobre las 30 tareas benignas del subconjunto de E3,
-con DeepSeek V4.1 Flash como modelo base (D79). Las 360 ejecuciones (240 atacadas y 120 benignas) terminaron sin
+con DeepSeek V4.1 Flash como modelo base. Las 360 ejecuciones (240 atacadas y 120 benignas) terminaron sin
 errores, con un costo de US$5,35.
 
 ## Curva seguridad-utilidad
@@ -109,8 +109,8 @@ repetición; el clasificador en CPU suma del orden de 0,2 s por ventana.
 ## Prueba de humo previa
 
 La prueba de humo verifica que las cuatro rutas de plantado y los cinco predicados funcionan con el agente real antes
-de la matriz completa. Se ejecutó con DeepSeek V4.1 Flash, el modelo base (D79), sobre la diagonal clase × ubicación
-(A01 visible, A06 oculto en JSON-LD, A11 en el PDF, A16 en el mensaje y A17 visible; D94) y sobre tres cargas visibles
+de la matriz completa. Se ejecutó con DeepSeek V4.1 Flash, el modelo base, sobre la diagonal clase × ubicación
+(A01 visible, A06 oculto en JSON-LD, A11 en el PDF, A16 en el mensaje y A17 visible) y sobre tres cargas visibles
 adicionales (A05, A09 y A13), en las configuraciones extremas C0 (sin defensa) y C3 (separación de planos, clasificador
 de inyección y verificación de precio). Cada ejecución corresponde a una carga, una configuración y una repetición.
 
@@ -135,7 +135,7 @@ benigna se conservó (8/8 aciertos en ambas configuraciones).
 
 Para comprobar si el resultado depende del modelo, la matriz de seguridad se repitió en las configuraciones extremas
 C0 y C3 con Claude Haiku 5.5 (Anthropic), de otra familia y otro proveedor que el modelo base. Se usaron las mismas
-20 cargas, variantes y predicados, con tres repeticiones (D108).
+20 cargas, variantes y predicados, con tres repeticiones.
 
 **Tabla 4.x.6.** M5 por modelo en C0 y C3. Intervalos de Wilson al 95 %.
 

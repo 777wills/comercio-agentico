@@ -1,9 +1,5 @@
 # 7. Referencias
 
-Norma APA 7 (D133). Cada entrada se verificó el 15-nov-2026 contra la fuente primaria (página del editor, de arXiv,
-del registro de DOI o del autor institucional). Las entradas de la normativa y de los marcos éticos verificadas en
-septiembre de 2026 se suman en el ensamblaje.
-
 Abdelnabi, S. y Bagdasarian, E. (2026). *AI agents may always fall for prompt injections*. arXiv.
 https://doi.org/10.48550/arXiv.2605.17634
 
@@ -143,13 +139,3 @@ https://doi.org/10.18653/v1/2024.findings-acl.624
 Zhou, S., Xu, F. F., Zhu, H., Zhou, X., Lo, R., Sridhar, A., Cheng, X., Ou, T., Bisk, Y., Fried, D., Alon, U. y
 Neubig, G. (2024). WebArena: A realistic web environment for building autonomous agents. En *International
 Conference on Learning Representations (ICLR 2024)*. https://doi.org/10.48550/arXiv.2307.13854
-
-## Pendientes de verificación antes del ensamblaje
-
-- Páginas de StruQ (USENIX Security 25) y de Liu et al. (USENIX Security 24) en el BibTeX de USENIX.
-- Páginas exactas de AgentDojo (82895–82920 reconstruidas del registro de Crossref) y editores de NeurIPS 37.
-- Sede de WebArena (ICLR 2024) en OpenReview: confirmada solo por fuentes secundarias.
-- Año de Llama Prompt Guard 2 (2025, inferido de la licencia de la colección Llama 4).
-- Sexto autor de StakeBench («Wai, F. K.» según arXiv) y segundo autor de AP2 («Gandh, P. A.» según arXiv) en el PDF.
-- Edición de OWASP para LLM: se cita la 2026 (D135); la portada del PDF dice 4-ago-2026 y la ficha del recurso,
-  3-ago-2026 (se usa la de la ficha).

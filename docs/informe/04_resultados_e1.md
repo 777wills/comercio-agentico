@@ -3,7 +3,7 @@
 E1 mide si verificar cada oferta por una segunda ruta de extracción, independiente de la primera, mejora la
 decisión del agente. Con la terminología de la predicción selectiva, la pregunta es si el agente gana exactitud
 sobre lo que responde al abstenerse cuando no logra confirmar la oferta ganadora. El diseño se fijó antes de ver
-datos (D99–D104).
+datos.
 
 ## Diseño
 
@@ -110,7 +110,7 @@ El análisis de los casos muestra tres mecanismos:
 Un análisis _post hoc_, restringido a las ofertas que pueden ganar (no agotadas según la verdad), muestra que en el
 corpus B N3 detectó los 4 errores de extracción que había (sensibilidad 4/4), con 11 falsas alarmas. En el corpus A
 quedan 49 errores sin detectar. La mayoría son del GTIN, que la ruta determinista no compara porque las tiendas lo
-etiquetan como `sku` (D74); los demás son casos en que el parser y el extractor coinciden entre sí y difieren de la
+etiquetan como `sku`; los demás son casos en que el parser y el extractor coinciden entre sí y difieren de la
 verdad reconstruida. Ninguno afectaba la recomendación.
 
 ## Costo y latencia (M6)
@@ -191,7 +191,7 @@ Tres resultados se desprenden de las tablas:
 3. **La exclusión es peor que la abstención ante las fallas que favorecen.** Al retirar la ganadora marcada, recomienda
    la siguiente, que no es la que pide la tarea (80 % de erróneas con precio −10 % en B). Solo supera a la abstención
    cuando la falla puso arriba una oferta agotada, porque entonces la siguiente es la correcta. El resultado respalda
-   la elección de la abstención como política principal (D102).
+   la elección de la abstención como política principal.
 
 La asimetría sugiere una mejora concreta: verificar también las ofertas descartadas que habrían ganado y, ante una
 discrepancia, decidir con el valor de la segunda lectura. Queda en la hoja de ruta.

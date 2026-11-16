@@ -1211,7 +1211,7 @@ anuncia con una alerta.
 **5. Evaluación programada — US$0 (el canario, ≈ US$0,10 por semana)**
 
 En GitHub → Actions → «Evaluación programada» → *Run workflow*. El trabajo «arnés» publica las métricas simuladas;
-el «canario» se omite hasta que exista el secreto `OPENROUTER_API_KEY_CANARIO`.
+el «canario» queda inactivo por decisión (D138): no se crea el secreto `OPENROUTER_API_KEY_CANARIO`.
 
 ## Control de alcance de la consulta (14-nov, D126)
 

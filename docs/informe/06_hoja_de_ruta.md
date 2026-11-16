@@ -54,10 +54,10 @@ experimentos y pruebas sin red, y la de PostgreSQL con pgvector, para producció
 **N1.** La arquitectura prevé una capa de consumo determinista para los proveedores que publican su catálogo por una
 vía estructurada: la API pública de catálogo de las tiendas montadas sobre VTEX o el marcado schema.org de sus
 fichas. El prototipo ya contiene el lector de schema.org, como ruta determinista de N3 y como bloque que antecede al
-Markdown de cada página (D74). Falta exponerlo como herramienta de fuente del planificador, de modo que una tienda
+Markdown de cada página. Falta exponerlo como herramienta de fuente del planificador, de modo que una tienda
 con datos estructurados no pase por el extractor con LLM. La API de VTEX exige revisar, tienda por tienda, que sus
-términos de uso permitan el consumo automatizado (D70). Al ser una capa determinista, queda fuera del alcance de la
-investigación (D11).
+términos de uso permitan el consumo automatizado. Al ser una capa determinista, queda fuera del alcance de la
+investigación.
 
 **N3 dirigida.** E1 mostró que dos LLM pueden omitir el mismo dato (el plazo de un producto agotado) y que la
 concordancia no revela ese error. Dos evoluciones atacan el límite: una re-extracción dirigida, que pregunta a la

@@ -3,12 +3,12 @@
 C2 se eligió y se midió sobre texto del corpus: 0 falsos positivos en 47 fragmentos limpios del corpus B y 0/80 en
 el control limpio de E2. La primera consulta en vivo de CotIA mostró otra cosa: el clasificador retiró hasta 21 de
 26 ventanas de una ficha real de Falabella. Esta sección mide esa diferencia con una muestra fija de páginas reales,
-encuentra su causa y evalúa la corrección adoptada (D115 b, D120).
+encuentra su causa y evalúa la corrección adoptada.
 
 ## Diseño
 
 **Muestra.** Las 12 primeras fichas semilla del corpus A en Alkosto, Ktronix y Falabella y, en las
-cinco tiendas de la lista blanca del modo en vivo (D112), la portada y los ocho primeros enlaces que vería el
+cinco tiendas de la lista blanca del modo en vivo, la portada y los ocho primeros enlaces que vería el
 planificador, en el orden de prioridad de CotIA. En total, 81 páginas (5 portadas, 70 fichas y 6 páginas
 institucionales), leídas el 11 de noviembre de 2026 entre las 20:42 y las 21:52 (hora de Colombia) con el mismo
 lector del modo en vivo: agente de usuario identificable, robots.txt respetado y 2 s de pausa por sitio.
@@ -20,10 +20,10 @@ que es la pérdida que afecta a la compra. Los dos clasificadores del catálogo 
 producción, y Wolf Defender) puntúan las mismas ventanas.
 
 **Condiciones pareadas.** Cada página se leyó una vez y su texto se preparó de dos formas: **crudo** (el recorte de
-D112, como estaba en producción) y **saneado** (el saneamiento de D120 seguido del recorte). Comparar cada página
+líneas cercanas a un precio, como estaba en producción) y **saneado** (el saneamiento seguido del recorte). Comparar cada página
 consigo misma elimina la variación entre páginas y entre días.
 
-**Registro.** Por la restricción legal del corpus A (D70) no se conserva el texto: se guarda el SHA-256 de cada
+**Registro.** Por la restricción legal del corpus A no se conserva el texto: se guarda el SHA-256 de cada
 versión y, por ventana, su largo, sus puntajes y tres rasgos sin contenido (`resultados/c2_reales/paginas.jsonl`).
 El costo es US$0: no interviene ningún LLM.
 
@@ -39,7 +39,7 @@ Ninguna contenía lenguaje natural con forma de instrucción. La conversión de 
 no informa la compra y se parece a la ofuscación con la que se esconden las inyecciones, una señal que los
 clasificadores aprenden a marcar.
 
-El saneamiento de D120 actúa sobre esa causa. Antes del recorte, en las fuentes abiertas, cada imagen `![alt](url)`
+El saneamiento actúa sobre esa causa. Antes del recorte, en las fuentes abiertas, cada imagen `![alt](url)`
 queda como su texto alternativo y se eliminan los `data:` URI, los parámetros de las URL y las cadenas base64 de 40
 o más caracteres. Las rutas de las fichas, los precios y el bloque schema.org no cambian.
 

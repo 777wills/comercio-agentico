@@ -136,7 +136,6 @@ E2, E3, el laboratorio de ataques ni la publicación de CotIA.
 - [ ] **P3, línea base humana:** 6 tareas cotizadas a mano con cronómetro según
       `privado/auditoria/PROTOCOLO_LINEA_BASE.md`. Alimenta Cr6 (eficiencia) en el informe y en la presentación
       final; si no llega antes del 18-nov, se declara como pendiente.
-- [ ] Secreto `OPENROUTER_API_KEY_CANARIO` en GitHub (P6.3; activa el canario semanal).
 - [ ] Rotar las claves de `.env` (OpenRouter y Anthropic) y actualizar la de Railway si aplica.
 - [x] Confirmar la creación del repositorio público en GitHub (S00): `777wills/comercio-agentico`.
 
@@ -545,6 +544,11 @@ persona. Correspondencia con los borradores: 01 + 02 → I; 03 → II; 04 → II
 - [ ] Verificar cada referencia y cifra contra la fuente primaria; descargar el informe primario de la CCCE si se
       cita. Hecho el 15-nov para las 40 de `07_referencias.md` y la CCCE; OWASP unificado en la edición 2026 (D135).
 - [ ] Pasar a APA 7 las citas `[ref: …]` de los borradores anteriores (03–05).
+      Efron (1979) aún no está en `07_referencias.md`: verificarla y agregarla.
+- [ ] Datos de referencias por confirmar: páginas de StruQ y de Liu et al. (BibTeX de USENIX); páginas de AgentDojo
+      (82895–82920, reconstruidas de Crossref) y editores de NeurIPS 37; sede de WebArena (ICLR 2024) en OpenReview;
+      año de Llama Prompt Guard 2 (2025, inferido); sexto autor de StakeBench y segundo de AP2 en el PDF; fecha de
+      OWASP 2026 (se usa 3-ago-2026, la de la ficha). Las de normativa y marcos éticos (sep-2026) se suman al ensamblar.
 - [ ] Piezas propias de la plantilla: resumen de 150–250 palabras sin citas, índice de términos (unas cuatro palabras
       clave en orden alfabético) y Reconocimiento (en singular, sin primera persona).
 - [ ] Tabla de herramientas con las versiones de las librerías, tomadas de `uv.lock` y `web/package-lock.json`.

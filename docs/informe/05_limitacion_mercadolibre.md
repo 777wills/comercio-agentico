@@ -1,7 +1,7 @@
 # 5.x Limitación del entorno: el acceso de los agentes a Mercado Libre
 
 Mercado Libre quedó fuera de las fuentes de CotIA por
-razones contractuales y no técnicas. La lectura de su sitio con un navegador automatizado está excluida desde D112:
+razones contractuales y no técnicas. La lectura de su sitio con un navegador automatizado está excluida desde la primera lista blanca:
 sus buenas prácticas para desarrolladores piden no hacer *web crawling* y trabajar siempre con la API, y la
 cláusula 7.6 de los Términos y Condiciones del Programa de Desarrolladores para Colombia prohíbe el uso de robots,
 *spiders* o *scraping* sobre el sitio (Mercado Libre, s. f.-a; s. f.-b).

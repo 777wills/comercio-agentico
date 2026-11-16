@@ -10,8 +10,11 @@ revisado contra la plantilla, la rúbrica, el syllabus y los dos lineamientos.
 **Wills, antes del mar 17-nov:** revisar y subir a Intu los dos entregables; pedir la firma de la carta de aval al
 mentor (si llega, reemplaza la primera página); llevar al profesor las cuatro preguntas de `docs/PLAN.md` §4
 (versión radicada, fecha del video, plantilla de diapositivas, representante de la empresa). Después: **P3**
-(línea base humana: 6 tareas con cronómetro según `privado/auditoria/PROTOCOLO_LINEA_BASE.md`; completa Cr6),
-**secreto `OPENROUTER_API_KEY_CANARIO`** en GitHub (P6.3) y **rotar las claves de `.env`**.
+(línea base humana: 6 tareas con cronómetro según `privado/auditoria/PROTOCOLO_LINEA_BASE.md`; completa Cr6) y
+**rotar las claves de `.env`**. El canario no se activa (D138).
+**16-nov (Claude Code · Opus 5.5), D138:** borradores de `docs/informe/` sin códigos internos (Dnn, Snn), sin el
+canario y sin notas de trabajo (las de verificación de referencias pasaron al PLAN, S10); entregables S10a
+regenerados sin «sesiones S00–S09» ni canario y con William Suaza Losada como autor en los metadatos. Gasto US$0.
 Antecedentes del 15-nov: borradores 01, 02, 06 y 07 (40 referencias APA 7), D133–D136, OWASP 2026. Ventas CCCE
 2026-I = **$39,37 billones** (no $39,7).
 
