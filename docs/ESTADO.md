@@ -2,6 +2,14 @@
 
 ## Siguiente sesión
 
+**16-nov (guía para la defensa; Claude Code · Opus 5.5):** a pedido de Wills, guía de estudio para la presustentación
+y la sustentación en `privado/GUIA_DEFENSA.md` (no versionada), contrastada con el código y los borradores del
+informe: arquitectura, grafo de LangGraph, recorrido de una consulta (B013 con la verdad del corpus), defensas, N3,
+corpus, métricas, experimentos, modelos, preguntas probables del jurado. Hallazgo: en C0 el extractor tampoco recibe
+la advertencia de datos de terceros, que solo se activa con C1; E2 mide la configuración C1 completa (preparar la
+respuesta; aislarla sería un experimento adicional). Sin código ni decisiones nuevas. **Gasto US$0.** **Sigue S10
+(informe y presentación; entrega en Intu el 17-nov).**
+
 **16-nov (revisión de los borradores del informe; Claude Code · Opus 5.5), D149:** auditados los 28 borradores de
 `docs/informe/` por patrones (códigos internos, notas de trabajo, `[ref:]`, cifras desfasadas, OWASP 2025), cruce de
 citas con `07_referencias.md` y cobertura frente a D136 y la sección S10 del PLAN. Corregido: (a) **corpus A** con la
