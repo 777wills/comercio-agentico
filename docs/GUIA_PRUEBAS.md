@@ -1672,3 +1672,33 @@ Debe ver `profundidades: {rapida: [8, 2], normal: [14, 3], exhaustiva: [24, 5]}`
 **3. En el navegador — US$0:** abra `http://localhost:8000`, cambie el selector y lea la línea de abajo (14 → 24 →
 8 lecturas). Encienda una sexta tienda en «Fuentes»: «Normal» pasa a 17 lecturas. Una consulta real «Rápida» con
 DeepSeek Flash cuesta ≈ US$0,035 (estimado, no medido); no hace falta correrla.
+
+## S10i — Tiendas Apple corregidas, lecturas repetidas y moneda (16-nov, D147)
+
+**Qué cambió:** Mac Center e iShop apuntan a sus dominios vigentes (`mac-center.com`, `co.tiendasishop.com`); el
+agente ya no gasta lecturas repitiendo una página que ya leyó (en la bitácora aparece «ya leída»); una oferta con
+precio en otra moneda se descarta en vez de compararse como si fueran pesos.
+
+**1. Pruebas sin red — US$0**
+
+```bash
+uv run pytest -q tests/test_agente.py -k repetida    # la URL repetida no se extrae ni cuenta
+uv run pytest -q tests/test_vivo.py -k "moneda or dominios"
+uv run pytest -q tests/test_api.py -k repetida       # la bitácora recibe estado «repetida»
+make check                                           # 232 pruebas
+```
+
+**2. Lo que vio el agente en las tiendas Apple — US$0 (red, sin modelo; ~1 min)**
+
+```bash
+make sondeo-tiendas      # robots.txt y términos de 42 tiendas → resultados/tiendas/sondeo_<fecha>.jsonl
+```
+
+Mac Center e iShop deben salir con `robots=permite` y `cláusulas=0`; Janus, Encarguelo, Tauret y Kalley con
+cláusulas (sus términos prohíben robots o arañas).
+
+**3. En el navegador — US$0:** reinicie la API local (detenga la de su terminal con Ctrl+C y vuelva a lanzar
+`uv run uvicorn comercio_agentico.api.app:crear_app --factory --port 8000`), abra `http://localhost:8000`, panel
+«Fuentes»: Mac Center e iShop muestran sus dominios nuevos. Para comprobarlo de punta a punta, active solo Mac Center
+e iShop y pregunte «MacBook Air 13 con chip M5»: con búsqueda **Rápida** y DeepSeek Flash cuesta ≈ US$0,03
+(estimado, no medido). Si funciona, debe recomendar o listar un MacBook Air M5 de iShop (desde $6.199.000 el 16-nov).

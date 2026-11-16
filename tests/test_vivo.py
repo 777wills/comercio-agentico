@@ -163,7 +163,7 @@ def test_tiendas_en_vivo_por_defecto():
     assert all(f.abierta and f.prefijo.startswith("https://") for f in TIENDAS_EN_VIVO)
     assert all(f.categorias for f in TIENDAS_EN_VIVO)
     registro = RegistroFuentes(fuentes=TIENDAS_EN_VIVO)
-    assert registro.por_url("https://www.maccenter.com.co/iphone").marca == "Apple"
+    assert registro.por_url("https://mac-center.com/collections/iphone").marca == "Apple"
     assert registro.por_url("https://www.samsung.com/co/monitors/").id == "V4"
     assert registro.por_url("https://www.samsung.com/mx/") is None  # otro país, otro sitio
 
@@ -510,3 +510,27 @@ def test_guardia_deja_pasar_cadenas_publicas_y_el_corpus_de_confianza(monkeypatc
     assert redirigida.final == "continuar"  # el navegador recorre la cadena ya validada
     assert corpus.final == "continuar" and corpus.pedidas == []
     assert imagen.final == "abortar:failed"
+
+
+def test_precio_en_otra_moneda_se_descarta_aunque_el_juez_lo_acepte():
+    """D147: una página que publica el precio en rupias no compite como si fueran pesos."""
+    pesos = _oferta("Galaxy A07 64GB", 450_000)
+    rupias = _oferta("Galaxy A07 64GB", 1_399_000, moneda="IDR")
+
+    def responder(mensajes):
+        juicios = [Juicio(oferta=i, grupo=1, cumple=True, motivo=None) for i in _indices(mensajes)]
+        return Juicios(juicios=juicios)
+
+    n = Necesidad(tipo_producto="celular")
+    salida = asyncio.run(
+        comparar([pesos, rupias], n, PERFIL, Doble(responder), codificador_trigramas)
+    )
+    assert salida[0].descarte is None
+    assert salida[1].descarte.startswith("Precio en otra moneda (IDR)")
+
+
+def test_tiendas_apple_apuntan_a_sus_dominios_vigentes():
+    """D147: el 16-nov ishop.co estaba en venta y maccenter.com.co servía otra tienda."""
+    por_id = {f.id: f.url for f in TIENDAS_EN_VIVO}
+    assert por_id["V9"] == "https://mac-center.com/"
+    assert por_id["V10"] == "https://co.tiendasishop.com/"

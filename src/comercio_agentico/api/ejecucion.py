@@ -116,7 +116,11 @@ class Traductor:
                         {
                             "nombre": c.get("name"),
                             "args": c.get("args", {}),
-                            "estado": "error" if getattr(m, "status", "") == "error" else "ok",
+                            "estado": "repetida"
+                            if (getattr(m, "artifact", None) or {}).get("repetida")
+                            else "error"
+                            if getattr(m, "status", "") == "error"
+                            else "ok",
                         }
                     )
                 ofertas = upd.get("ofertas") or []

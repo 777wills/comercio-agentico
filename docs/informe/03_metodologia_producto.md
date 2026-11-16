@@ -158,6 +158,15 @@ monitorear» su contenido, junto con Huawei, Asus y Home Sentry; el `llms.txt` d
 al agente. El catálogo quedó en 13 tiendas aptas, cada una con las categorías que vende y, si aplica, su marca
 exclusiva (Tabla 3.p.2).
 
+El 16-nov, una consulta real por un portátil de Apple reveló que el sondeo no bastaba: los dominios registrados
+para las dos tiendas especializadas en Apple ya no les pertenecían. Uno estaba en venta y el otro servía una página
+ajena, con precios en rupias indonesias, que el agente leyó como si fuera la tienda. Se corrigieron los dominios y
+se añadió un cuarto criterio: una tienda entra al catálogo solo si una lectura de prueba con el mismo lector del
+agente muestra productos propios con precio. El sondeo de ese día evaluó siete candidatas más; ninguna resultó apta.
+Cuatro prohíben en sus términos el acceso de robots, arañas o herramientas automatizadas, una lo impide en su
+robots.txt y dos no resolvieron. Como defensa complementaria, una oferta con precio en una moneda distinta del peso
+colombiano se descarta con su motivo y no se convierte.
+
 Al cargar CotIA quedan activas siempre las mismas cinco tiendas (Falabella, Samsung Colombia, Panamericana,
 Homecenter y Tienda Claro); el visitante cambia la selección con los interruptores del panel «Fuentes» y puede
 activar todas las del catálogo y las URL que agregue. El panel muestra cuántas tiendas web están activas y, por
@@ -220,3 +229,6 @@ del planificador: 8, 14 o 24 con hasta cinco fuentes activas, más 2, 3 o 5 lect
 un máximo de 30. El número de rondas no se prescribe: en cada ronda el planificador decide qué páginas o documentos
 leer a partir de lo obtenido en la anterior y los lee en paralelo, y se detiene al reunir las ofertas pertinentes o al
 agotar el presupuesto. El nivel normal con cinco fuentes corresponde a la configuración evaluada en los experimentos.
+Una lectura que el planificador ya hizo en la tarea no se repite ni consume presupuesto: el planificador recibe la
+indicación de que esa página ya fue leída y la bitácora la registra como tal. En la consulta que motivó el cambio, el
+planificador había dedicado 7 de 30 lecturas a volver a abrir portadas ya leídas.

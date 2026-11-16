@@ -555,3 +555,28 @@ def test_expediente_exige_una_propuesta(lista_modelos):
         ).json()["id"]
         eventos_sse(c, id_consulta)
         assert c.get(f"/api/consultas/{id_consulta}/evidencia").status_code == 409
+
+
+def test_traductor_marca_la_lectura_repetida():
+    """D147: la bitácora distingue la lectura que el agente ya tenía de una leída o caída."""
+    from langchain_core.messages import AIMessage, ToolMessage
+
+    from comercio_agentico.api.ejecucion import Traductor
+
+    t = Traductor()
+    llamadas = [
+        {"name": "abrir_pagina", "args": {"url": f"https://x.co/{i}"}, "id": str(i)}
+        for i in range(3)
+    ]
+    t("planificar", {"messages": [AIMessage("", tool_calls=llamadas)]})
+    evento = t(
+        "herramientas",
+        {
+            "messages": [
+                ToolMessage("{}", tool_call_id="0"),
+                ToolMessage("caída", tool_call_id="1", status="error"),
+                ToolMessage("ya", tool_call_id="2", artifact={"repetida": True}),
+            ]
+        },
+    )
+    assert [lec["estado"] for lec in evento["lecturas"]] == ["ok", "error", "repetida"]

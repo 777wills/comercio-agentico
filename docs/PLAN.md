@@ -603,6 +603,18 @@ informe de cotización.
 - [x] Pruebas (`make check`, 228) y revisión en Chrome.
 - [ ] Revisar en producción tras el despliegue.
 
+## S10i — Tiendas Apple corregidas, lecturas repetidas y moneda (lun 16-nov, D147)
+
+- [x] Diagnóstico de la consulta «MacBook Air, chip M5…» con el lector del agente (dominios muertos, Mercado Libre
+      con inicio de sesión, lecturas repetidas).
+- [x] Mac Center → `mac-center.com`, iShop → `co.tiendasishop.com`; sondeo del 16-nov con 7 candidatas nuevas
+      (ninguna apta) y lectura de prueba de las dos tiendas Apple.
+- [x] Lectura repetida sin ejecutar ni gastar acción; estado «repetida» en la bitácora.
+- [x] Oferta con precio en otra moneda descartada con su motivo.
+- [x] Pruebas (`make check`, 232) y frontend sin errores.
+- [ ] Consulta de punta a punta con Mac Center e iShop (Wills, ≈ US$0,03) y revisión en producción.
+- [ ] Propuesto: que el planificador siga los enlaces recibidos en vez de inventar rutas.
+
 ## S10 — Informe en la plantilla del curso (mar 17 / mié 18-nov)
 
 **Objetivo:** informe completo en `Formato_informe.docx`, en PDF, con citas APA 7 (D133).

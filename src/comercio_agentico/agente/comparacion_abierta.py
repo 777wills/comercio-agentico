@@ -114,6 +114,13 @@ def _linea(i: int, o: Oferta, grupo: int) -> str:
     )
 
 
+def otra_moneda(o: Oferta) -> str | None:
+    """D147: solo se comparan precios en pesos; un precio en otra moneda no se convierte."""
+    if o.moneda != "COP":
+        return f"Precio en otra moneda ({o.moneda}); solo se comparan precios en pesos colombianos"
+    return None
+
+
 def descarte_determinista(o: Oferta, n: Necesidad, perfil: PerfilCategoria) -> str | None:
     for r in perfil.restricciones_duras:
         # D115: en la web abierta los listados rara vez informan existencias; «desconocida»
@@ -200,7 +207,7 @@ async def comparar(
             grupo, motivo = sugeridos[i], SIN_JUICIO
         else:
             grupo, motivo = j.grupo, None if j.cumple else (j.motivo or "no es lo pedido")
-        motivo = motivo or descarte_determinista(o, necesidad, perfil)
+        motivo = otra_moneda(o) or motivo or descarte_determinista(o, necesidad, perfil)
         resultado.append(o.model_copy(update={"grupo": grupo, "descarte": motivo}))
     return resultado
 

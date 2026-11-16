@@ -2,6 +2,23 @@
 
 ## Siguiente sesión
 
+**16-nov (S10i, por qué falló la consulta «MacBook Air, chip M5…»; Claude Code · Opus 5.5), D147:** la consulta
+(exhaustiva, 30 lecturas, US$0,0515, 469 s) se abstuvo con 40 ofertas y ningún MacBook. Diagnóstico con el lector del
+agente, sin modelo: `ishop.co` es un **dominio en venta** y `maccenter.com.co` sirve una **página de Samsung
+Indonesia** (el «Galaxy A07 a $1.399.000» eran rupias); Mercado Libre (URL del visitante) exige iniciar sesión;
+Falabella solo devuelve accesorios; el planificador gastó 7 lecturas repitiendo portadas y 4 en URL inventadas que
+agotaron 60 s. Hecho: (a) dominios corregidos por Wills, `mac-center.com` y `co.tiendasishop.com`, sondeados (robots
+permite, términos sin cláusula) y leídos (iShop: MacBook Air 13" M5 desde $6.199.000); (b) sondeo del 16-nov con 7
+candidatas nuevas: ninguna apta (Janus, Encarguelo, Tauret y Kalley prohíben robots en sus términos; Honor por
+robots.txt; JBL y Acer no resuelven); revisadas Motorola (cl. 8.8 prohíbe robots), Electrojaponesa (términos con
+429) y Apple Colombia (sin precios); nuevo criterio: lectura de prueba con productos propios con precio; (c) una
+lectura repetida no se ejecuta ni gasta acción (`separar_repetidas` en `grafo.py`, estado «repetida» en la
+bitácora); (d) precio en otra moneda → descartada con su motivo (`otra_moneda`). `make check` en verde (**232**,
+4 nuevas); frontend sin errores. Borrador `03_metodologia_producto.md` actualizado. **Gasto US$0.** Pendiente
+visto: el planificador sigue inventando rutas (`/sitemap.xml`, `/mac`) en lugar de usar los enlaces recibidos
+(propuesto). **Wills:** reiniciar la API local (la de su terminal de VS Code corre el código anterior) y, si quiere,
+la prueba de la guía S10i (≈ US$0,03); tras el despliegue, repetirla en producción. **Sigue S10 (informe).**
+
 **16-nov (S10h, profundidad de búsqueda; Claude Code · Opus 5.5), D146:** selector «Búsqueda rápida / normal /
 exhaustiva» junto al cuadro de consulta (y en el Laboratorio): 8, 14 o 24 lecturas con hasta 5 fuentes, más 2/3/5 por
 fuente activa sobre 5, techo 30. «Normal» con 5 fuentes = 14 (E1–E3). La API registra `profundidad` y `max_acciones`;

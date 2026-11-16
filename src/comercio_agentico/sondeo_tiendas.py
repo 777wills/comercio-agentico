@@ -29,8 +29,8 @@ CANDIDATAS = [
     ("Falabella", "https://www.falabella.com.co/falabella-co"),
     ("Samsung Colombia", "https://www.samsung.com/co/"),
     ("Panamericana", "https://www.panamericana.com.co/"),
-    ("iShop", "https://www.ishop.co/"),
-    ("Mac Center", "https://www.maccenter.com.co/"),
+    ("iShop", "https://co.tiendasishop.com/"),
+    ("Mac Center", "https://mac-center.com/"),
     ("Tienda Claro", "https://tienda.claro.com.co/"),
     ("Clevercel", "https://www.clevercel.co/"),
     ("Tecnoplaza", "https://www.tecnoplaza.com.co/"),
@@ -58,6 +58,14 @@ CANDIDATAS = [
     ("Olímpica", "https://www.olimpica.com/"),
     ("Jumbo", "https://www.tiendasjumbo.co/"),
     ("Mercado Libre", "https://www.mercadolibre.com.co/"),
+    # Ampliación del 16-nov-2026 (D147)
+    ("Janus", "https://janus.com.co/"),
+    ("Encarguelo", "https://encarguelo.com/"),
+    ("Tauret Computadores", "https://www.tauretcomputadores.com/"),
+    ("Kalley", "https://www.kalley.com.co/"),
+    ("Honor Colombia", "https://www.honor.com/co/"),
+    ("JBL Colombia", "https://co.jbl.com/"),
+    ("Acer Store Colombia", "https://store.acer.com/es-co/"),
 ]
 
 ENLACE_TERMINOS = re.compile(

@@ -164,8 +164,13 @@
 	const rondas = $derived.by(() => {
 		const salida: { lecturas: Lectura[]; ofertas: number; porProveedor: Record<string, number> }[] = [];
 		for (const e of exp?.eventos ?? []) {
-			if (e.etapa === 'lecturas')
-				salida.push({ lecturas: e.lecturas ?? [], ofertas: e.ofertas ?? 0, porProveedor: e.por_proveedor ?? {} });
+			if (e.etapa === 'lecturas' && (e.lecturas ?? []).some((l: Lectura) => l.estado !== 'repetida'))
+				salida.push({
+					// Una lectura repetida no se hizo (el agente ya la tenía): no entra en la bitácora.
+					lecturas: (e.lecturas ?? []).filter((l: Lectura) => l.estado !== 'repetida'),
+					ofertas: e.ofertas ?? 0,
+					porProveedor: e.por_proveedor ?? {}
+				});
 		}
 		return salida;
 	});

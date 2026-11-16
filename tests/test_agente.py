@@ -545,3 +545,56 @@ def test_presupuesto_de_acciones_por_profundidad_y_fuentes():
     assert presupuesto_acciones("rapida", 8) == 14
     assert presupuesto_acciones("normal", 8) == 23
     assert presupuesto_acciones("exhaustiva", 7) == 30
+
+
+def test_lectura_repetida_no_se_ejecuta_ni_gasta_accion():
+    """D147: la misma URL (con o sin fragmento o barra final) no se vuelve a leer ni a extraer."""
+    from comercio_agentico.agente.grafo import YA_LEIDA, clave_lectura, separar_repetidas
+
+    url = REGISTRO.fuentes[4].url
+    assert clave_lectura({"name": "abrir_pagina", "args": {"url": url + "/#menu"}}) == (
+        clave_lectura({"name": "abrir_pagina", "args": {"url": url}})
+    )
+    a = {"name": "leer_documento", "args": {"url": url}, "id": "a"}
+    b = {"name": "abrir_pagina", "args": {"url": REGISTRO.fuentes[1].url}, "id": "b"}
+    nuevas, repetidas = separar_repetidas([a, {**a, "id": "a2"}, b], [])
+    assert [c["id"] for c in nuevas] == ["a", "b"] and [c["id"] for c in repetidas] == ["a2"]
+
+    planificador = Doble(
+        AIMessage("", tool_calls=[{"name": "leer_documento", "args": {"url": url}, "id": "1"}]),
+        AIMessage(
+            "",
+            tool_calls=[
+                {"name": "leer_documento", "args": {"url": url + "#x"}, "id": "2"},
+                {"name": "abrir_pagina", "args": {"url": REGISTRO.fuentes[1].url}, "id": "3"},
+            ],
+        ),
+        AIMessage("Listo."),
+    )
+    extraida = OfertaExtraida(
+        titulo="monitor samsung m8 64gb",
+        precio=2_765_000,
+        costo_envio=10_000,
+        disponibilidad="en_stock",
+    )
+    ctx = Contexto(
+        modelo="doble",
+        lector=LectorDoble(),  # type: ignore[arg-type]
+        registro=REGISTRO,
+        emparejador=EMPAREJADOR,
+        perfil=PERFIL,
+        costo=RegistroCosto(1.0),
+        defensas=Defensas.de("C1"),
+        clasificador=ClasificadorPermisivo(),
+    )
+    ctx._llm = {
+        "interprete": Doble(Necesidad(producto_mencionado="Samsung M8 64GB", producto_id="C11")),
+        "planificador": planificador,
+        "extractor": Doble({"parsed": ListaOfertas(ofertas=[extraida]), "raw": None}),
+        "confirmador": Doble(Decisiones(decisiones=[Decision(oferta=0, producto_id="C11")])),
+    }
+    final = asyncio.run(construir_grafo(ctx).ainvoke({"consulta": "Samsung M8 64GB"}))
+    assert len(ctx._llm["extractor"].vistos) == 1  # el documento se extrajo una sola vez
+    assert final["llamadas"] == 2  # la lectura nueva y la caída cuentan; la repetida no
+    repetida = next(m for m in final["messages"] if getattr(m, "tool_call_id", "") == "2")
+    assert repetida.content == YA_LEIDA and repetida.artifact == {"repetida": True}

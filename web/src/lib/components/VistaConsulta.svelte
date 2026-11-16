@@ -140,10 +140,12 @@
 										<LoaderCircle class="size-3 shrink-0 animate-spin" />
 									{:else if l.estado === 'error'}
 										<TriangleAlert class="size-3 shrink-0 text-warning" />
+									{:else if l.estado === 'repetida'}
+										<span class="grid size-3 shrink-0 place-items-center">–</span>
 									{:else}
 										<Check class="size-3 shrink-0 text-primary" />
 									{/if}
-									<span class="truncate">{l.texto}</span>
+									<span class="truncate">{l.texto}{l.estado === 'repetida' ? ' (ya leída)' : ''}</span>
 								</li>
 							{/each}
 						</ul>

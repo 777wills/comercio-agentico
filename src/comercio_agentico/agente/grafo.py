@@ -30,6 +30,7 @@ import unicodedata
 from collections.abc import Awaitable, Callable, Sequence
 from dataclasses import dataclass, field
 from typing import Annotated, Any, Literal, TypedDict
+from urllib.parse import urldefrag
 
 from langchain_core.messages import AIMessage, AnyMessage, HumanMessage, SystemMessage, ToolMessage
 from langchain_core.tools import tool
@@ -40,6 +41,7 @@ from comercio_agentico.agente.comparacion_abierta import (
     Juicios,
     _pesos,
     comparar,
+    otra_moneda,
     proponer_abierto,
 )
 from comercio_agentico.agente.defensa import (
@@ -197,6 +199,7 @@ class Estado(TypedDict, total=False):
     errores: Annotated[list[str], operator.add]
     alertas: Annotated[list[Alerta], operator.add]  # de las defensas (C2)
     llamadas: int
+    leidas: Annotated[list[str], operator.add]  # claves de las lecturas ya hechas (D147)
     ofertas_finales: list[Oferta]  # emparejadas y sin duplicados (sin reductor: se reemplaza)
     propuesta: PropuestaCompra
 
@@ -370,6 +373,30 @@ async def ejecutar_herramienta(
     return ToolMessage(contenido, tool_call_id=llamada["id"]), ofertas, alertas
 
 
+YA_LEIDA = (
+    "Esta lectura ya se hizo en la tarea: sus ofertas ya están recolectadas y no se repitió ni "
+    "gastó una acción. Elige otra página entre los enlaces recibidos o termina."
+)
+
+
+def clave_lectura(llamada: dict) -> str:
+    """Identidad de una lectura: la URL sin fragmento ni barra final, o los argumentos."""
+    args = llamada.get("args", {})
+    if isinstance(args.get("url"), str):
+        return f"{llamada['name']}:{urldefrag(args['url'].strip())[0].rstrip('/')}"
+    return f"{llamada['name']}:" + json.dumps(args, sort_keys=True, ensure_ascii=False).lower()
+
+
+def separar_repetidas(llamadas: list[dict], leidas: Sequence[str]) -> tuple[list[dict], list[dict]]:
+    """Divide las llamadas pedidas en nuevas y repetidas (ya hechas o duplicadas en el turno)."""
+    vistas, nuevas, repetidas = set(leidas), [], []
+    for c in llamadas:
+        k = clave_lectura(c)
+        (repetidas if k in vistas else nuevas).append(c)
+        vistas.add(k)
+    return nuevas, repetidas
+
+
 # --------------------------------------------------------------------------------------------------
 # Selección determinista
 
@@ -402,6 +429,8 @@ def motivo_descarte(
     o: Oferta, n: Necesidad, perfil: PerfilCategoria, productos: dict[str, ProductoCatalogo]
 ) -> str | None:
     """None si la oferta es válida; si no, la primera restricción que incumple."""
+    if motivo := otra_moneda(o):
+        return motivo
     for r in perfil.restricciones_duras:
         if not r.cumple(getattr(o, r.atributo, None)):
             return f"{r.atributo} = {getattr(o, r.atributo, None)}"
@@ -651,13 +680,23 @@ def construir_grafo(ctx: Contexto):
 
     async def nodo_herramientas(estado: Estado) -> dict:
         llamadas = estado["messages"][-1].tool_calls  # type: ignore[union-attr]
+        # Una lectura repetida no se ejecuta ni gasta acción (D147); si el turno solo trae
+        # repetidas, cuentan, para que el planificador no se quede dando vueltas.
+        nuevas, repetidas = separar_repetidas(llamadas, estado.get("leidas", []))
         restantes = ctx.max_llamadas - estado.get("llamadas", 0)
-        permitidas, excedidas = llamadas[:restantes], llamadas[restantes:]
+        permitidas, excedidas = nuevas[:restantes], nuevas[restantes:]
         resultados = await asyncio.gather(*(ejecutar_herramienta(ctx, c) for c in permitidas))
-        mensajes = [m for m, _, _ in resultados] + [
-            ToolMessage("Límite de llamadas alcanzado.", tool_call_id=c["id"], status="error")
-            for c in excedidas
-        ]
+        mensajes = (
+            [m for m, _, _ in resultados]
+            + [
+                ToolMessage(YA_LEIDA, tool_call_id=c["id"], artifact={"repetida": True})
+                for c in repetidas
+            ]
+            + [
+                ToolMessage("Límite de llamadas alcanzado.", tool_call_id=c["id"], status="error")
+                for c in excedidas
+            ]
+        )
         errores = [
             f"{c['name']}({c.get('args')}): {m.content}"
             for c, (m, _, _) in zip(permitidas, resultados, strict=True)
@@ -668,7 +707,8 @@ def construir_grafo(ctx: Contexto):
             "ofertas": [o for _, ofs, _ in resultados for o in ofs],
             "alertas": [a for _, _, als in resultados for a in als],
             "errores": errores,
-            "llamadas": estado.get("llamadas", 0) + len(permitidas),
+            "llamadas": estado.get("llamadas", 0) + (len(permitidas) or len(repetidas)),
+            "leidas": [clave_lectura(c) for c in permitidas],
         }
 
     def ruta_interpretacion(estado: Estado) -> str:

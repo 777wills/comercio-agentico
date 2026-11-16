@@ -68,7 +68,8 @@ APPLE = ["portatil", "monitor", "celular", "audifonos"]
 SAMSUNG = ["monitor", "celular", "audifonos", "almacenamiento"]
 
 # Tiendas reales aptas (D112, D132: robots.txt, respuesta a un cliente automatizado y términos sin
-# prohibición expresa del acceso automatizado; sondeo del 14-nov-2026 en resultados/tiendas/).
+# prohibición expresa del acceso automatizado; sondeos del 14 y 16-nov-2026 en resultados/tiendas/;
+# D147: dominios de Mac Center e iShop corregidos).
 # La URL es el punto de entrada; el agente sigue enlaces del mismo sitio.
 TIENDAS_EN_VIVO: list[Fuente] = [
     Fuente(
@@ -88,8 +89,8 @@ TIENDAS_EN_VIVO: list[Fuente] = [
         ("V6", "Homecenter", "https://www.homecenter.com.co/homecenter-co/", TODAS, None),
         ("V7", "Tienda Claro", "https://tienda.claro.com.co/", ["celular", "audifonos"], None),
         ("V8", "Tigo", "https://compras.tigo.com.co/", ["celular"], None),
-        ("V9", "Mac Center", "https://www.maccenter.com.co/", APPLE, "Apple"),
-        ("V10", "iShop", "https://www.ishop.co/", APPLE, "Apple"),
+        ("V9", "Mac Center", "https://mac-center.com/", APPLE, "Apple"),
+        ("V10", "iShop", "https://co.tiendasishop.com/", APPLE, "Apple"),
         ("V11", "Clevercel", "https://www.clevercel.co/", ["celular", "audifonos"], None),
         ("V12", "Flamingo", "https://www.flamingo.com.co/", TODAS, None),
         ("V13", "HP Colombia", "https://www.hp.com/co-es/shop/", ["portatil", "monitor"], "HP"),
