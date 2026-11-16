@@ -50,14 +50,14 @@
 
 <svelte:head><title>CotIA</title></svelte:head>
 
-<section class="mx-auto flex max-w-2xl flex-col pt-[16vh] pb-16">
+<section class="mx-auto flex max-w-2xl flex-col pt-[10vh] pb-16 sm:pt-[16vh]">
 	<h1 class="text-3xl font-semibold tracking-tight sm:text-4xl">¿Qué necesita comprar?</h1>
 	<p class="mt-3 text-muted-foreground">
 		CotIA compara proveedores y le recomienda la mejor oferta, con la fuente de cada precio.
 	</p>
 
 	<form
-		class="mt-10 rounded-2xl border bg-muted/30 p-2 transition-colors focus-within:border-primary/40"
+		class="mt-8 rounded-2xl border bg-card p-2 shadow-[0_1px_0_var(--border)] transition-colors focus-within:border-primary/60 sm:mt-10"
 		onsubmit={(e) => {
 			e.preventDefault();
 			enviar();
@@ -106,12 +106,13 @@
 	{/if}
 
 	{#await ej then ejs}
-		<ul class="mt-10 space-y-1">
+		<p class="mt-10 px-2 text-xs text-muted-foreground">Pruebe con un ejemplo</p>
+		<ul class="mt-1 space-y-0.5">
 			{#each config.corpus === 'vivo' ? EJEMPLOS_VIVO : ejs[config.corpus].slice(0, 3).map((e) => e.consulta) as texto (texto)}
 				<li>
 					<button
 						type="button"
-						class="w-full truncate rounded-md px-2 py-1.5 text-left text-sm text-muted-foreground transition-colors hover:bg-muted/40 hover:text-foreground"
+						class="w-full rounded-md px-2 py-2 text-left text-sm leading-snug text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:truncate sm:py-1.5"
 						onclick={() => (consulta = texto)}>{texto}</button
 					>
 				</li>

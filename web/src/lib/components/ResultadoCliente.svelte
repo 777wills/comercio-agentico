@@ -40,34 +40,69 @@
 	const alertas = $derived([...new Set(propuesta.alertas.map((a) => ALERTAS[a.tipo]).filter(Boolean))]);
 	const dias = (n: number | null) => (n == null ? '—' : `${n} ${n === 1 ? 'día' : 'días'}`);
 	// La procedencia técnica (URL y SHA-256) queda para el laboratorio; aquí va en «Fuente».
-	const justificacion = $derived(propuesta.justificacion.replace(/\s*Procedencia:.*$/s, ''));
+	// El resumen del agente nombra las fuentes por su código (V6, P2…); quien compra ve la tienda (D139).
+	const legible = (texto: string) => {
+		let t = texto;
+		for (const [codigo, nombre] of Object.entries(nombres)) {
+			t = t.replace(new RegExp(`\\(${codigo}\\)`, 'g'), `(${nombre})`);
+			t = t.replace(new RegExp(`\\b(de|en) ${codigo}\\b`, 'g'), `$1 ${nombre}`);
+		}
+		return t.replace(/\b1 fuentes\b/g, '1 fuente').replace(/\b1 ofertas\b/g, '1 oferta');
+	};
+	const justificacion = $derived(legible(propuesta.justificacion.replace(/\s*Procedencia:.*$/s, '')));
 	const hayVerificadas = $derived(propuesta.ofertas.some((o) => o.verificacion === 'verificada'));
 	const rec = $derived(propuesta.recomendada != null ? propuesta.ofertas[propuesta.recomendada] : null);
 </script>
 
 {#if propuesta.abstencion || !rec}
-	<div class="border-l-2 border-muted-foreground/40 py-1 pl-5">
-		<p class="text-xs tracking-wide text-muted-foreground uppercase">Sin recomendación</p>
-		<p class="mt-2 text-lg">{propuesta.motivo_abstencion ?? propuesta.justificacion}</p>
+	<div class="rounded-xl border bg-card p-5 sm:p-6">
+		<p class="text-sm font-medium text-muted-foreground">Sin recomendación</p>
+		<p class="mt-2 text-lg leading-snug">{legible(propuesta.motivo_abstencion ?? propuesta.justificacion)}</p>
 	</div>
 {:else}
-	<div class="border-l-2 border-primary py-1 pl-5">
-		<p class="text-xs tracking-wide text-primary uppercase">Recomendación</p>
-		<p class="mt-2 text-xl font-medium">{rec.titulo}</p>
-		<p class="mt-1 text-muted-foreground">
-			{proveedor(rec)} · <span class="text-foreground">{cop(total(rec))}</span> con envío{rec.plazo_entrega_dias != null ? ` · ${dias(rec.plazo_entrega_dias)}` : ''}
-		</p>
-		<p class="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">{justificacion}</p>
-	</div>
+	<!-- La recomendación se lee como una cotización: producto, total y sello de verificación (D139). -->
+	<article class="overflow-hidden rounded-xl border bg-card">
+		<div class="flex flex-col gap-5 p-5 sm:flex-row sm:items-end sm:justify-between sm:p-6">
+			<div class="min-w-0">
+				<p class="text-sm font-medium text-primary">Recomendación</p>
+				<h2 class="mt-1.5 text-lg leading-snug font-medium sm:text-xl">{rec.titulo}</h2>
+				<p class="mt-1 text-sm text-muted-foreground">
+					{proveedor(rec)}{rec.plazo_entrega_dias != null ? ` · entrega en ${dias(rec.plazo_entrega_dias)}` : ''}{rec.disponibilidad !== 'desconocida' ? ` · ${DISPONIBILIDAD[rec.disponibilidad]}` : ''}
+				</p>
+			</div>
+			<div class="shrink-0 sm:text-right">
+				<p class="cifra text-3xl font-semibold tracking-tight sm:text-4xl">{cop(total(rec))}</p>
+				<p class="text-xs text-muted-foreground">total con envío</p>
+			</div>
+		</div>
+		{#if rec.verificacion === 'verificada'}
+			<p class="flex items-center gap-2 border-t border-dashed bg-accent px-5 py-2.5 text-xs text-accent-foreground sm:px-6">
+				<BadgeCheck class="size-4 shrink-0" />
+				Precio verificado: una segunda lectura independiente de la fuente confirmó el mismo valor.
+			</p>
+		{/if}
+		<p class="border-t px-5 py-4 text-sm leading-relaxed text-muted-foreground sm:px-6">{justificacion}</p>
+	</article>
 {/if}
 
 {#if alertas.length}
-	<ul class="mt-8 space-y-1.5 text-sm text-muted-foreground">
+	<ul class="mt-6 space-y-1.5 text-sm text-muted-foreground">
 		{#each alertas as a (a)}
-			<li class="flex items-start gap-2"><Info class="mt-0.5 size-4 shrink-0 text-amber-400" />{a}</li>
+			<li class="flex items-start gap-2"><Info class="mt-0.5 size-4 shrink-0 text-warning" />{a}</li>
 		{/each}
 	</ul>
 {/if}
+
+{#snippet fuente(o: Propuesta['ofertas'][number])}
+	<p class="text-xs text-muted-foreground">
+		Leído en {proveedor(o)} el
+		{new Date(o.procedencia.marca_tiempo).toLocaleString('es-CO')} · precio
+		{cop(o.precio)} + envío {cop(o.costo_envio)}. Este es el texto original de la fuente:
+	</p>
+	<pre
+		class="mt-2 max-h-56 overflow-auto rounded-lg bg-muted p-3 text-xs whitespace-pre-wrap text-muted-foreground">{o
+			.procedencia.fragmento_original}</pre>
+{/snippet}
 
 {#if propuesta.ofertas.length}
 	<div class="mt-12">
@@ -75,7 +110,37 @@
 			{propuesta.ofertas.length}
 			{propuesta.ofertas.length === 1 ? 'oferta comparada' : 'ofertas comparadas'}
 		</h2>
-		<div class="mt-3 overflow-x-auto">
+
+		<!-- Móvil: una oferta por bloque, con el total siempre a la vista. -->
+		<ul class="mt-3 divide-y border-y sm:hidden">
+			{#each propuesta.ofertas as o, i (i)}
+				<li class="py-3.5 {i === propuesta.recomendada ? '' : 'text-foreground/85'}">
+					<div class="flex items-start gap-3">
+						<p class="line-clamp-2 min-w-0 flex-1 text-sm leading-snug">
+							{#if i === propuesta.recomendada}<span
+									class="mr-1.5 inline-block size-1.5 -translate-y-0.5 rounded-full bg-primary"
+								></span>{/if}{o.titulo}
+						</p>
+						<p class="cifra shrink-0 text-sm font-medium">{cop(total(o))}</p>
+					</div>
+					<div class="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+						<span class="inline-flex items-center gap-1">
+							{proveedor(o)}
+							{#if o.verificacion === 'verificada'}<BadgeCheck class="size-3.5 text-primary" aria-label="Precio confirmado" />{/if}
+						</span>
+						{#each [o.plazo_entrega_dias != null ? dias(o.plazo_entrega_dias) : '', o.disponibilidad !== 'desconocida' ? DISPONIBILIDAD[o.disponibilidad] : ''].filter(Boolean) as d (d)}<span>· {d}</span>{/each}
+						<button
+							class="ml-auto -my-2 px-1 py-2 hover:text-foreground"
+							aria-expanded={abierta === i}
+							onclick={() => (abierta = abierta === i ? null : i)}>{abierta === i ? 'Ocultar' : 'Fuente'}</button
+						>
+					</div>
+					{#if abierta === i}<div class="mt-3">{@render fuente(o)}</div>{/if}
+				</li>
+			{/each}
+		</ul>
+
+		<div class="mt-3 hidden overflow-x-auto sm:block">
 			<table class="w-full text-sm">
 				<thead class="text-left text-xs text-muted-foreground">
 					<tr class="border-b">
@@ -104,10 +169,8 @@
 									{/if}
 								</span>
 							</td>
-							<td class="py-3 pr-4 text-right whitespace-nowrap tabular-nums">{cop(total(o))}</td>
-							<td class="py-3 pr-4 whitespace-nowrap">
-								{dias(o.plazo_entrega_dias)}
-							</td>
+							<td class="py-3 pr-4 text-right whitespace-nowrap">{cop(total(o))}</td>
+							<td class="py-3 pr-4 whitespace-nowrap">{dias(o.plazo_entrega_dias)}</td>
 							<td class="py-3 pr-4 whitespace-nowrap">{DISPONIBILIDAD[o.disponibilidad]}</td>
 							<td class="py-3 text-right">
 								<button
@@ -120,16 +183,7 @@
 						</tr>
 						{#if abierta === i}
 							<tr>
-								<td colspan={6} class="pt-3 pb-6">
-									<p class="text-xs text-muted-foreground">
-										Leído en {proveedor(o)} el
-										{new Date(o.procedencia.marca_tiempo).toLocaleString('es-CO')} · precio
-										{cop(o.precio)} + envío {cop(o.costo_envio)}. Este es el texto original de la fuente:
-									</p>
-									<pre
-										class="mt-2 max-h-56 overflow-auto rounded-lg bg-muted/40 p-3 text-xs whitespace-pre-wrap text-muted-foreground">{o
-											.procedencia.fragmento_original}</pre>
-								</td>
+								<td colspan={6} class="pt-3 pb-6">{@render fuente(o)}</td>
 							</tr>
 						{/if}
 					{/each}

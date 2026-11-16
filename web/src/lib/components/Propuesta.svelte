@@ -33,7 +33,7 @@
 	const N3: Record<string, { texto: string; clase: string }> = {
 		verificada: { texto: 'Verificada', clase: 'border-primary/40 text-primary' },
 		discrepancia: { texto: 'Discrepancia', clase: 'border-destructive/50 text-destructive' },
-		sin_contraparte: { texto: 'Sin contraparte', clase: 'border-amber-500/50 text-amber-400' }
+		sin_contraparte: { texto: 'Sin contraparte', clase: 'border-warning/50 text-warning' }
 	};
 	const ALERTAS: Record<string, string> = {
 		posible_inyeccion: 'Posible inyección retirada',

@@ -2,6 +2,13 @@
 
 ## Siguiente sesión
 
+**16-nov (S10b, revisión de la interfaz; Claude Code · Opus 5.5), D139:** tema claro por defecto con selector
+claro/oscuro/sistema, IBM Plex Sans, laboratorio con «← Modo cliente» en móvil, recomendación como cotización,
+lista apilada de ofertas en móvil, resumen con nombres de tienda en lugar de códigos, diálogos con alto máximo y sin
+desplazamientos anidados. Revisado a 390 px y en escritorio, en claro y en oscuro. `make check` en verde (218
+pruebas); se excluyó `.claude` de Ruff (las skills de D130 rompían `format-check`). Push a `main` → Railway
+despliega. **Wills:** abrir producción en su celular y confirmar. Gasto **US$0**. Sigue S10 (informe), hoy mismo.
+
 **S10a hecha (15-nov, un día antes).** En `privado/entregables/`: `Informe_avance_PAIII_WilliamSuaza.docx` y
 `.pdf` (carta de aval llena y sin firma + 1 página) y `Presentacion_Presustentacion_PAIII_WilliamSuaza.pptx` y
 `.pdf` (5 láminas, guion de 7 min en las notas). Generadores en `privado/entregables/fuentes_s10a/`. D137: plan

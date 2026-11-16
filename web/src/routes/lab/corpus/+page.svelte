@@ -61,7 +61,7 @@
 				<Tabs.Content value={c}>
 					<div class="grid gap-4 lg:grid-cols-[16rem_1fr]">
 						<Card.Root class="h-fit">
-							<Card.Content class="max-h-[36rem] space-y-3 overflow-y-auto text-xs">
+							<Card.Content class="space-y-3 text-xs lg:max-h-[36rem] lg:overflow-y-auto">
 								{#each indice.corpus[c] as f (f.id)}
 									<div>
 										<div class="font-medium">{f.nombre} <span class="text-muted-foreground">({f.id})</span></div>

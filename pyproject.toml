@@ -46,6 +46,8 @@ dev = [
 line-length = 100
 target-version = "py313"
 src = ["src", "tests"]
+# Las skills oficiales de LangChain (D130) son de terceros y no se reformatean.
+extend-exclude = [".claude"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM", "RUF", "C4"]

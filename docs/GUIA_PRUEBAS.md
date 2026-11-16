@@ -1377,3 +1377,43 @@ el generador y se vuelve a correr.
 
 Leer en voz alta las notas de las cinco láminas con cronómetro: deben caber en 7 minutos. Si se pasa, recortar
 primero las notas de la lámina 2 (estado actual).
+
+## S10b — Revisión de la interfaz de CotIA (16-nov, D139)
+
+### Qué se construyó
+
+| Archivo | Qué hace |
+| --- | --- |
+| `web/src/routes/layout.css` | Tokens de los dos temas (claro por defecto, oscuro elegible), IBM Plex Sans, `--warning`, foco visible, `prefers-reduced-motion` y la utilidad `sin-barra` |
+| `web/src/app.html`, `web/src/routes/+layout.svelte` | `ModeWatcher` con la clave `cotia.tema`; un script previo fija «claro» si el visitante nunca eligió |
+| `web/src/lib/components/Tema.svelte` | Selector claro / oscuro / sistema |
+| `web/src/routes/lab/+layout.svelte` | Barra superior en móvil con «← Modo cliente», tema y estado de la clave |
+| `web/src/lib/components/ResultadoCliente.svelte` | Recomendación como cotización, lista apilada en móvil, resumen con nombres de tienda |
+| `web/src/lib/components/ui/dialog/dialog-content.svelte` | Los diálogos no pasan del alto de la pantalla |
+
+### Cómo probarlo
+
+**1. Compilar y verificar — US$0, sin red**
+
+```bash
+make check
+cd web && source ~/.nvm/nvm.sh && nvm use 22 && npm run build && cd ..
+```
+
+Si funciona: `218 passed`, `0 ERRORS 0 WARNINGS` y `✔ done`.
+
+**2. Recorrer la interfaz en local — US$0, sin clave**
+
+```bash
+make bd && make api      # http://localhost:8000
+```
+
+- Abrir `http://localhost:8000` en una ventana privada: debe verse en **claro**. El selector de la cabecera
+  (sol, luna, pantalla) cambia el tema y lo recuerda al recargar.
+- En Chrome, abrir DevTools → modo dispositivo (Ctrl+Shift+M) → iPhone 12 Pro (390 px):
+  - `/lab/ataques`: arriba aparece «← Modo cliente»; al tocarlo vuelve a `/`.
+  - «Ajustes» y el botón de fuentes de la portada abren diálogos que caben en la pantalla y se desplazan por dentro.
+  - Una consulta ya terminada (`/mis-consultas`, o `/consulta/<id>` de una consulta previa): la recomendación
+    muestra el total grande y, si N3 confirmó el precio, la franja «Precio verificado». Las ofertas se ven como
+    lista con el precio a la derecha. El resumen dice «de 1 fuente (Homecenter)», no «(V6)».
+- No debe haber desplazamiento horizontal de la página en ninguna ruta.

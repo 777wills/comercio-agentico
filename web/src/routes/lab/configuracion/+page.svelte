@@ -65,8 +65,9 @@
 			</Card.Description>
 		</Card.Header>
 		<Card.Content class="space-y-3">
-			<div class="flex gap-2">
+			<div class="flex flex-wrap gap-2">
 				<Input
+					class="min-w-0 basis-full sm:basis-auto sm:flex-1"
 					type={mostrar ? 'text' : 'password'}
 					autocomplete="off"
 					spellcheck={false}

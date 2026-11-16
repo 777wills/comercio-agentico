@@ -91,7 +91,7 @@
 
 	<Card.Root>
 		<Card.Content class="grid gap-4 lg:grid-cols-[minmax(0,20rem)_1fr]">
-			<div class="max-h-96 space-y-1 overflow-y-auto pr-2">
+			<div class="space-y-1 sm:max-h-96 sm:overflow-y-auto sm:pr-2">
 				{#each ataques as a (a.carga)}
 					<button
 						type="button"

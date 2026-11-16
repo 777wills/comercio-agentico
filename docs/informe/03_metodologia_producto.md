@@ -92,7 +92,8 @@ HTTP 429. Los dos valores son configurables según la memoria del despliegue.
 
 La interfaz es una aplicación de página única construida con SvelteKit, compilada a archivos estáticos y servida por
 la misma API, de modo que el producto sigue siendo un solo proceso y un solo contenedor. Usa Tailwind CSS y
-componentes de shadcn-svelte sobre bits-ui, en modo oscuro. Sin clave se puede recorrer todo el producto; solo
+componentes de shadcn-svelte sobre bits-ui, con tema claro por defecto y un tema oscuro que el visitante elige
+(claro, oscuro o el del sistema; la preferencia queda en su navegador). Sin clave se puede recorrer todo el producto; solo
 la ejecución de consultas la exige.
 
 La interfaz se organiza en dos modos con rutas separadas. El **modo Cliente** (`/`) está pensado para el
@@ -104,8 +105,13 @@ fuente de cada oferta. Las alertas se traducen a lenguaje de compra y solo apare
 configura su clave y el modelo; las defensas quedan fijas en C2 con verificación N3 y política de abstención,
 y un sello marca las ofertas cuyo precio confirmó la segunda lectura. El **modo Laboratorio** (`/lab`), con
 navegación lateral, conserva el instrumental completo del experimento que se describe a continuación. La dirección
-visual es sobria en ambos modos: neutros oscuros sin tinte, superficies planas, una sola tipografía (Inter) y un solo
-color de acento.
+visual es sobria en ambos modos: un fondo claro frío, superficies planas, una sola tipografía (IBM Plex Sans, con
+cifras tabulares para que los precios se alineen en columna) y un solo color de acento verde azulado con contraste
+AA. La recomendación se presenta como una cotización: producto, total con envío en cifra destacada y, cuando la
+segunda lectura confirma el precio, un sello de verificación. En pantallas de menos de 640 px la tabla de ofertas se
+convierte en una lista apilada que mantiene el total a la vista, y el laboratorio reemplaza la barra lateral por una
+barra superior con el regreso al modo Cliente y el estado de la clave. El resumen del agente nombra cada fuente por
+su código interno; el modo Cliente lo sustituye por el nombre de la tienda.
 
 - **Consulta (laboratorio).** El visitante escribe una necesidad en lenguaje natural o parte de un ejemplo por tipo de tarea, sobre
   el corpus B (proveedores sintéticos) o el corpus A (tiendas reconstruidas). Mientras el agente trabaja, una línea de

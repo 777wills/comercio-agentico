@@ -113,7 +113,7 @@
 									{#if l.estado === 'leyendo'}
 										<LoaderCircle class="size-3 shrink-0 animate-spin" />
 									{:else if l.estado === 'error'}
-										<TriangleAlert class="size-3 shrink-0 text-amber-500" />
+										<TriangleAlert class="size-3 shrink-0 text-warning" />
 									{:else}
 										<Check class="size-3 shrink-0 text-primary" />
 									{/if}

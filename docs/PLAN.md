@@ -514,6 +514,23 @@ corrida siguiendo el README.
 _15-nov: generados `Informe_avance_PAIII_WilliamSuaza` y `Presentacion_Presustentacion_PAIII_WilliamSuaza`
 (`.docx`/`.pptx` y `.pdf`); las respuestas a los cuatro criterios van en las notas del orador. Falta la subida a Intu._
 
+## S10b — Revisión de la interfaz de CotIA (lun 16-nov, D139)
+
+**Objetivo:** mejorar la experiencia y la apariencia de CotIA sin cambiar rutas, flujos ni la API, con todas las
+pantallas y ventanas emergentes usables en un celular.
+
+- [x] Tema claro por defecto con selector claro/oscuro/sistema (cabecera del cliente y laboratorio), recordado en
+      el navegador; IBM Plex Sans autoalojada; avisos con un token `--warning` legible en ambos temas.
+- [x] Laboratorio en móvil: regreso al modo cliente, selector de tema y estado de la clave siempre visibles.
+- [x] Recomendación como cotización (total destacado y sello de verificación); lista apilada de ofertas en móvil;
+      resumen con el nombre de la tienda en lugar del código interno.
+- [x] Sin desplazamientos anidados en Ataques y Corpus en móvil; selector de corpus y campo de la clave sin desborde;
+      diálogos con alto máximo; foco visible y `prefers-reduced-motion`.
+- [x] Revisión visual a 390 px y en escritorio, en claro y en oscuro; `make check` en verde.
+- [ ] Desplegar en Railway (push a `main`) y revisar producción en un celular real.
+
+**Terminado cuando:** las casillas anteriores están cumplidas y producción muestra el tema claro.
+
 ## S10 — Informe en la plantilla del curso (mar 17 / mié 18-nov)
 
 **Objetivo:** informe completo en `Formato_informe.docx`, en PDF, con citas APA 7 (D133).

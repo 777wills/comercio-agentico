@@ -67,9 +67,9 @@
 		<Card.Content class="space-y-4">
 			<Tabs.Root bind:value={config.corpus}>
 				<Tabs.List class="w-full">
-					<Tabs.Trigger value="vivo">En vivo · tiendas reales</Tabs.Trigger>
-					<Tabs.Trigger value="a">Corpus A · reconstruidas</Tabs.Trigger>
-					<Tabs.Trigger value="b">Corpus B · sintéticos (P1–P5)</Tabs.Trigger>
+					<Tabs.Trigger value="vivo">En vivo<span class="hidden sm:inline">&nbsp;· tiendas reales</span></Tabs.Trigger>
+					<Tabs.Trigger value="a">Corpus A<span class="hidden sm:inline">&nbsp;· reconstruidas</span></Tabs.Trigger>
+					<Tabs.Trigger value="b">Corpus B<span class="hidden sm:inline">&nbsp;· sintéticos (P1–P5)</span></Tabs.Trigger>
 				</Tabs.List>
 			</Tabs.Root>
 			<button
@@ -81,7 +81,7 @@
 				grupo · editar
 			</button>
 			{#if config.corpus === 'vivo'}
-				<p class="text-xs text-amber-400">
+				<p class="text-xs text-warning">
 					En vivo la comparación es abierta (sin catálogo de referencia) y C3 no aplica. Es una
 					demostración: no tiene cifras en el informe.
 				</p>
@@ -130,7 +130,7 @@
 				</Button>
 			</div>
 			{#if !config.clave}
-				<p class="text-xs text-amber-400">
+				<p class="text-xs text-warning">
 					Puede navegar todo CotIA sin clave; para ejecutar una consulta, configure su clave de
 					OpenRouter o de Anthropic en <a class="underline" href="/lab/configuracion">Configuración</a>. La clave no se
 					guarda en el servidor.

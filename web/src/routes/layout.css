@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
-@import '@fontsource-variable/inter';
+@import '@fontsource-variable/ibm-plex-sans';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -41,38 +41,41 @@
 	}
 }
 
+/* Tema claro por defecto (D139): papel bond frío, tinta pizarra y un solo acento verde azulado (AA). */
 :root {
-	--radius: 0.625rem;
-	--background: oklch(1 0 0);
-	--foreground: oklch(0.141 0.005 285.823);
-	--card: oklch(1 0 0);
-	--card-foreground: oklch(0.141 0.005 285.823);
-	--popover: oklch(1 0 0);
-	--popover-foreground: oklch(0.141 0.005 285.823);
-	--primary: oklch(0.6 0.118 184.704);
-	--primary-foreground: oklch(0.985 0 0);
-	--secondary: oklch(0.967 0.001 286.375);
-	--secondary-foreground: oklch(0.21 0.006 285.885);
-	--muted: oklch(0.967 0.001 286.375);
-	--muted-foreground: oklch(0.552 0.016 285.938);
-	--accent: oklch(0.967 0.001 286.375);
-	--accent-foreground: oklch(0.21 0.006 285.885);
-	--destructive: oklch(0.577 0.245 27.325);
-	--border: oklch(0.92 0.004 286.32);
-	--input: oklch(0.92 0.004 286.32);
-	--ring: oklch(0.705 0.015 286.067);
-	--chart-1: oklch(0.646 0.222 41.116);
-	--chart-2: oklch(0.6 0.118 184.704);
-	--chart-3: oklch(0.398 0.07 227.392);
-	--chart-4: oklch(0.828 0.189 84.429);
-	--chart-5: oklch(0.769 0.188 70.08);
+	--radius: 0.5rem;
+	--background: #f5f7f8;
+	--foreground: #16212b;
+	--card: #ffffff;
+	--card-foreground: #16212b;
+	--popover: #ffffff;
+	--popover-foreground: #16212b;
+	--primary: #0f766e;
+	--primary-foreground: #ffffff;
+	--secondary: #e8edf0;
+	--secondary-foreground: #16212b;
+	--muted: #eaeef1;
+	--muted-foreground: #56636e;
+	--accent: #e3f1ef;
+	--accent-foreground: #0b4f4a;
+	--destructive: #b42318;
+	--warning: #8a5300;
+	--border: #dce2e6;
+	--input: #cfd7dc;
+	--ring: #0f766e;
+	--sello: #0f766e;
+	--chart-1: #0f766e;
+	--chart-2: #b42318;
+	--chart-3: #8a5300;
+	--chart-4: #3b5b8c;
+	--chart-5: #8a96a0;
 }
 
 .dark {
-	/* Sobrio (D111): neutros sin tinte, superficies planas y un solo acento. */
+	/* Oscuro (D111), elegible por el visitante: neutros sin tinte y el mismo acento. */
 	--background: oklch(0.155 0 0);
 	--foreground: oklch(0.96 0 0);
-	--card: oklch(0.155 0 0);
+	--card: oklch(0.18 0 0);
 	--card-foreground: oklch(0.96 0 0);
 	--popover: oklch(0.19 0 0);
 	--popover-foreground: oklch(0.96 0 0);
@@ -81,13 +84,15 @@
 	--secondary: oklch(0.23 0 0);
 	--secondary-foreground: oklch(0.96 0 0);
 	--muted: oklch(0.21 0 0);
-	--muted-foreground: oklch(0.66 0 0);
-	--accent: oklch(0.23 0 0);
-	--accent-foreground: oklch(0.96 0 0);
+	--muted-foreground: oklch(0.68 0 0);
+	--accent: oklch(0.8 0.13 175 / 12%);
+	--accent-foreground: oklch(0.88 0.1 175);
 	--destructive: oklch(0.7 0.17 25);
-	--border: oklch(1 0 0 / 8%);
-	--input: oklch(1 0 0 / 12%);
-	--ring: oklch(0.8 0.13 175 / 40%);
+	--warning: oklch(0.82 0.14 80);
+	--border: oklch(1 0 0 / 9%);
+	--input: oklch(1 0 0 / 14%);
+	--ring: oklch(0.8 0.13 175 / 60%);
+	--sello: oklch(0.8 0.13 175);
 	--chart-1: oklch(0.8 0.13 175);
 	--chart-2: oklch(0.7 0.17 25);
 	--chart-3: oklch(0.75 0.12 80);
@@ -96,7 +101,7 @@
 }
 
 @theme inline {
-	--font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+	--font-sans: 'IBM Plex Sans Variable', ui-sans-serif, system-ui, sans-serif;
 	--radius-sm: calc(var(--radius) * 0.6);
 	--radius-md: calc(var(--radius) * 0.8);
 	--radius-lg: var(--radius);
@@ -116,6 +121,8 @@
 	--color-accent: var(--accent);
 	--color-accent-foreground: var(--accent-foreground);
 	--color-destructive: var(--destructive);
+	--color-warning: var(--warning);
+	--color-sello: var(--sello);
 	--color-border: var(--border);
 	--color-input: var(--input);
 	--color-ring: var(--ring);
@@ -132,6 +139,29 @@
 	}
 	body {
 		@apply bg-background text-foreground antialiased;
-		font-feature-settings: 'cv11', 'ss01';
+	}
+	/* Las cifras de precio se alinean en columna. */
+	table,
+	.cifra {
+		font-variant-numeric: tabular-nums;
+	}
+	:focus-visible {
+		@apply outline-2 outline-offset-2 outline-ring;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		*,
+		*::before,
+		*::after {
+			animation-duration: 0.01ms !important;
+			transition-duration: 0.01ms !important;
+		}
+	}
+}
+
+/* Franjas desplazables con el dedo, sin la barra gruesa del navegador. */
+@utility sin-barra {
+	scrollbar-width: none;
+	&::-webkit-scrollbar {
+		display: none;
 	}
 }
