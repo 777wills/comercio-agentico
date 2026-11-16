@@ -768,8 +768,12 @@ async def preguntar(
     semaforo_llm: asyncio.Semaphore | None = None,
     abierta: bool = False,
     documentos: dict[str, str] | None = None,
+    costo: RegistroCosto | None = None,
 ) -> Resultado:
     """Responde una consulta.
+
+    ``costo`` permite que quien llama lea el gasto acumulado mientras la consulta corre (CotIA lo
+    usa para registrar lo consumido si el visitante la cancela, D141); si falta, se crea uno.
 
     ``semaforo_llm`` permite que varias tareas en paralelo compartan un único límite de llamadas
     simultáneas al LLM (el arnés lo usa); si falta, cada tarea crea el suyo.
@@ -789,7 +793,7 @@ async def preguntar(
     registro = registro or cargar_fuentes()
     perfil = perfil or cargar_perfil(RUTA_PERFIL)
     emparejador = emparejador or Emparejador(catalogo or cargar_catalogo())
-    costo = RegistroCosto(tope_usd)
+    costo = costo if costo is not None else RegistroCosto(tope_usd)
     async with Lector(registro, documentos=documentos) as lector:
         ctx = Contexto(
             modelo=modelo,

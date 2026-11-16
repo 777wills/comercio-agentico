@@ -32,7 +32,8 @@ class ConsultaBD(Base):
     carga: Mapped[str | None] = mapped_column(String(4))
     modelo: Mapped[str] = mapped_column(String(40))
     opciones: Mapped[dict[str, Any]] = mapped_column(JSON)  # defensas, clasificador, N3
-    estado: Mapped[str] = mapped_column(String(12))  # en_cola, en_curso, terminada, error
+    # en_cola, en_curso, terminada, error, cancelada (D141)
+    estado: Mapped[str] = mapped_column(String(12))
     propuesta: Mapped[dict[str, Any] | None] = mapped_column(JSON)
     detalle: Mapped[dict[str, Any] | None] = mapped_column(JSON)  # necesidad, herramientas...
     eventos: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)

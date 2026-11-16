@@ -236,6 +236,14 @@ export function crearConsulta(
     });
 }
 
+/** D141: cancela una consulta en cola o en curso; solo la del propio visitante. */
+export function cancelarConsulta(id: string, visitante: string) {
+    return obtener<{ estado: string }>(`/api/consultas/${id}/cancelar`, {
+        method: "POST",
+        headers: { "X-Visitante": visitante },
+    });
+}
+
 /** Sigue el flujo SSE de una consulta (en curso o terminada) hasta el evento `fin`. */
 export function seguirEventos(
     id: string,

@@ -44,7 +44,8 @@
 		en_cola: 'En cola',
 		en_curso: 'En curso',
 		terminada: 'Terminada',
-		error: 'Con error'
+		error: 'Con error',
+		cancelada: 'Cancelada'
 	};
 </script>
 
@@ -80,7 +81,9 @@
 													? 'bg-transparent'
 													: c.estado === 'error'
 														? 'bg-destructive'
-														: 'animate-pulse bg-primary'}"
+														: c.estado === 'cancelada'
+															? 'bg-muted-foreground/50'
+															: 'animate-pulse bg-primary'}"
 												aria-label={ESTADO[c.estado] ?? c.estado}
 												role="img"
 											></span>

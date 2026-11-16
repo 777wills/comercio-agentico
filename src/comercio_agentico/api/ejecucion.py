@@ -27,6 +27,7 @@ from comercio_agentico.agente.grafo import preguntar
 from comercio_agentico.api.bd import ConsultaBD
 from comercio_agentico.api.catalogo import ANTHROPIC_DIRECTO, proveedor_de_clave
 from comercio_agentico.api.esquemas import PeticionConsulta
+from comercio_agentico.modelos import RegistroCosto
 from comercio_agentico.preguntar import registro_jsonl
 
 log = logging.getLogger("comercio_agentico.api")
@@ -38,6 +39,7 @@ MODELO_VERIFICADOR_ANTHROPIC = "haiku"  # D114: N3 por la API directa
 LATIDO_S = 15.0
 LIMITE_S = float(os.getenv("COTIA_LIMITE_S", "900"))  # D124: tope de reloj por consulta
 INTERRUMPIDA = "Consulta interrumpida: el servidor se reinició antes de terminarla."
+CANCELADA = "Consulta cancelada por el visitante."
 
 
 class Saturado(RuntimeError):
@@ -192,6 +194,11 @@ class Servicio:
         self.semaforo = asyncio.Semaphore(max_simultaneas)
         self.progresos: dict[str, Progreso] = {}
         self.tareas: set[asyncio.Task] = set()
+        # D141: tareas que aún se pueden cancelar (hasta que el agente termina) y las marcadas para
+        # cancelar antes de arrancar (cancelar una tarea que no empezó impediría cerrarla).
+        self.cancelables: dict[str, asyncio.Task] = {}
+        self.arrancadas: set[str] = set()
+        self.por_cancelar: set[str] = set()
         self._recursos: dict[str, tuple[Any, Any]] = {}
         self._variantes: dict[str, Any] = {}
         self._clasificadores: dict[str, Any] = {}
@@ -263,7 +270,24 @@ class Servicio:
         )
         self.tareas.add(tarea)
         tarea.add_done_callback(self.tareas.discard)
+        self.cancelables[id_consulta] = tarea
         return id_consulta
+
+    def cancelar(self, id_consulta: str, visitante: str) -> bool:
+        """D141: cancela una consulta en cola o en curso del visitante. Devuelve False si no existe,
+        es de otro visitante o ya terminó. Todo es síncrono: no hay carrera con la tarea."""
+        with self.sesiones() as s:
+            fila = s.get(ConsultaBD, id_consulta)
+        if fila is None or fila.visitante != visitante:
+            return False
+        tarea = self.cancelables.pop(id_consulta, None)
+        if tarea is None:
+            return False
+        if id_consulta in self.arrancadas:
+            tarea.cancel()
+        else:
+            self.por_cancelar.add(id_consulta)
+        return True
 
     async def _correr(
         self,
@@ -276,9 +300,13 @@ class Servicio:
     ) -> None:
         prog = self.progresos[id_consulta]
         inicio = time.perf_counter()
-        if self.semaforo.locked():
-            await prog.emitir({"etapa": "en_cola"})
+        self.arrancadas.add(id_consulta)
+        costo = RegistroCosto()
         try:
+            if id_consulta in self.por_cancelar:
+                raise asyncio.CancelledError
+            if self.semaforo.locked():
+                await prog.emitir({"etapa": "en_cola"})
             async with self.semaforo:
                 await asyncio.to_thread(self._actualizar, id_consulta, estado="en_curso")
                 defensas = peticion.defensas.a_defensas()
@@ -341,8 +369,11 @@ class Servicio:
                             al_avanzar=al_avanzar,
                             registro=registro,
                             emparejador=emparejador,
+                            costo=costo,
                             **extra,
                         )
+                    # El agente terminó: desde aquí no se cancela, para no cortar el guardado.
+                    self.cancelables.pop(id_consulta, None)
                 except TimeoutError:
                     minutos = round(self.limite_s / 60)
                     raise TimeoutError(
@@ -395,7 +426,28 @@ class Servicio:
                 segundos=segundos,
             )
             await prog.emitir(fin)
+        except asyncio.CancelledError:
+            # D141: la cancelación la pidió el visitante; se registra lo consumido hasta aquí (la
+            # llamada al modelo que estaba en curso puede no figurar: el proveedor ya la cobró).
+            segundos, gastado = time.perf_counter() - inicio, round(costo.costo_total, 6)
+            await asyncio.to_thread(
+                self._actualizar,
+                id_consulta,
+                estado="cancelada",
+                error=CANCELADA,
+                costo_usd=gastado,
+                segundos=segundos,
+            )
+            await prog.emitir(
+                {
+                    "etapa": "fin",
+                    "estado": "cancelada",
+                    "costo_usd": gastado,
+                    "segundos": round(segundos, 1),
+                }
+            )
         except Exception as error:
+            self.cancelables.pop(id_consulta, None)
             mensaje = ocultar(f"{type(error).__name__}: {error}", clave)[:2000]
             log.warning("consulta %s: %s", id_consulta, mensaje)
             segundos = time.perf_counter() - inicio
@@ -407,3 +459,6 @@ class Servicio:
             await asyncio.to_thread(self._actualizar, id_consulta, eventos=prog.eventos)
             await prog.cerrar()
             self.progresos.pop(id_consulta, None)
+            self.cancelables.pop(id_consulta, None)
+            self.arrancadas.discard(id_consulta)
+            self.por_cancelar.discard(id_consulta)

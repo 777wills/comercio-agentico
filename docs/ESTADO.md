@@ -7,7 +7,9 @@ claro/oscuro/sistema, IBM Plex Sans, laboratorio con «← Modo cliente» en mó
 lista apilada de ofertas en móvil, resumen con nombres de tienda en lugar de códigos, diálogos con alto máximo y sin
 desplazamientos anidados; **D140:** historial de consultas en barra lateral al estilo de claude.ai (cajón en
 móvil, «Mis consultas» redirige a `/`) y arreglo de la vista de consulta, que no cambiaba al saltar entre consultas
-desde la barra. Revisado a 390 px y en escritorio, en claro y en oscuro. `make check` en verde (218
+desde la barra; **D141:** cancelar una consulta en ejecución (ruta solo para el dueño, estado `cancelada` con lo
+consumido, botón en cliente y laboratorio; 3 pruebas sin red y prueba de punta a punta con clave falsa). Revisado a
+390 px y en escritorio, en claro y en oscuro. `make check` en verde (221
 pruebas); se excluyó `.claude` de Ruff (las skills de D130 rompían `format-check`). Push a `main` → Railway
 despliega. **Wills:** abrir producción en su celular y confirmar; antes de la demo, una o dos consultas de
 calentamiento en el navegador de la presentación para que la barra no esté vacía. Gasto **US$0**. Sigue S10 (informe), hoy mismo.

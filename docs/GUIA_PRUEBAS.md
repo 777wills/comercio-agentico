@@ -1428,3 +1428,30 @@ make bd && make api      # http://localhost:8000
   cada 5 s mientras haya alguna).
 - `http://localhost:8000/mis-consultas` redirige a la portada.
 - En un navegador sin consultas, la barra dice «Sus consultas aparecerán aquí».
+
+**4. Cancelar una consulta (D141)**
+
+Pruebas automáticas — US$0, sin red:
+
+```bash
+uv run pytest tests/test_api.py -q -k cancel      # 3 passed
+```
+
+De punta a punta con una clave falsa — US$0 (la clave nunca llega a cobrar; se cancela antes de la primera
+llamada al modelo):
+
+```bash
+V=$(python3 -c "import uuid;print(uuid.uuid4())")
+ID=$(curl -s -X POST localhost:8000/api/consultas -H "Content-Type: application/json" \
+  -H "X-Clave-Modelo: sk-or-v1-clave-falsa" -H "X-Visitante: $V" \
+  -d '{"consulta":"Monitor Samsung M8","corpus":"b","modelo":"deepseek-flash"}' | jq -r .id)
+curl -s -X POST localhost:8000/api/consultas/$ID/cancelar -H "X-Visitante: $V"   # {"estado":"cancelando"}
+sleep 2; curl -s localhost:8000/api/consultas/$ID | jq '.estado, .costo_usd'      # "cancelada", 0
+```
+
+Si el segundo `curl` responde 404, la consulta ya había fallado por la clave falsa antes de cancelarla (tarda
+~1 s): repetir con los comandos en una sola línea.
+
+Botón en la interfaz — < US$0,01 (una consulta real con DeepSeek Flash): lanzar una consulta en `/`, pulsar
+«Cancelar consulta» bajo el progreso. Debe mostrar «Consulta cancelada» con lo consumido, y en la barra lateral la
+consulta queda con un punto gris. En el laboratorio, el botón está bajo «Progreso en vivo».

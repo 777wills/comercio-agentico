@@ -324,6 +324,13 @@ def crear_app(
             yield ServerSentEvent(data=e, event=e["etapa"], id=str(i))
             i += 1
 
+    @app.post("/api/consultas/{id_consulta}/cancelar", status_code=status.HTTP_202_ACCEPTED)
+    def cancelar_consulta(id_consulta: str, visitante: Visitante) -> dict[str, str]:
+        """D141: solo el visitante que la creó; si no es suya o ya terminó, 404."""
+        if not servicio.cancelar(id_consulta, visitante):
+            raise HTTPException(404, "No hay una consulta en curso con ese identificador.")
+        return {"estado": "cancelando"}
+
     @app.get("/api/consultas/{id_consulta}")
     def consulta(id_consulta: str) -> DetalleConsulta:
         with sesiones() as s:

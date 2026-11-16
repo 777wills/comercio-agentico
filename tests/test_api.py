@@ -216,6 +216,87 @@ def test_consulta_que_supera_el_limite_de_tiempo_termina_en_error(lista_modelos)
     assert detalle["estado"] == "error"
 
 
+def test_cancelar_una_consulta_en_curso_registra_lo_consumido(lista_modelos):
+    """D141: detiene la tarea, deja el estado «cancelada» y guarda el costo acumulado."""
+    from types import SimpleNamespace
+
+    from comercio_agentico.api.ejecucion import CANCELADA
+
+    arranco = asyncio.Event()
+
+    async def lento(consulta, **kw):
+        kw["costo"].llamadas.append(SimpleNamespace(costo_usd=0.0123))
+        arranco.set()
+        await asyncio.sleep(30)
+
+    c, servicio = cliente(lista_modelos, lento, limite_s=60)
+    with c:
+        id_consulta = c.post(
+            "/api/consultas", json={"consulta": "Monitor Samsung M8"}, headers=CABECERAS
+        ).json()["id"]
+        c.portal.call(arranco.wait)  # la consulta ya está dentro del agente
+        r = c.post(f"/api/consultas/{id_consulta}/cancelar", headers=CABECERAS)
+        eventos = eventos_sse(c, id_consulta)
+        detalle = c.get(f"/api/consultas/{id_consulta}").json()
+        otra_vez = c.post(f"/api/consultas/{id_consulta}/cancelar", headers=CABECERAS)
+    assert r.status_code == 202
+    assert eventos[-1]["estado"] == "cancelada" and eventos[-1]["costo_usd"] == 0.0123
+    assert detalle["estado"] == "cancelada" and detalle["error"] == CANCELADA
+    assert detalle["costo_usd"] == 0.0123
+    assert otra_vez.status_code == 404  # ya terminó
+    assert not servicio.cancelables and not servicio.arrancadas
+
+
+def test_cancelar_antes_de_arrancar_cierra_la_consulta_sin_llamar_al_agente(lista_modelos):
+    """D141: si la tarea aún no empezó, se marca y se cierra como cancelada al arrancar."""
+    agente = AgenteSimulado()
+    c, servicio = cliente(lista_modelos, agente)
+    with c:
+        # Se cancela de forma síncrona, en el mismo paso del bucle que la crea.
+        def crear_y_cancelar():
+            from comercio_agentico.api.esquemas import PeticionConsulta
+
+            id_c = servicio.iniciar(
+                PeticionConsulta(consulta="Monitor Samsung M8"), "Monitor", None, CLAVE, VISITANTE
+            )
+            assert servicio.cancelar(id_c, VISITANTE)
+            return id_c
+
+        id_consulta = c.portal.call(_en_bucle, crear_y_cancelar)
+        eventos = eventos_sse(c, id_consulta)
+    assert eventos[-1]["estado"] == "cancelada"
+    assert agente.llamadas == []
+
+
+async def _en_bucle(fn):
+    return fn()
+
+
+def test_solo_el_visitante_que_la_creo_puede_cancelarla(lista_modelos):
+    """D141: otro visitante recibe 404, igual que una consulta inexistente."""
+    arranco = asyncio.Event()
+
+    async def lento(consulta, **kw):
+        arranco.set()
+        await asyncio.sleep(30)
+
+    c, _ = cliente(lista_modelos, lento, limite_s=60)
+    with c:
+        id_consulta = c.post(
+            "/api/consultas", json={"consulta": "Monitor Samsung M8"}, headers=CABECERAS
+        ).json()["id"]
+        c.portal.call(arranco.wait)
+        ajeno = c.post(
+            f"/api/consultas/{id_consulta}/cancelar", headers={"X-Visitante": str(uuid.uuid4())}
+        )
+        inexistente = c.post(f"/api/consultas/{uuid.uuid4()}/cancelar", headers=CABECERAS)
+        assert (
+            c.post(f"/api/consultas/{id_consulta}/cancelar", headers=CABECERAS).status_code == 202
+        )
+        eventos_sse(c, id_consulta)
+    assert ajeno.status_code == 404 and inexistente.status_code == 404
+
+
 def test_al_arrancar_las_consultas_huerfanas_pasan_a_error(lista_modelos):
     from comercio_agentico.api.ejecucion import INTERRUMPIDA
 

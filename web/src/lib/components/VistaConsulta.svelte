@@ -2,8 +2,18 @@
 	// Vista de una consulta del modo Cliente. La página la envuelve en {#key id} para que cambiar de
 	// consulta desde la barra lateral (D140) la recree, con su propio flujo de eventos.
 	import { onDestroy, onMount } from 'svelte';
-	import { obtener, seguirEventos, type Detalle, type Evento, type Resumen } from '#lib/api.js';
-	import { visita } from '#lib/config.svelte.js';
+	import {
+		cancelarConsulta,
+		ErrorApi,
+		obtener,
+		seguirEventos,
+		usd,
+		type Detalle,
+		type Evento,
+		type Resumen
+	} from '#lib/api.js';
+	import { toast } from 'svelte-sonner';
+	import { config, visita } from '#lib/config.svelte.js';
 	import { nombresFuentes } from '#lib/datos.js';
 	import ResultadoCliente from '#lib/components/ResultadoCliente.svelte';
 	import Check from '@lucide/svelte/icons/check';
@@ -61,6 +71,21 @@
 		ultima ? PASOS.findIndex((p) => p.etapas.includes(ultima!.etapa)) : 0
 	);
 	const terminada = $derived(ultima?.etapa === 'fin');
+	const cancelada = $derived(
+		(terminada && ultima?.estado === 'cancelada') || detalle?.estado === 'cancelada'
+	);
+
+	// D141: cancelar detiene la consulta en el servidor; lo ya consumido no se recupera.
+	let cancelando = $state(false);
+	async function cancelar() {
+		cancelando = true;
+		try {
+			await cancelarConsulta(id, config.visitante);
+		} catch (e) {
+			cancelando = false;
+			toast.error(e instanceof ErrorApi ? e.message : 'No se pudo cancelar la consulta.');
+		}
+	}
 
 	function explicarError(m: string): string {
 		if (/Unauthorized|401/.test(m)) return 'El proveedor del modelo rechazó la clave. Revísela en Ajustes.';
@@ -125,9 +150,26 @@
 				</li>
 			{/each}
 		</ol>
-		<p class="mt-8 text-xs text-muted-foreground">
-			Suele tardar entre uno y tres minutos; con tiendas en vivo, varios minutos más.
-		</p>
+		<div class="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2">
+			<p class="text-xs text-muted-foreground">
+				Suele tardar entre uno y tres minutos; con tiendas en vivo, varios minutos más.
+			</p>
+			<button
+				type="button"
+				class="rounded-full border px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-destructive/50 hover:text-destructive disabled:opacity-50"
+				disabled={cancelando}
+				onclick={cancelar}>{cancelando ? 'Cancelando…' : 'Cancelar consulta'}</button
+			>
+		</div>
+	{:else if cancelada}
+		<div class="mt-12 rounded-xl border bg-card p-5 sm:p-6">
+			<p class="font-medium">Consulta cancelada</p>
+			<p class="mt-1 text-sm text-muted-foreground">
+				Se detuvo antes de terminar. Lo consumido hasta ese momento fue
+				{usd(detalle?.costo_usd ?? ultima?.costo_usd ?? 0)}.
+			</p>
+			<a href="/" class="mt-4 inline-block text-sm text-primary hover:underline">Hacer una nueva consulta</a>
+		</div>
 	{:else if fallo || detalle?.error || (terminada && ultima?.estado === 'error')}
 		<p class="mt-12 text-destructive">{explicarError(detalle?.error ?? ultima?.error ?? fallo ?? '')}</p>
 		<a href="/" class="mt-4 inline-block text-sm text-muted-foreground hover:text-foreground">Intentar de nuevo</a>

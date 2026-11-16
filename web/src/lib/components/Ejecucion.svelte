@@ -1,7 +1,18 @@
 <script lang="ts">
 	import { onDestroy } from 'svelte';
-	import { obtener, seguirEventos, usd, cop, type Detalle, type Evento } from '#lib/api.js';
-	import { visita } from '#lib/config.svelte.js';
+	import {
+		cancelarConsulta,
+		ErrorApi,
+		obtener,
+		seguirEventos,
+		usd,
+		cop,
+		type Detalle,
+		type Evento
+	} from '#lib/api.js';
+	import { toast } from 'svelte-sonner';
+	import CircleSlash from '@lucide/svelte/icons/circle-slash';
+	import { config, visita } from '#lib/config.svelte.js';
 	import * as Card from '#lib/components/ui/card/index.js';
 	import { Badge } from '#lib/components/ui/badge/index.js';
 	import { Skeleton } from '#lib/components/ui/skeleton/index.js';
@@ -26,6 +37,19 @@
 	let detalle = $state<Detalle | null>(null);
 	let fallo = $state<string | null>(null);
 	const fin = $derived(eventos.find((e) => e.etapa === 'fin'));
+	const cancelada = $derived(fin?.estado === 'cancelada');
+
+	// D141: cancelar detiene la consulta en el servidor; lo ya consumido no se recupera.
+	let cancelando = $state(false);
+	async function cancelar() {
+		cancelando = true;
+		try {
+			await cancelarConsulta(id, config.visitante);
+		} catch (e) {
+			cancelando = false;
+			toast.error(e instanceof ErrorApi ? e.message : 'No se pudo cancelar la consulta.');
+		}
+	}
 	let inicio = Date.now();
 	let ahora = $state(Date.now());
 	const reloj = setInterval(() => (ahora = Date.now()), 1000);
@@ -113,7 +137,9 @@
 			case 'fin':
 				return e.estado === 'error'
 					? explicarError(e.error)
-					: `${e.costo_estimado ? '≈ ' : ''}${usd(e.costo_usd)}${e.costo_estimado ? ' (estimado)' : ''} · ${e.segundos} s`;
+					: e.estado === 'cancelada'
+						? `Cancelada por el visitante · ${usd(e.costo_usd)} consumidos · ${e.segundos} s`
+						: `${e.costo_estimado ? '≈ ' : ''}${usd(e.costo_usd)}${e.costo_estimado ? ' (estimado)' : ''} · ${e.segundos} s`;
 		}
 		return '';
 	}
@@ -125,6 +151,8 @@
 			<Card.Title class="flex items-center gap-2 text-base">
 				{#if !fin && !fallo}
 					<LoaderCircle class="size-4 animate-spin text-primary" /> Progreso en vivo
+				{:else if cancelada}
+					<CircleSlash class="size-4 text-muted-foreground" /> Cancelada
 				{:else if fin?.estado === 'error' || fallo}
 					<CircleX class="size-4 text-destructive" /> Terminó con error
 				{:else}
@@ -164,6 +192,14 @@
 				{/if}
 			</ol>
 			{#if fallo}<p class="mt-3 text-sm text-destructive">{fallo}</p>{/if}
+			{#if !fin && !fallo}
+				<button
+					type="button"
+					class="mt-4 rounded-full border px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-destructive/50 hover:text-destructive disabled:opacity-50"
+					disabled={cancelando}
+					onclick={cancelar}>{cancelando ? 'Cancelando…' : 'Cancelar consulta'}</button
+				>
+			{/if}
 		</Card.Content>
 	</Card.Root>
 
@@ -175,6 +211,10 @@
 				segundos={detalle.segundos}
 				estimado={!!detalle.detalle?.costo_estimado}
 			/>
+		{:else if cancelada}
+			<Card.Root><Card.Content class="text-sm text-muted-foreground">
+				Consulta cancelada antes de terminar; consumió {usd(detalle?.costo_usd ?? fin?.costo_usd ?? 0)}.
+			</Card.Content></Card.Root>
 		{:else if detalle?.error}
 			<Card.Root><Card.Content class="space-y-1 text-sm">
 				<p class="text-destructive">{explicarError(detalle.error)}</p>

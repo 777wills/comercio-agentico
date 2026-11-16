@@ -103,7 +103,9 @@ se convierte en un cajón en pantallas pequeñas), una caja de consulta con ejem
 colombianas» para el corpus A y «Proveedores de prueba» para el B), un progreso resumido en cuatro pasos (entender la
 necesidad, consultar proveedores, comparar ofertas y recomendar), la recomendación o la abstención en un bloque
 destacado, una tabla corta con el costo total con envío, el plazo y la disponibilidad, y el texto original de la
-fuente de cada oferta. Las alertas se traducen a lenguaje de compra y solo aparecen si existen. El cliente solo
+fuente de cada oferta. Las alertas se traducen a lenguaje de compra y solo aparecen si existen. Una consulta en curso se puede cancelar: el servidor detiene la
+tarea del agente en el siguiente punto de espera y registra el costo consumido hasta ese momento, porque la
+clave es del visitante y cerrar la página no detiene la ejecución en el servidor. El cliente solo
 configura su clave y el modelo; las defensas quedan fijas en C2 con verificación N3 y política de abstención,
 y un sello marca las ofertas cuyo precio confirmó la segunda lectura. El **modo Laboratorio** (`/lab`), con
 navegación lateral, conserva el instrumental completo del experimento que se describe a continuación. La dirección
