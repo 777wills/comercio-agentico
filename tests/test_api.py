@@ -132,6 +132,30 @@ def test_consulta_de_punta_a_punta_con_progreso_sse(lista_modelos):
     assert kw["registro"] == "registro-b"
     assert detalle["opciones"]["proveedor"] == "openrouter"
     assert "costo_estimado" not in detalle["detalle"]
+    # D146: profundidad normal por defecto, 14 lecturas (las de E1–E3).
+    assert kw["max_llamadas"] == 14 and detalle["opciones"]["profundidad"] == "normal"
+    assert detalle["detalle"]["max_acciones"] == 14
+
+
+def test_la_profundidad_fija_el_presupuesto_de_lecturas(lista_modelos):
+    agente = AgenteSimulado()
+    c, _ = cliente(lista_modelos, agente)
+    with c:
+        for prof in ("rapida", "exhaustiva"):
+            r = c.post(
+                "/api/consultas",
+                json={"consulta": "Monitor Samsung M8", "profundidad": prof},
+                headers=CABECERAS,
+            )
+            assert r.status_code == 202
+            eventos_sse(c, r.json()["id"])
+        r = c.post(
+            "/api/consultas",
+            json={"consulta": "Monitor Samsung M8", "profundidad": "infinita"},
+            headers=CABECERAS,
+        )
+        assert r.status_code == 422
+    assert [k["max_llamadas"] for k in agente.llamadas] == [8, 24]
 
 
 def test_clave_de_anthropic_llama_a_claude_directo(lista_modelos):

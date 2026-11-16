@@ -3,7 +3,7 @@
 	import { onMount } from 'svelte';
 	import { toast } from 'svelte-sonner';
 	import { ErrorApi, type Grupo } from '#lib/api.js';
-	import { config, fuentes } from '#lib/config.svelte.js';
+	import { config, fuentes, PROFUNDIDAD } from '#lib/config.svelte.js';
 	import * as Dialog from '#lib/components/ui/dialog/index.js';
 	import { Switch } from '#lib/components/ui/switch/index.js';
 	import { Input } from '#lib/components/ui/input/index.js';
@@ -87,8 +87,9 @@
 			</p>
 			{#if activasWeb > recomendadas}
 				<p class="-mt-3 text-xs text-warning">
-					Con más de {recomendadas} tiendas, el agente reparte sus acciones entre todas y puede no llegar a
-					las fichas de algunas.
+					Con más de {recomendadas} tiendas, el agente recibe más lecturas (hasta
+					{fuentes.acciones(config.profundidad, 'vivo') ?? '—'} en la búsqueda
+					{PROFUNDIDAD[config.profundidad].etiqueta.toLowerCase()}), así que la consulta cuesta y tarda más.
 				</p>
 			{/if}
 		{/if}

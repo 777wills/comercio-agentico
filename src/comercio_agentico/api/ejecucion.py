@@ -23,7 +23,7 @@ from typing import Any
 from sqlalchemy.orm import sessionmaker
 
 from comercio_agentico.agente.defensa import ClasificadorInyeccion
-from comercio_agentico.agente.grafo import preguntar
+from comercio_agentico.agente.grafo import FUENTES_BASE, preguntar, presupuesto_acciones
 from comercio_agentico.api.bd import ConsultaBD
 from comercio_agentico.api.catalogo import ANTHROPIC_DIRECTO, proveedor_de_clave
 from comercio_agentico.api.esquemas import PeticionConsulta
@@ -334,6 +334,10 @@ class Servicio:
                         activas = [f for f in registro.fuentes if f.id not in fuera]
                         registro = registro.model_copy(update={"fuentes": activas})
                 extra = {"abierta": True, "documentos": documentos} if abierta else {}
+                # D146: presupuesto de lecturas según la profundidad y las fuentes activas.
+                n_fuentes = len(getattr(registro, "fuentes", []) or []) or FUENTES_BASE
+                max_acciones = presupuesto_acciones(peticion.profundidad, n_fuentes)
+                extra["max_llamadas"] = max_acciones
                 # D114: con la clave de Anthropic se llama a Claude directo y el costo sale de la
                 # tabla de precios (Anthropic no lo devuelve por llamada).
                 anthropic = proveedor_de_clave(clave) == "anthropic"
@@ -392,6 +396,8 @@ class Servicio:
                 )
             }
             detalle["configuracion"] = defensas.configuracion or "exploratorio"
+            detalle["profundidad"] = peticion.profundidad
+            detalle["max_acciones"] = max_acciones
             # Ofertas finales con su grupo y motivo de descarte: el laboratorio muestra por qué
             # cada una quedó fuera (comparación abierta) o con qué producto se emparejó.
             detalle["ofertas_finales"] = [

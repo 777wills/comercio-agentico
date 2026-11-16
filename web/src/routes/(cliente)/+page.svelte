@@ -3,10 +3,11 @@
 	import { toast } from 'svelte-sonner';
 	import { crearConsulta, ErrorApi } from '#lib/api.js';
 	import { onMount } from 'svelte';
-	import { ajustes, config, fuentes, opcionesCliente, visita } from '#lib/config.svelte.js';
+	import { ajustes, config, fuentes, opcionesCliente, PROFUNDIDAD, visita, type Profundidad } from '#lib/config.svelte.js';
 	import { ejemplos } from '#lib/datos.js';
 	import Fuentes from '#lib/components/Fuentes.svelte';
 	import ArrowUp from '@lucide/svelte/icons/arrow-up';
+	import ChevronDown from '@lucide/svelte/icons/chevron-down';
 
 	let consulta = $state('');
 	let enviando = $state(false);
@@ -21,6 +22,8 @@
 	];
 	onMount(() => fuentes.cargar().catch(() => {}));
 	const activas = $derived(fuentes.activas(config.corpus));
+	// D146: profundidad de búsqueda; las lecturas crecen con las fuentes activas por encima de 5.
+	const lecturas = $derived(fuentes.acciones(config.profundidad, config.corpus));
 
 	async function enviar() {
 		if (!listo) return;
@@ -86,6 +89,18 @@
 					? `${fuentes.grupo(config.corpus)?.nombre ?? ''} · ${activas} ${activas === 1 ? 'fuente' : 'fuentes'}`
 					: 'Fuentes'}</button
 			>
+			<label class="relative">
+				<span class="sr-only">Profundidad de la búsqueda</span>
+				<select
+					bind:value={config.profundidad}
+					class="cursor-pointer appearance-none rounded-full bg-transparent py-1 pr-7 pl-3 text-xs text-muted-foreground transition-colors outline-none hover:bg-secondary hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+				>
+					{#each Object.entries(PROFUNDIDAD) as [valor, p] (valor)}
+						<option value={valor as Profundidad}>Búsqueda {p.etiqueta.toLowerCase()}</option>
+					{/each}
+				</select>
+				<ChevronDown class="pointer-events-none absolute top-1/2 right-2.5 size-3 -translate-y-1/2 text-muted-foreground" />
+			</label>
 			<button
 				type="submit"
 				aria-label="Cotizar"
@@ -96,6 +111,12 @@
 			</button>
 		</div>
 	</form>
+
+	<p class="mt-2 px-3 text-xs text-muted-foreground">
+		Búsqueda {PROFUNDIDAD[config.profundidad].etiqueta.toLowerCase()}{lecturas != null
+			? `: hasta ${lecturas} lecturas de páginas y documentos`
+			: ''}, {PROFUNDIDAD[config.profundidad].relativo}. Más lecturas, más ofertas revisadas.
+	</p>
 
 	{#if !config.clave}
 		<p class="mt-3 px-2 text-xs text-muted-foreground">

@@ -214,3 +214,9 @@ La restricción responde a que la dirección de la ficha se extrae del contenido
 como dato no confiable: una página manipulada podría insertar un enlace hacia un sitio de suplantación. Las fuentes
 del corpus experimental se abren en su visor, incluida la lista de precios en PDF; el catálogo consultado por MCP y
 los documentos cargados por el usuario, de los que se conserva solo el texto y su huella, carecen de enlace.
+
+El comprador elige la profundidad de la búsqueda (rápida, normal o exhaustiva), que fija el presupuesto de lecturas
+del planificador: 8, 14 o 24 con hasta cinco fuentes activas, más 2, 3 o 5 lecturas por cada fuente adicional, con
+un máximo de 30. El número de rondas no se prescribe: en cada ronda el planificador decide qué páginas o documentos
+leer a partir de lo obtenido en la anterior y los lee en paralelo, y se detiene al reunir las ofertas pertinentes o al
+agotar el presupuesto. El nivel normal con cinco fuentes corresponde a la configuración evaluada en los experimentos.

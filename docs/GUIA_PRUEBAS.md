@@ -1647,3 +1647,28 @@ m.innerText.match(/(?:\(|, |\b(?:de|en) )[PAV]\d{1,2}\b|\bU[0-9a-f]{6}\b|\b[a-z]
 ```
 
 Debe devolver `null`.
+
+## S10h — Profundidad de búsqueda (16-nov, D146)
+
+**Qué cambió:** junto al cuadro de consulta hay un selector «Búsqueda rápida / normal / exhaustiva». Debajo se ve
+cuántas lecturas tendrá el agente y el costo relativo. Con más de 5 tiendas activas, las lecturas suben.
+
+**1. Pruebas sin red — US$0**
+
+```bash
+uv run pytest -q tests/test_agente.py -k presupuesto     # 8/14/24, escalado y techo de 30
+uv run pytest -q tests/test_api.py -k profundidad        # la API pasa 8 y 24 al agente; «infinita» → 422
+make check                                               # 228 pruebas
+```
+
+**2. API local — US$0**
+
+```bash
+curl -s localhost:8000/api/fuentes -H "X-Visitante: 11111111-1111-4111-8111-111111111111" | python3 -c "import sys,json;print(json.load(sys.stdin)['limites'])"
+```
+
+Debe ver `profundidades: {rapida: [8, 2], normal: [14, 3], exhaustiva: [24, 5]}` y `techo_acciones: 30`.
+
+**3. En el navegador — US$0:** abra `http://localhost:8000`, cambie el selector y lea la línea de abajo (14 → 24 →
+8 lecturas). Encienda una sexta tienda en «Fuentes»: «Normal» pasa a 17 lecturas. Una consulta real «Rápida» con
+DeepSeek Flash cuesta ≈ US$0,035 (estimado, no medido); no hace falta correrla.

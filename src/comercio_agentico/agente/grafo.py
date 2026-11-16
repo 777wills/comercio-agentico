@@ -74,6 +74,25 @@ from comercio_agentico.verificacion import MODELO_VERIFICADOR, SegundasLecturas,
 log = logging.getLogger("comercio_agentico.agente")
 
 MAX_LLAMADAS = 14
+# Profundidad de búsqueda que elige el comprador (D146): acciones base con hasta 5 fuentes y
+# acciones que se suman por cada fuente activa por encima de 5, con un techo. «normal» con 5
+# fuentes conserva las 14 acciones con las que se midieron E1–E3.
+Profundidad = Literal["rapida", "normal", "exhaustiva"]
+PROFUNDIDADES: dict[str, tuple[int, int]] = {
+    "rapida": (8, 2),
+    "normal": (MAX_LLAMADAS, 3),
+    "exhaustiva": (24, 5),
+}
+FUENTES_BASE = 5
+TECHO_ACCIONES = 30
+
+
+def presupuesto_acciones(profundidad: str, fuentes: int) -> int:
+    """Acciones (lecturas) que puede pedir el planificador según la profundidad y las fuentes."""
+    base, por_fuente = PROFUNDIDADES[profundidad]
+    return min(TECHO_ACCIONES, base + por_fuente * max(0, fuentes - FUENTES_BASE))
+
+
 MAX_TEXTO_C0 = 12_000  # caracteres de texto crudo por herramienta en C0
 Configuracion = Literal["C0", "C1", "C2", "C3"]
 CONFIGURACIONES: tuple[str, ...] = ("C0", "C1", "C2", "C3")

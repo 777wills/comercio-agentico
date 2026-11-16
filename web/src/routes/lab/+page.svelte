@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
 	import { crearConsulta, ErrorApi } from '#lib/api.js';
-	import { config, fuentes } from '#lib/config.svelte.js';
+	import { config, fuentes, PROFUNDIDAD } from '#lib/config.svelte.js';
 	import Fuentes from '#lib/components/Fuentes.svelte';
 	import { catalogo, ejemplos } from '#lib/datos.js';
 	import * as Card from '#lib/components/ui/card/index.js';
@@ -40,7 +40,8 @@
 					defensas: config.defensas,
 					clasificador: config.clasificador,
 					verificar: config.verificar,
-					politica_n3: config.politica_n3
+					politica_n3: config.politica_n3,
+					profundidad: config.profundidad
 				},
 				config.clave,
 				config.visitante
@@ -118,6 +119,7 @@
 				{/await}
 				<Badge variant="outline">Defensas {config.configuracion}</Badge>
 				{#if config.verificar}<Badge variant="outline">N3 · {config.politica_n3}</Badge>{/if}
+				<Badge variant="outline">Búsqueda {PROFUNDIDAD[config.profundidad].etiqueta.toLowerCase()}</Badge>
 				<a href="/lab/configuracion" class="inline-flex items-center gap-1 hover:text-foreground">
 					<Settings class="size-3" /> cambiar
 				</a>

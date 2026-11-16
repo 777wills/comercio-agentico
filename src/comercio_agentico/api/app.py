@@ -31,6 +31,7 @@ from sqlalchemy import func, select, text
 
 from comercio_agentico.agente.defensa import CLASIFICADORES, MODELO_CLASIFICADOR_DEFECTO
 from comercio_agentico.agente.fuentes import TIENDAS_RECOMENDADAS
+from comercio_agentico.agente.grafo import FUENTES_BASE, PROFUNDIDADES, TECHO_ACCIONES
 from comercio_agentico.api import corpus as visor
 from comercio_agentico.api.bd import ConsultaBD, crear_motor, fabrica_sesiones
 from comercio_agentico.api.catalogo import (
@@ -257,6 +258,10 @@ def crear_app(
                 "pdfs": MAX_PDFS,
                 "mb_pdf": MAX_BYTES_PDF // 2**20,
                 "tiendas_recomendadas": TIENDAS_RECOMENDADAS,
+                # D146: acciones por profundidad (base, por fuente sobre la base) y techo.
+                "profundidades": {k: list(v) for k, v in PROFUNDIDADES.items()},
+                "fuentes_base": FUENTES_BASE,
+                "techo_acciones": TECHO_ACCIONES,
             },
         }
 

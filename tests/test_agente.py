@@ -533,3 +533,15 @@ def test_necesidad_sin_objeto_se_abstiene_en_vez_de_recomendar_cualquier_cosa():
     degradada = Necesidad()
     degradada._degradada = True  # D69: la necesidad degradada conserva su comportamiento
     assert not proponer("q", degradada, ofertas, PERFIL, PRODUCTOS, [], "doble", 0.0).abstencion
+
+
+def test_presupuesto_de_acciones_por_profundidad_y_fuentes():
+    from comercio_agentico.agente.grafo import presupuesto_acciones
+
+    # Hasta 5 fuentes: el nivel tal cual; «normal» conserva las 14 de E1–E3 (D146).
+    assert [presupuesto_acciones(p, 5) for p in ("rapida", "normal", "exhaustiva")] == [8, 14, 24]
+    assert presupuesto_acciones("normal", 3) == 14
+    # Por encima de 5 fuentes suma 2, 3 o 5 por fuente, con techo de 30.
+    assert presupuesto_acciones("rapida", 8) == 14
+    assert presupuesto_acciones("normal", 8) == 23
+    assert presupuesto_acciones("exhaustiva", 7) == 30

@@ -595,6 +595,14 @@ informe de cotización.
 
 **Terminado cuando:** cada oferta con fuente web o de corpus abre su origen en una pestaña nueva.
 
+## S10h — Profundidad de búsqueda elegida por el comprador (lun 16-nov, D146)
+
+- [x] `presupuesto_acciones` (8/14/24 + 2/3/5 por fuente sobre 5, techo 30) y `profundidad` en la petición.
+- [x] La API registra `profundidad` y `max_acciones`; `/api/fuentes` expone los niveles.
+- [x] Selector junto al cuadro de consulta (Cliente), tarjeta en el Laboratorio, aviso de «Fuentes» e informe.
+- [x] Pruebas (`make check`, 228) y revisión en Chrome.
+- [ ] Revisar en producción tras el despliegue.
+
 ## S10 — Informe en la plantilla del curso (mar 17 / mié 18-nov)
 
 **Objetivo:** informe completo en `Formato_informe.docx`, en PDF, con citas APA 7 (D133).

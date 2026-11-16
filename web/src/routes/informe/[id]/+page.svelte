@@ -73,6 +73,7 @@
 		discrepancia: 'la segunda lectura del precio no coincidió',
 		sin_contraparte: 'el precio no se pudo releer en la tienda'
 	};
+	const PROFUNDIDAD_INFORME: Record<string, string> = { rapida: 'rápida', normal: 'normal', exhaustiva: 'exhaustiva' };
 	const CAMPO: Record<string, string> = {
 		precio: 'precio',
 		costo_envio: 'envío',
@@ -427,11 +428,20 @@
 			<section class="bloque">
 				<h2>5. Investigación realizada</h2>
 				<p class="texto">
-					El agente hizo {lecturasTotales} {lecturasTotales === 1 ? 'lectura' : 'lecturas'} en {rondas.length}
+					{#if exp.detalle?.max_acciones}Búsqueda {PROFUNDIDAD_INFORME[exp.detalle.profundidad] ?? 'normal'}, con un
+						presupuesto de {exp.detalle.max_acciones} lecturas. {/if}El agente hizo {lecturasTotales}
+					{lecturasTotales === 1 ? 'lectura' : 'lecturas'} en {rondas.length}
 					{rondas.length === 1 ? 'ronda' : 'rondas'}{lecturasFallidas ? `, de las cuales ${lecturasFallidas} no obtuvieron respuesta` : ''},
 					y reunió {exp.detalle?.ofertas_recolectadas ?? '—'} ofertas de
 					{proveedoresConsultados.length} {proveedoresConsultados.length === 1 ? 'proveedor' : 'proveedores'}{proveedoresConsultados.length ? ` (${proveedoresConsultados.map(nombre).join(', ')})` : ''}.
 				</p>
+				{#if rondas.length}
+					<p class="texto mt-2">
+						En cada ronda el agente decide qué páginas o documentos leer a partir de lo que encontró en la anterior,
+						y los lee a la vez. Se detiene cuando considera que ya tiene las ofertas pertinentes o cuando agota el
+						presupuesto de lecturas.
+					</p>
+				{/if}
 				{#each rondas as r, i (i)}
 					<h3>Ronda {i + 1}</h3>
 					<ol class="mt-2 space-y-1.5 text-sm">

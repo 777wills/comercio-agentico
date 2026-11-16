@@ -176,6 +176,7 @@ export type PeticionConsulta = {
     clasificador: string;
     verificar: boolean;
     politica_n3: "abstener" | "excluir";
+    profundidad?: "rapida" | "normal" | "exhaustiva"; // D146
 };
 
 // Lista blanca por visitante (D113)
@@ -193,7 +194,15 @@ export type FuenteLista = {
 };
 export type ListaBlanca = {
     grupos: { id: Grupo; nombre: string; fuentes: FuenteLista[] }[];
-    limites: { urls: number; pdfs: number; mb_pdf: number; tiendas_recomendadas: number };
+    limites: {
+        urls: number;
+        pdfs: number;
+        mb_pdf: number;
+        tiendas_recomendadas: number;
+        profundidades?: Record<string, [number, number]>; // D146
+        fuentes_base?: number;
+        techo_acciones?: number;
+    };
 };
 
 export class ErrorApi extends Error {

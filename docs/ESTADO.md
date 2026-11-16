@@ -2,6 +2,14 @@
 
 ## Siguiente sesión
 
+**16-nov (S10h, profundidad de búsqueda; Claude Code · Opus 5.5), D146:** selector «Búsqueda rápida / normal /
+exhaustiva» junto al cuadro de consulta (y en el Laboratorio): 8, 14 o 24 lecturas con hasta 5 fuentes, más 2/3/5 por
+fuente activa sobre 5, techo 30. «Normal» con 5 fuentes = 14 (E1–E3). La API registra `profundidad` y `max_acciones`;
+el informe dice el presupuesto y explica qué es una ronda; el aviso de «Fuentes» ahora dice que con más tiendas sube
+el presupuesto. 2 pruebas nuevas (`make check`, **228**). Hallazgo operativo: un proceso huérfano de la API (12:49)
+ocupaba :8000 y los reinicios fallaban en silencio; se cerró y la unidad se relanzó con `KillMode=control-group`.
+**Gasto US$0.** **Wills:** tras el despliegue, probar una consulta «Rápida» en producción (≈ US$0,035).
+
 **16-nov (S10g, enlace de cada oferta a su fuente; Claude Code · Opus 5.5), D145:** cada oferta comparada se
 abre en su origen en una pestaña nueva: la ficha en la tienda si es http(s) y del mismo sitio que la página leída
 (`url_detalle` es dato no confiable); si no, la página o el documento leído. El corpus local (P2–P5, A1–A3 y las

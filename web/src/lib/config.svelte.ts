@@ -3,6 +3,14 @@ import { fuentesApi, obtener, type Defensas, type Grupo, type ListaBlanca, type 
 import { catalogo } from './datos';
 
 export type Proveedor = 'openrouter' | 'anthropic';
+export type Profundidad = 'rapida' | 'normal' | 'exhaustiva';
+
+/** D146: niveles de búsqueda que ve el comprador (costo y tiempo relativos a «Normal», medida en E1–E3). */
+export const PROFUNDIDAD: Record<Profundidad, { etiqueta: string; relativo: string }> = {
+	rapida: { etiqueta: 'Rápida', relativo: 'cerca del 60 % del costo y del tiempo' },
+	normal: { etiqueta: 'Normal', relativo: 'costo y tiempo habituales' },
+	exhaustiva: { etiqueta: 'Exhaustiva', relativo: 'cerca de 1,7 veces el costo y el tiempo' }
+};
 
 /** D114: el proveedor de la clave se reconoce por su prefijo. */
 export function proveedorDe(clave: string): Proveedor | null {
@@ -29,6 +37,7 @@ type Guardada = {
 	defensas: Defensas;
 	verificar: boolean;
 	politica_n3: 'abstener' | 'excluir';
+	profundidad?: Profundidad;
 	corpus: Grupo;
 	recordar: boolean;
 };
@@ -54,6 +63,7 @@ class Config {
 	});
 	verificar = $state(false);
 	politica_n3 = $state<'abstener' | 'excluir'>('abstener');
+	profundidad = $state<Profundidad>('normal');
 	corpus = $state<Grupo>('vivo'); // D113: arranca el grupo en vivo
 	visitante: string;
 	proveedor = $derived(proveedorDe(this.clave));
@@ -83,6 +93,7 @@ class Config {
 					defensas: { ...this.defensas },
 					verificar: this.verificar,
 					politica_n3: this.politica_n3,
+					profundidad: this.profundidad,
 					corpus: this.corpus,
 					recordar: this.recordar
 				};
@@ -150,7 +161,8 @@ export function opcionesCliente() {
 		defensas: { separacion_planos: s, clasificador: k, precio: p, umbral: UMBRAL_INFORME },
 		clasificador: 'Horizon-Labs/prompt-injection-guard-small',
 		verificar: true,
-		politica_n3: 'abstener' as const
+		politica_n3: 'abstener' as const,
+		profundidad: config.profundidad
 	};
 }
 
@@ -169,6 +181,14 @@ class Fuentes {
 	}
 	activas(id: Grupo) {
 		return this.grupo(id)?.fuentes.filter((f) => f.activa).length ?? 0;
+	}
+	/** D146: lecturas que tendrá el agente con esta profundidad y las fuentes activas del grupo. */
+	acciones(prof: Profundidad, grupo: Grupo): number | null {
+		const l = this.lista?.limites;
+		const nivel = l?.profundidades?.[prof];
+		if (!l || !nivel) return null;
+		const n = this.activas(grupo) || (l.fuentes_base ?? 5);
+		return Math.min(l.techo_acciones ?? 30, nivel[0] + nivel[1] * Math.max(0, n - (l.fuentes_base ?? 5)));
 	}
 	/** ID → nombre, para mostrar el proveedor de las ofertas de fuentes propias (U…). */
 	nombres(): Record<string, string> {

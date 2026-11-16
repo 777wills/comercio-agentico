@@ -48,6 +48,10 @@ class PeticionConsulta(BaseModel):
     clasificador: str = MODELO_CLASIFICADOR_DEFECTO
     verificar: bool = Field(default=False, description="N3: segunda lectura con Haiku 5.5.")
     politica_n3: Literal["abstener", "excluir"] = "abstener"
+    profundidad: Literal["rapida", "normal", "exhaustiva"] = Field(
+        default="normal",
+        description="D146: presupuesto de lecturas (8, 14 o 24 con hasta 5 fuentes).",
+    )
 
     @field_validator("clasificador")
     @classmethod
@@ -63,6 +67,7 @@ class PeticionConsulta(BaseModel):
             "clasificador": self.clasificador,
             "verificar": self.verificar,
             "politica_n3": self.politica_n3,
+            "profundidad": self.profundidad,
         }
 
 

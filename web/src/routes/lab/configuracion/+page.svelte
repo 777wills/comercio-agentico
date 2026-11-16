@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { config, visita, PRESETS, UMBRAL_INFORME } from '#lib/config.svelte.js';
+	import { config, fuentes, visita, PRESETS, PROFUNDIDAD, UMBRAL_INFORME, type Profundidad } from '#lib/config.svelte.js';
 	import { catalogo } from '#lib/datos.js';
 	import { usd, pct } from '#lib/api.js';
 	import * as Card from '#lib/components/ui/card/index.js';
@@ -13,6 +13,9 @@
 	import FlaskConical from '@lucide/svelte/icons/flask-conical';
 
 	const cat = catalogo();
+	$effect(() => {
+		if (!fuentes.lista) fuentes.cargar().catch(() => {});
+	});
 	let mostrar = $state(false);
 
 	const CAPAS = [
@@ -279,6 +282,37 @@
 					pequeño por consulta.
 				</p>
 			{/if}
+		</Card.Content>
+	</Card.Root>
+
+	<Card.Root>
+		<Card.Header>
+			<Card.Title>Profundidad de la búsqueda</Card.Title>
+			<Card.Description>
+				Presupuesto de lecturas del planificador: 8, 14 o 24 con hasta 5 fuentes; por cada fuente activa
+				por encima de 5 suma 2, 3 o 5, con techo de 30. E1–E3 se midieron con «Normal» (14).
+			</Card.Description>
+		</Card.Header>
+		<Card.Content>
+			<div class="grid gap-3 sm:grid-cols-3">
+				{#each Object.entries(PROFUNDIDAD) as [v, p] (v)}
+					<button
+						type="button"
+						onclick={() => (config.profundidad = v as Profundidad)}
+						class="rounded-lg border p-3 text-left text-xs transition-colors hover:border-primary/50 {config.profundidad ===
+						v
+							? 'border-primary bg-primary/10'
+							: ''}"
+					>
+						<div class="text-sm font-medium">
+							{p.etiqueta}{fuentes.acciones(v as Profundidad, config.corpus) != null
+								? ` · ${fuentes.acciones(v as Profundidad, config.corpus)} lecturas`
+								: ''}
+						</div>
+						<p class="mt-1 text-muted-foreground">{p.relativo}</p>
+					</button>
+				{/each}
+			</div>
 		</Card.Content>
 	</Card.Root>
 </div>
