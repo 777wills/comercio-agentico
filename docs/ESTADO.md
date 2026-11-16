@@ -2,6 +2,20 @@
 
 ## Siguiente sesión
 
+**16-nov (revisión de los borradores del informe; Claude Code · Opus 5.5), D149:** auditados los 28 borradores de
+`docs/informe/` por patrones (códigos internos, notas de trabajo, `[ref:]`, cifras desfasadas, OWASP 2025), cruce de
+citas con `07_referencias.md` y cobertura frente a D136 y la sección S10 del PLAN. Corregido: (a) **corpus A** con la
+cláusula contra robots de Alkosto y Ktronix declarada como limitación en metodología y riesgos éticos (D149); (b)
+`[ref:]` → APA 7 (Yao, L. Wang, Peeters, GS1, Efron); **Efron (1979)** verificada en Crossref y agregada; las cuatro
+de Mercado Libre pasan a `07_referencias.md`; (c) «presupuesto fijo de 14 acciones» en producto; (d) metodología del
+agente: versión medida (`9e49060f5a9e`) y los cuatro controles posteriores (alcance y dato faltante, lecturas
+repetidas, anclaje del planificador, moneda); (e) versiones de Playwright, extruct, pypdf, httpx, FastMCP,
+sentence-transformers, transformers, PyTorch y Uvicorn en la tabla del stack; (f) hoja de ruta 6.z (E4, ACP/UCP/AP2,
+restricciones blandas, modelos y autohospedaje, trabajadores con cola persistente), que las conclusiones citaban sin
+que existiera. Sin cambios: cifras clave coherentes entre archivos (E2 11,7 %, E3 88,9/90,0 %, P4 249/249 y 0/119,
+C2 19,8 → 0,4 %). Faltan al ensamblar: resumen, palabras clave, reconocimiento y las demás casillas de S10; «IPAC como
+servicio» (PLAN S10) no tiene decisión ni fuente en el proyecto: preguntar a Wills qué es. **Gasto US$0.**
+
 **16-nov (revisión de vigencia de los documentos de estudio; Claude Code · Opus 5.5):** `privado/AUDITORIA_Y_FLUJO.md`
 y `privado/ENTENDER_EL_PROYECTO.md` (secciones 1–8 y glosario) contrastados con el código y con D01–D148; corregidos
 ~30 puntos desfasados (profundidad en lugar del tope fijo de 14, tiendas activas al cargar, lista curada de 9 modelos,

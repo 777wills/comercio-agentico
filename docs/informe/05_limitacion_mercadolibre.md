@@ -25,10 +25,3 @@ El caso ilustra una barrera del comercio agéntico que excede a este prototipo: 
 por contrato, si un agente que representa al comprador puede comparar sus ofertas con las de la competencia. Abrir esa
 fuente exigiría una autorización expresa de Mercado Libre para un uso académico o un acuerdo comercial, lo que se
 deja en la hoja de ruta.
-
-**Referencias (por verificar formato según la norma de citación del informe; consultadas el 14-nov-2026):**
-
-- Mercado Libre. (s. f.-a). *Buenas prácticas para uso de la plataforma*. https://developers.mercadolibre.com.co/es_ar/buenas-practicas-para-uso-de-la-plataforma (actualizada el 30/12/2025).
-- Mercado Libre. (s. f.-b). *Términos y Condiciones del Programa de Desarrolladores de Mercado Libre COL*. https://developers.mercadolibre.com.co/es-co-terminos-y-condiciones
-- Mercado Libre. (s. f.-c). *Buscador de productos*. https://developers.mercadolibre.com.co/es_ar/buscador-de-productos (actualizada el 29/12/2025).
-- Mercado Libre. (s. f.-d). *MCP Server de Mercado Libre*. https://developers.mercadolibre.com.co/es_ar/mcp-server (actualizada el 10/09/2026).

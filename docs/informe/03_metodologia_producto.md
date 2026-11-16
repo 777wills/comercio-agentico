@@ -170,9 +170,9 @@ colombiano se descarta con su motivo y no se convierte.
 Al cargar CotIA quedan activas siempre las mismas cinco tiendas (Falabella, Samsung Colombia, Panamericana,
 Homecenter y Tienda Claro); el visitante cambia la selección con los interruptores del panel «Fuentes» y puede
 activar todas las del catálogo y las URL que agregue. El panel muestra cuántas tiendas web están activas y, por
-encima de cinco, advierte que el planificador reparte su presupuesto fijo de 14 acciones entre más fuentes: con más
-de cinco tiendas corresponden menos de tres acciones a cada una, el agente puede no alcanzar las fichas de producto,
-y el costo y la latencia crecen con cada fuente. La preselección conserva así el comportamiento medido, y el
+encima de cinco, advierte que el presupuesto de lecturas, que crece con cada fuente adicional según la profundidad elegida, se reparte
+entre más tiendas: el agente puede no alcanzar las fichas de producto, y el costo y la latencia crecen con cada
+fuente. La preselección conserva así el comportamiento medido, y el
 visitante decide el equilibrio entre cobertura y costo. Los PDF no cuentan en esa cifra, porque no consumen
 navegación. El visitante ve la lista completa, la activa o desactiva por
 fuente y le agrega tiendas propias (URL) y listas de precios en PDF; sus cambios se guardan por visitante y no

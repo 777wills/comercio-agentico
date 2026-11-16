@@ -34,6 +34,9 @@ Deng, X., Gu, Y., Zheng, B., Chen, S., Stevens, S., Wang, B., Sun, H. y Su, Y. (
 generalist agent for the web. En *Advances in Neural Information Processing Systems 36* (pp. 28091–28114).
 https://doi.org/10.52202/075280-1220
 
+Efron, B. (1979). Bootstrap methods: Another look at the jackknife. *The Annals of Statistics, 7*(1), 1–26.
+https://doi.org/10.1214/aos/1176344552
+
 Greshake, K., Abdelnabi, S., Mishra, S., Endres, C., Holz, T. y Fritz, M. (2023). Not what you've signed up for:
 Compromising real-world LLM-integrated applications with indirect prompt injection. En *Proceedings of the 16th ACM
 Workshop on Artificial Intelligence and Security* (pp. 79–90). ACM. https://doi.org/10.1145/3605764.3623985
@@ -64,6 +67,18 @@ The Cloudflare Blog. https://blog.cloudflare.com/agent-readiness/
 Liu, Y., Jia, Y., Geng, R., Jia, J. y Gong, N. Z. (2024). Formalizing and benchmarking prompt injection attacks and
 defenses. En *USENIX Security Symposium (USENIX Security 24)*. USENIX Association.
 https://www.usenix.org/conference/usenixsecurity24/presentation/liu-yupei
+
+Mercado Libre. (s. f.-a). *Buenas prácticas para uso de la plataforma*. Recuperado el 14 de noviembre de 2026, de
+https://developers.mercadolibre.com.co/es_ar/buenas-practicas-para-uso-de-la-plataforma
+
+Mercado Libre. (s. f.-b). *Términos y condiciones del Programa de Desarrolladores de Mercado Libre COL*. Recuperado
+el 14 de noviembre de 2026, de https://developers.mercadolibre.com.co/es-co-terminos-y-condiciones
+
+Mercado Libre. (s. f.-c). *Buscador de productos*. Recuperado el 14 de noviembre de 2026, de
+https://developers.mercadolibre.com.co/es_ar/buscador-de-productos
+
+Mercado Libre. (s. f.-d). *MCP Server de Mercado Libre*. Recuperado el 14 de noviembre de 2026, de
+https://developers.mercadolibre.com.co/es_ar/mcp-server
 
 Meta. (2025). *Llama Prompt Guard 2 86M* [Modelo]. Hugging Face.
 https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-86M

@@ -72,3 +72,32 @@ con su oferta ganadora, pero sus términos impiden combinar ese contenido con el
 evolución es solicitar una autorización expresa para el uso académico o comercial del comparador e integrar la
 fuente como un proveedor estructurado más, con las mismas defensas, porque los títulos de sus publicaciones siguen
 siendo texto de terceros.
+
+## 6.z Transferencia, protocolos, modelos y operación
+
+**Transferencia a un segundo dominio (E4).** El perfil de categoría es declarativo: atributos comparables, unidades
+y conversiones viven en un archivo de configuración y no en el código. El experimento previsto mide la tasa de
+éxito en otra categoría de producto sin cambiar el agente (métrica M7) y relaciona la preparación digital declarada
+de cada fuente con el desempeño del agente sobre ella. Exige un segundo corpus real completo, que es trabajo de
+datos más que de inteligencia artificial, y por eso quedó propuesto.
+
+**Protocolos de comercio agéntico.** El proveedor por MCP demuestra el extremo maduro del espectro. La evolución
+natural son adaptadores a los protocolos de comercio agéntico (ACP, UCP y AP2) como fuentes estructuradas
+adicionales, con las mismas defensas: un protocolo tipado reduce el texto libre que llega al agente, pero los
+campos descriptivos del producto siguen siendo contenido de terceros.
+
+**Restricciones inferidas como blandas.** El análisis de error de las tareas vagas mostró que los fallos se explican
+por la sub o sobreinferencia de restricciones que el comprador no escribió. La mejora propuesta marca cada
+restricción como explícita o inferida y, si ninguna oferta cumple, relaja primero las inferidas e informa al
+comprador cuáles relajó. Cambia el agente medido, por lo que exige repetir las mediciones.
+
+**Modelos.** La elección de DeepSeek V4.1 Flash, de pesos abiertos, deja abierta la ejecución en la infraestructura
+del comprador, que daría soberanía sobre los datos de la consulta; el autohospedaje se descartó en el prototipo
+porque no aportaba un componente de inteligencia artificial nuevo y exigía infraestructura de GPU. En el producto,
+el acceso por un intermediario y por la API directa de Anthropic puede extenderse a otros proveedores de modelos con
+la misma lista curada y la misma prueba de humo como criterio de entrada.
+
+**Operación a escala.** El producto atiende una consulta a la vez con una cola en memoria, porque cada consulta
+ocupa del orden de 2 GB. La evolución separa la API de trabajadores que ejecutan el agente, con una cola persistente
+(en la propia PostgreSQL o en un servicio dedicado), de modo que varias réplicas atiendan consultas en paralelo y
+una consulta sobreviva al reinicio de un trabajador.

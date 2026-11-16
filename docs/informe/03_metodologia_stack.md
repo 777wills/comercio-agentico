@@ -14,8 +14,13 @@ en un archivo de bloqueo versionado, lo que hace reproducible el entorno de cada
 | Orquestación del agente | LangGraph / LangChain | 1.2.20 / 1.4.9 |
 | Acceso a modelos | langchain-anthropic / langchain-openrouter | 1.7.10 / 0.2.9 |
 | Conversión de páginas a Markdown | crawl4ai | 0.9.5 |
+| Navegador sin interfaz | Playwright (Chromium) | 1.64.1 |
+| Datos estructurados schema.org | extruct | 0.18.0 |
+| Texto de listas de precios en PDF / descarga HTTP | pypdf / httpx | 7.0.0 / 0.28.1 |
+| Proveedor y cliente MCP | FastMCP | 4.1.6 |
+| Embeddings y clasificador de inyección | sentence-transformers / transformers / PyTorch | 6.2.0 / 5.22.2 / 2.15.0 |
 | Esquema y validación | Pydantic | 2.12.5 |
-| Producto (API y progreso en vivo) | FastAPI / SQLAlchemy / PostgreSQL | 0.162.4 / 2.1.8 / 17 |
+| Producto (API y progreso en vivo) | FastAPI / Uvicorn / SQLAlchemy / PostgreSQL | 0.162.4 / 0.54.0 / 2.1.8 / 17 |
 | Producto (interfaz) | SvelteKit / Svelte | 3.2.0 / 5.57.3 |
 | Pruebas y calidad | pytest / Ruff | 9.2.0 / 0.17.4 |
 

@@ -59,6 +59,6 @@ en cada respuesta, y latencia de extremo a extremo (mediana y percentil 90).
 
 **Intervalos.** Las proporciones se reportan con intervalo de confianza del 95 % de Wilson (Wilson,
 1927). Para la media y los percentiles de costo y latencia se usa un *bootstrap* percentil
-con 5000 remuestreos y semilla fija [ref: B. Efron, 1979]. La unidad de M1 es la
+con 5000 remuestreos y semilla fija (Efron, 1979). La unidad de M1 es la
 observación de extracción: si dos tareas extraen la misma página, la página cuenta dos veces. Como esas
 observaciones no son independientes, el intervalo de M1 es optimista y se interpreta solo como orden de magnitud.

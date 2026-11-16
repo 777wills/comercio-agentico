@@ -652,15 +652,15 @@ persona. Correspondencia con los borradores: 01 + 02 → I; 03 → II; 04 → II
       referencia gestionado con pgvector, D98) y referencias.
 - [ ] Verificar cada referencia y cifra contra la fuente primaria; descargar el informe primario de la CCCE si se
       cita. Hecho el 15-nov para las 40 de `07_referencias.md` y la CCCE; OWASP unificado en la edición 2026 (D135).
-- [ ] Pasar a APA 7 las citas `[ref: …]` de los borradores anteriores (03–05).
-      Efron (1979) aún no está en `07_referencias.md`: verificarla y agregarla.
+- [x] Pasar a APA 7 las citas `[ref: …]` de los borradores anteriores (03–05); Efron (1979) verificada en Crossref
+      y agregada, y las cuatro de Mercado Libre pasadas a `07_referencias.md` (16-nov).
 - [ ] Datos de referencias por confirmar: páginas de StruQ y de Liu et al. (BibTeX de USENIX); páginas de AgentDojo
       (82895–82920, reconstruidas de Crossref) y editores de NeurIPS 37; sede de WebArena (ICLR 2024) en OpenReview;
       año de Llama Prompt Guard 2 (2025, inferido); sexto autor de StakeBench y segundo de AP2 en el PDF; fecha de
       OWASP 2026 (se usa 3-ago-2026, la de la ficha). Las de normativa y marcos éticos (sep-2026) se suman al ensamblar.
 - [ ] Piezas propias de la plantilla: resumen de 150–250 palabras sin citas, índice de términos (unas cuatro palabras
       clave en orden alfabético) y Reconocimiento (en singular, sin primera persona).
-- [ ] Tabla de herramientas con las versiones de las librerías, tomadas de `uv.lock` y `web/package-lock.json`.
+- [x] Tabla de herramientas con las versiones de las librerías, tomadas de `uv.lock` y `web/package-lock.json` (16-nov).
 - [ ] Formato de la plantilla: carta, márgenes, una columna, Times New Roman, «Fig.» con el pie debajo y «Tabla» con
       el título encima y numeración romana; figuras como archivos de imagen, no capturas pegadas a mano.
 - [ ] Capturas de LangSmith para el informe **antes del 24-nov** (las trazas caducan a los 14 días; las del 11-nov se

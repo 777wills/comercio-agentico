@@ -15,8 +15,7 @@ que difieren solo en memoria o capacidad, para que el emparejamiento sin identif
 modelo propone además tres formas de nombrar cada producto: comercial, abreviada de lista mayorista e informal de
 mensajería. Las tareas en las que un modelo de lenguaje es poco fiable las asume el código: el GTIN-13 de cada
 producto se asigna por programa con su dígito de control y con el prefijo 952, que GS1 reserva para
-demostraciones y ejemplos de su sistema [ref: GS1, «GS1 Company Prefix», gs1.org/standards/id-keys/company-prefix,
-consultado el 9-nov-2026], de modo que ningún código sintético coincide con un producto real. Además, cada
+demostraciones y ejemplos de su sistema (GS1, s. f.-a), de modo que ningún código sintético coincide con un producto real. Además, cada
 atributo se valida contra el perfil de categoría, que exige el nombre canónico, la unidad canónica y una categoría reconocida. Dos correcciones
 deterministas se aplican a la salida del modelo antes de validarla: se descartan claves ajenas a la categoría y
 las capacidades en terabytes decimales se llevan a la convención binaria del perfil. El catálogo resultante se
@@ -51,7 +50,7 @@ accede a cada fuente por el mismo canal que usaría con un proveedor real.
 ## 3.y Tareas y respuesta de referencia
 
 Las 60 tareas del corpus B se generan por programa y se agrupan en cinco categorías inspiradas en la taxonomía
-de tareas de WebMall [ref: Peeters et al., arXiv:2508.13024]: búsqueda específica (12), más barato entre
+de tareas de WebMall (Peeters et al., 2026): búsqueda específica (12), más barato entre
 proveedores (12), búsqueda con restricciones de especificación, presupuesto y plazo (15), búsqueda vaga (12) y
 casos sin respuesta (9). Cada tarea contiene la consulta en lenguaje natural, sus criterios formalizados (productos
 admitidos, tipo de producto, marca, restricciones sobre atributos, presupuesto sobre el costo total y plazo
@@ -85,14 +84,18 @@ términos de uso del sitio y la respuesta técnica a un cliente identificable.
 
 | Tienda | robots.txt (fichas de producto) | Términos de uso | Respuesta técnica | Decisión |
 |---|---|---|---|---|
-| Alkosto | Permitidas | Prohíben copiar o reproducir el contenido sin autorización escrita | HTTP 200; microdatos `Product`; EAN en la URL | A1 |
+| Alkosto | Permitidas | Prohíben copiar o reproducir el contenido sin autorización escrita y el uso de «spiders», «site copiers» u otro método para acceder, copiar o monitorear el contenido | HTTP 200; microdatos `Product`; EAN en la URL | A1 |
 | Ktronix | Permitidas | Igual que Alkosto (mismo titular) | Igual que Alkosto | A2 |
 | Falabella | Permitidas | Prohíben reproducir o duplicar el contenido sin consentimiento escrito | HTTP 200; JSON-LD `Product` | A3 |
 | Éxito | Permitidas (`ai-train=no`) | Sin cláusula sobre acceso automatizado | HTTP 429 de Cloudflare a todo cliente que no sea navegador | Excluida |
 | Olímpica | Permitidas | La cláusula 2.4.1 prohíbe "spiders" y "site copiers" | HTTP 200 | Excluida |
 
-Las tres tiendas viables permiten el rastreo en robots.txt pero prohíben la copia de su contenido. Por eso el
-corpus no conserva páginas: conserva **hechos**. Un robot identificado con la dirección del repositorio leyó una
+Las tres tiendas permiten el rastreo en robots.txt y prohíben la copia de su contenido. Por eso el corpus no
+conserva páginas: conserva **hechos**. La selección del 9-nov leyó en los términos de Alkosto y Ktronix la cláusula
+sobre la copia, pero no la que excluye los métodos automatizados de acceso, la misma por la que se excluyó a
+Olímpica. Una revisión posterior de 35 tiendas con un criterio único (sección 3.x) la encontró y retiró ambas tiendas
+del modo en vivo. El corpus A se conserva porque la lectura fue única, identificada, con robots.txt respetado y
+limitada a hechos que no se redistribuyen; la inconsistencia se declara como limitación (sección 5.x). Un robot identificado con la dirección del repositorio leyó una
 sola vez, el 9 de noviembre de 2026, 75 fichas de producto (25 productos en las tres tiendas), con robots.txt
 respetado y una pausa aleatoria de 4 a 8 segundos entre peticiones a la misma tienda. De cada ficha se extrajeron,
 de forma determinista, los datos estructurados de schema.org (microdatos y JSON-LD, con `extruct`) y la suma

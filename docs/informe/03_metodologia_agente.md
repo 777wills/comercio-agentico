@@ -26,7 +26,7 @@ consulta según el índice de embeddings. Así, una sola llamada resuelve los cr
 Un GTIN o un número de parte escritos en la consulta se resuelven de forma determinista y prevalecen sobre el
 modelo. Las restricciones se llevan a la unidad canónica con el perfil declarativo (por ejemplo, «1 TB» → 1024 GB).
 
-**Planificar y actuar.** El planificador sigue el patrón ReAct [ref: S. Yao, J. Zhao, D. Yu, N. Du, I. Shafran, K. Narasimhan y Y. Cao, «ReAct: Synergizing Reasoning and Acting in Language Models», arXiv:2210.03629 (v3, versión final de ICLR; año de la conferencia por confirmar en S10)]: en cada
+**Planificar y actuar.** El planificador sigue el patrón ReAct (Yao et al., 2023): en cada
 turno decide qué herramientas invocar y con qué argumentos, observa el resultado y continúa hasta considerar
 completa la recolección. Dispone de tres herramientas: `abrir_pagina` (crawl4ai sobre Chromium sin interfaz, que
 devuelve Markdown y los enlaces del mismo sitio), `leer_documento` (descarga HTTP y, para PDF, extracción de texto
@@ -53,7 +53,7 @@ aunque sí queda guardada en la procedencia para auditoría.
 **Emparejar.** Las ofertas se asignan a un producto del catálogo de referencia en tres niveles de evidencia. Primero,
 GTIN o número de parte exactos, de forma determinista. Segundo, recuperación densa: el catálogo se vectoriza en
 memoria con `intfloat/multilingual-e5-small` (licencia MIT, ejecución en CPU, prefijos `query:` y `passage:` según
-la ficha del modelo) [ref: L. Wang, N. Yang, X. Huang, L. Yang, R. Majumder y F. Wei, «Multilingual E5 Text Embeddings: A Technical Report», arXiv:2402.05672, 2024; cita tomada de la ficha del modelo en Hugging Face, consultada el 9-nov-2026] y se recuperan los
+la ficha del modelo) (L. Wang et al., 2024) y se recuperan los
 cinco productos más similares al título de cada oferta. Tercero, un modelo de lenguaje confirma en una sola llamada
 por lote cuál candidato es exactamente el mismo producto, o responde nulo; un identificador fuera de los
 candidatos cuenta como abstención. Los embeddings preseleccionan pero no deciden. Las variantes de un mismo modelo
@@ -76,6 +76,18 @@ low` en OpenRouter; Claude 5.5 sin pensamiento extendido), un máximo de 8000 to
 llamada. Las llamadas simultáneas al modelo se limitan a tres. Ante un límite de tasa del proveedor de inferencia
 (HTTP 429) se reintenta a los 5, 15 y 30 s. Con el valor de razonamiento por defecto, DeepSeek V4.1 Flash empleó
 unos 3000 tokens de razonamiento en una interpretación simple (33 s); con esfuerzo bajo, unos 900 (16 s).
+
+**Versión medida y evolución posterior.** Las corridas de E1, E2 y E3 se hicieron con la versión v3 del agente,
+identificada por la huella SHA-256 de sus instrucciones y esquemas (`9e49060f5a9e`), que cada resultado registra. El
+producto incorporó después cuatro controles que cambian esa huella y no alteran las cifras medidas. El primero es un
+control de alcance: la necesidad incluye un indicador de si la consulta pide comprar, cotizar o comparar un
+producto, y una arista condicional lleva al nodo de propuesta, que se abstiene sin consultar proveedores, cuando no
+es así o cuando falta un dato sin el cual no se puede comparar (por ejemplo, una cantidad de memoria sin cifra). El
+segundo es una memoria de trabajo: el estado guarda las lecturas ya hechas y una lectura repetida no se ejecuta ni
+consume presupuesto. El tercero ancla el planificador a lo observado: solo abre la dirección registrada de cada
+proveedor y los enlaces que devolvieron las herramientas. El cuarto descarta los precios en una moneda distinta del
+peso colombiano en la comparación en vivo. El presupuesto de 14 llamadas es el de la configuración evaluada; en el
+producto lo fija la profundidad de búsqueda que elige el comprador (sección 3.x).
 
 ## 3.y Prueba de humo
 
