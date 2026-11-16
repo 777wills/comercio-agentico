@@ -7,7 +7,9 @@ y la sustentación en `privado/GUIA_DEFENSA.md` (no versionada), contrastada con
 informe: arquitectura, grafo de LangGraph, recorrido de una consulta (B013 con la verdad del corpus), defensas, N3,
 corpus, métricas, experimentos, modelos, preguntas probables del jurado. Hallazgo: en C0 el extractor tampoco recibe
 la advertencia de datos de terceros, que solo se activa con C1; E2 mide la configuración C1 completa (preparar la
-respuesta; aislarla sería un experimento adicional). Sin código ni decisiones nuevas. **Gasto US$0.** **Sigue S10
+respuesta; aislarla sería un experimento adicional). Ampliada con la sección 4b (artefacto, clase de modelo y ficha de cada paso). Hallazgo 2: Wolf Defender tiene
+**307,5 M** parámetros (dimensión 768, contados en los pesos locales), no 140 M como dice el catálogo de C2 en
+`agente/defensa.py` (visible en la Configuración de CotIA); pendiente corregirlo con el visto bueno de Wills. Sin código ni decisiones nuevas. **Gasto US$0.** **Sigue S10
 (informe y presentación; entrega en Intu el 17-nov).**
 
 **16-nov (revisión de los borradores del informe; Claude Code · Opus 5.5), D149:** auditados los 28 borradores de
