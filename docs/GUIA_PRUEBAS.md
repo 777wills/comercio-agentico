@@ -1595,3 +1595,43 @@ tiendas activas»). El último comando vuelve a las 5 por defecto.
 «Fuentes» → «Tiendas en vivo». Debe ver «Tiendas activas: 5» sin aviso; al encender una sexta, «Tiendas activas: 6»
 y el aviso. Ningún interruptor queda bloqueado. Una consulta con más de 5 tiendas cuesta y tarda más que las
 ≈ US$0,06 de una corrida normal: no hace falta correrla.
+
+## S10g — Enlace de cada oferta a su fuente (16-nov, D145)
+
+**Qué cambió:** cada oferta comparada se puede abrir en su origen, en una pestaña nueva. En el modo Cliente:
+«Ver el producto en la tienda» bajo la recomendación, «Abrir ↗» en cada fila (y en móvil) y el enlace al pie del
+panel «Fuente». En el Laboratorio, la fila «Consulta» de la procedencia es un enlace. En el informe de cotización
+están enlazados los títulos del cuadro (↗), las descartadas (solo en consultas nuevas), cada lectura de la bitácora
+y las URL del anexo. Los enlaces siguen activos en el PDF que guarda el navegador. Las fuentes del corpus
+(`127.0.0.1:8800/8802` y las copias atacadas) abren en el visor del corpus, incluida la lista de precios en PDF de P4.
+El catálogo MCP y los PDF que usted sube no tienen enlace. Si una página trae una ficha de otro dominio, no se
+enlaza: se abre la página leída.
+
+**1. Pruebas sin red — US$0**
+
+```bash
+make check     # 226 pruebas, lint y formato
+cd web && npx svelte-check --threshold error   # 0 errores
+```
+
+**2. En el navegador — US$0** (consultas ya guardadas, no llama a ningún modelo):
+
+```bash
+make web && systemctl --user restart cotia-api      # o make bd && make api
+```
+
+- Abra una consulta terminada de la barra lateral (en vivo) y pulse «Abrir ↗» en una fila: debe abrirse la ficha en
+  la tienda (Panamericana, Claro, LG…).
+- «Informe de cotización»: los títulos del cuadro son enlaces; la bitácora y el anexo también. Imprima a PDF y haga
+  clic en un título dentro del PDF: abre la tienda.
+- En el Laboratorio, abra una consulta del corpus B y despliegue la procedencia de una oferta de Distribuciones
+  Andinas: «Abrir el documento PDF» abre `lista_precios.pdf`.
+
+**3. Comprobar los destinos sin abrir pestañas — US$0** (en la consola del navegador, sobre un informe):
+
+```js
+[...document.querySelectorAll('a.enlace')].map(a => a.getAttribute('href'))
+```
+
+Debe ver URL de tiendas reales o rutas `/api/corpus/archivo/…`; nunca `127.0.0.1` ni dominios distintos al de la
+tienda leída.

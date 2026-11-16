@@ -404,6 +404,9 @@ class Servicio:
                     "grupo": o.grupo,
                     "descarte": o.descarte,
                     "verificacion": o.verificacion,
+                    # D145: el informe enlaza también las descartadas con su fuente.
+                    "url_detalle": o.url_detalle,
+                    "url_fuente": o.procedencia.consulta,
                 }
                 for o in r.ofertas
             ]

@@ -6,6 +6,7 @@
 	import { page } from '$app/state';
 	import { cop, ErrorApi, obtener, usd, type Oferta, type OfertaFinal, type Propuesta } from '#lib/api.js';
 	import { conNombres, nombresFuentes } from '#lib/datos.js';
+	import { abrible, enlace, enlaceOferta, etiquetaEnlace } from '#lib/enlaces.js';
 
 	type Lectura = { nombre: string; args: Record<string, unknown>; estado?: string };
 	type Expediente = {
@@ -105,6 +106,10 @@
 	}
 
 	const p = $derived(exp?.propuesta ?? null);
+	// D145: cada oferta, lectura y documento se enlaza con su fuente (también en el PDF impreso).
+	const carga = $derived(exp?.consulta.carga ?? null);
+	const enlaces = $derived((p?.ofertas ?? []).map((o) => enlaceOferta(o, carga)));
+	const destinoUrl = (l: Lectura) => (typeof l.args?.url === 'string' ? abrible(l.args.url, carga) : null);
 	const necesidad = $derived((exp?.detalle?.necesidad ?? null) as Record<string, any> | null);
 	const rec = $derived(p && p.recomendada != null && !p.abstencion ? p.ofertas[p.recomendada] : null);
 	const justificacion = $derived(p ? legible(p.justificacion.replace(/\s*Procedencia:.*$/s, '')) : '');
@@ -297,7 +302,8 @@
 				<p class="texto">
 					{p.ofertas.length}
 					{p.ofertas.length === 1 ? 'oferta cumple' : 'ofertas cumplen'} los criterios y se comparan por costo total
-					(precio más envío). La marca ● señala la recomendada.
+					(precio más envío). La marca ● señala la recomendada; el título de cada producto (↗) abre la página o el
+					documento de donde se tomó.
 				</p>
 				{#if p.ofertas.length}
 					<div class="mt-4 overflow-x-auto print:overflow-visible">
@@ -312,7 +318,9 @@
 								{#each p.ofertas as o, i (i)}
 									<tr class={i === p.recomendada && !p.abstencion ? 'font-medium' : ''}>
 										<td>{i === p.recomendada && !p.abstencion ? '●' : ''} {i + 1}</td>
-										<td class="min-w-48">{o.titulo}</td>
+										<td class="min-w-48">
+											{#if enlaces[i]}<a href={enlaces[i]!.href} target="_blank" rel="noopener noreferrer" class="enlace" title={etiquetaEnlace(o, enlaces[i]!)}>{o.titulo} ↗</a>{:else}{o.titulo}{/if}
+										</td>
 										<td class="whitespace-nowrap">{nombre(o.procedencia.fuente)}</td>
 										<td class="num">{cop(o.precio)}</td>
 										<td class="num">{cop(o.costo_envio)}</td>
@@ -342,7 +350,9 @@
 							<tbody>
 								{#each descartadas as o, i (i)}
 									<tr>
-										<td class="min-w-48">{o.titulo}</td>
+										<td class="min-w-48">
+											{#if enlace(o.url_fuente, o.url_detalle, carga)}<a href={enlace(o.url_fuente, o.url_detalle, carga)!.href} target="_blank" rel="noopener noreferrer" class="enlace">{o.titulo} ↗</a>{:else}{o.titulo}{/if}
+										</td>
 										<td class="whitespace-nowrap">{nombre(o.proveedor)}</td>
 										<td class="num">{cop(o.precio)}</td>
 										<td>{legible(o.motivo)}</td>
@@ -373,7 +383,8 @@
 								<span class="shrink-0 {l.estado === 'error' ? 'text-destructive' : 'text-primary'}">{l.estado === 'error' ? '✕' : '✓'}</span>
 								<span class="min-w-0">
 									<span class="text-muted-foreground">{HERRAMIENTA[l.nombre] ?? l.nombre}:</span>
-									<span class="break-all">{destino(l)}</span>
+									{#if destinoUrl(l)}<a href={destinoUrl(l)} target="_blank" rel="noopener noreferrer" class="enlace break-all">{destino(l)}</a
+										>{:else}<span class="break-all">{destino(l)}</span>{/if}
 									{#if l.estado === 'error'}<span class="text-destructive"> (sin respuesta)</span>{/if}
 								</span>
 							</li>
@@ -410,15 +421,17 @@
 				<h2>Anexo. Procedencia de cada oferta comparada</h2>
 				<p class="texto">
 					Cada dato del cuadro proviene de un fragmento original de la fuente, leído en la fecha indicada. La suma
-					SHA-256 identifica ese fragmento: si la fuente cambia, la suma cambia.
+					SHA-256 identifica ese fragmento: si la fuente cambia, la suma cambia. Las direcciones enlazadas abren la
+					página o el documento leído; el precio vigente puede diferir del registrado si la tienda lo cambió
+					después.
 				</p>
 				{#each p.ofertas as o, i (i)}
 					<article class="mt-5 border-t pt-4">
 						<p class="text-sm font-medium break-after-avoid">{i + 1}. {o.titulo}</p>
 						<dl class="mt-2 grid break-inside-avoid grid-cols-1 gap-y-1 text-xs sm:grid-cols-[11rem_1fr]">
 							<dt class="text-muted-foreground">Proveedor</dt><dd>{nombre(o.procedencia.fuente)} · {TIPO_FUENTE[o.procedencia.tipo_fuente] ?? o.procedencia.tipo_fuente}</dd>
-							{#if o.url_detalle}<dt class="text-muted-foreground">Página del producto</dt><dd class="break-all">{o.url_detalle}</dd>{/if}
-							<dt class="text-muted-foreground">Obtenido con</dt><dd class="break-all">{o.procedencia.consulta}</dd>
+							{#if o.url_detalle}<dt class="text-muted-foreground">Página del producto</dt><dd class="break-all">{#if enlaces[i]?.ficha}<a href={enlaces[i]!.href} target="_blank" rel="noopener noreferrer" class="enlace">{o.url_detalle}</a>{:else}{o.url_detalle} <span class="text-muted-foreground">(no se enlaza: no pertenece al sitio leído)</span>{/if}</dd>{/if}
+							<dt class="text-muted-foreground">Obtenido con</dt><dd class="break-all">{#if abrible(o.procedencia.consulta, carga)}<a href={abrible(o.procedencia.consulta, carga)} target="_blank" rel="noopener noreferrer" class="enlace">{o.procedencia.consulta}</a>{:else}{o.procedencia.consulta}{/if}</dd>
 							<dt class="text-muted-foreground">Fecha de lectura</dt><dd>{fecha(o.procedencia.marca_tiempo)}</dd>
 							<dt class="text-muted-foreground">Extracción</dt><dd>{RUTA[o.procedencia.ruta_extraccion] ?? o.procedencia.ruta_extraccion}{o.procedencia.modelo_extraccion ? ` (${o.procedencia.modelo_extraccion})` : ''}</dd>
 							{#if o.gtin || o.marca || o.modelo}<dt class="text-muted-foreground">Identificación</dt><dd>{[o.marca, o.modelo, o.gtin ? `GTIN ${o.gtin}` : null].filter(Boolean).join(' · ')}</dd>{/if}
@@ -449,6 +462,13 @@
 </div>
 
 <style>
+	.enlace {
+		color: var(--primary);
+		text-underline-offset: 2px;
+	}
+	.enlace:hover {
+		text-decoration: underline;
+	}
 	.informe :global(h2) {
 		font-size: 1rem;
 		font-weight: 500;

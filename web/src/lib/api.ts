@@ -69,6 +69,8 @@ export type OfertaFinal = {
     grupo: number | null;
     descarte: string | null;
     verificacion: Oferta["verificacion"];
+    url_detalle?: string | null; // D145 (consultas posteriores al 16-nov)
+    url_fuente?: string;
 };
 
 export type Propuesta = {

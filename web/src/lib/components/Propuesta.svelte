@@ -9,20 +9,26 @@
 	import TriangleAlert from '@lucide/svelte/icons/triangle-alert';
 	import CircleSlash from '@lucide/svelte/icons/circle-slash';
 	import ChevronDown from '@lucide/svelte/icons/chevron-down';
+	import ExternalLink from '@lucide/svelte/icons/external-link';
+	import { abrible, enlaceOferta, etiquetaEnlace } from '#lib/enlaces.js';
 
 	let {
 		propuesta,
 		nombres = {},
 		segundos = null,
-		estimado = false
+		estimado = false,
+		carga = null
 	}: {
 		propuesta: Propuesta;
 		nombres?: Record<string, string>;
 		segundos?: number | null;
 		estimado?: boolean;
+		carga?: string | null;
 	} = $props();
 
 	let abierta = $state<number | null>(null);
+	// D145: enlace de cada oferta a su fuente (corpus local → visor del corpus).
+	const enlaces = $derived(propuesta.ofertas.map((o) => enlaceOferta(o, carga)));
 
 	const DISPONIBILIDAD: Record<string, string> = {
 		en_stock: 'En stock',
@@ -151,7 +157,22 @@
 										<dt class="text-muted-foreground">Fuente</dt>
 										<dd>{nombres[o.procedencia.fuente] ?? ''} ({o.procedencia.fuente}) · {o.procedencia.tipo_fuente}</dd>
 										<dt class="text-muted-foreground">Consulta</dt>
-										<dd class="break-all font-mono">{o.procedencia.consulta}</dd>
+										<dd class="break-all font-mono">
+											{#if abrible(o.procedencia.consulta, carga)}<a
+													href={abrible(o.procedencia.consulta, carga)}
+													target="_blank"
+													rel="noopener noreferrer"
+													class="text-primary underline-offset-2 hover:underline">{o.procedencia.consulta}</a
+												>{:else}{o.procedencia.consulta}{/if}
+										</dd>
+										{#if o.url_detalle}
+											<dt class="text-muted-foreground">Ficha (url_detalle)</dt>
+											<dd class="break-all font-mono">
+												{o.url_detalle}{#if !enlaces[i]?.ficha && abrible(o.procedencia.consulta, carga)}<span class="font-sans text-muted-foreground">
+														· no se enlaza: no es del mismo sitio</span
+													>{/if}
+											</dd>
+										{/if}
 										<dt class="text-muted-foreground">Extracción</dt>
 										<dd>
 											{o.procedencia.ruta_extraccion}{o.procedencia.modelo_extraccion
@@ -162,6 +183,15 @@
 										<dd class="break-all font-mono">{o.procedencia.suma_verificacion}</dd>
 										{#if o.gtin}<dt class="text-muted-foreground">GTIN</dt><dd class="font-mono">{o.gtin}</dd>{/if}
 									</dl>
+									{#if enlaces[i]}
+										<a
+											href={enlaces[i]!.href}
+											target="_blank"
+											rel="noopener noreferrer"
+											class="mt-2 inline-flex items-center gap-1 text-xs text-primary underline-offset-2 hover:underline"
+											>{etiquetaEnlace(o, enlaces[i]!)}<ExternalLink class="size-3" /></a
+										>
+									{/if}
 									<div class="mt-2 text-xs text-muted-foreground">Fragmento original</div>
 									<pre
 										class="mt-1 max-h-64 overflow-auto rounded-md border bg-background p-3 text-xs whitespace-pre-wrap">{o

@@ -580,6 +580,21 @@ proveedores.
 
 **Terminado cuando:** al cargar quedan 5 activas y la API acepta una sexta.
 
+## S10g — Enlace de cada oferta a su fuente (lun 16-nov, D145)
+
+**Objetivo:** que el comprador abra la página o el documento que respalda cada oferta, desde la vista y desde el
+informe de cotización.
+
+- [x] `web/src/lib/enlaces.ts`: ficha del producto solo si es http(s) y del mismo sitio; si no, la página leída;
+      corpus local (P2–P5, A1–A3, copias atacadas) → visor del corpus.
+- [x] Modo Cliente (recomendación, tabla, lista móvil y panel «Fuente»), Laboratorio (procedencia) e informe
+      (cuadro, descartadas, bitácora y anexo).
+- [x] La API guarda `url_detalle` y `url_fuente` en las ofertas finales (descartadas enlazables).
+- [x] `make check` en verde (226) y revisión en Chrome con consultas guardadas (vivo, corpus B y carga A20).
+- [ ] Revisar en producción tras el despliegue.
+
+**Terminado cuando:** cada oferta con fuente web o de corpus abre su origen en una pestaña nueva.
+
 ## S10 — Informe en la plantilla del curso (mar 17 / mié 18-nov)
 
 **Objetivo:** informe completo en `Formato_informe.docx`, en PDF, con citas APA 7 (D133).

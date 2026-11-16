@@ -205,3 +205,12 @@ El informe se presenta como una vista imprimible que el navegador exporta a PDF.
 en JSON e incluye una huella SHA-256 calculada sobre su forma canónica (claves ordenadas, UTF-8, sin espacios), que
 permite comprobar que el documento no se modificó después de generado. En papel, los fragmentos se recortan a 900
 caracteres; el texto íntegro permanece en el expediente, vinculado por su suma de verificación.
+
+Cada oferta del cuadro, cada oferta descartada, cada lectura de la bitácora y cada dirección del anexo están
+enlazadas con su origen, de modo que el comprador contrasta la cifra con la página o el documento leído sin
+transcribir direcciones; los enlaces se conservan en el PDF exportado. El enlace apunta a la ficha del producto
+cuando esta pertenece al mismo sitio que la página leída y, en caso contrario, a la página o al documento leído.
+La restricción responde a que la dirección de la ficha se extrae del contenido de la página, que el sistema trata
+como dato no confiable: una página manipulada podría insertar un enlace hacia un sitio de suplantación. Las fuentes
+del corpus experimental se abren en su visor, incluida la lista de precios en PDF; el catálogo consultado por MCP y
+los documentos cargados por el usuario, de los que se conserva solo el texto y su huella, carecen de enlace.

@@ -4,17 +4,21 @@
 	import { conNombres } from '#lib/datos.js';
 	import BadgeCheck from '@lucide/svelte/icons/badge-check';
 	import Info from '@lucide/svelte/icons/info';
+	import ExternalLink from '@lucide/svelte/icons/external-link';
+	import { enlaceOferta, etiquetaEnlace } from '#lib/enlaces.js';
 
 	let {
 		propuesta,
 		nombres = {},
 		segundos = null,
-		estimado = false
+		estimado = false,
+		carga = null
 	}: {
 		propuesta: Propuesta;
 		nombres?: Record<string, string>;
 		segundos?: number | null;
 		estimado?: boolean;
+		carga?: string | null;
 	} = $props();
 
 	let abierta = $state<number | null>(null);
@@ -45,6 +49,9 @@
 	const justificacion = $derived(legible(propuesta.justificacion.replace(/\s*Procedencia:.*$/s, '')));
 	const hayVerificadas = $derived(propuesta.ofertas.some((o) => o.verificacion === 'verificada'));
 	const rec = $derived(propuesta.recomendada != null ? propuesta.ofertas[propuesta.recomendada] : null);
+	// D145: cada oferta se abre en la página o el documento que la respalda.
+	const enlaces = $derived(propuesta.ofertas.map((o) => enlaceOferta(o, carga)));
+	const enlaceRec = $derived(propuesta.recomendada != null ? enlaces[propuesta.recomendada] : null);
 </script>
 
 {#if propuesta.abstencion || !rec}
@@ -62,6 +69,15 @@
 				<p class="mt-1 text-sm text-muted-foreground">
 					{proveedor(rec)}{rec.plazo_entrega_dias != null ? ` · entrega en ${dias(rec.plazo_entrega_dias)}` : ''}{rec.disponibilidad !== 'desconocida' ? ` · ${DISPONIBILIDAD[rec.disponibilidad]}` : ''}
 				</p>
+				{#if enlaceRec}
+					<a
+						href={enlaceRec.href}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="mt-2 inline-flex items-center gap-1.5 text-sm text-primary underline-offset-2 hover:underline"
+						>{etiquetaEnlace(rec, enlaceRec)}<ExternalLink class="size-3.5" /></a
+					>
+				{/if}
 			</div>
 			<div class="shrink-0 sm:text-right">
 				<p class="cifra text-3xl font-semibold tracking-tight sm:text-4xl">{cop(total(rec))}</p>
@@ -87,7 +103,7 @@
 {/if}
 
 <!-- El fragmento parte en cualquier punto: una URL larga no ensancha la tabla ni esconde «Ocultar». -->
-{#snippet fuente(o: Propuesta['ofertas'][number])}
+{#snippet fuente(o: Propuesta['ofertas'][number], e: ReturnType<typeof enlaceOferta>)}
 	<p class="text-xs text-muted-foreground">
 		Leído en {proveedor(o)} el
 		{new Date(o.procedencia.marca_tiempo).toLocaleString('es-CO')} · precio
@@ -96,7 +112,24 @@
 	<pre
 		class="mt-2 max-h-56 overflow-y-auto rounded-lg bg-muted p-3 text-xs whitespace-pre-wrap [overflow-wrap:anywhere] text-muted-foreground">{o
 			.procedencia.fragmento_original}</pre>
-	<div class="mt-1.5 text-right">
+	<div class="mt-1.5 flex items-center justify-between gap-3">
+		{#if e}
+			<a
+				href={e.href}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="inline-flex items-center gap-1 text-xs text-primary underline-offset-2 hover:underline"
+				>{etiquetaEnlace(o, e)}<ExternalLink class="size-3" /></a
+			>
+		{:else}
+			<span class="text-xs text-muted-foreground"
+				>{o.procedencia.tipo_fuente === 'mcp'
+					? 'Catálogo consultado por API: no tiene una página que abrir.'
+					: o.procedencia.consulta.startsWith('pdf://')
+						? 'PDF que usted cargó: se conserva su texto, no el archivo.'
+						: ''}</span
+			>
+		{/if}
 		<button
 			class="text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
 			onclick={() => (abierta = null)}>Ocultar fuente</button
@@ -129,13 +162,23 @@
 							{#if o.verificacion === 'verificada'}<BadgeCheck class="size-3.5 text-primary" aria-label="Precio confirmado" />{/if}
 						</span>
 						{#each [o.plazo_entrega_dias != null ? dias(o.plazo_entrega_dias) : '', o.disponibilidad !== 'desconocida' ? DISPONIBILIDAD[o.disponibilidad] : ''].filter(Boolean) as d (d)}<span>· {d}</span>{/each}
+						{#if enlaces[i]}
+							<a
+								href={enlaces[i]!.href}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="ml-auto -my-2 inline-flex items-center gap-1 px-1 py-2 hover:text-foreground"
+								aria-label={etiquetaEnlace(o, enlaces[i]!)}
+								title={etiquetaEnlace(o, enlaces[i]!)}>Abrir<ExternalLink class="size-3" /></a
+							>
+						{/if}
 						<button
-							class="ml-auto -my-2 px-1 py-2 hover:text-foreground"
+							class="{enlaces[i] ? '' : 'ml-auto '}-my-2 px-1 py-2 hover:text-foreground"
 							aria-expanded={abierta === i}
 							onclick={() => (abierta = abierta === i ? null : i)}>{abierta === i ? 'Ocultar' : 'Fuente'}</button
 						>
 					</div>
-					{#if abierta === i}<div class="mt-3">{@render fuente(o)}</div>{/if}
+					{#if abierta === i}<div class="mt-3">{@render fuente(o, enlaces[i])}</div>{/if}
 				</li>
 			{/each}
 		</ul>
@@ -172,7 +215,17 @@
 							<td class="py-3 pr-4 text-right whitespace-nowrap">{cop(total(o))}</td>
 							<td class="py-3 pr-4 whitespace-nowrap">{dias(o.plazo_entrega_dias)}</td>
 							<td class="py-3 pr-4 whitespace-nowrap">{DISPONIBILIDAD[o.disponibilidad]}</td>
-							<td class="py-3 text-right">
+							<td class="py-3 text-right whitespace-nowrap">
+								{#if enlaces[i]}
+									<a
+										href={enlaces[i]!.href}
+										target="_blank"
+										rel="noopener noreferrer"
+										class="mr-3 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+										aria-label={etiquetaEnlace(o, enlaces[i]!)}
+										title={etiquetaEnlace(o, enlaces[i]!)}>Abrir<ExternalLink class="size-3" /></a
+									>
+								{/if}
 								<button
 									class="text-xs whitespace-nowrap text-muted-foreground hover:text-foreground"
 									aria-expanded={abierta === i}
@@ -183,7 +236,7 @@
 						</tr>
 						{#if abierta === i}
 							<tr>
-								<td colspan={6} class="pt-3 pb-6">{@render fuente(o)}</td>
+								<td colspan={6} class="pt-3 pb-6">{@render fuente(o, enlaces[i])}</td>
 							</tr>
 						{/if}
 					{/each}

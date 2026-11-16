@@ -181,6 +181,7 @@
 				{nombres}
 				segundos={detalle.segundos}
 				estimado={!!detalle.detalle?.costo_estimado}
+				carga={detalle.carga}
 			/>
 			<!-- D142: evidencia de todo lo cotizado y del porqué de la recomendación. -->
 			<div class="mt-8 flex flex-wrap items-center gap-x-4 gap-y-2 border-t pt-6">

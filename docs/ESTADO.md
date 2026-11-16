@@ -2,6 +2,18 @@
 
 ## Siguiente sesión
 
+**16-nov (S10g, enlace de cada oferta a su fuente; Claude Code · Opus 5.5), D145:** cada oferta comparada se
+abre en su origen en una pestaña nueva: la ficha en la tienda si es http(s) y del mismo sitio que la página leída
+(`url_detalle` es dato no confiable); si no, la página o el documento leído. El corpus local (P2–P5, A1–A3 y las
+copias atacadas) se traduce al visor del corpus, incluido el PDF de P4. Enlaces en el modo Cliente (recomendación,
+tabla, móvil y panel «Fuente»), el Laboratorio y el informe de cotización (cuadro, descartadas, bitácora y anexo;
+siguen activos en el PDF impreso). Las ofertas finales guardan `url_detalle` y `url_fuente`, así que las descartadas
+se enlazan en las consultas nuevas. Sin enlace: el MCP y los PDF del visitante (decisión de Wills: no se guarda el
+archivo). Lógica en `web/src/lib/enlaces.ts`, probada con 11 casos (incluidos un dominio ajeno y un `javascript:`).
+Revisado en Chrome con consultas guardadas: vivo (34 enlaces en el informe), corpus B y carga A20 (todos 200).
+`make check` en verde (226 pruebas). Borrador `03_metodologia_producto.md` actualizado. **Gasto US$0.**
+**Wills:** tras el despliegue, abrir una consulta en producción y pulsar «Abrir ↗». **Sigue S10 (informe del curso).**
+
 **16-nov (S10f, sin tope de tiendas activas; Claude Code · Opus 5.5), D144 (precisa D131):** al cargar CotIA
 siguen activas las 5 tiendas fijas, pero el visitante puede activar todas las del catálogo y sus URL propias. Se quitó
 el recorte y la verificación de cupo de `api/fuentes_visitante.py` (una URL nueva entra activa); `MAX_WEB_ACTIVAS`

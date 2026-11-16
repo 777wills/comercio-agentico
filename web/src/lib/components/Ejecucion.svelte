@@ -210,6 +210,7 @@
 				{nombres}
 				segundos={detalle.segundos}
 				estimado={!!detalle.detalle?.costo_estimado}
+				carga={detalle.carga}
 			/>
 		{:else if cancelada}
 			<Card.Root><Card.Content class="text-sm text-muted-foreground">
