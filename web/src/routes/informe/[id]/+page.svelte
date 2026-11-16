@@ -5,7 +5,7 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/state';
 	import { cop, ErrorApi, obtener, usd, type Oferta, type OfertaFinal, type Propuesta } from '#lib/api.js';
-	import { conNombres, nombresFuentes } from '#lib/datos.js';
+	import { alertaLegible, capital, conNombres, nombreFuente, nombresFuentes } from '#lib/datos.js';
 	import { abrible, enlace, enlaceOferta, etiquetaEnlace } from '#lib/enlaces.js';
 
 	type Lectura = { nombre: string; args: Record<string, unknown>; estado?: string };
@@ -46,7 +46,7 @@
 
 	const fecha = (iso: string) =>
 		new Date(iso).toLocaleString('es-CO', { dateStyle: 'long', timeStyle: 'short' });
-	const nombre = (codigo: string) => nombres[codigo] ?? codigo;
+	const nombre = (codigo: string) => nombreFuente(codigo, nombres);
 	const legible = (t: string) => conNombres(t, nombres);
 	const total = (o: { precio: number; costo_envio: number | null }) => o.precio + (o.costo_envio ?? 0);
 	const dias = (n: number | null) => (n == null ? '—' : `${n} ${n === 1 ? 'día' : 'días'}`);
@@ -62,13 +62,37 @@
 		agotado: 'Agotado',
 		desconocida: 'Sin dato'
 	};
+	// Resultado de la segunda lectura independiente del precio (N3), dicho para quien compra.
 	const N3: Record<string, string> = {
-		verificada: 'Verificada',
-		discrepancia: 'Discrepancia',
-		sin_contraparte: 'Sin contraparte'
+		verificada: 'Sí',
+		discrepancia: 'No coincide',
+		sin_contraparte: 'No se pudo releer'
+	};
+	const N3_DECISION: Record<string, string> = {
+		verificada: 'precio confirmado en una segunda lectura',
+		discrepancia: 'la segunda lectura del precio no coincidió',
+		sin_contraparte: 'el precio no se pudo releer en la tienda'
+	};
+	const CAMPO: Record<string, string> = {
+		precio: 'precio',
+		costo_envio: 'envío',
+		plazo_entrega_dias: 'plazo',
+		disponibilidad: 'disponibilidad',
+		gtin: 'código de producto'
+	};
+	const campos = (o: Oferta) =>
+		o.campos_discrepancia?.length ? ` (${o.campos_discrepancia.map((c) => CAMPO[c] ?? c.replaceAll('_', ' ')).join(', ')})` : '';
+	const envio = (v: number | null) => (v == null ? 'envío sin informar' : v === 0 ? 'envío gratis' : `envío ${cop(v)}`);
+	const PRODUCTO: Record<string, string> = {
+		portatil: 'portátil',
+		audifonos: 'audífonos',
+		celular: 'celular',
+		monitor: 'monitor',
+		almacenamiento: 'almacenamiento',
+		televisor: 'televisor'
 	};
 	const TIPO_FUENTE: Record<string, string> = {
-		mcp: 'Catálogo MCP',
+		mcp: 'Catálogo en línea del mayorista',
 		web_schema: 'Página web con datos estructurados',
 		web_plana: 'Página web',
 		pdf: 'Documento PDF',
@@ -83,14 +107,14 @@
 	const ALERTA: Record<string, string> = {
 		posible_inyeccion: 'Contenido sospechoso ignorado',
 		precio_atipico: 'Precio atípico descartado',
-		sin_verificar: 'Oferta sin confirmar',
-		emparejamiento_dudoso: 'Emparejamiento dudoso',
+		sin_verificar: 'Dato sin confirmar',
+		emparejamiento_dudoso: 'Correspondencia dudosa con lo pedido',
 		restriccion_incumplida: 'Restricción incumplida',
 		fuente_no_disponible: 'Fuente no disponible',
 		interpretacion_incompleta: 'Interpretación incompleta'
 	};
 	const HERRAMIENTA: Record<string, string> = {
-		consultar_mcp: 'Catálogo del mayorista (MCP)',
+		consultar_mcp: 'Catálogo del mayorista',
 		abrir_pagina: 'Página web',
 		leer_documento: 'Documento del proveedor'
 	};
@@ -99,6 +123,10 @@
 	function destino(l: Lectura): string {
 		const a = l.args ?? {};
 		if (typeof a.url === 'string') return a.url;
+		if (l.nombre === 'consultar_mcp') {
+			const busqueda = typeof a.texto === 'string' && a.texto ? `búsqueda «${a.texto}»` : 'listado completo';
+			return `${busqueda}${a.familia ? `, categoría ${PRODUCTO[String(a.familia)] ?? a.familia}` : ''}`;
+		}
 		const partes = Object.entries(a)
 			.filter(([, v]) => v !== '' && v != null)
 			.map(([k, v]) => `${k}: ${typeof v === 'object' ? JSON.stringify(v) : v}`);
@@ -109,9 +137,26 @@
 	// D145: cada oferta, lectura y documento se enlaza con su fuente (también en el PDF impreso).
 	const carga = $derived(exp?.consulta.carga ?? null);
 	const enlaces = $derived((p?.ofertas ?? []).map((o) => enlaceOferta(o, carga)));
+	// «mcp://P1/buscar_productos?{…}» → «catálogo del mayorista, búsqueda «…», categoría monitor».
+	function leidoEn(consulta: string): string {
+		const m = consulta.match(/^mcp:\/\/[^/]+\/\w+\?(\{.*\})$/);
+		if (!m) return consulta;
+		try {
+			return `Catálogo del mayorista, ${destino({ nombre: 'consultar_mcp', args: JSON.parse(m[1]) })}`;
+		} catch {
+			return 'Catálogo del mayorista';
+		}
+	}
 	const destinoUrl = (l: Lectura) => (typeof l.args?.url === 'string' ? abrible(l.args.url, carga) : null);
 	const necesidad = $derived((exp?.detalle?.necesidad ?? null) as Record<string, any> | null);
 	const rec = $derived(p && p.recomendada != null && !p.abstencion ? p.ofertas[p.recomendada] : null);
+	// Alertas sin repetir, sin trazas técnicas ni nombres de función.
+	const alertas = $derived.by(() => {
+		const vistas = new Set<string>();
+		return (p?.alertas ?? [])
+			.map((a) => ({ tipo: a.tipo, texto: alertaLegible(a, nombres) }))
+			.filter((a) => !vistas.has(a.texto) && vistas.add(a.texto));
+	});
 	const justificacion = $derived(p ? legible(p.justificacion.replace(/\s*Procedencia:.*$/s, '')) : '');
 
 	// Bitácora: cada ronda de planificación con sus lecturas y lo que dejó cada una.
@@ -172,7 +217,12 @@
 	function restricciones(n: Record<string, any>): string[] {
 		const OP: Record<string, string> = { '>=': '≥', '<=': '≤', '==': '=' };
 		return (n.restricciones ?? []).map(
-			(r: any) => `${ATRIBUTO[r.atributo] ?? r.atributo.replaceAll('_', ' ')} ${OP[r.operador] ?? r.operador} ${r.valor}`
+			(r: any) => {
+				const nombre = ATRIBUTO[r.atributo] ?? r.atributo.replaceAll('_', ' ');
+				const v = String(r.valor).toLowerCase();
+				if (v === 'true' || v === 'false') return `${nombre}: ${v === 'true' ? 'sí' : 'no'}`;
+				return `${nombre} ${OP[r.operador] ?? r.operador} ${r.valor}`;
+			}
 		);
 	}
 	// Impreso, el fragmento se recorta; completo queda en el expediente JSON, ligado por su SHA-256.
@@ -252,7 +302,7 @@
 				{#if necesidad}
 					<table class="tabla mt-4">
 						<tbody>
-							{#if necesidad.tipo_producto}<tr><th>Tipo de producto</th><td>{necesidad.tipo_producto}</td></tr>{/if}
+							{#if necesidad.tipo_producto}<tr><th>Tipo de producto</th><td>{PRODUCTO[necesidad.tipo_producto] ?? necesidad.tipo_producto}</td></tr>{/if}
 							{#if necesidad.marca}<tr><th>Marca</th><td>{necesidad.marca}</td></tr>{/if}
 							{#if necesidad.producto_mencionado}<tr><th>Producto mencionado</th><td>{necesidad.producto_mencionado}</td></tr>{/if}
 							<tr><th>Presupuesto máximo</th><td>{necesidad.presupuesto_max ? `${cop(necesidad.presupuesto_max)} (precio + envío)` : 'No indicado'}</td></tr>
@@ -278,12 +328,19 @@
 								<p class="text-xs font-medium text-primary">Opción recomendada</p>
 								<p class="mt-1 font-medium leading-snug">{rec.titulo}</p>
 								<p class="mt-1 text-xs text-muted-foreground">
-									{nombre(rec.procedencia.fuente)} · entrega {dias(rec.plazo_entrega_dias)} · {DISPONIBILIDAD[rec.disponibilidad]}{rec.verificacion ? ` · precio ${N3[rec.verificacion].toLowerCase()}` : ''}
+									{[
+										nombre(rec.procedencia.fuente),
+										rec.plazo_entrega_dias != null ? `entrega en ${dias(rec.plazo_entrega_dias)}` : 'plazo de entrega sin informar',
+										rec.disponibilidad !== 'desconocida' ? DISPONIBILIDAD[rec.disponibilidad].toLowerCase() : null,
+										rec.verificacion ? N3_DECISION[rec.verificacion] : null
+									]
+										.filter(Boolean)
+										.join(' · ')}
 								</p>
 							</div>
 							<div class="shrink-0 sm:text-right">
 								<p class="cifra text-2xl font-semibold">{cop(total(rec))}</p>
-								<p class="text-xs text-muted-foreground">{cop(rec.precio)} + envío {cop(rec.costo_envio)}</p>
+								<p class="text-xs text-muted-foreground">{cop(rec.precio)} + {envio(rec.costo_envio)}</p>
 							</div>
 						</div>
 					</div>
@@ -302,7 +359,7 @@
 				<p class="texto">
 					{p.ofertas.length}
 					{p.ofertas.length === 1 ? 'oferta cumple' : 'ofertas cumplen'} los criterios y se comparan por costo total
-					(precio más envío). La marca ● señala la recomendada; el título de cada producto (↗) abre la página o el
+					(precio más envío; «—» indica que la tienda no informa el dato). La marca ● señala la recomendada; el título de cada producto (↗) abre la página o el
 					documento de donde se tomó.
 				</p>
 				{#if p.ofertas.length}
@@ -311,7 +368,7 @@
 							<thead>
 								<tr>
 									<th>#</th><th>Producto</th><th>Proveedor</th><th class="num">Precio</th><th class="num">Envío</th>
-									<th class="num">Total</th><th>Entrega</th><th>Disponib.</th><th>Precio confirmado</th>
+									<th class="num">Total</th><th>Entrega</th><th>Disponib.</th><th>Precio confirmado en 2.ª lectura</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -327,7 +384,7 @@
 										<td class="num">{cop(total(o))}</td>
 										<td>{dias(o.plazo_entrega_dias)}</td>
 										<td>{DISPONIBILIDAD[o.disponibilidad]}</td>
-										<td>{o.verificacion ? N3[o.verificacion] : 'No se verificó'}{o.campos_discrepancia?.length ? ` (${o.campos_discrepancia.join(', ').replaceAll('_', ' ')})` : ''}</td>
+										<td>{o.verificacion ? N3[o.verificacion] : 'No se verificó'}{campos(o)}</td>
 									</tr>
 								{/each}
 							</tbody>
@@ -355,7 +412,7 @@
 										</td>
 										<td class="whitespace-nowrap">{nombre(o.proveedor)}</td>
 										<td class="num">{cop(o.precio)}</td>
-										<td>{legible(o.motivo)}</td>
+										<td>{capital(legible(o.motivo))}</td>
 									</tr>
 								{/each}
 							</tbody>
@@ -405,10 +462,10 @@
 					Controles activos: {defensas.length ? defensas.join('; ') : 'ninguno'}. El contenido de las páginas se
 					trata como dato y no como instrucción: un texto en una tienda no puede cambiar la tarea del agente.
 				</p>
-				{#if p.alertas.length}
+				{#if alertas.length}
 					<ul class="mt-3 space-y-2 text-sm">
-						{#each p.alertas as a, i (i)}
-							<li><span class="font-medium">{ALERTA[a.tipo] ?? a.tipo}.</span> <span class="text-muted-foreground">{legible(a.mensaje)}</span></li>
+						{#each alertas as a, i (i)}
+							<li><span class="font-medium">{ALERTA[a.tipo] ?? 'Aviso'}.</span> <span class="text-muted-foreground">{a.texto}</span></li>
 						{/each}
 					</ul>
 				{:else}
@@ -431,9 +488,9 @@
 						<dl class="mt-2 grid break-inside-avoid grid-cols-1 gap-y-1 text-xs sm:grid-cols-[11rem_1fr]">
 							<dt class="text-muted-foreground">Proveedor</dt><dd>{nombre(o.procedencia.fuente)} · {TIPO_FUENTE[o.procedencia.tipo_fuente] ?? o.procedencia.tipo_fuente}</dd>
 							{#if o.url_detalle}<dt class="text-muted-foreground">Página del producto</dt><dd class="break-all">{#if enlaces[i]?.ficha}<a href={enlaces[i]!.href} target="_blank" rel="noopener noreferrer" class="enlace">{o.url_detalle}</a>{:else}{o.url_detalle} <span class="text-muted-foreground">(no se enlaza: no pertenece al sitio leído)</span>{/if}</dd>{/if}
-							<dt class="text-muted-foreground">Obtenido con</dt><dd class="break-all">{#if abrible(o.procedencia.consulta, carga)}<a href={abrible(o.procedencia.consulta, carga)} target="_blank" rel="noopener noreferrer" class="enlace">{o.procedencia.consulta}</a>{:else}{o.procedencia.consulta}{/if}</dd>
+							<dt class="text-muted-foreground">Leído en</dt><dd class="break-all">{#if abrible(o.procedencia.consulta, carga)}<a href={abrible(o.procedencia.consulta, carga)} target="_blank" rel="noopener noreferrer" class="enlace">{o.procedencia.consulta}</a>{:else}{leidoEn(o.procedencia.consulta)}{/if}</dd>
 							<dt class="text-muted-foreground">Fecha de lectura</dt><dd>{fecha(o.procedencia.marca_tiempo)}</dd>
-							<dt class="text-muted-foreground">Extracción</dt><dd>{RUTA[o.procedencia.ruta_extraccion] ?? o.procedencia.ruta_extraccion}{o.procedencia.modelo_extraccion ? ` (${o.procedencia.modelo_extraccion})` : ''}</dd>
+							<dt class="text-muted-foreground">Cómo se extrajo</dt><dd>{RUTA[o.procedencia.ruta_extraccion] ?? o.procedencia.ruta_extraccion}{o.procedencia.modelo_extraccion ? ` (${o.procedencia.modelo_extraccion})` : ''}</dd>
 							{#if o.gtin || o.marca || o.modelo}<dt class="text-muted-foreground">Identificación</dt><dd>{[o.marca, o.modelo, o.gtin ? `GTIN ${o.gtin}` : null].filter(Boolean).join(' · ')}</dd>{/if}
 							<dt class="text-muted-foreground">SHA-256</dt><dd class="font-mono break-all">{o.procedencia.suma_verificacion || '—'}</dd>
 						</dl>

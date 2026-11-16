@@ -1635,3 +1635,15 @@ make web && systemctl --user restart cotia-api      # o make bd && make api
 
 Debe ver URL de tiendas reales o rutas `/api/corpus/archivo/…`; nunca `127.0.0.1` ni dominios distintos al de la
 tienda leída.
+
+**4. Lenguaje del comprador en el informe — US$0.** Abra varios informes de la barra lateral (uno con recomendación
+y otro con abstención). No debe ver códigos de fuente (V5, P2, U3a…), nombres con guion bajo (`sin_contraparte`,
+`abrir_pagina`), llaves `{…}`, «Error», «>=», «true» ni «MCP» fuera de los fragmentos originales. En la consola, sobre
+un informe:
+
+```js
+const m = document.querySelector('main').cloneNode(true); m.querySelectorAll('pre').forEach(p => p.remove());
+m.innerText.match(/(?:\(|, |\b(?:de|en) )[PAV]\d{1,2}\b|\bU[0-9a-f]{6}\b|\b[a-z]+_[a-z_]+\b|[{}]|Error|>=|\btrue\b|MCP/g)
+```
+
+Debe devolver `null`.

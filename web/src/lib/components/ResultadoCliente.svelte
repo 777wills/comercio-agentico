@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Resultado del modo Cliente (D111): recomendación, tabla corta y fuente por oferta.
 	import { cop, usd, type Propuesta } from '#lib/api.js';
-	import { conNombres } from '#lib/datos.js';
+	import { conNombres, nombreFuente } from '#lib/datos.js';
 	import BadgeCheck from '@lucide/svelte/icons/badge-check';
 	import Info from '@lucide/svelte/icons/info';
 	import ExternalLink from '@lucide/svelte/icons/external-link';
@@ -25,7 +25,7 @@
 
 	const total = (o: Propuesta['ofertas'][number]) => o.precio + (o.costo_envio ?? 0);
 	const proveedor = (o: Propuesta['ofertas'][number]) =>
-		nombres[o.procedencia.fuente] ?? o.procedencia.fuente;
+		nombreFuente(o.procedencia.fuente, nombres);
 	const DISPONIBILIDAD: Record<string, string> = {
 		en_stock: 'En stock',
 		bajo_pedido: 'Bajo pedido',
@@ -107,7 +107,7 @@
 	<p class="text-xs text-muted-foreground">
 		Leído en {proveedor(o)} el
 		{new Date(o.procedencia.marca_tiempo).toLocaleString('es-CO')} · precio
-		{cop(o.precio)} + envío {cop(o.costo_envio)}. Este es el texto original de la fuente:
+		{cop(o.precio)} + {o.costo_envio == null ? 'envío sin informar' : o.costo_envio === 0 ? 'envío gratis' : `envío ${cop(o.costo_envio)}`}. Este es el texto original de la fuente:
 	</p>
 	<pre
 		class="mt-2 max-h-56 overflow-y-auto rounded-lg bg-muted p-3 text-xs whitespace-pre-wrap [overflow-wrap:anywhere] text-muted-foreground">{o

@@ -12,7 +12,15 @@ se enlazan en las consultas nuevas. Sin enlace: el MCP y los PDF del visitante (
 archivo). Lógica en `web/src/lib/enlaces.ts`, probada con 11 casos (incluidos un dominio ajeno y un `javascript:`).
 Revisado en Chrome con consultas guardadas: vivo (34 enlaces en el informe), corpus B y carga A20 (todos 200).
 `make check` en verde (226 pruebas). Borrador `03_metodologia_producto.md` actualizado. **Gasto US$0.**
-**Wills:** tras el despliegue, abrir una consulta en producción y pulsar «Abrir ↗». Arreglo menor: la justificación mostraba los códigos de fuente en lista («(V3, V4, V5, V6, V7)»); `conNombres` (`web/src/lib/datos.ts`) ahora traduce también las listas a nombres de tienda. **Sigue S10 (informe del curso).**
+**Wills:** tras el despliegue, abrir una consulta en producción y pulsar «Abrir ↗». Arreglo menor: la justificación mostraba los códigos de fuente en lista («(V3, V4, V5, V6, V7)»); `conNombres` (`web/src/lib/datos.ts`) ahora traduce también las listas a nombres de tienda. **Revisión del lenguaje del informe para el comprador:** auditados por programa los 26 informes guardados
+(textos visibles sin fragmentos) en busca de códigos, identificadores con guion bajo, trazas y jerga. Corregido:
+códigos sueltos o de tiendas retiradas (V1 Alkosto, V2 Ktronix) y de tiendas propias («Tienda propia» si no es del
+visitante); «(discrepancia)»/«(sin_contraparte)» en frases claras; alertas de fuente no disponible sin la llamada ni
+la traza (`alertaLegible`: robots.txt, fuera de la lista, catálogo inactivo, sin respuesta); alertas del clasificador
+sin «ventanas» ni puntaje; «sin juicio de pertinencia», «>=», «1 cumplen»; tipo de producto con tilde; especificaciones
+sí/no; decisión sin «precio verificada» ni «envío —»; columna «Precio confirmado en 2.ª lectura» (Sí / No coincide /
+No se pudo releer, con los campos en español); motivos con mayúscula inicial; búsquedas del mayorista y su procedencia
+legibles; alertas sin repetir. Auditoría final: 0 hallazgos en los 26. Gasto US$0. **Sigue S10 (informe del curso).**
 
 **16-nov (S10f, sin tope de tiendas activas; Claude Code · Opus 5.5), D144 (precisa D131):** al cargar CotIA
 siguen activas las 5 tiendas fijas, pero el visitante puede activar todas las del catálogo y sus URL propias. Se quitó
