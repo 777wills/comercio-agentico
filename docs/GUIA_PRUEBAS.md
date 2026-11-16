@@ -1702,3 +1702,31 @@ cláusulas (sus términos prohíben robots o arañas).
 «Fuentes»: Mac Center e iShop muestran sus dominios nuevos. Para comprobarlo de punta a punta, active solo Mac Center
 e iShop y pregunte «MacBook Air 13 con chip M5»: con búsqueda **Rápida** y DeepSeek Flash cuesta ≈ US$0,03
 (estimado, no medido). Si funciona, debe recomendar o listar un MacBook Air M5 de iShop (desde $6.199.000 el 16-nov).
+
+## S10j — El planificador navega solo por URL conocidas (16-nov, D148)
+
+**Qué cambió:** las instrucciones del planificador le piden abrir solo la dirección registrada de cada tienda y los
+enlaces que le devolvieron las herramientas, sin adivinar rutas (`/sitemap.xml`, `/mac`, búsquedas supuestas); entrar
+desde la portada a la categoría que corresponde; no reabrir páginas leídas, y dejar una tienda sin enlaces al
+producto. Es un cambio de texto de las instrucciones (cambia la huella `version_prompt`), sin código nuevo.
+
+**1. Pruebas sin red — US$0**
+
+```bash
+uv run pytest -q tests/test_agente.py -k enlaces_recibidos   # el texto nuevo está y se formatea
+make check                                                   # 233 pruebas
+```
+
+**2. Ver las instrucciones — US$0**
+
+```bash
+uv run python -c "from comercio_agentico.agente.grafo import INSTRUCCIONES_PLANIFICADOR as t; print(t)"
+```
+
+**3. De punta a punta — ≈ US$0,05 (medido el 16-nov: US$0,049, 338 s):** reinicie la API local para que corra el
+código nuevo, abra `http://localhost:8000`, active en «Fuentes» Mac Center e iShop (más las que quiera), elija
+búsqueda **Rápida** y DeepSeek Flash, y pregunte «MacBook Air, chip M5, 512 GB de almacenamiento y por lo menos 16 GB
+de ram». En el progreso, la segunda ronda debe abrir `…/collections/macbookair` (Mac Center) y
+`…/collections/macbook-air` (iShop), no `/sitemap.xml` ni `/search?q=`. El 16-nov recomendó el MacBook Air 13" M5
+512 GB de iShop por $6.199.000. Si alguna tienda falla (Panamericana dio error de lectura), el agente sigue con las
+demás. Tope por consulta al lanzar la API: `COSTO_MAXIMO_POR_TAREA_USD=0.08 uv run uvicorn comercio_agentico.api.app:crear_app --factory --port 8000`.

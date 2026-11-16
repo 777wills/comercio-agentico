@@ -232,3 +232,17 @@ agotar el presupuesto. El nivel normal con cinco fuentes corresponde a la config
 Una lectura que el planificador ya hizo en la tarea no se repite ni consume presupuesto: el planificador recibe la
 indicación de que esa página ya fue leída y la bitácora la registra como tal. En la consulta que motivó el cambio, el
 planificador había dedicado 7 de 30 lecturas a volver a abrir portadas ya leídas.
+
+En esa misma consulta, el planificador también construyó rutas que no había observado (mapas del sitio, búsquedas y
+categorías supuestas, como `/sitemap.xml` o `/mac`); varias no existían y agotaron el tiempo máximo de lectura. Un
+modelo de lenguaje tiende a completar con su conocimiento previo la estructura típica de una tienda cuando la
+instrucción no lo ata a lo que observó. Por ello, las instrucciones del planificador le piden abrir solo la dirección
+registrada de cada proveedor y los enlaces que devolvieron las herramientas, copiados tal cual; elegir desde la
+página registrada la categoría o el listado que corresponde a la necesidad; no volver a abrir una página ya leída, y
+abandonar una tienda cuando ninguno de sus enlaces conduce al producto. La restricción se expresa en la instrucción
+y no como un filtro en el código, porque un filtro que rechazara toda dirección no recibida bloquearía también las
+búsquedas válidas. En una repetición de la consulta con búsqueda rápida (14 lecturas, ocho tiendas activas y
+DeepSeek V4.1 Flash), las 12 lecturas ejecutadas fueron 6 páginas registradas y 6 enlaces recibidos, sin ninguna
+ruta inventada; desde la segunda ronda el agente entró a las categorías de MacBook Air de las dos tiendas Apple, y
+la consulta recomendó un MacBook Air de 13 pulgadas con chip M5 y 512 GB por $6.199.000, con envío sin costo,
+en 338 s y por US$0,049.

@@ -613,7 +613,15 @@ informe de cotización.
 - [x] Oferta con precio en otra moneda descartada con su motivo.
 - [x] Pruebas (`make check`, 232) y frontend sin errores.
 - [ ] Consulta de punta a punta con Mac Center e iShop (Wills, ≈ US$0,03) y revisión en producción.
-- [ ] Propuesto: que el planificador siga los enlaces recibidos en vez de inventar rutas.
+- [x] Que el planificador siga los enlaces recibidos en vez de inventar rutas (hecho en S10j, D148).
+
+## S10j — Instrucciones del planificador: navegar por URL conocidas (lun 16-nov, D148)
+
+- [x] `INSTRUCCIONES_PLANIFICADOR`: solo la url registrada y los enlaces recibidos, sin rutas adivinadas; categoría
+      o listado desde la página registrada; no reabrir páginas leídas; dejar la tienda sin enlaces al producto.
+- [x] Prueba sin red (`make check`, 233).
+- [x] Consulta real «MacBook Air, chip M5…» con Flash (búsqueda rápida, tope US$0,08), comparada con la del 16-nov.
+- [ ] Revisar en producción tras el despliegue.
 
 ## S10 — Informe en la plantilla del curso (mar 17 / mié 18-nov)
 

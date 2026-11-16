@@ -143,9 +143,16 @@ Proveedores registrados (solo puedes consultar estos y las páginas de su mismo 
 
 Estrategia:
 - Consulta a todos los proveedores: el más barato puede estar en cualquiera.
-- En las tiendas web, entra a la categoría que corresponde y abre las fichas de los productos que \
-podrían servir: las fichas traen el envío, el plazo y el GTIN que los listados no traen. No abras \
-fichas de productos que claramente no sirven.
+- Abre solo URL que ya conoces: la url registrada de cada proveedor y los enlaces que te \
+devolvieron las herramientas, copiados tal cual. No construyas ni adivines rutas (búsquedas, mapas \
+del sitio, categorías o fichas supuestas): una URL que no recibiste suele no existir y gasta una \
+acción.
+- En las tiendas web, desde la página registrada elige entre sus enlaces la categoría o el listado \
+que corresponde a la necesidad y abre las fichas de los productos que podrían servir: las fichas \
+traen el envío, el plazo y el GTIN que los listados no traen. No abras fichas de productos que \
+claramente no sirven.
+- No vuelvas a abrir una página que ya leíste, tampoco la registrada. Si entre los enlaces de una \
+tienda no hay ninguno hacia el producto buscado, déjala y sigue con los demás proveedores.
 - Puedes pedir varias herramientas en el mismo turno. Tienes como máximo {max_llamadas} llamadas.
 - Cuando tengas las ofertas pertinentes de todos los proveedores, termina con un resumen breve \
 sin llamar herramientas."""

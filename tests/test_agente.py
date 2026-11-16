@@ -598,3 +598,15 @@ def test_lectura_repetida_no_se_ejecuta_ni_gasta_accion():
     assert final["llamadas"] == 2  # la lectura nueva y la caída cuentan; la repetida no
     repetida = next(m for m in final["messages"] if getattr(m, "tool_call_id", "") == "2")
     assert repetida.content == YA_LEIDA and repetida.artifact == {"repetida": True}
+
+
+def test_planificador_navega_solo_por_enlaces_recibidos():
+    """D148: las instrucciones atan la navegación a la url registrada y a los enlaces recibidos."""
+    from comercio_agentico.agente.grafo import INSTRUCCIONES_PLANIFICADOR
+
+    texto = INSTRUCCIONES_PLANIFICADOR.format(necesidad="{}", fuentes="- P2", max_llamadas=14)
+    assert "enlaces que te \ndevolvieron las herramientas" not in texto  # continuación de línea
+    assert "los enlaces que te devolvieron las herramientas" in texto
+    assert "No construyas ni adivines rutas" in texto
+    assert "No vuelvas a abrir una página que ya leíste" in texto
+    assert "14 llamadas" in texto

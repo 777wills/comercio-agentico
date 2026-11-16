@@ -2,6 +2,20 @@
 
 ## Siguiente sesión
 
+**16-nov (S10j, instrucciones del planificador; Claude Code · Opus 5.5), D148:** el planificador abre solo la url
+registrada y los enlaces recibidos (sin rutas adivinadas), entra a la categoría desde la portada, no reabre páginas y
+deja la tienda sin enlaces al producto. Cambio global de `INSTRUCCIONES_PLANIFICADOR` por decisión de Wills (nueva
+`version_prompt`; E1–E3 conservan sus corridas con `9e49060f5a9e` y no se repiten); sin control en código, para no
+bloquear búsquedas válidas. 1 prueba nueva (`make check`, **233**). Consulta real «MacBook Air, chip M5…» (Flash,
+búsqueda rápida, 8 tiendas, N3, tope US$0,08; script con espía de enlaces en el scratchpad, API propia en :8010 sobre
+la base local): 12 de 14 lecturas, **6 registradas + 6 enlaces recibidos, 0 inventadas**, 1 repetida bloqueada
+(Panamericana tras error); recomendó MacBook Air 13" M5 512 GB de iShop, $6.199.000, envío $0; **US$0,0489**,
+338 s (antes: abstención, 30 lecturas, 469 s, US$0,0515, con dominios muertos). Borrador
+`03_metodologia_producto.md` actualizado. Pendiente menor: el interceptor de `web_abierta.py` no captura el error
+de `route.fetch` ante un recurso del desafío de Cloudflare (traza en el registro, la lectura sigue). **Gasto
+≈ US$0,049 (OpenRouter).** **Wills:** reiniciar la API local (la de :8000 corre código anterior, lanzada a las 14:08)
+y, tras el despliegue, repetir la consulta en producción (≈ US$0,05). **Sigue S10 (informe).**
+
 **16-nov (S10i, por qué falló la consulta «MacBook Air, chip M5…»; Claude Code · Opus 5.5), D147:** la consulta
 (exhaustiva, 30 lecturas, US$0,0515, 469 s) se abstuvo con 40 ofertas y ningún MacBook. Diagnóstico con el lector del
 agente, sin modelo: `ishop.co` es un **dominio en venta** y `maccenter.com.co` sirve una **página de Samsung
