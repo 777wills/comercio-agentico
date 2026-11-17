@@ -43,9 +43,9 @@ CLASIFICADORES: dict[str, dict[str, Any]] = {
     },
     "patronus-studio/wolf-defender-prompt-injection": {
         "etiqueta": "Wolf Defender (Patronus)",
-        "descripcion": "Multilingüe (mmBERT, 140M). 0 falsos positivos, más lento (p50 419 ms). "
+        "descripcion": "Multilingüe (mmBERT, 307M). 0 falsos positivos, más lento (p50 419 ms). "
         "Respaldo de Red Hat AI.",
-        "parametros": "140M",
+        "parametros": "307M",
         "idiomas": "de/en documentados (mmBERT multilingüe)",
         "licencia": "Apache-2.0",
         "latencia_p50_ms": 419,
