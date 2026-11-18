@@ -508,11 +508,11 @@ corrida siguiendo el README.
       grado de avance en los modelos de IA, claridad y alineación con RA2 (sistemas agénticos), RA3 (soluciones
       sistémicas sustentadas en evidencia) y RA4 (comunicación) (D137), y consideraciones éticas y de viabilidad
       técnica.
-- [ ] Wills sube ambos documentos a Intu a más tardar el mar 17-nov.
+- [x] Wills sube ambos documentos a Intu a más tardar el mar 17-nov. _(Subidos el 18-nov.)_
 
 **Terminado cuando:** los dos archivos están en `privado/entregables/` y Wills los subió a Intu.
 _15-nov: generados `Informe_avance_PAIII_WilliamSuaza` y `Presentacion_Presustentacion_PAIII_WilliamSuaza`
-(`.docx`/`.pptx` y `.pdf`); las respuestas a los cuatro criterios van en las notas del orador. Falta la subida a Intu._
+(`.docx`/`.pptx` y `.pdf`); las respuestas a los cuatro criterios van en las notas del orador. 18-nov: informe de avance corregido según D144 y ambos subidos a Intu._
 
 ## S10b — Revisión de la interfaz de CotIA (lun 16-nov, D139)
 
