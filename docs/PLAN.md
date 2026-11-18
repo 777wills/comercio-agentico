@@ -512,7 +512,7 @@ corrida siguiendo el README.
 
 **Terminado cuando:** los dos archivos están en `privado/entregables/` y Wills los subió a Intu.
 _15-nov: generados `Informe_avance_PAIII_WilliamSuaza` y `Presentacion_Presustentacion_PAIII_WilliamSuaza`
-(`.docx`/`.pptx` y `.pdf`); las respuestas a los cuatro criterios van en las notas del orador. 18-nov: informe de avance corregido según D144 y ambos subidos a Intu._
+(`.docx`/`.pptx` y `.pdf`); las respuestas a los cuatro criterios van en las notas del orador. 18-nov: informe de avance corregido según D144 y ambos subidos a Intu. Después, la presentación se amplió a 7 láminas con las dos arquitecturas y la demostración (D150)._
 
 ## S10b — Revisión de la interfaz de CotIA (lun 16-nov, D139)
 
@@ -678,7 +678,7 @@ persona. Correspondencia con los borradores: 01 + 02 → I; 03 → II; 04 → II
 - [ ] Presentación final de 5 láminas sobre «Plantilla presentacion institucional Icesi -2026.pptx», guardada en
       `privado/entregables/`, guion completo en notas del orador; base del video.
 - [ ] Preguntas probables del tribunal con respuesta preparada (P11 de `privado/AUDITORIA_Y_FLUJO.md`).
-- [ ] Demo segura para el 20-nov (P11, D118): consulta en vivo corta sobre el corpus B o A (1–2 min), consulta en
+- [ ] Demo segura para el 20-nov (P11, D118; guion y lámina listos el 18-nov, D150: A20 en vivo en el Laboratorio, tiendas reales del calentamiento, video de respaldo; paso a paso en `privado/GUIA_DEFENSA.md`): consulta en vivo corta sobre el corpus B o A (1–2 min), consulta en
       tiendas reales grabada de antemano, laboratorio de ataques C0 frente a C3 listo, y Railway sin Serverless esa
       mañana con una consulta de calentamiento.
 - [ ] Wills radica informe y presentación (20-nov), con el visto bueno del mentor.
