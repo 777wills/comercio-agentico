@@ -2,6 +2,8 @@
 
 ## Siguiente sesión
 
+**18-nov (revisión de los entregables de la presustentación; Claude Code · Opus 5.5):** los dos entregables de S10a están en `privado/entregables/` (informe de avance: carta de aval sin firma + 1 página; presentación: 5 láminas con guion de 7 min). Contrastados con D138–D149: la presentación y sus notas siguen vigentes (13 tiendas, E1–E3, rúbrica); el informe de avance decía «con un máximo de 5 por consulta», desfasado por D144: corregido a «cinco activas por defecto y ampliables a todo el catálogo» en `fuentes_s10a/informe_avance.py` y regenerados `.docx` y `.pdf` (sigue en 1 página). **Wills: aún no los ha subido a Intu (el plazo era el 17-nov)**; subirlos hoy y avisar al profesor; pedir la firma de la carta de aval. **Gasto US$0.** **Sigue S10 (informe completo).**
+
 **16-nov (guía para la defensa; Claude Code · Opus 5.5):** a pedido de Wills, guía de estudio para la presustentación
 y la sustentación en `privado/GUIA_DEFENSA.md` (no versionada), contrastada con el código y los borradores del
 informe: arquitectura, grafo de LangGraph, recorrido de una consulta (B013 con la verdad del corpus), defensas, N3,
