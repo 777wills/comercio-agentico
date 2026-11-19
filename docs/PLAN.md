@@ -512,7 +512,7 @@ corrida siguiendo el README.
 
 **Terminado cuando:** los dos archivos están en `privado/entregables/` y Wills los subió a Intu.
 _15-nov: generados `Informe_avance_PAIII_WilliamSuaza` y `Presentacion_Presustentacion_PAIII_WilliamSuaza`
-(`.docx`/`.pptx` y `.pdf`); las respuestas a los cuatro criterios van en las notas del orador. 18-nov: informe de avance corregido según D144 y ambos subidos a Intu. Después, la presentación pasó a 7 láminas con el problema y las dos arquitecturas; la demostración va en el navegador (D150)._
+(`.docx`/`.pptx` y `.pdf`); las respuestas a los cuatro criterios van en las notas del orador. 18-nov: informe de avance corregido según D144 y ambos subidos a Intu. Después, la presentación pasó a 7 láminas con el problema y las dos arquitecturas; la demostración va en el navegador (D150). 19-nov: arquitecturas como diagramas D2 (agente sobre dos planos y C4 de contenedores) y anexo con el diagrama de clases (D151)._
 
 ## S10b — Revisión de la interfaz de CotIA (lun 16-nov, D139)
 

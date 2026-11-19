@@ -1,0 +1,109 @@
+# Arquitectura del agente: el StateGraph de LangGraph (src/comercio_agentico/agente/grafo.py)
+# sobre los dos planos de la defensa C1. Render: make diagramas.
+vars: {
+  d2-config: {
+    layout-engine: dagre
+    pad: 10
+  }
+}
+direction: right
+
+classes: {
+  nodo: {shape: rectangle; style: {stroke-width: 4; border-radius: 12; font-size: 52}}
+  n1: {style: {fill: "#EAF7EF"; stroke: "#4CB978"}}
+  n2: {style: {fill: "#F3EEFE"; stroke: "#855CF0"}}
+  n3: {style: {fill: "#EDEDFD"; stroke: "#5454E9"}}
+  n4: {style: {fill: "#FEF0E7"; stroke: "#F0681A"}}
+  etq: {style: {font-size: 36; stroke-width: 4}}
+}
+
+control: "PLANO DE CONTROL · confiable" {
+  style: {fill: "#FAFAFE"; stroke: "#5454E9"; stroke-dash: 5; stroke-width: 3; border-radius: 14; font-size: 42; bold: true; font-color: "#3A3A7A"}
+
+  interpretar: |md
+    **interpretar**
+
+    DeepSeek Flash
+
+    → `Necesidad`
+  | {class: [nodo; n2]}
+
+  planificar: |md
+    **planificar**
+
+    ReAct · DeepSeek Flash
+
+    `bind_tools` (3)
+  | {class: [nodo; n2]}
+
+  emparejar: |md
+    **emparejar**
+
+    e5-small · top-5
+
+    Flash como juez
+  | {class: [nodo; n2]}
+
+  proponer: |md
+    **proponer**
+
+    C3 → N3 (Haiku 5.5)
+
+    → `PropuestaCompra`
+  | {class: [nodo; n3]}
+}
+
+datos: "PLANO DE DATOS · nodo herramientas · no confiable" {
+  style: {fill: "#FFF8F3"; stroke: "#F0681A"; stroke-dash: 5; stroke-width: 3; border-radius: 14; font-size: 42; bold: true; font-color: "#A0440E"}
+  label.near: bottom-center
+
+  leer: |md
+    **N1 · leer**
+
+    crawl4ai · pypdf
+
+    FastMCP · extruct
+  | {class: [nodo; n1]}
+
+  filtrar: |md
+    **C2 · filtrar**
+
+    guard-small (140 M)
+
+    p > 0,5 → retira
+  | {class: [nodo; n4]}
+
+  extraer: |md
+    **extraer**
+
+    Flash sin tools
+
+    → `ListaOfertas`
+  | {class: [nodo; n2]}
+
+  sellar: |md
+    **sellar**
+
+    `Procedencia`
+
+    SHA-256 (código)
+  | {class: [nodo; n3]}
+
+  leer -> filtrar -> extraer -> sellar: {class: etq}
+}
+
+control.interpretar -> control.planificar: "compra" {class: etq}
+control.interpretar -> control.proponer: "¬compra ∨ falta" {
+  class: etq
+  style: {stroke-dash: 6; stroke: "#707070"}
+}
+control.planificar -> datos.leer: "tool_calls < 14" {
+  class: etq
+  style: {stroke: "#855CF0"; stroke-width: 5}
+}
+datos.sellar -> control.planificar: "C1 · solo JSON" {
+  class: etq
+  style: {stroke: "#F0681A"; stroke-width: 5}
+}
+control.planificar -> control.emparejar: "fin" {class: etq}
+control.emparejar -> control.proponer: {class: etq}

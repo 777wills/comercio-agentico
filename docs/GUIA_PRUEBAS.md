@@ -1730,3 +1730,29 @@ de ram». En el progreso, la segunda ronda debe abrir `…/collections/macbookai
 `…/collections/macbook-air` (iShop), no `/sitemap.xml` ni `/search?q=`. El 16-nov recomendó el MacBook Air 13" M5
 512 GB de iShop por $6.199.000. Si alguna tienda falla (Panamericana dio error de lectura), el agente sigue con las
 demás. Tope por consulta al lanzar la API: `COSTO_MAXIMO_POR_TAREA_USD=0.08 uv run uvicorn comercio_agentico.api.app:crear_app --factory --port 8000`.
+
+## 19-nov — Diagramas de arquitectura como código (D151)
+
+**Qué se construyó:** tres diagramas en D2 en `docs/arquitectura/`: `agente.d2` (el StateGraph de `grafo.py` sobre
+los dos planos), `solucion.d2` (C4 de contenedores de CotIA en Railway) y `contratos.d2` (diagrama de clases de los
+modelos Pydantic y la API). Son los de las láminas 3, 4 y el anexo de la presentación de la presustentación.
+
+**1. Regenerar los SVG — US$0, sin red** (requiere D2 ≥ 0.9; instalación sin sudo: descargar el binario de
+`github.com/terrastruct/d2/releases` y dejarlo en `~/.local/bin`)
+
+```bash
+make diagramas                    # docs/arquitectura/*.svg
+xdg-open docs/arquitectura/agente.svg
+```
+
+Si funciona, cada `.d2` imprime `success: successfully compiled`. Para editar en vivo: `d2 --watch
+docs/arquitectura/solucion.d2` abre el navegador y redibuja al guardar.
+
+**2. Contrastar el diagrama con el código — US$0**
+
+```bash
+sed -n '/grafo = StateGraph(Estado)/,/grafo.compile()/p' src/comercio_agentico/agente/grafo.py
+```
+
+Los cinco `add_node` y las dos `add_conditional_edges` son los nodos y las flechas condicionales de `agente.d2`
+(«compra» / «¬compra ∨ falta» y «tool_calls < 14» / «fin»).

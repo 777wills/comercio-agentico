@@ -1,0 +1,147 @@
+# Arquitectura de la solución: diagrama C4 de contenedores de CotIA desplegado en Railway (D81, D114, D116).
+# Render: make diagramas.
+vars: {
+  d2-config: {
+    layout-engine: elk
+    pad: 10
+  }
+}
+direction: right
+
+classes: {
+  persona: {
+    shape: c4-person
+    style: {fill: "#3A3A7A"; stroke: "#2A2A5E"; font-color: "#FFFFFF"; font-size: 46}
+  }
+  interno: {
+    shape: rectangle
+    style: {fill: "#5454E9"; stroke: "#3A3AB8"; stroke-width: 3; font-color: "#FFFFFF"; border-radius: 12; font-size: 46}
+  }
+  local: {
+    shape: rectangle
+    style: {fill: "#3E9E66"; stroke: "#2E7A4E"; stroke-width: 3; font-color: "#FFFFFF"; border-radius: 12; font-size: 46}
+  }
+  datos: {
+    shape: cylinder
+    style: {fill: "#5454E9"; stroke: "#3A3AB8"; stroke-width: 3; font-color: "#FFFFFF"; font-size: 46}
+  }
+  externo: {
+    shape: rectangle
+    style: {fill: "#8A8A9E"; stroke: "#6B6B80"; stroke-width: 3; font-color: "#FFFFFF"; border-radius: 12; font-size: 46}
+  }
+  frontera: {
+    style: {fill: "#FAFAFE"; stroke: "#5454E9"; stroke-dash: 6; stroke-width: 3; border-radius: 14; font-size: 46; bold: true; font-color: "#3A3A7A"}
+  }
+  rel: {style: {font-size: 38; stroke-width: 4; stroke: "#3A3A7A"}}
+}
+
+visitante: |md
+  **Visitante**
+
+  navegador
+
+  clave propia
+| {class: persona}
+
+railway: "Railway · HTTPS" {
+  class: frontera
+
+  contenedor: "Docker · python:3.13 + Chromium" {
+    class: frontera
+    style.fill: "#F1F1FB"
+
+    web: |md
+      **Web (SPA)**
+
+      [SvelteKit · Svelte 5]
+
+      Cliente y Laboratorio
+    | {class: interno}
+
+    api: |md
+      **API**
+
+      [FastAPI · uvicorn]
+
+      REST + SSE
+
+      cola 1 + 5 → 429
+    | {class: interno}
+
+    agente: "Agente (mismo proceso)" {
+      class: frontera
+      style.fill: "#E6E6FA"
+
+      grafo: |md
+        **StateGraph**
+
+        [LangGraph]
+
+        crawl4ai · pypdf
+
+        FastMCP
+      | {class: interno}
+
+      locales: |md
+        **Modelos locales**
+
+        [CPU · Hugging Face]
+
+        e5-small
+
+        guard-small
+      | {class: local}
+    }
+
+    web -> api: "JSON + SSE\nX-Clave-Modelo" {class: rel}
+    api -> agente.grafo: "asyncio" {class: rel}
+  }
+
+  bd: |md
+    **PostgreSQL**
+
+    [SQLAlchemy 2]
+
+    consultas
+
+    evidencia
+  | {class: datos}
+
+  contenedor.api -> bd: "SQL" {class: rel}
+}
+
+llm: |md
+  **OpenRouter / Anthropic**
+
+  [clave del visitante]
+
+  DeepSeek V4.1 Flash
+
+  Claude Haiku 5.5 (N3)
+| {class: externo}
+
+fuentes: |md
+  **Proveedores**
+
+  [13 tiendas · corpus]
+
+  HTML · PDF · MCP
+| {class: externo}
+
+langsmith: |md
+  **LangSmith**
+
+  [trazas del LLM]
+| {class: externo}
+
+ci: |md
+  **GitHub Actions**
+
+  [CI/CD · cron semanal]
+| {class: externo}
+
+visitante -> railway.contenedor.web: "HTTPS" {class: rel}
+railway.contenedor.agente.grafo -> llm: "HTTPS" {class: rel}
+railway.contenedor.agente.grafo -> fuentes: "crawl4ai · MCP" {class: rel}
+railway.contenedor.agente.grafo -> langsmith: "trazas" {class: rel; style.stroke-dash: 6}
+ci -> railway.contenedor: "push a main" {class: rel; style.stroke-dash: 6}

@@ -5,7 +5,7 @@
 SHELL := /bin/bash
 
 .DEFAULT_GOAL := help
-.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test guardia check build clean ping corpus-b corpus-b-servir corpus-b-catalogo corpus-a-recolectar corpus-a corpus-a-servir corpus-a-correr humo candidatos app arnes-simulado calibracion e3 e3-frontera e2-ataques e2-ataques-simulado e2-utilidad e2 jev e1 e1-lecturas e1-fallas metricas bd api web web-dev cotia-docker cotia-humo
+.PHONY: help install dev pre-commit-install pre-commit lint format format-check typecheck test guardia check build clean ping corpus-b corpus-b-servir corpus-b-catalogo corpus-a-recolectar corpus-a corpus-a-servir corpus-a-correr humo candidatos app arnes-simulado calibracion e3 e3-frontera e2-ataques e2-ataques-simulado e2-utilidad e2 jev e1 e1-lecturas e1-fallas metricas bd api web web-dev cotia-docker cotia-humo diagramas
 
 help: ## Muestra esta ayuda
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-18s\033[0m %s\n", $$1, $$2}'
@@ -146,3 +146,9 @@ build: ## Construye el paquete (sdist + wheel)
 clean: ## Limpia cachés y artefactos
 	rm -rf .pytest_cache .ruff_cache .mypy_cache dist build htmlcov .coverage
 	find . -type d -name __pycache__ -prune -exec rm -rf {} +
+
+DIAGRAMAS := $(patsubst %.d2,%.svg,$(wildcard docs/arquitectura/*.d2))
+diagramas: $(DIAGRAMAS) ## Renderiza los diagramas de arquitectura docs/arquitectura/*.d2 a SVG (requiere d2 ≥ 0.9; US$0, sin red)
+
+docs/arquitectura/%.svg: docs/arquitectura/%.d2
+	d2 --elk-nodeNodeBetweenLayers=45 "--elk-padding=[top=60,left=30,bottom=30,right=30]" $< $@

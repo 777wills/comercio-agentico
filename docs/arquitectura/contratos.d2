@@ -1,0 +1,85 @@
+# Contratos de datos del agente y de la API (src/comercio_agentico/esquema.py, agente/grafo.py, api/app.py).
+# Un solo esquema Pydantic v2 para el agente, la API y la evidencia. Render: make diagramas.
+vars: {
+  d2-config: {
+    layout-engine: elk
+    pad: 10
+  }
+}
+direction: right
+
+classes: {
+  clase: {shape: class; style: {fill: "#5454E9"; font-size: 34}}
+  dato: {shape: class; style: {fill: "#855CF0"; font-size: 34}}
+  sello: {shape: class; style: {fill: "#F0681A"; font-size: 34}}
+  api: {shape: class; style: {fill: "#3A3A7A"; font-size: 34}}
+  rel: {style: {font-size: 32; stroke-width: 3; stroke: "#3A3A7A"}}
+}
+
+Estado: "Estado · TypedDict (LangGraph)" {
+  class: clase
+  consulta: str
+  necesidad: Necesidad
+  messages: "list[AnyMessage] ⊕ add_messages"
+  ofertas: "list[Oferta] ⊕ operator.add"
+  alertas: "list[Alerta] ⊕ operator.add"
+  llamadas: "int (≤ 14)"
+  ofertas_finales: "list[Oferta]"
+  propuesta: PropuestaCompra
+}
+
+OfertaExtraida: "OfertaExtraida · salida del LLM" {
+  class: dato
+  titulo: str
+  precio: "float > 0"
+  moneda: "ISO 4217"
+  gtin: "str | None"
+  disponibilidad: Disponibilidad
+  costo_envio: "float | None"
+  atributos: "dict[str, valor]"
+}
+
+Oferta: "Oferta · la escribe el código" {
+  class: clase
+  procedencia: Procedencia
+  producto_catalogo: "str | None"
+  verificacion: "verificada | discrepancia | …"
+  descarte: "str | None"
+}
+
+Procedencia: "Procedencia · evidencia" {
+  class: sello
+  fuente: str
+  tipo_fuente: TipoFuente
+  fragmento_original: str
+  ruta_extraccion: RutaExtraccion
+  marca_tiempo: datetime
+  suma_verificacion: "SHA-256"
+}
+
+PropuestaCompra: "PropuestaCompra" {
+  class: clase
+  ofertas: "list[Oferta]"
+  recomendada: "int | None"
+  abstencion: bool
+  justificacion: str
+  alertas: "list[Alerta]"
+  costo_usd: float
+}
+
+API: "API REST · FastAPI" {
+  class: api
+  "+POST /api/consultas": "202 · 429 si cola llena"
+  "+GET /api/consultas/{id}/eventos": "SSE"
+  "+GET /api/consultas/{id}/evidencia": "Procedencia"
+  "+POST /api/fuentes/url | pdf": "201"
+  "+GET /api/modelos": "lista curada"
+  "+GET /api/salud": "200"
+}
+
+Oferta -> OfertaExtraida: "hereda" {class: rel; target-arrowhead.shape: triangle; target-arrowhead.style.filled: false}
+Oferta -> Procedencia: "1" {class: rel; target-arrowhead.shape: diamond; target-arrowhead.style.filled: true}
+Estado -> Oferta: "*" {class: rel}
+Estado -> PropuestaCompra: "1" {class: rel}
+PropuestaCompra -> Oferta: "*" {class: rel}
+API -> PropuestaCompra: "JSON" {class: rel; style.stroke-dash: 6}
