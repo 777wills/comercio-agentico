@@ -101,3 +101,12 @@ la misma lista curada y la misma prueba de humo como criterio de entrada.
 ocupa del orden de 2 GB. La evolución separa la API de trabajadores que ejecutan el agente, con una cola persistente
 (en la propia PostgreSQL o en un servicio dedicado), de modo que varias réplicas atiendan consultas en paralelo y
 una consulta sobreviva al reinicio de un trabajador.
+
+**Cadena de entrega y seguridad del cliente.** Hoy la plataforma construye la imagen desde el `Dockerfile` en cada
+cambio de la rama principal, una vez aprobada la integración continua, y la guarda en su registro interno. La
+evolución publica en el pipeline una imagen inmutable y versionada en un registro de contenedores (por ejemplo,
+GitHub Container Registry), con su resumen criptográfico, de modo que el despliegue y la vuelta atrás apunten a una
+versión exacta. En el cliente, la clave del visitante viaja solo por TLS, vive en el almacenamiento de la sesión del
+navegador y en la memoria del proceso durante la consulta, y nunca se persiste; la evolución añade una política de
+seguridad de contenido (CSP) estricta en la aplicación, que reduce el riesgo de que un script inyectado lea la clave,
+y recomienda claves con tope de gasto.

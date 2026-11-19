@@ -12,7 +12,7 @@ classes: {
   nodo: {shape: rectangle; style: {stroke-width: 4; border-radius: 12; font-size: 52}}
   n1: {style: {fill: "#EAF7EF"; stroke: "#4CB978"}}
   n2: {style: {fill: "#F3EEFE"; stroke: "#855CF0"}}
-  n3: {style: {fill: "#EDEDFD"; stroke: "#5454E9"}}
+  n3: {style: {fill: "#E3F4F9"; stroke: "#0B8FB3"}}
   n4: {style: {fill: "#FEF0E7"; stroke: "#F0681A"}}
   etq: {style: {font-size: 36; stroke-width: 4}}
 }
@@ -26,7 +26,7 @@ control: "PLANO DE CONTROL · confiable" {
     DeepSeek Flash
 
     → `Necesidad`
-  | {class: [nodo; n2]}
+  | {class: [nodo; n2]; icon: iconos/D.svg; icon.near: border-top-right; width: 420; height: 320; label.near: center-center}
 
   planificar: |md
     **planificar**
@@ -34,7 +34,7 @@ control: "PLANO DE CONTROL · confiable" {
     ReAct · DeepSeek Flash
 
     `bind_tools` (3)
-  | {class: [nodo; n2]}
+  | {class: [nodo; n2]; icon: iconos/D.svg; icon.near: border-top-right; width: 570; height: 320; label.near: center-center}
 
   emparejar: |md
     **emparejar**
@@ -42,15 +42,15 @@ control: "PLANO DE CONTROL · confiable" {
     e5-small · top-5
 
     Flash como juez
-  | {class: [nodo; n2]}
+  | {class: [nodo; n2]; icon: iconos/ED.svg; icon.near: border-top-right; width: 440; height: 320; label.near: center-center}
 
   proponer: |md
     **proponer**
 
-    C3 → N3 (Haiku 5.5)
+    C3 → N3 (Haiku)
 
     → `PropuestaCompra`
-  | {class: [nodo; n3]}
+  | {class: [nodo; n3]; icon: iconos/H.svg; icon.near: border-top-right; width: 560; height: 320; label.near: center-center}
 }
 
 datos: "PLANO DE DATOS · nodo herramientas · no confiable" {
@@ -63,15 +63,15 @@ datos: "PLANO DE DATOS · nodo herramientas · no confiable" {
     crawl4ai · pypdf
 
     FastMCP · extruct
-  | {class: [nodo; n1]}
+  | {class: [nodo; n1]; width: 440; height: 320; label.near: center-center}
 
   filtrar: |md
     **C2 · filtrar**
 
     guard-small (140 M)
 
-    p > 0,5 → retira
-  | {class: [nodo; n4]}
+    p ≥ 0,5 → retira
+  | {class: [nodo; n4]; icon: iconos/G.svg; icon.near: border-top-right; width: 490; height: 320; label.near: center-center}
 
   extraer: |md
     **extraer**
@@ -79,7 +79,7 @@ datos: "PLANO DE DATOS · nodo herramientas · no confiable" {
     Flash sin tools
 
     → `ListaOfertas`
-  | {class: [nodo; n2]}
+  | {class: [nodo; n2]; icon: iconos/D.svg; icon.near: border-top-right; width: 470; height: 320; label.near: center-center}
 
   sellar: |md
     **sellar**
@@ -87,7 +87,7 @@ datos: "PLANO DE DATOS · nodo herramientas · no confiable" {
     `Procedencia`
 
     SHA-256 (código)
-  | {class: [nodo; n3]}
+  | {class: [nodo; n3]; width: 440; height: 320; label.near: center-center}
 
   leer -> filtrar -> extraer -> sellar: {class: etq}
 }
