@@ -2,6 +2,8 @@
 
 ## Siguiente sesión
 
+**19-nov · Claude Code · Opus 5.5 — diagramas técnicos.** Las láminas 3 y 4 de la presentación se rehicieron en nivel técnico a partir del código: la 3 muestra el StateGraph real (START → interpretar → planificar ⇄ herramientas → emparejar → proponer → END, aristas condicionales, `Estado` con reductores, `Oferta` y `Procedencia`, herramientas enlazadas y C2 con ventanas de 1 200 caracteres y umbral 0,5); la 4 es un diagrama de despliegue (endpoints, cabeceras `X-Clave-Modelo` y `X-Visitante`, SSE, cola 1 + 5 con 429, imagen Docker, modelos locales y CI). Notas del orador reescritas con los mismos tiempos. GUIA_DEFENSA al día (demo de 2:40 a 4:30). Gasto: US$0.
+
 **18-nov (lámina del problema; Claude Code · Opus 5.5), D150:** a pedido de Wills, nueva lámina 2 «El problema: comparar proveedores con un agente sin que lo engañen»: necesidad (CCCE 2026-I: 186,35 M transacciones, +22,2 %, $39,37 billones; Accenture 2026: 74 %), por qué es difícil (nomenclaturas, sin identificador común, cambios, fuentes heterogéneas) y el riesgo nuevo (inyección indirecta, primer riesgo de OWASP 2026, con la carga A20 como ejemplo); cifras tomadas del borrador `01_introduccion.md`. Queda en 7 láminas; guion reajustado (problema 0:20–1:05, demo 2:40–4:30). **Gasto US$0.**
 
 **18-nov (ajuste de la presentación; Claude Code · Opus 5.5), D150:** a pedido de Wills se quita la lámina de la demostración (queda en 6; la demo va en el navegador tras la arquitectura de la solución) y se corrige el logo roto: la plantilla institucional trae el logo solo en SVG, sin el PNG de respaldo, y los visores sin SVG mostraban un recuadro con advertencia; el generador ahora agrega el PNG (cairosvg) en cada diseño y patrón. **Gasto US$0.**
