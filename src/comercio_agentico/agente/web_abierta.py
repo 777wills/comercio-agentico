@@ -16,7 +16,9 @@ El corpus congelado (servido en local) no pasa por aquí: es configuración de c
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import ipaddress
+import logging
 import re
 import socket
 import time
@@ -25,6 +27,8 @@ from urllib.parse import urljoin, urlsplit
 from urllib.robotparser import RobotFileParser
 
 import httpx
+
+log = logging.getLogger("comercio_agentico.agente.red")
 
 AGENTE_USUARIO = "ComercioAgenticoBot/0.1"
 PAUSA_POR_SITIO_S = 2.0
@@ -85,6 +89,17 @@ class GuardiaRed:
         return self._hosts[host]
 
     async def manejar(self, route) -> None:
+        """Una petición que falla (tiempo agotado, página cerrada) se aborta en silencio: si la
+        excepción escapa, Playwright imprime la traza con cabeceras y cookies por cada recurso, y
+        un sitio lento inunda el registro del servidor."""
+        try:
+            await self._manejar(route)
+        except Exception as error:
+            log.debug("guardia: %s → %s", route.request.url[:120], type(error).__name__)
+            with contextlib.suppress(Exception):
+                await route.abort()
+
+    async def _manejar(self, route) -> None:
         peticion = route.request
         url = peticion.url
         if not url.startswith(("http://", "https://")) or self.confiable(url):

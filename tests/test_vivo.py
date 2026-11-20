@@ -512,6 +512,15 @@ def test_guardia_deja_pasar_cadenas_publicas_y_el_corpus_de_confianza(monkeypatc
     assert imagen.final == "abortar:failed"
 
 
+def test_guardia_aborta_en_silencio_si_la_peticion_falla(monkeypatch):
+    """Un recurso que agota su tiempo no debe propagar la excepción a Playwright, que imprime
+    cabeceras y cookies por cada recurso fallido e inunda el registro del servidor."""
+    guardia = _guardia(monkeypatch, set())
+    lenta = _Ruta("https://tienda.co/lento.js", {}, tipo="script")  # fetch lanza KeyError
+    asyncio.run(guardia.manejar(lenta))
+    assert lenta.final == "abortar:failed"
+
+
 def test_precio_en_otra_moneda_se_descarta_aunque_el_juez_lo_acepte():
     """D147: una página que publica el precio en rupias no compite como si fueran pesos."""
     pesos = _oferta("Galaxy A07 64GB", 450_000)

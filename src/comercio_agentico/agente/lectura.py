@@ -31,7 +31,7 @@ TIPOS_SCHEMA = ("Product", "Offer", "ProductGroup")
 # Un solo Chromium con muchas pestañas que se desplazan a la vez agota la memoria y la CPU de un
 # contenedor pequeño: las páginas se abren por tandas y cada lectura tiene un tiempo máximo; la que
 # lo supera cuenta como error de esa tienda y el agente sigue con las demás.
-MAX_PAGINAS_SIMULTANEAS = int(os.getenv("COTIA_PAGINAS_SIMULTANEAS", "3"))
+MAX_PAGINAS_SIMULTANEAS = int(os.getenv("COTIA_PAGINAS_SIMULTANEAS", "2"))
 LIMITE_LECTURA_S = float(os.getenv("COTIA_LIMITE_LECTURA_S", "45"))
 
 
