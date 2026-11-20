@@ -534,3 +534,51 @@ def test_tiendas_apple_apuntan_a_sus_dominios_vigentes():
     por_id = {f.id: f.url for f in TIENDAS_EN_VIVO}
     assert por_id["V9"] == "https://mac-center.com/"
     assert por_id["V10"] == "https://co.tiendasishop.com/"
+
+
+def test_lector_abre_paginas_por_tandas_y_corta_la_lectura_colgada(monkeypatch):
+    """Muchas pestañas a la vez colgaban el contenedor: tope de concurrencia y tiempo máximo."""
+    from comercio_agentico.agente import lectura
+
+    monkeypatch.setattr(lectura, "LIMITE_LECTURA_S", 0.2)
+    tienda = Fuente(
+        id="B1",
+        nombre="Tienda",
+        tipo_fuente="web_plana",
+        herramienta="abrir_pagina",
+        url="http://127.0.0.1:8800/",
+    )
+    abiertas = maximo = 0
+
+    class CrawlerLento:
+        async def __aexit__(self, *exc):
+            return None
+
+        async def arun(self, url, config):
+            nonlocal abiertas, maximo
+            abiertas += 1
+            maximo = max(maximo, abiertas)
+            try:
+                await asyncio.sleep(1 if url.endswith("colgada") else 0.05)
+            finally:
+                abiertas -= 1
+            return type(
+                "R", (), {"success": True, "markdown": "Monitor $1", "html": "", "links": {}}
+            )()
+
+    async def leer():
+        lector = Lector(RegistroFuentes(fuentes=[tienda]))
+        lector._paginas = asyncio.Semaphore(2)
+        lector._crawler = CrawlerLento()
+        async with lector:
+            urls = [f"http://127.0.0.1:8800/p{i}" for i in range(6)] + [
+                "http://127.0.0.1:8800/colgada"
+            ]
+            return await asyncio.gather(
+                *(lector.abrir_pagina(u) for u in urls), return_exceptions=True
+            )
+
+    resultados = asyncio.run(leer())
+    assert maximo <= 2
+    assert all(r.texto.endswith("Monitor $1") for r in resultados[:6])
+    assert isinstance(resultados[-1], OSError) and "superó" in str(resultados[-1])

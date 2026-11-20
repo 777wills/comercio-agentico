@@ -1756,3 +1756,23 @@ sed -n '/grafo = StateGraph(Estado)/,/grafo.compile()/p' src/comercio_agentico/a
 
 Los cinco `add_node` y las dos `add_conditional_edges` son los nodos y las flechas condicionales de `agente.d2`
 («compra» / «¬compra ∨ falta» y «tool_calls < 14» / «fin»).
+
+## 20-nov — Lecturas por tandas y con tiempo máximo (D153)
+
+**Qué cambió.** El lector de páginas abre como máximo 3 a la vez y corta cada lectura a los 45 s. Antes, una consulta en vivo abría hasta 12 tiendas simultáneas en un solo Chromium y en Railway el contenedor quedaba colgado.
+
+**Prueba sin red (US$0):**
+
+```bash
+uv run pytest -q tests/test_vivo.py -k tandas
+```
+
+Debe pasar: comprueba que nunca hay más páginas abiertas que el tope y que una página colgada termina como error («superó … s de lectura») sin frenar a las demás.
+
+**En producción (≈ US$0,05–0,15 con su clave, según la profundidad):**
+
+1. Tras el despliegue, reinicie el servicio en Railway y abra `/api/salud`: debe responder `{"estado":"ok",...}` en menos de un segundo.
+2. Lance una consulta en vivo con profundidad estándar. Mientras corre, `/api/salud` debe seguir respondiendo.
+3. En LangSmith, el nodo `herramientas` de la traza debe durar del orden de minutos, no decenas; una tienda que no carga aparece como error y no detiene la consulta.
+
+Variables para ajustar sin tocar código: `COTIA_PAGINAS_SIMULTANEAS` (3) y `COTIA_LIMITE_LECTURA_S` (45).

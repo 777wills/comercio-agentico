@@ -26,6 +26,7 @@ ENV PATH=/app/.venv/bin:$PATH \
     HF_HOME=/opt/hf \
     HF_HUB_DISABLE_TELEMETRY=1 \
     PLAYWRIGHT_BROWSERS_PATH=/opt/ms-playwright \
+    OMP_NUM_THREADS=4 \
     CRAWL4AI_NO_CLOUD_NOTICE=1 \
     PORT=8000
 WORKDIR /app

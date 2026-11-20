@@ -28,6 +28,11 @@ os.environ.setdefault("CRAWL4AI_NO_CLOUD_NOTICE", "1")
 
 MAX_DATOS_ESTRUCTURADOS = 6_000  # caracteres del bloque schema.org por página
 TIPOS_SCHEMA = ("Product", "Offer", "ProductGroup")
+# Un solo Chromium con muchas pestañas que se desplazan a la vez agota la memoria y la CPU de un
+# contenedor pequeño: las páginas se abren por tandas y cada lectura tiene un tiempo máximo; la que
+# lo supera cuenta como error de esa tienda y el agente sigue con las demás.
+MAX_PAGINAS_SIMULTANEAS = int(os.getenv("COTIA_PAGINAS_SIMULTANEAS", "3"))
+LIMITE_LECTURA_S = float(os.getenv("COTIA_LIMITE_LECTURA_S", "45"))
 
 
 CAMPOS_LARGOS = ("description", "review", "image", "aggregateRating", "isRelatedTo", "isSimilarTo")
@@ -102,6 +107,7 @@ class Lector:
         self.crudo = crudo
         self._cortesia: Cortesia | None = None
         self._arranque = asyncio.Lock()  # varias lecturas en paralelo: un solo Chromium
+        self._paginas = asyncio.Semaphore(MAX_PAGINAS_SIMULTANEAS)
         self._cache: dict[str, Documento] = {}
         self._crawler: Any = None
         self.guardia: GuardiaRed | None = None
@@ -148,20 +154,27 @@ class Lector:
                     )
                 await crawler.__aenter__()
                 self._crawler = crawler
-        resultado = await self._crawler.arun(
-            url,
-            config=CrawlerRunConfig(
-                cache_mode=CacheMode.BYPASS,
-                verbose=False,
-                user_agent=AGENTE_USUARIO,
-                # Tiendas reales: los productos llegan por JavaScript y con carga diferida.
-                **(
-                    {"scan_full_page": True, "scroll_delay": 0.3, "delay_before_return_html": 2.0}
-                    if fuente.abierta
-                    else {}
-                ),
+        config = CrawlerRunConfig(
+            cache_mode=CacheMode.BYPASS,
+            verbose=False,
+            user_agent=AGENTE_USUARIO,
+            page_timeout=int(LIMITE_LECTURA_S * 1000 * 2 / 3),
+            # Tiendas reales: los productos llegan por JavaScript y con carga diferida.
+            **(
+                {"scan_full_page": True, "scroll_delay": 0.3, "delay_before_return_html": 2.0}
+                if fuente.abierta
+                else {}
             ),
         )
+        async with self._paginas:
+            try:
+                resultado = await asyncio.wait_for(
+                    self._crawler.arun(url, config=config), LIMITE_LECTURA_S
+                )
+            except TimeoutError:
+                raise OSError(
+                    f"No se pudo abrir {url}: superó {LIMITE_LECTURA_S:.0f} s de lectura"
+                ) from None
         if not resultado.success:
             raise OSError(f"No se pudo abrir {url}: {resultado.error_message}")
         markdown = resultado.markdown
