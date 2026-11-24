@@ -16,12 +16,12 @@ Beurer-Kellner, L., Buesser, B., Creţu, A.-M., Debenedetti, E., Dobos, D., Fabi
 Grosse, K., Naeff, D., Ozoani, E., Paverd, A., Tramèr, F. y Volhejn, V. (2025). *Design patterns for securing LLM
 agents against prompt injections*. arXiv. https://doi.org/10.48550/arXiv.2506.08837
 
-Cámara Colombiana de Comercio Electrónico. (2026). *Informe trimestral de comercio electrónico 2026-I*.
-https://ccce.org.co/wp-content/uploads/2017/06/Publico_V1-2026-IInforme-1er-trimestre-economico.pdf
-
 Chen, S., Piet, J., Sitawarin, C. y Wagner, D. (2025). StruQ: Defending against prompt injection with structured
 queries. En *USENIX Security Symposium (USENIX Security 25)*. USENIX Association.
 https://www.usenix.org/conference/usenixsecurity25/presentation/chen-sizhe
+
+Cámara Colombiana de Comercio Electrónico. (2026). *Informe trimestral de comercio electrónico 2026-I*.
+https://ccce.org.co/wp-content/uploads/2017/06/Publico_V1-2026-IInforme-1er-trimestre-economico.pdf
 
 Debenedetti, E., Shumailov, I., Fan, T., Hayes, J., Carlini, N., Fabian, D., Kern, C., Shi, C., Terzis, A. y
 Tramèr, F. (2025). *Defeating prompt injections by design*. arXiv. https://doi.org/10.48550/arXiv.2503.18813
@@ -86,23 +86,29 @@ https://huggingface.co/meta-llama/Llama-Prompt-Guard-2-86M
 MITRE. (2026). *LLM Prompt Injection: Indirect* (AML.T0051.001). En *MITRE ATLAS* (v2026.10).
 https://atlas.mitre.org/techniques/AML.T0051.001
 
-OWASP Gen AI Security Project. (2025, 9 de diciembre). *OWASP Top 10 for agentic applications for 2026*.
-https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
+OpenAI. (2025, 29 de septiembre). *Buy it in ChatGPT: Instant Checkout and the Agentic Commerce Protocol*.
+https://openai.com/index/buy-it-in-chatgpt/
 
 OWASP Gen AI Security Project. (2026, 3 de agosto). *OWASP Top 10 for LLM applications 2026*.
 https://genai.owasp.org/resource/owasp-genai-llm-top-10-2026/
+
+OWASP Gen AI Security Project. (2025, 9 de diciembre). *OWASP Top 10 for agentic applications for 2026*.
+https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/
 
 Parikh, S. y Surapaneni, R. (2025, 16 de septiembre). *Powering AI commerce with the new Agent Payments Protocol
 (AP2)*. Google Cloud Blog.
 https://cloud.google.com/blog/products/ai-machine-learning/announcing-agents-to-payments-ap2-protocol
 
-Peeters, R., Steiner, A. y Bizer, C. (2025). Entity matching using large language models. En *Proceedings of the
-28th International Conference on Extending Database Technology (EDBT 2025)* (pp. 529–541). OpenProceedings.org.
-https://doi.org/10.48786/edbt.2025.42
+PayPal. (2025, 25 de noviembre). *PayPal and Perplexity launch Instant Buy ahead of Black Friday* [Comunicado de
+prensa]. https://newsroom.paypal-corp.com/2025-11-PayPal-and-Perplexity-Launch-Instant-Buy
 
 Peeters, R., Steiner, A., Schwarz, L., Caspary, J. Y. y Bizer, C. (2026). WebMall – A multi-shop benchmark for
 evaluating web agents. En *Proceedings of the 49th International ACM SIGIR Conference on Research and Development
 in Information Retrieval* (pp. 3342–3348). ACM. https://doi.org/10.1145/3805712.3808592
+
+Peeters, R., Steiner, A. y Bizer, C. (2025). Entity matching using large language models. En *Proceedings of the
+28th International Conference on Extending Database Technology (EDBT 2025)* (pp. 529–541). OpenProceedings.org.
+https://doi.org/10.48786/edbt.2025.42
 
 Perez, F. y Ribeiro, I. (2022). *Ignore previous prompt: Attack techniques for language models*. arXiv.
 https://doi.org/10.48550/arXiv.2211.09527
@@ -110,6 +116,9 @@ https://doi.org/10.48550/arXiv.2211.09527
 Schema.org. (2026a). *Offer* (versión 30.1). Recuperado el 15 de noviembre de 2026, de https://schema.org/Offer
 
 Schema.org. (2026b). *Product* (versión 30.1). Recuperado el 15 de noviembre de 2026, de https://schema.org/Product
+
+Srinivasan, V. (2025, 13 de noviembre). *Let AI do the hard parts of your holiday shopping*. Google.
+https://blog.google/products/shopping/agentic-checkout-holiday-ai-shopping/
 
 Wang, J., Xiao, K., Sun, Q., Zhao, H., Luo, T., Zhang, J. D. y Zeng, X. (2026). ShoppingBench: A real-world
 intent-grounded shopping benchmark for LLM-based agents. *Proceedings of the AAAI Conference on Artificial
@@ -145,6 +154,9 @@ https://doi.org/10.52202/068431-1508
 Yao, S., Zhao, J., Yu, D., Du, N., Shafran, I., Narasimhan, K. y Cao, Y. (2023). ReAct: Synergizing reasoning and
 acting in language models. En *International Conference on Learning Representations (ICLR 2023)*.
 https://doi.org/10.48550/arXiv.2210.03629
+
+Zeff, M. (2025, 3 de abril). *Amazon's new AI agent will shop third-party sites for you*. TechCrunch.
+https://techcrunch.com/2025/04/03/amazons-new-ai-agent-will-shop-third-party-stores-for-you
 
 Zhan, Q., Liang, Z., Ying, Z. y Kang, D. (2024). InjecAgent: Benchmarking indirect prompt injections in
 tool-integrated large language model agents. En L.-W. Ku, A. Martins y V. Srikumar (Eds.), *Findings of the

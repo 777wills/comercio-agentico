@@ -645,28 +645,28 @@ persona. Correspondencia con los borradores: 01 + 02 → I; 03 → II; 04 → II
 - [x] Borradores pendientes: introducción y problema (cifras re-verificadas), estado del arte, conclusiones con
       aportes y limitaciones. Hecho el 15-nov: `01_introduccion.md`, `02_estado_del_arte.md`, `06_conclusiones.md`
       y `07_referencias.md` (APA 7, D133).
-- [ ] Ensamblar los borradores de `docs/informe/` en la plantilla institucional: introducción y problema, estado del
+- [x] Ensamblar los borradores de `docs/informe/` en la plantilla institucional (24-nov, condensado a 13 páginas por D155; generador en `privado/entregables/fuentes_s10/`): introducción y problema, estado del
       arte, metodología, resultados, discusión (incluye ética, legal y seguridad, citando el ensayo de Ética como
       base), conclusiones, hoja de ruta (lo propuesto: E4, N1/ACP/UCP/AP2, más proveedores de modelos en CotIA además de
-      OpenRouter, autohospedaje de pesos abiertos, descubrimiento abierto de proveedores, IPAC como servicio, catálogo de
+      OpenRouter, autohospedaje de pesos abiertos, descubrimiento abierto de proveedores, catálogo de
       referencia gestionado con pgvector, D98) y referencias.
 - [ ] Verificar cada referencia y cifra contra la fuente primaria; descargar el informe primario de la CCCE si se
       cita. Hecho el 15-nov para las 40 de `07_referencias.md` y la CCCE; OWASP unificado en la edición 2026 (D135).
 - [x] Pasar a APA 7 las citas `[ref: …]` de los borradores anteriores (03–05); Efron (1979) verificada en Crossref
       y agregada, y las cuatro de Mercado Libre pasadas a `07_referencias.md` (16-nov).
-- [ ] Datos de referencias por confirmar: páginas de StruQ y de Liu et al. (BibTeX de USENIX); páginas de AgentDojo
+- [ ] Datos de referencias por confirmar (24-nov: autores de StakeBench y de AP2 confirmados en arXiv; el informe final no cita a Liu et al. ni la fecha de OWASP cambia): páginas de StruQ y de Liu et al. (BibTeX de USENIX); páginas de AgentDojo
       (82895–82920, reconstruidas de Crossref) y editores de NeurIPS 37; sede de WebArena (ICLR 2024) en OpenReview;
       año de Llama Prompt Guard 2 (2025, inferido); sexto autor de StakeBench y segundo de AP2 en el PDF; fecha de
       OWASP 2026 (se usa 3-ago-2026, la de la ficha). Las de normativa y marcos éticos (sep-2026) se suman al ensamblar.
-- [ ] Piezas propias de la plantilla: resumen de 150–250 palabras sin citas, índice de términos (unas cuatro palabras
+- [x] Piezas propias de la plantilla (24-nov): resumen de 150–250 palabras sin citas, índice de términos (unas cuatro palabras
       clave en orden alfabético) y Reconocimiento (en singular, sin primera persona).
 - [x] Tabla de herramientas con las versiones de las librerías, tomadas de `uv.lock` y `web/package-lock.json` (16-nov).
-- [ ] Formato de la plantilla: carta, márgenes, una columna, Times New Roman, «Fig.» con el pie debajo y «Tabla» con
+- [x] Formato de la plantilla (24-nov): carta, márgenes, una columna, Times New Roman, «Fig.» con el pie debajo y «Tabla» con
       el título encima y numeración romana; figuras como archivos de imagen, no capturas pegadas a mano.
-- [ ] Capturas de LangSmith para el informe **antes del 24-nov** (las trazas caducan a los 14 días; las del 11-nov se
+- [x] Capturas de LangSmith para el informe **antes del 24-nov** (tomadas el 24-nov en `privado/entregables/fuentes_s10/capturas_langsmith/`) (las trazas caducan a los 14 días; las del 11-nov se
       pierden el 25-nov).
-- [ ] Revisión de metacomentario y de registro académico.
-- [ ] Exportar a PDF y revisar el PDF página por página (tablas, figuras, enlaces).
+- [x] Revisión de metacomentario y de registro académico (24-nov; pendiente la lectura final de Wills).
+- [x] Exportar a PDF y revisar el PDF página por página (tablas, figuras, enlaces) (24-nov).
 
 **Terminado cuando:** PDF generado en `privado/entregables/`, con referencias verificadas.
 
@@ -687,7 +687,14 @@ persona. Correspondencia con los borradores: 01 + 02 → I; 03 → II; 04 → II
 
 ## S12 — Video y defensa (21–26-nov)
 
-- [ ] Incorporar la retroalimentación de la presustentación en el informe (lo exige `SUSTENTACIÓN.txt`).
+- [ ] Incorporar la retroalimentación de la presustentación en el informe y en la sustentación (lo exige
+      `SUSTENTACIÓN.txt`). Observaciones del jurado del 20-nov: (1) problema definido con cifras; (2) alternativas de
+      solución, del mercado y de la literatura; (3) la solución elegida y por qué; (4) arquitectura del agente y de
+      CotIA (les gustó cómo se presentó; conservarla); (5) evaluación: cómo se midió y resultados; (6) cómo se cumple
+      la rúbrica; (7) costo, en todo aspecto, de la capa de ciberseguridad (latencia, dinero, memoria, utilidad,
+      complejidad); (8) láminas con poco texto, sin saturar, y con un recurso de orientación para saber en qué parte
+      va la exposición; (9) no usar los recuadros genéricos que suele generar un asistente. Sustentación de 10 min,
+      muy dinámica.
 - [ ] Guion del video de 10 minutos (problema, solución, demo, resultados, conclusiones) y apoyo a la grabación; se
       evalúa por claridad, síntesis y calidad visual.
 - [ ] Ensayo de preguntas y respuestas.

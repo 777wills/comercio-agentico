@@ -1776,3 +1776,28 @@ Debe pasar: comprueba que nunca hay más páginas abiertas que el tope y que una
 3. En LangSmith, el nodo `herramientas` de la traza debe durar del orden de minutos, no decenas; una tienda que no carga aparece como error y no detiene la consulta.
 
 Variables para ajustar sin tocar código: `COTIA_PAGINAS_SIMULTANEAS` (3) y `COTIA_LIMITE_LECTURA_S` (45).
+
+## 24-nov — Informe final condensado (D154, D155)
+
+**Qué se construyó.** El informe final en la plantilla institucional, de 13 páginas (tope de 20, D155), generado por
+programa desde un texto en Markdown. Incorpora la retroalimentación de la presustentación: problema con cifras,
+alternativas del mercado (ChatGPT Instant Checkout, compra agéntica de Google, Instant Buy de Perplexity y PayPal,
+Buy for Me de Amazon) y de la literatura, la solución elegida y su porqué, el costo de la capa de seguridad por
+dimensión (Tabla V) y una tabla de cumplimiento de la rúbrica (Tabla VI). Las dos secciones nuevas quedan también
+como borradores versionados: `docs/informe/01_alternativas_y_decision.md` y `docs/informe/05_discusion_costo_seguridad.md`.
+
+**Regenerar el informe (US$0, sin red):**
+
+```bash
+f=privado/entregables/fuentes_s10
+uv run --with python-docx python -I $f/informe_final.py privado/curso/Formato_informe.docx \
+  $f/informe_final.md docs/informe/07_referencias.md privado/entregables/Informe_final_PAIII_WilliamSuaza.docx
+cd privado/entregables && soffice --headless --convert-to pdf Informe_final_PAIII_WilliamSuaza.docx && pdfinfo Informe_final_PAIII_WilliamSuaza.pdf | grep Pages
+```
+
+Debe imprimir `referencias: 35`, `ok …docx` y `Pages: 13`. El generador solo incluye en la lista las referencias
+citadas en el texto (APA 7, orden alfabético). Para cambiar el contenido, edite `informe_final.md` (marcas:
+`@tabla`, `@figura ruta|pie`, citas entre corchetes que el generador convierte a paréntesis) y regenere.
+
+**Qué revisar en el PDF:** carta de aval con fecha 24-nov y firma en blanco; resumen de 232 palabras; tablas con
+el título encima y numeración romana; figuras con «Fig.» debajo; ninguna cita sin su referencia.
