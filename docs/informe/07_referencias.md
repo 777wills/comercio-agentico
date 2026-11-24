@@ -117,6 +117,10 @@ Schema.org. (2026a). *Offer* (versión 30.1). Recuperado el 15 de noviembre de 2
 
 Schema.org. (2026b). *Product* (versión 30.1). Recuperado el 15 de noviembre de 2026, de https://schema.org/Product
 
+Silliman, E., Robinson, K., Trotter, J., Oppong, D. y Jaggi, S. (2026, 28 de octubre). *Who wins when AI does the
+shopping? New evidence on agentic commerce*. McKinsey & Company.
+https://www.mckinsey.com/capabilities/growth-marketing-and-sales/our-insights/who-wins-when-ai-does-the-shopping-new-evidence-on-agentic-commerce
+
 Srinivasan, V. (2025, 13 de noviembre). *Let AI do the hard parts of your holiday shopping*. Google.
 https://blog.google/products/shopping/agentic-checkout-holiday-ai-shopping/
 
