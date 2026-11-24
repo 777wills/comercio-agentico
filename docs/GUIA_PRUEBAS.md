@@ -1795,7 +1795,7 @@ uv run --with python-docx python -I $f/informe_final.py privado/curso/Formato_in
 cd privado/entregables && soffice --headless --convert-to pdf Informe_final_PAIII_WilliamSuaza.docx && pdfinfo Informe_final_PAIII_WilliamSuaza.pdf | grep Pages
 ```
 
-Debe imprimir `referencias: 36`, `ok …docx` y `Pages: 14`. El generador solo incluye en la lista las referencias
+Debe imprimir `referencias: 51`, `ok …docx` y `Pages: 27`. El generador solo incluye en la lista las referencias
 citadas en el texto (APA 7, orden alfabético). Para cambiar el contenido, edite `informe_final.md` (marcas:
 `@tabla`, `@figura ruta|pie`, citas entre corchetes que el generador convierte a paréntesis) y regenere.
 
